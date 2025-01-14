@@ -53,9 +53,11 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
-        'accent-orange': '#FF9500',
-        'accent-teal': '#5AC8FA',
-        'accent-blue': '#007AFF',
+        accent: {
+          orange: '#FF9500',
+          teal: '#5AC8FA',
+          blue: '#007AFF',
+        },
         background: 'hsl(var(--background))',
         border: 'hsla(var(--border))',
         card: {
@@ -76,9 +78,21 @@ export default {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
         },
-        primary: '#0B7077',
+        primary: {
+          DEFAULT: '#0B7077',
+          foreground: 'white',
+        },
         ring: 'hsl(var(--ring))',
-        secondary: '#195F7E',
+        secondary: {
+          DEFAULT: '#195F7E',
+          foreground: 'white',
+        },
+        gray: {
+          light02: '#ECECEC',
+          light05: '#F1F1F1',
+        },
+        black1: '#1A1A1A',
+        black2: '#0B0B0B',
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
