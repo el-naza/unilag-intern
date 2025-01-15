@@ -88,11 +88,11 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    @apply bg-[#fafafa] text-foreground min-h-[100vh] flex flex-col w-full;
   }
 }
-
 html {
   opacity: 0;
 }

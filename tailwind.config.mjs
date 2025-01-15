@@ -24,6 +24,21 @@ export default {
     'bg-warning/30',
   ],
   theme: {
+    screens: {
+      '2xl': '1536px',
+      xl: '1280px',
+      lg: '1024px',
+      md: '768px',
+      sm: '320px',
+    },
+    colors: {
+      'white': '#fff',
+      'primary': '#195F7E', // Dark Green
+      'secondary': '#0B7077', // Light green
+      'accent': '#FD661F', // Orange Color
+      'gray': '#8492a6',
+      'gray-light': '#d3dce6',
+    },
     container: {
       center: true,
       padding: {
@@ -33,13 +48,6 @@ export default {
         md: '2rem',
         sm: '1rem',
         xl: '2rem',
-      },
-      screens: {
-        '2xl': '86rem',
-        lg: '64rem',
-        md: '48rem',
-        sm: '40rem',
-        xl: '80rem',
       },
     },
     extend: {
@@ -77,15 +85,7 @@ export default {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
         },
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
         ring: 'hsl(var(--ring))',
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
