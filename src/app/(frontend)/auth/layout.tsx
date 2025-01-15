@@ -5,7 +5,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <>
       <Image
-        src={'/student-image.jpeg'}
+        src={'/images/student-image.jpeg'}
         alt="image"
         width={565}
         height={954}
