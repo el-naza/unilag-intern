@@ -93,6 +93,7 @@ export default {
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        oleo: ['"Oleo Script"', 'cursive'],
       },
       keyframes: {
         'accordion-down': {
