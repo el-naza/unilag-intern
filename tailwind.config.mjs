@@ -88,11 +88,18 @@ export default {
           foreground: 'white',
         },
         gray: {
-          light02: '#ECECEC',
-          light05: '#F1F1F1',
+          light: {
+            2: '#ECECEC',
+            5: '#F1F1F1',
+          },
+          dark: {
+            3: '#48484A',
+          },
         },
-        black1: '#1A1A1A',
-        black2: '#0B0B0B',
+        black: {
+          1: '#1A1A1A',
+          2: '#0B0B0B',
+        },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
