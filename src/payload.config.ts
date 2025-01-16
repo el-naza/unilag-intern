@@ -1,7 +1,6 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb' // database-adapter-import
 
-import sharp from 'sharp' // sharp-import
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -25,7 +24,6 @@ export default buildConfig({
     // storage-adapter-placeholder
   ],
   secret: process.env.PAYLOAD_SECRET,
-  sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
