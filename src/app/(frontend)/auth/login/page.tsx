@@ -31,6 +31,7 @@ export default function Page() {
           <Input
             placeholder="Enter Password"
             className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1"
+            type="password"
           />
           <Link
             href="/auth/forgot-password"

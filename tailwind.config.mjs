@@ -49,10 +49,12 @@ export default {
         },
         gray: {
           light: {
+            1: '#8E8E93',
             2: '#ECECEC',
             5: '#F1F1F1',
           },
           dark: {
+            2: '#454545',
             3: '#48484A',
           },
         },
