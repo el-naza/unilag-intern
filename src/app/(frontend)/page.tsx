@@ -1,5 +1,9 @@
-import PageTemplate, { generateMetadata } from './[slug]/page'
+'use client'
 
-export default PageTemplate
+import { useRouter } from 'next/navigation'
 
-export { generateMetadata }
+export default function Page() {
+  const router = useRouter()
+  router.replace('/auth')
+  return null
+}
