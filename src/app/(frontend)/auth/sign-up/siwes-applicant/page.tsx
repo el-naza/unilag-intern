@@ -11,11 +11,11 @@ export default function Page() {
 
   return (
     <div className="text-gray-dark-2 min-h-screen py-11 px-4 bg-white">
-      <div className=" text-center">
+      <div className="text-center">
         <h2 className="text-xl leading-[25.78px] font-medium mb-2 text-black-2">
           Sign up Login as a <br /> Siwes Applicant
         </h2>
-        <div className="text-[12px] text-gray-light-1 leading-[16.5px] mb-8 px-6">
+        <div className="text-[12px] text-gray-dark leading-[16.5px] mb-8 px-6">
           Complete the form to proceed with the signup process.
         </div>
       </div>
@@ -85,7 +85,7 @@ export default function Page() {
         size="lg"
         className="w-full mt-5"
         variant="secondary"
-        onClick={() => router.push('/auth/sign-up/update-profile-image')}
+        onClick={() => router.push('/auth/sign-up/siwes-applicant/update-profile-image')}
       >
         Continue
       </Button>
