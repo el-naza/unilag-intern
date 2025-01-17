@@ -1,4 +1,3 @@
-import { Slider } from '@/components/ui/slider'
 import React from 'react'
 
 const Suggestion = () => {
@@ -153,6 +152,9 @@ export default async function Page() {
                 <Suggestion />
                 <Suggestion />
               </div>
+            </div>
+            <div className="font-bold text-center mb-3">
+              Powered by <span className="text-[#0B7077]">Koonage Infotech</span>
             </div>
           </div>
         </main>
