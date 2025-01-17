@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export default function Page() {
   return (
-    <div className="text-white min-h-screen flex flex-col justify-between py-32 gap-32">
+    <div className="text-white min-h-screen flex flex-col justify-between py-11 gap-32">
       <div className="px-4">
         <h1 className="text-[38px] leading-[50.4px] font-semibold mb-3">
           Your Gateway to <br /> Opportunities

@@ -3,16 +3,13 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 
 export default function Page() {
-  const [hasPassword, setHasPassword] = useState(false)
   const router = useRouter()
 
   return (
-    <div className="px-4 text-white pt-24">
+    <div className="px-4 text-white pt-11">
       <div className=" text-center">
         <h2 className="text-xl leading-[25.78px] font-medium mb-3">Forgotten Password</h2>
         <div className="text-[12px] text-gray-light-2 leading-[16.5px] mb-8">

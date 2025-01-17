@@ -1,13 +1,16 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import Image from 'next/image'
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function Page() {
+  const router = useRouter()
+
   return (
-    <div className="text-gray-dark-2 min-h-screen py-24 px-4 bg-white">
+    <div className="text-gray-dark-2 min-h-screen py-11 px-4 bg-white">
       <div className=" text-center">
         <h2 className="text-xl leading-[25.78px] font-medium mb-2 text-black-2">
           Sign up Login as a <br /> Siwes Applicant
@@ -82,7 +85,7 @@ export default function Page() {
         size="lg"
         className="w-full mt-5"
         variant="secondary"
-        // onClick={() => setHasPassword((prev) => !prev)}
+        onClick={() => router.push('/auth/sign-up/update-profile-image')}
       >
         Continue
       </Button>
