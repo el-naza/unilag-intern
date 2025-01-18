@@ -6,7 +6,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Media } from './collections/Media'
-import { Users } from './collections/Users'
+import { Students } from './collections/Students'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -18,7 +18,7 @@ export default buildConfig({
     url: process.env.DATABASE_URI,
   }),
   // database-adapter-config-end
-  collections: [Media, Users],
+  collections: [Media, Students],
   cors: [getServerSideURL()].filter(Boolean),
   plugins: [
     // storage-adapter-placeholder
