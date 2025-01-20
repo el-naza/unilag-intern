@@ -5,7 +5,7 @@ export default async function Page() {
   return (
     <div className="min-h-screen relative text-sm text-white">
       <div className="bg-[#195F7E] container pt-4 pb-1">
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-5 mb-4">
           <div className="col-span-4">
             <div className="grid grid-cols-5 gap-2">
               <div>

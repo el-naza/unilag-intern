@@ -8,7 +8,7 @@ export default async function Page() {
           <div>
             <div className="flex justify-between my-3">
               <div>
-                <h5 className="text-[#48484A]">Account Details</h5>
+                <h5 className="text-black font-bold">Banking Info</h5>
               </div>
             </div>
             <div className="my-5">
@@ -18,20 +18,16 @@ export default async function Page() {
               </p>
             </div>
 
-            <div className="mb-3">
-              <h5 className="text-black font-medium mb-2">Select Bank</h5>
-              <div className="grid gap-2">
-                <div className="flex items-center gap-2 hover:bg-[#B3FAFF] rounded p-4 ps-2">
-                  <img src="/gtb.png" alt="gtb" />
-                  <span>GT Bank</span>
-                </div>
-                <div className="flex items-center gap-2 hover:bg-[#B3FAFF] rounded p-4 ps-2">
-                  <img src="/access.png" alt="access" />
-                  <span>Access Bank</span>
-                </div>
+            <div className="grid grid-cols-2 gap-4 mb-16">
+              <div className="col-span-2">
+                <h5 className="text-black mb-2">Bank Account Number</h5>
+                <input
+                  className="w-full placeholder:text-[#ECECEC] p-2 border border-[#FAFAFA] rounded mb-2"
+                  placeholder="0000 0000 0000"
+                />
               </div>
             </div>
-            <div className="mb-3">
+            <div className="my-5">
               <div className="grid grid-cols-3">
                 <button className="w-full rounded-lg p-3 bg-[#0B7077] text-white text-center">
                   Continue
