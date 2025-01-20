@@ -15,17 +15,15 @@ import { anyone } from '@/access/anyone'
 // test pre-login to check whether user has set password
 // test forgot password reset with otp endpoints
 
-export const companies: CollectionConfig = {
+export const Companies: CollectionConfig = {
   slug: 'companies',
   access: {
     create: anyone,
     delete: self,
-    read: authenticatedUsers,
-    update: self,
+    read: anyone,
+    update: anyone,
   },
-  auth: {
-    loginWithUsername: false,
-  },
+  auth: true,
   hooks: {
     beforeOperation: [
       async ({ args, req }) => {
@@ -54,6 +52,11 @@ export const companies: CollectionConfig = {
     },
     {
       name: 'address',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'password',
       type: 'text',
       required: true,
     },
