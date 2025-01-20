@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url'
 import { Media } from './collections/Media'
 import { Students } from './collections/Students'
 import { getServerSideURL } from './utilities/getURL'
+import { Companies } from './collections/Company'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -18,7 +19,7 @@ export default buildConfig({
     url: process.env.DATABASE_URI,
   }),
   // database-adapter-config-end
-  collections: [Media, Students],
+  collections: [Media, Students, Companies],
   cors: [getServerSideURL()].filter(Boolean),
   plugins: [
     // storage-adapter-placeholder

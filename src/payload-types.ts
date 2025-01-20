@@ -9,10 +9,12 @@
 export interface Config {
   auth: {
     students: StudentAuthOperations;
+    companies: CompanyAuthOperations;
   };
   collections: {
     media: Media;
     students: Student;
+    companies: Company;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -21,6 +23,7 @@ export interface Config {
   collectionsSelect: {
     media: MediaSelect<false> | MediaSelect<true>;
     students: StudentsSelect<false> | StudentsSelect<true>;
+    companies: CompaniesSelect<false> | CompaniesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -31,9 +34,13 @@ export interface Config {
   globals: {};
   globalsSelect: {};
   locale: null;
-  user: Student & {
-    collection: 'students';
-  };
+  user:
+    | (Student & {
+        collection: 'students';
+      })
+    | (Company & {
+        collection: 'companies';
+      });
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -53,6 +60,24 @@ export interface StudentAuthOperations {
   };
   unlock: {
     username: string;
+  };
+}
+export interface CompanyAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
   };
 }
 /**
@@ -165,6 +190,26 @@ export interface Student {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies".
+ */
+export interface Company {
+  id: string;
+  companyName: string;
+  ripCode?: string | null;
+  address: string;
+  password: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -177,12 +222,21 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'students';
         value: string | Student;
+      } | null)
+    | ({
+        relationTo: 'companies';
+        value: string | Company;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'students';
-    value: string | Student;
-  };
+  user:
+    | {
+        relationTo: 'students';
+        value: string | Student;
+      }
+    | {
+        relationTo: 'companies';
+        value: string | Company;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -192,10 +246,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'students';
-    value: string | Student;
-  };
+  user:
+    | {
+        relationTo: 'students';
+        value: string | Student;
+      }
+    | {
+        relationTo: 'companies';
+        value: string | Company;
+      };
   key?: string | null;
   value?:
     | {
@@ -334,6 +393,25 @@ export interface StudentsSelect<T extends boolean = true> {
   createdAt?: T;
   email?: T;
   username?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies_select".
+ */
+export interface CompaniesSelect<T extends boolean = true> {
+  companyName?: T;
+  ripCode?: T;
+  address?: T;
+  password?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
   salt?: T;
