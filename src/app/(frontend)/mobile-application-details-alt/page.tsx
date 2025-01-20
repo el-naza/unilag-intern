@@ -89,7 +89,7 @@ export default async function Page() {
                   <div className="mb-2">Drag your file(s) to start uploading</div>
                   <div className="text-[#8E8E93] mb-2">OR</div>
                   <div>
-                    <button className="p-2 bg-white text-[#195F7E] border border-[#195F7E] font-bold rounded">
+                    <button className="p-2 bg-white text-[#195F7E] border border-[#195F7E] font-bold rounded-md">
                       Browse files
                     </button>
                   </div>
