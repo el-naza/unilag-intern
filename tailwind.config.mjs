@@ -34,6 +34,7 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       colors: {
+        ring: '#5AC8FABC',
         accent: {
           orange: '#FF9500',
           teal: '#5AC8FA',
@@ -53,10 +54,13 @@ export default {
             5: '#F1F1F1',
           },
           dark: {
+            DEFAULT: '#8E8E93',
+            2: '#454545',
             3: '#48484A',
           },
         },
         black: {
+          DEFAULT: 'black',
           1: '#1A1A1A',
           2: '#0B0B0B',
         },

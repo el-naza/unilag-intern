@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export default function Page() {
   return (
-    <div className="text-gray-dark-3 min-h-screen flex flex-col justify-between py-32 gap-32 bg-white">
+    <div className="text-gray-dark-3 min-h-screen flex flex-col justify-between py-11 gap-24 bg-white">
       <div className="px-4 flex flex-col items-center">
         <Image src="/images/unilag-logo.png" width={44} height={44} alt="LOGO" />
         <div className="text-[12px] text-black-2 font-bold leading-[16.5px] mt-1">Unilag Siwes</div>
@@ -18,14 +18,14 @@ export default function Page() {
         <div className="text-sm leading-[16.5px] text-gray-dark-3 mb-[58px]">
           Sign up and stay connected to companies that matter.
         </div>
-        <Link href="/auth/login">
+        <Link href="/auth/sign-up/siwes-applicant">
           <Button size="lg" className="bg-gray-light-5 hover:bg-white/90 text-black-1 w-full mb-3">
-            Login as a Siwes Applicant
+            Sign up as a Siwes Applicant
           </Button>
         </Link>
-        <Link href="/auth/login-as-lecturer">
+        <Link href="/auth/sign-up-lecturer">
           <Button size="lg" className="w-full mb-10">
-            Login as a Lecturer
+            Sign up as a Lecturer
           </Button>
         </Link>
         <div className="text-[12px] leading-[16.5px]">
