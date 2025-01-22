@@ -21,14 +21,14 @@ const Calendar: React.FC = () => {
     <div className="flex justify-between items-center mb-[16px]">
       <button
         onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-        className="text-gray-500 hover:text-black border rounded h-[28px] w-[28px]"
+        className="text-gray-500 hover:text-black border rounded h-[28px] w-[28px] bg-white"
       >
         &#8249;
       </button>
-      <h2 className="text-lg font-bold text-black">{format(currentMonth, 'MMMM yyyy')}</h2>
+      <h2 className="text-[16px] font-[400] text-black">{format(currentMonth, 'MMMM yyyy')}</h2>
       <button
         onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-        className="text-gray-500 hover:text-black border rounded h-[28px] w-[28px]"
+        className="text-gray-500 hover:text-black border rounded h-[28px] w-[28px] bg-white"
       >
         &#8250;
       </button>
@@ -43,7 +43,7 @@ const Calendar: React.FC = () => {
 
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div key={i} className="text-xs font-medium text-center text-gray-700 h-[52px]">
+        <div key={i} className="text-xs font-medium text-center flex items-center justify-between text-gray-700 h-[52px]">
           {format(addDays(startDate, i), dateFormat)}
         </div>,
       )
@@ -74,7 +74,7 @@ const Calendar: React.FC = () => {
               onClick={() => setSelectedDate(day)}
               className={`h-[32px] w-[32px] text-sm text-center cursor-pointer rounded-full  flex items-center justify-center ${
                 isToday
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-[#0B7077] text-white'
                   : isCurrentMonth
                     ? 'text-black hover:bg-gray-100'
                     : 'text-gray-400'
@@ -98,7 +98,7 @@ const Calendar: React.FC = () => {
   }
 
   return (
-    <div className="w-[356px] bg-white rounded-lg p-4">
+    <div className="w-[full]  rounded-lg p-4">
       {renderHeader()}
       {renderDays()}
       {renderCells()}
