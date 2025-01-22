@@ -31,7 +31,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body>
-        <div className="tracking-[0.37px]">
+        <div className="tracking-[0.37px] max-w-5xl mx-auto">
           {children}
           <FooterKoonage />
         </div>
