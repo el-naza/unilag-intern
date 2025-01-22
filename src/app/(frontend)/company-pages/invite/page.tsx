@@ -16,10 +16,7 @@ export default function StudentInvitation() {
     { label: 'Phone', placeholder: '09072709030', Icon: PhoneIcon, type: 'number' },
   ]
 
-  const academicFields = [
-    { label: 'CGPA', placeholder: '3.5', type: 'text' },
-    { label: 'Department', placeholder: 'Mathematics', type: 'text' },
-  ]
+  const dates = [{ label: '07:00 am' }, { label: '08:00 am' }, { label: '09:00 am' }]
   return (
     <div>
       <nav className="w-full bg-[#FAFAFA99]">
@@ -51,13 +48,41 @@ export default function StudentInvitation() {
 
               <textarea
                 name=""
-                cols={4}
+                cols={6}
                 placeholder="Write a Message"
-                className="bg-white p-[12px] border p-[12px] w-full"
+                className="bg-white p-[12px] h-[120px] border p-[12px] w-full"
                 id=""
               ></textarea>
               <div className="mt-[12px]">
                 <Calendar />
+              </div>
+
+              <div className="mt-[12px] flex items-start justify-between">
+                <div>
+                  <p className="font-[400] text-[14px]">Select Time</p>
+                  <div className="mt-[6px] bg-[#FFFFFF] rounded-[4px] p-[6px]">
+                    {dates &&
+                      dates.map((d) => (
+                        <div
+                          className="px-[12px] py-[6px] mb-[4px] font-[500] text-[14px] rounded-[4px] w-[246px]"
+                          style={{ background: d.label === '09:00 am' ? '#B3FAFF' : '' }}
+                        >
+                          {' '}
+                          {d.label}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+                <div className="max-w-[246px]">
+                  <p className="font-[400]">Invitation Conversation</p>
+                  <p className="text-[#FF9500] font-[400] text-[12px] my-[12px]">
+                    Confirm your invitation before sending. The recipient will be notified once you
+                    proceed.”
+                  </p>
+                  <button className="py-[12px] w-full flex items-center justify-center text-white  bg-[#0B7077] font-[500] text-[16px] rounded-[8px] ">
+                    Send Invitation
+                  </button>
+                </div>
               </div>
             </div>
           </div>
