@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google'
 import React from 'react'
 
 import './globals.css'
+import FooterKoonage from './components/Layouts/FooterKoonage'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
@@ -30,7 +31,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body>
-        <div className="tracking-[0.37px]">{children}</div>
+        <div className="tracking-[0.37px]">
+          {children}
+          <FooterKoonage />
+        </div>
       </body>
     </html>
   )

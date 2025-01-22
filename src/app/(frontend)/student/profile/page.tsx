@@ -1,4 +1,7 @@
 import React from 'react'
+import ProfilePicture from '../../assets/icons/profilepicture'
+import Bitmoji from '../../assets/icons/bitmoji'
+import Link from 'next/link'
 
 export default async function Page() {
   return (
@@ -11,13 +14,15 @@ export default async function Page() {
                 <h5 className="text-black font-bold">Profile</h5>
               </div>
               <div>
-                <span className="text-[#0B7077]">Banking Info</span>
+                <Link href="/student/profile/bank-settings">
+                  <span className="text-[#0B7077]">Banking Info</span>
+                </Link>
               </div>
             </div>
             <div className="my-5">
               <div className="flex items-center">
                 <div className="mx-auto">
-                  <img className="mx-auto" src="/profile-picture.png" alt="profile-picture" />
+                  <ProfilePicture />
                   <span className="font-oleo text-lg">Oni Adedolapo Ireti</span>
                 </div>
               </div>
@@ -55,8 +60,8 @@ export default async function Page() {
               <h5 className="text-black font-medium">Home Address</h5>
               <p className="text-[#8E8E93] mb-3">12 Opebi Road, Ikeja, Lagos,</p>
             </div>
-            <div className="mb-3">
-              <h5 className="text-black font-medium">Upload SIWES form here</h5>
+            {/* <div className="mb-3">
+              <h5 className="text-black font-medium mb-1">Upload SIWES form here</h5>
               <div className="mb-3">
                 <div className="w-full p-4 border-dashed border-2 border-[#195F7E] rounded mb-2">
                   <div className="text-center">
@@ -128,12 +133,12 @@ export default async function Page() {
                   Only support .jpg, .png and .svg and zip files (2mb below)
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            <div className="mb-3">
+            <div className="mt-5 mb-3">
               <div className="p-4 rounded bg-[#B3FAFF]">
                 <div className="grid grid-cols-6 mb-3">
-                  <img src="/bitmoji.png" alt="bitmoji" />
+                  <Bitmoji />
                   <div className="col-span-5">
                     <h5 className="text-[#0B7077] font-bold">You’re out of points?</h5>
                     <span className="text-[#48484A] font-medium">
@@ -141,14 +146,12 @@ export default async function Page() {
                     </span>
                   </div>
                 </div>
-                <button className="w-full rounded-lg p-3 bg-[#0B7077] text-white text-center">
-                  Purchase Points
-                </button>
+                <Link href="/student/pricing">
+                  <button className="w-full rounded-lg p-3 bg-[#0B7077] text-white text-center">
+                    Purchase Points
+                  </button>
+                </Link>
               </div>
-            </div>
-
-            <div className="font-bold text-center mb-3">
-              Powered by <span className="text-[#0B7077]">Koonage Infotech</span>
             </div>
           </div>
         </main>

@@ -45,7 +45,7 @@ export default {
           foreground: 'white',
         },
         secondary: {
-          DEFAULT: '#195F7E',
+          DEFAULT: '#c5e0ed',
           foreground: 'white',
         },
         gray: {

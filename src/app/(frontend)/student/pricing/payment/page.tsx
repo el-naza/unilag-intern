@@ -17,21 +17,21 @@ export default async function Page() {
               <div className="col-span-2">
                 <h5 className="text-black mb-2">Card Number</h5>
                 <input
-                  className="w-full placeholder:text-[#ECECEC] p-2 border border-[#FAFAFA] rounded mb-2"
+                  className="w-full placeholder:text-[#ECECEC] p-2 border border-[#F1F1F1] rounded mb-2"
                   placeholder="0000 0000 0000"
                 />
               </div>
               <div className="">
                 <h5 className="text-black mb-2">Expiry Date</h5>
                 <input
-                  className="w-full placeholder:text-[#ECECEC] p-2 border border-[#FAFAFA] rounded mb-2"
+                  className="w-full placeholder:text-[#ECECEC] p-2 border border-[#F1F1F1] rounded mb-2"
                   placeholder="12 25"
                 />
               </div>
               <div className="">
                 <h5 className="text-black mb-2">Expiry Date</h5>
                 <input
-                  className="w-full placeholder:text-[#ECECEC] p-2 border border-[#FAFAFA] rounded mb-2"
+                  className="w-full placeholder:text-[#ECECEC] p-2 border border-[#F1F1F1] rounded mb-2"
                   placeholder="123"
                 />
               </div>

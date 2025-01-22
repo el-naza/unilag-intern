@@ -1,20 +1,7 @@
+import CompanySuggestionCard from '@/app/(frontend)/components/Cards/CompanySuggestionCard'
+import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
-
-const Suggestion = () => {
-  return (
-    <div>
-      <img className="w-full" src="/company-banner.png" alt="company-banner" />
-      <div className="p-2">
-        <h5 className="text-black mb-2 font-bold">CRM SHOPPING MALL</h5>
-        <div className="text-[#8E8E93] text-xs mb-2">Career Area: Marketing</div>
-        <div className="text-[#8E8E93] text-xs mb-2">Location: Ikeja, Lagos</div>
-        <button className="w-full rounded bg-[#0B7077] text-white text-xs text-center p-2">
-          View Details
-        </button>
-      </div>
-    </div>
-  )
-}
 
 export default async function Page() {
   return (
@@ -23,8 +10,17 @@ export default async function Page() {
         <main className="py-1 bg-white">
           <div>
             <h5 className="text-black my-3 font-bold">Application Details</h5>
-            <img className="w-full mb-3" src="/company-banner.png" alt="company-banner" />
-            <h5 className="text-black mb-3 font-bold">CRM SHOPPING MALL</h5>
+            <Image
+              height={100}
+              width={100}
+              className="w-full mb-3"
+              src="/company-banner.png"
+              alt="company-banner"
+            />
+            <div className="flex gap-2 items-center mb-3">
+              <Image height={32} width={32} src="/company-logo.png" alt="company-logo" />
+              <h5 className="text-black font-bold">CRM SHOPPING MALL</h5>
+            </div>
             <p className="text-[#8E8E93] text-xs mb-3">
               CMR Shopping Mall is a premier retail and lifestyle destination that redefines the
               shopping and entertainment experience. Located at the heart of [Insert Location], CMR
@@ -46,7 +42,7 @@ export default async function Page() {
                   />
                 </svg>
                 <div className="text-[#0B7077]">Acceptance Period</div>
-                <div className="text-[#8E8E93]">10th - 25th July 2025</div>
+                <div className="text-[#48484A]">10th - 25th July 2025</div>
               </div>
               <div className="grid grid-rows-1 gap-1">
                 <svg
@@ -66,7 +62,7 @@ export default async function Page() {
                   />
                 </svg>
                 <div className="text-[#0B7077]">Location</div>
-                <div className="text-[#8E8E93]">Ikeja, Lagos</div>
+                <div className="text-[#48484A]">Ikeja, Lagos</div>
               </div>
               <div className="grid grid-rows-1 gap-1">
                 <svg
@@ -82,7 +78,7 @@ export default async function Page() {
                   />
                 </svg>
                 <div className="text-[#0B7077]">Career Area</div>
-                <div className="text-[#8E8E93]">Marketing</div>
+                <div className="text-[#48484A]">Marketing</div>
               </div>
               <div className="grid grid-rows-1 gap-1">
                 <svg
@@ -110,7 +106,7 @@ export default async function Page() {
                   />
                 </svg>
                 <div className="text-[#0B7077]">Total Applications</div>
-                <div className="text-[#8E8E93]">12,000 Applicants</div>
+                <div className="text-[#48484A]">12,000 Applicants</div>
               </div>
             </div>
             <div className="grid grid-cols-3 mb-3">
@@ -118,9 +114,11 @@ export default async function Page() {
                 2 vacancies
               </div>
               <div className="col-span-2">
-                <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
-                  Apply Now
-                </button>
+                <Link href={'/student/companies/1/apply'}>
+                  <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
+                    Apply Now
+                  </button>
+                </Link>
               </div>
             </div>
             <div className="mb-3">
@@ -147,14 +145,11 @@ export default async function Page() {
             <div className="mb-3">
               <h5 className="text-black mb-3 font-bold text-xs">More Suggestions</h5>
               <div className="grid grid-cols-2 gap-4">
-                <Suggestion />
-                <Suggestion />
-                <Suggestion />
-                <Suggestion />
+                <CompanySuggestionCard />
+                <CompanySuggestionCard />
+                <CompanySuggestionCard />
+                <CompanySuggestionCard />
               </div>
-            </div>
-            <div className="font-bold text-center mb-3">
-              Powered by <span className="text-[#0B7077]">Koonage Infotech</span>
             </div>
           </div>
         </main>

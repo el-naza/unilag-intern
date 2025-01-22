@@ -1,3 +1,13 @@
+import TaskCheck from '@/app/(frontend)/assets/icons/taskcheck'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import Image from 'next/image'
 import React from 'react'
 
 export default async function Page() {
@@ -7,9 +17,9 @@ export default async function Page() {
         <main className="py-1 bg-white">
           <div>
             <h5 className="text-black my-3 font-bold">Apply Now</h5>
-            <div className="grid grid-cols-8 mb-3">
+            <div className="grid grid-cols-8 mb-3 gap-2">
               <div className="flex items-center">
-                <img src="/cmr-logo.png" alt="cmr-logo" />
+                <Image width={40} height={40} src="/cmr-logo.png" alt="cmr-logo" />
               </div>
               <div className="col-span-7">
                 <h5 className="text-black font-bold">CRM SHOPPING MALL</h5>
@@ -22,7 +32,7 @@ export default async function Page() {
                 Lets us know why you would be a good fit for this our company
               </p>
               <textarea
-                className="w-full placeholder:text-[#ECECEC] p-2 border border-[#FAFAFA] rounded mb-2"
+                className="w-full placeholder:text-[#ECECEC] p-2 border border-[#F1F1F1] rounded mb-2"
                 rows={5}
                 placeholder="Write application..."
               ></textarea>
@@ -100,13 +110,29 @@ export default async function Page() {
               </div>
             </div>
             <div className="mb-3">
-              <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
-                Send Application
-              </button>
-            </div>
-
-            <div className="font-bold text-center mb-3">
-              Powered by <span className="text-[#0B7077]">Koonage Infotech</span>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
+                    Send Application
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="bg-white rounded-lg">
+                  <DialogTitle className="hidden"></DialogTitle>
+                  <DialogDescription className="hidden"></DialogDescription>
+                  <div className="grid gap-4 py-4 text-center">
+                    <TaskCheck />
+                    <h5 className="text-[#0B7077] font-bold">Application Sent</h5>
+                    <p className="text-[#8E8E93] text-sm">
+                      Your Application has been sent successfully
+                    </p>
+                  </div>
+                  <DialogFooter>
+                    <button className="w-full rounded p-2 text-xs bg-[#0B7077] text-white text-center">
+                      Continue
+                    </button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </main>
