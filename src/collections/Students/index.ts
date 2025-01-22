@@ -145,6 +145,22 @@ export const Students: CollectionConfig = {
       required: true,
       options: ['SIWES', 'TEACHING PRACTICE'],
     },
+    {
+      name: 'picture',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
+      name: 'bankCode',
+      type: 'text',
+    },
+    {
+      name: 'bankName',
+      type: 'text',
+    },
+    {
+      name: 'accountNo',
+      type: 'text',
+    },
   ],
-  timestamps: true,
 }

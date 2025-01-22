@@ -8,13 +8,25 @@
 
 export interface Config {
   auth: {
-    students: StudentAuthOperations;
+    admins: AdminAuthOperations;
     companies: CompanyAuthOperations;
+    'departmental-coordinators': DepartmentalCoordinatorAuthOperations;
+    students: StudentAuthOperations;
+    'interview-invitations': InterviewInvitationAuthOperations;
+    'internship-applications': InternshipApplicationAuthOperations;
+    employments: EmploymentAuthOperations;
+    reports: ReportAuthOperations;
   };
   collections: {
     media: Media;
-    students: Student;
+    admins: Admin;
     companies: Company;
+    'departmental-coordinators': DepartmentalCoordinator;
+    students: Student;
+    'interview-invitations': InterviewInvitation;
+    'internship-applications': InternshipApplication;
+    employments: Employment;
+    reports: Report;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -22,8 +34,14 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     media: MediaSelect<false> | MediaSelect<true>;
-    students: StudentsSelect<false> | StudentsSelect<true>;
+    admins: AdminsSelect<false> | AdminsSelect<true>;
     companies: CompaniesSelect<false> | CompaniesSelect<true>;
+    'departmental-coordinators': DepartmentalCoordinatorsSelect<false> | DepartmentalCoordinatorsSelect<true>;
+    students: StudentsSelect<false> | StudentsSelect<true>;
+    'interview-invitations': InterviewInvitationsSelect<false> | InterviewInvitationsSelect<true>;
+    'internship-applications': InternshipApplicationsSelect<false> | InternshipApplicationsSelect<true>;
+    employments: EmploymentsSelect<false> | EmploymentsSelect<true>;
+    reports: ReportsSelect<false> | ReportsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -35,15 +53,87 @@ export interface Config {
   globalsSelect: {};
   locale: null;
   user:
-    | (Student & {
-        collection: 'students';
+    | (Admin & {
+        collection: 'admins';
       })
     | (Company & {
         collection: 'companies';
+      })
+    | (DepartmentalCoordinator & {
+        collection: 'departmental-coordinators';
+      })
+    | (Student & {
+        collection: 'students';
+      })
+    | (InterviewInvitation & {
+        collection: 'interview-invitations';
+      })
+    | (InternshipApplication & {
+        collection: 'internship-applications';
+      })
+    | (Employment & {
+        collection: 'employments';
+      })
+    | (Report & {
+        collection: 'reports';
       });
   jobs: {
     tasks: unknown;
     workflows: unknown;
+  };
+}
+export interface AdminAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface CompanyAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface DepartmentalCoordinatorAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
   };
 }
 export interface StudentAuthOperations {
@@ -62,7 +152,61 @@ export interface StudentAuthOperations {
     username: string;
   };
 }
-export interface CompanyAuthOperations {
+export interface InterviewInvitationAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface InternshipApplicationAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface EmploymentAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface ReportAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -98,64 +242,76 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    square?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    small?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    large?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    xlarge?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admins".
+ */
+export interface Admin {
+  id: string;
+  name: string;
+  phone?: string | null;
+  picture?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies".
+ */
+export interface Company {
+  id: string;
+  name: string;
+  cac: string;
+  courseAreas: string[];
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  location: [number, number];
+  phone: string;
+  address: string;
+  website?: string | null;
+  description: string;
+  profileImage: string | Media;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "departmental-coordinators".
+ */
+export interface DepartmentalCoordinator {
+  id: string;
+  name: string;
+  phone?: string | null;
+  picture?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -176,6 +332,10 @@ export interface Student {
   course: string;
   level: string;
   internshipType: 'SIWES' | 'TEACHING PRACTICE';
+  picture?: (string | null) | Media;
+  bankCode?: string | null;
+  bankName?: string | null;
+  accountNo?: string | null;
   updatedAt: string;
   createdAt: string;
   email?: string | null;
@@ -190,14 +350,14 @@ export interface Student {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "companies".
+ * via the `definition` "interview-invitations".
  */
-export interface Company {
+export interface InterviewInvitation {
   id: string;
-  companyName: string;
-  ripCode?: string | null;
-  address: string;
-  password: string | null;
+  student: string | Student;
+  company: string | Company;
+  message: string;
+  dateTime: string;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -207,6 +367,69 @@ export interface Company {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internship-applications".
+ */
+export interface InternshipApplication {
+  id: string;
+  student: string | Student;
+  company: string | Company;
+  letter: string;
+  status?: ('pending' | 'cancelled' | 'approved' | 'student declined' | 'company declined') | null;
+  interviewInvitation?: (string | null) | InterviewInvitation;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "employments".
+ */
+export interface Employment {
+  id: string;
+  student: string | Student;
+  company: string | Company;
+  dateEnded?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reports".
+ */
+export interface Report {
+  id: string;
+  student: string | Student;
+  title: string;
+  details: string;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -220,22 +443,70 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
-        relationTo: 'students';
-        value: string | Student;
+        relationTo: 'admins';
+        value: string | Admin;
       } | null)
     | ({
         relationTo: 'companies';
         value: string | Company;
+      } | null)
+    | ({
+        relationTo: 'departmental-coordinators';
+        value: string | DepartmentalCoordinator;
+      } | null)
+    | ({
+        relationTo: 'students';
+        value: string | Student;
+      } | null)
+    | ({
+        relationTo: 'interview-invitations';
+        value: string | InterviewInvitation;
+      } | null)
+    | ({
+        relationTo: 'internship-applications';
+        value: string | InternshipApplication;
+      } | null)
+    | ({
+        relationTo: 'employments';
+        value: string | Employment;
+      } | null)
+    | ({
+        relationTo: 'reports';
+        value: string | Report;
       } | null);
   globalSlug?: string | null;
   user:
+    | {
+        relationTo: 'admins';
+        value: string | Admin;
+      }
+    | {
+        relationTo: 'companies';
+        value: string | Company;
+      }
+    | {
+        relationTo: 'departmental-coordinators';
+        value: string | DepartmentalCoordinator;
+      }
     | {
         relationTo: 'students';
         value: string | Student;
       }
     | {
-        relationTo: 'companies';
-        value: string | Company;
+        relationTo: 'interview-invitations';
+        value: string | InterviewInvitation;
+      }
+    | {
+        relationTo: 'internship-applications';
+        value: string | InternshipApplication;
+      }
+    | {
+        relationTo: 'employments';
+        value: string | Employment;
+      }
+    | {
+        relationTo: 'reports';
+        value: string | Report;
       };
   updatedAt: string;
   createdAt: string;
@@ -248,12 +519,36 @@ export interface PayloadPreference {
   id: string;
   user:
     | {
-        relationTo: 'students';
-        value: string | Student;
+        relationTo: 'admins';
+        value: string | Admin;
       }
     | {
         relationTo: 'companies';
         value: string | Company;
+      }
+    | {
+        relationTo: 'departmental-coordinators';
+        value: string | DepartmentalCoordinator;
+      }
+    | {
+        relationTo: 'students';
+        value: string | Student;
+      }
+    | {
+        relationTo: 'interview-invitations';
+        value: string | InterviewInvitation;
+      }
+    | {
+        relationTo: 'internship-applications';
+        value: string | InternshipApplication;
+      }
+    | {
+        relationTo: 'employments';
+        value: string | Employment;
+      }
+    | {
+        relationTo: 'reports';
+        value: string | Report;
       };
   key?: string | null;
   value?:
@@ -296,80 +591,66 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
-  sizes?:
-    | T
-    | {
-        thumbnail?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        square?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        small?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        medium?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        large?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        xlarge?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        og?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admins_select".
+ */
+export interface AdminsSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  picture?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies_select".
+ */
+export interface CompaniesSelect<T extends boolean = true> {
+  name?: T;
+  cac?: T;
+  courseAreas?: T;
+  location?: T;
+  phone?: T;
+  address?: T;
+  website?: T;
+  description?: T;
+  profileImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "departmental-coordinators_select".
+ */
+export interface DepartmentalCoordinatorsSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  picture?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -389,6 +670,10 @@ export interface StudentsSelect<T extends boolean = true> {
   course?: T;
   level?: T;
   internshipType?: T;
+  picture?: T;
+  bankCode?: T;
+  bankName?: T;
+  accountNo?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -402,13 +687,69 @@ export interface StudentsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "companies_select".
+ * via the `definition` "interview-invitations_select".
  */
-export interface CompaniesSelect<T extends boolean = true> {
-  companyName?: T;
-  ripCode?: T;
-  address?: T;
-  password?: T;
+export interface InterviewInvitationsSelect<T extends boolean = true> {
+  student?: T;
+  company?: T;
+  message?: T;
+  dateTime?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internship-applications_select".
+ */
+export interface InternshipApplicationsSelect<T extends boolean = true> {
+  student?: T;
+  company?: T;
+  letter?: T;
+  status?: T;
+  interviewInvitation?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "employments_select".
+ */
+export interface EmploymentsSelect<T extends boolean = true> {
+  student?: T;
+  company?: T;
+  dateEnded?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reports_select".
+ */
+export interface ReportsSelect<T extends boolean = true> {
+  student?: T;
+  title?: T;
+  details?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
