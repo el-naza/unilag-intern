@@ -14,16 +14,16 @@ import {
 
 export default function CompanyApprovedApplicationCard() {
   return (
-    <div className="grid grid-cols-4 rounded-lg border border-[#F1F1F1]">
+    <div className="grid grid-cols-4 sm:grid-cols-6 rounded-lg border border-[#F1F1F1]">
       <Image
         height={150}
         width={100}
-        className="rounded-tl-lg rounded-bl-lg h-full"
+        className="rounded-tl-lg rounded-bl-lg h-full w-full"
         src={companyBanner}
         alt="company-banner"
       />
-      <div className="col-span-3 p-1">
-        <div className="mt-1">
+      <div className="col-span-3 grid sm:col-span-5 p-1">
+        <div className="mt-auto sm:my-auto">
           <div className="ms-2 leading-normal">
             <h5 className="text-black mb-0 text-[12px]">CMR SHOPPING MALL</h5>
             <p className="text-[10px] text-[#8E8E93]">Career Area: Marketing</p>
@@ -31,7 +31,7 @@ export default function CompanyApprovedApplicationCard() {
               Interview Scheduled: 10:30am, 25th July 2025
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-1">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
             <Link href="/student/applications/approved/1">
               <button className="text-[10px] w-full rounded p-1 bg-[#0B7077] text-white text-center">
                 View Details

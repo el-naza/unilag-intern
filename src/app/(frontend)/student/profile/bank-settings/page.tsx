@@ -102,7 +102,7 @@ export default function Page() {
                     </div>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <span className="text-[#FF3B30] pointer">Remove</span>
+                        <span className="text-[#FF3B30] cursor-pointer">Remove</span>
                       </AlertDialogTrigger>
                       <AlertDialogContent className="bg-white rounded-lg">
                         <AlertDialogHeader>
@@ -118,7 +118,7 @@ export default function Page() {
                           <AlertDialogCancel className="mt-0 text-[#48484A] border-0">
                             Cancel
                           </AlertDialogCancel>
-                          <AlertDialogAction className="text-white bg-[#FF3B30]">
+                          <AlertDialogAction className="text-white bg-[#FF3B30] hover:bg-[#FF3B30]">
                             Confirm
                           </AlertDialogAction>
                         </AlertDialogFooter>
