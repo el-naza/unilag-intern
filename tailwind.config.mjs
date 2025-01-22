@@ -6,23 +6,12 @@ export default {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
-  darkMode: ['selector', '[data-theme="dark"]'],
   plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
   prefix: '',
-  safelist: [
-    'lg:col-span-4',
-    'lg:col-span-6',
-    'lg:col-span-8',
-    'lg:col-span-12',
-    'border-border',
-    'bg-card',
-    'border-error',
-    'bg-error/30',
-    'border-success',
-    'bg-success/30',
-    'border-warning',
-    'bg-warning/30',
-  ],
+  safelist: ['lg:col-span-4', 'lg:col-span-6', 'lg:col-span-8', 'lg:col-span-12'],
+  corePlugins: {
+    arbitraryValues: true,
+  },
   theme: {
     screens: {
       '2xl': '1536px',
@@ -36,7 +25,7 @@ export default {
       'primary': '#195F7E', // Dark Green
       'secondary': '#0B7077', // Light green
       'accent': '#FD661F', // Orange Color
-      'gray': '#8492a6',
+      'gray': '#f1f1f1',
       'gray-light': '#d3dce6',
     },
     container: {
@@ -55,44 +44,37 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
       colors: {
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          orange: '#FF9500',
+          teal: '#5AC8FA',
+          blue: '#007AFF',
         },
-        background: 'hsl(var(--background))',
-        border: 'hsla(var(--border))',
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+        primary: {
+          DEFAULT: '#0B7077',
+          foreground: 'white',
         },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+        secondary: {
+          DEFAULT: '#195F7E',
+          foreground: 'white',
         },
-        foreground: 'hsl(var(--foreground))',
-        input: 'hsl(var(--input))',
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+        gray: {
+          light: {
+            2: '#ECECEC',
+            5: '#F1F1F1',
+          },
+          dark: {
+            3: '#48484A',
+          },
         },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+        black: {
+          1: '#1A1A1A',
+          2: '#0B0B0B',
         },
-        ring: 'hsl(var(--ring))',
-        success: 'hsl(var(--success))',
-        error: 'hsl(var(--error))',
-        warning: 'hsl(var(--warning))',
       },
       fontFamily: {
-        mono: ['var(--font-geist-mono)'],
-        sans: ['var(--font-geist-sans)'],
+        sans: ['var(--font-open-sans)'],
+        poppins: ['var(--font-poppins)'],
       },
       keyframes: {
         'accordion-down': {
@@ -104,45 +86,6 @@ export default {
           to: { height: '0' },
         },
       },
-      typography: ({ theme }) => ({
-        DEFAULT: {
-          css: [
-            {
-              '--tw-prose-body': 'var(--text)',
-              '--tw-prose-headings': 'var(--text)',
-              h1: {
-                fontWeight: 'normal',
-                marginBottom: '0.25em',
-              },
-            },
-          ],
-        },
-        base: {
-          css: [
-            {
-              h1: {
-                fontSize: '2.5rem',
-              },
-              h2: {
-                fontSize: '1.25rem',
-                fontWeight: 600,
-              },
-            },
-          ],
-        },
-        md: {
-          css: [
-            {
-              h1: {
-                fontSize: '3.5rem',
-              },
-              h2: {
-                fontSize: '1.5rem',
-              },
-            },
-          ],
-        },
-      }),
     },
   },
 }
