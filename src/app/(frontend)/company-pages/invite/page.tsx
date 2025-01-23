@@ -40,7 +40,7 @@ export default function StudentInvitation() {
               <MailIcon fill="#FFFFFF" /> Send Invitation
             </button>
           </div>
-          <div className="max-w-full md:max-w-[cal(full- 250px)] lg:max-w-full  ">
+          <div className="lg:w-[568px] lg:max-w-[cal(full- 250px)] ">
             <div className="w-full">
               <h3 className="font-[400] text-[14px]">Invitation Message</h3>
 
