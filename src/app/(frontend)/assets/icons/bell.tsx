@@ -1,9 +1,13 @@
-export default function BellIcon() {
+interface bellIconProps{
+  fill?:string
+}
+
+export default function BellIcon({ fill = 'white' }: bellIconProps) {
   return (
     <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M8.96399 19.75C10.064 19.75 10.964 18.85 10.964 17.75H6.96399C6.96399 18.85 7.86399 19.75 8.96399 19.75ZM14.964 13.75V8.75C14.964 5.68 13.334 3.11 10.464 2.43V1.75C10.464 0.92 9.79399 0.25 8.96399 0.25C8.13399 0.25 7.46399 0.92 7.46399 1.75V2.43C4.60399 3.11 2.96399 5.67 2.96399 8.75V13.75L0.963989 15.75V16.75H16.964V15.75L14.964 13.75ZM12.964 14.75H4.96399V8.75C4.96399 6.27 6.47399 4.25 8.96399 4.25C11.454 4.25 12.964 6.27 12.964 8.75V14.75Z"
-        fill="white"
+        fill={fill}
       />
     </svg>
   )

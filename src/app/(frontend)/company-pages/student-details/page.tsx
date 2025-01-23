@@ -1,3 +1,4 @@
+'use client'
 import Image from 'next/image'
 import ArrowIcon from '../../assets/icons/arrow'
 import NavBar from '../../common/nav-bar'
@@ -7,7 +8,9 @@ import InputField from '../../components/Form/inputField'
 import PhoneIcon from '../../assets/icons/phone'
 import DownloadIcon from '../../assets/icons/download'
 import ViewIcon from '../../assets/icons/view'
+import { useRouter } from 'next/navigation'
 export default function StudentDetails() {
+  const router = useRouter()
   const fields = [
     { label: 'First Name', placeholder: 'Precious', type: 'text' },
     { label: 'Last Name', placeholder: 'Enter your password', type: 'text' },
@@ -21,17 +24,20 @@ export default function StudentDetails() {
   ]
   return (
     <div>
-      <nav className="w-full bg-[#FAFAFA99]">
-        <NavBar />
+      <nav className="w-full bg-[#FAFAFA99] ">
+        <NavBar fill="#0B7077" />
       </nav>
-      <div className="max-w-[866px] m-auto mt-[58px]">
-        <button className="flex items-center gap-[4px] font-[400] text-[14px]">
+      <div className="max-w-[866px] m-auto lg:mt-[58px] pb-[100px] ">
+        <button
+          className="flex items-center gap-[4px] font-[400] text-[14px] p-[24px] lg:p-0"
+          onClick={() => router.back()}
+        >
           <ArrowIcon />
           Back
         </button>
 
-        <div className="p-[12px] flex items-start gap-5">
-          <div className="max-w-[250px]">
+        <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row">
+          <div className="max-w-[250px] md:max-w-full ">
             <Image
               src={studentImage}
               alt="image"
@@ -40,15 +46,18 @@ export default function StudentDetails() {
               // objectFit={'contain'}
               className="h-[300px] w-full object-cover rounde"
             />
-            <button className="mt-[24px] w-full py-[12px] rounded-[6px] bg-[#0B7077] flex items-center justify-center  gap-[8px] font-[500] text-[16px] text-[#FFFFFF] ">
+            <button
+              className="mt-[24px] w-full py-[12px] rounded-[6px] bg-[#0B7077] flex items-center justify-center  gap-[8px] font-[500] text-[16px] text-[#FFFFFF] "
+              onClick={() => router.push('/company-pages/invite')}
+            >
               <MailIcon fill="#FFFFFF" /> Send Invitation
             </button>
           </div>
-          <div className="w-[568px]">
+          <div className="lg:w-[568px] w-full">
             <div>
               <h3 className="font-[400] text-[16px]">Basic Information</h3>
               <p className="text-[#8E8E93] font-[400] text-[12px]">Students Basic Informations</p>
-              <div className="mt-[22px] grid grid-cols-2 gap-[14px] ">
+              <div className="mt-[22px] grid md:grid-cols-2 gap-[14px] md:grid-cols-2">
                 {fields.map((field, index) => (
                   <InputField
                     key={index}

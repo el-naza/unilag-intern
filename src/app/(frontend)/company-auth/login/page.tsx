@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import MailIcon from '../../assets/icons/mail'
 import DynamicForm from '../../components/Form'
+import ArrowIcon from '../../assets/icons/arrow'
 
 export default function Login() {
   const [companyName, setCompanyName] = useState('')
@@ -15,8 +16,8 @@ export default function Login() {
   const [step, setStep] = useState<
     'company' | 'showEmail' | 'showOTP' | 'showSignUp' | 'showUpload'
   >('company')
-
-  const [signUp, setSignUp] = useState(false)
+  const [signUp, setSignUp] = useState<'formField' | 'file' | undefined>()
+  const [file, setFile] = useState([])
 
   const handleLogin = () => {
     const newErrors: { [key: string]: string } = {}
@@ -59,34 +60,45 @@ export default function Login() {
     }
   }
 
-  // const handleSignUp = () => {
-  //   const newErrors: { [key: string]: string } = {}
-  //   if (Object.keys(newErrors).length === 0) {
-  //     // Submit form
-  //     switch (step) {
-  //       case 'signup':
-  //         if (!companyName) {
-  //           setErrors({ companyName: 'Company name is required.' })
-  //         } else {
-  //           setErrors({})
-  //           setStep('signUp') // Proceed to the next step
-  //         }
-  //         break
+  const handleSignUp = () => {
+    const newErrors: { [key: string]: string } = {}
 
-  //       case 'showEmail':
-  //         if (!email) {
-  //           setErrors({ email: 'Email is required.' })
-  //         } else {
-  //           setErrors({})
-  //           setStep('showOTP') // Proceed to the next step
-  //         }
-  //         break
+    if (Object.keys(newErrors).length === 0) {
+      switch (signUp) {
+        case 'formField':
+          // Perform validation for formField step
+          if (!companyName || !companyEmail || !rcNumber || !address) {
+            // Example validation
+            setErrors({
+              companyName: !companyName ? 'Company name is required.' : '',
+              companyEmail: !companyEmail ? 'Email is required.' : '',
+              companyRCNumber: !rcNumber ? 'RC Number is required.' : '',
+              companyAddress: !address ? 'Address is required.' : '',
+            })
+          } else {
+            // Clear errors and proceed to file upload step
+            setErrors({})
+            setSignUp('file')
+          }
+          break
 
-  //       default:
-  //         console.log('Final step reached!')
-  //     }
-  //   }
-  // }
+        case 'file':
+          // Perform validation for file step
+          if (!file) {
+            setErrors({ file: 'File is required.' })
+          } else {
+            setErrors({})
+            console.log('Final step reached! Submitting form...')
+            // Submit the form
+            // handleSubmit()
+          }
+          break
+
+        default:
+          console.log('Unknown step')
+      }
+    }
+  }
 
   const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     console.log(`${e.target.name}: ${e.target.value}`)
@@ -103,25 +115,15 @@ export default function Login() {
       error: errors.companyName,
       message: errors.companyName,
     },
-
+  ]
+  const uploadField = [
     {
-      // name: 'companyName',
+      name: 'file',
       type: 'file',
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setFile(e.target.files?.[0]),
+      error: errors.file,
+      message: errors.file,
     },
-    // {
-    //   name: 'role',
-    //   label: 'Role',
-    //   type: 'select',
-    //   value: role,
-    //   options: [
-    //     { label: 'Select Role', value: '' },
-    //     { label: 'Admin', value: 'admin' },
-    //     { label: 'User', value: 'user' },
-    //   ],
-    //   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setRole(e.target.value),
-    //   error: '',
-    //   // message: 'Role selected.',
-    // },
   ]
 
   const emailField = [
@@ -213,9 +215,38 @@ export default function Login() {
           ? otpField
           : []
 
+  const signUpFields = signUp === 'formField' ? signUpField : signUp === 'file' ? uploadField : []
+  const goBack = () => {
+    if (signUp === 'file') {
+      setSignUp('formField')
+    } else if (signUp === 'formField') {
+      setSignUp(null)
+    } else if (step === 'showOTP') {
+      setStep('showEmail')
+    } else if (step === 'showEmail') {
+      setStep('company')
+    }
+  }
+
   return (
     <div className="">
-      <h2 className="font-[500] text-[24px] text-center">Login into your Siwes Company Profile</h2>
+      {step !== 'company' || signUp ? (
+        <button
+          onClick={goBack}
+          className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
+        >
+          <ArrowIcon /> Back
+        </button>
+      ) : null}
+      <h2 className="font-[500] text-[24px] text-center mt-[40px]">
+        {step === 'company'
+          ? 'Login into your Siwes Company Profile'
+          : step === 'showEmail' || step === 'showOTP'
+            ? 'Company Login Confirmation'
+            : signUp === 'formField' || signUp === 'file'
+              ? 'Sign up as a Siwes Company'
+              : ''}
+      </h2>
       <p className="text-center text-[#8E8E93] font-[400] text-[14px] mt-8 mb-[40px]">
         {/* {success
           ? 'Complete this email address ex…………56@gmail.com and we’ll send you an OTP for confirmation.' */}
@@ -225,8 +256,8 @@ export default function Login() {
       </p>
 
       <DynamicForm
-        fields={signUp ? signUpField : fields}
-        onSubmit={handleLogin}
+        fields={signUp ? signUpFields : fields}
+        onSubmit={signUp === 'formField' ? handleSignUp : handleLogin}
         submitButtonText="Proceed"
       />
 
@@ -238,7 +269,7 @@ export default function Login() {
       ) : ( */}
       <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
         Not registered yet? Sign up now to connect with top talent effortlessly!{' '}
-        <span className="text-[#007AFF] cursor-pointer" onClick={() => setSignUp(true)}>
+        <span className="text-[#007AFF] cursor-pointer" onClick={() => setSignUp('formField')}>
           Sign up as a company
         </span>
       </p>

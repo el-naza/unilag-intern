@@ -1,34 +1,32 @@
+'use client'
 import Image from 'next/image'
 import ArrowIcon from '../../assets/icons/arrow'
 import NavBar from '../../common/nav-bar'
 import studentImage from '../../assets/images/student-img.png'
 import MailIcon from '../../assets/icons/mail'
-import InputField from '../../components/Form/inputField'
-import PhoneIcon from '../../assets/icons/phone'
-import DownloadIcon from '../../assets/icons/download'
-import ViewIcon from '../../assets/icons/view'
 import Calendar from '../../components/Ui/calendar'
+import { useRouter } from 'next/navigation'
+
 export default function StudentInvitation() {
-  const fields = [
-    { label: 'First Name', placeholder: 'Precious', type: 'text' },
-    { label: 'Last Name', placeholder: 'Enter your password', type: 'text' },
-    { label: 'Email', placeholder: 'Example@gmail.com', Icon: MailIcon, type: 'email' },
-    { label: 'Phone', placeholder: '09072709030', Icon: PhoneIcon, type: 'number' },
-  ]
+  const router = useRouter()
+
 
   const dates = [{ label: '07:00 am' }, { label: '08:00 am' }, { label: '09:00 am' }]
   return (
     <div>
       <nav className="w-full bg-[#FAFAFA99]">
-        <NavBar />
+        <NavBar fill="#0B7077" />
       </nav>
-      <div className="max-w-[866px] m-auto mt-[58px]">
-        <button className="flex items-center gap-[4px] font-[400] text-[14px]">
+      <div className=" max-w-[866px] m-auto lg:mt-[58px] ">
+        <button
+          className="flex items-center gap-[4px] font-[400] text-[14px] p-[24px] lg:p-0"
+          onClick={() => router.back()}
+        >
           <ArrowIcon />
           Back
         </button>
 
-        <div className="p-[12px] flex items-start gap-5">
+        <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row md:flex-row">
           <div className="max-w-[250px]">
             <Image
               src={studentImage}
@@ -42,7 +40,7 @@ export default function StudentInvitation() {
               <MailIcon fill="#FFFFFF" /> Send Invitation
             </button>
           </div>
-          <div className="w-[568px]">
+          <div className="max-w-full md:max-w-[cal(full- 250px)] lg:max-w-full  ">
             <div className="w-full">
               <h3 className="font-[400] text-[14px]">Invitation Message</h3>
 
@@ -57,14 +55,15 @@ export default function StudentInvitation() {
                 <Calendar />
               </div>
 
-              <div className="mt-[12px] flex items-start justify-between">
+              <div className="mt-[12px] lg:flex items-start flex-col justify-between gap-3 mb-[100px] w-full">
                 <div>
                   <p className="font-[400] text-[14px]">Select Time</p>
                   <div className="mt-[6px] bg-[#FFFFFF] rounded-[4px] p-[6px]">
                     {dates &&
                       dates.map((d) => (
                         <div
-                          className="px-[12px] py-[6px] mb-[4px] font-[500] text-[14px] rounded-[4px] w-[246px]"
+                          key={d.label}
+                          className="px-[12px] py-[6px] mb-[4px] font-[500] text-[14px] rounded-[4px] lg:w-[246px]"
                           style={{ background: d.label === '09:00 am' ? '#B3FAFF' : '' }}
                         >
                           {' '}
@@ -73,7 +72,7 @@ export default function StudentInvitation() {
                       ))}
                   </div>
                 </div>
-                <div className="max-w-[246px]">
+                <div className="lg:max-w-[246px]">
                   <p className="font-[400]">Invitation Conversation</p>
                   <p className="text-[#FF9500] font-[400] text-[12px] my-[12px]">
                     Confirm your invitation before sending. The recipient will be notified once you

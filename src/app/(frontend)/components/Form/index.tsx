@@ -26,82 +26,49 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onSubmit,
   submitButtonText = 'Submit',
 }) => {
+  const [otpValues, setOtpValues] = useState<{ [key: string]: string[] }>({})
+  const inputsRefs = useRef<{ [key: string]: HTMLInputElement[] }>({})
   const handleOTPChange = (
     value: string,
     index: number,
     otpFieldName: string,
     otpLength: number,
-    setOtp: React.Dispatch<React.SetStateAction<string[]>>,
-    inputsRef: React.RefObject<HTMLInputElement[]>,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
   ) => {
     if (!/^\d?$/.test(value)) return
 
-    // Update the specific index in the OTP array
-    setOtp((prevOtp) => {
-      const updatedOtp = [...prevOtp]
+    setOtpValues((prev) => {
+      const updatedOtp = [...(prev[otpFieldName] || Array(otpLength).fill(''))]
       updatedOtp[index] = value
-      return updatedOtp
+      return { ...prev, [otpFieldName]: updatedOtp }
     })
 
-    // Trigger onChange with combined value
     onChange({
       target: {
         name: otpFieldName,
-        value: inputsRef.current?.map((el) => el?.value || '').join(''),
+        value: (inputsRefs.current[otpFieldName] || []).map((el) => el?.value || '').join(''),
       },
     } as React.ChangeEvent<HTMLInputElement>)
 
-    // Move focus to the next input
     if (value && index < otpLength - 1) {
-      inputsRef.current?.[index + 1]?.focus()
+      inputsRefs.current[otpFieldName]?.[index + 1]?.focus()
     }
   }
 
   const handleOTPKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    setOtp: React.Dispatch<React.SetStateAction<string[]>>,
-    inputsRef: React.RefObject<HTMLInputElement[]>,
+    otpFieldName: string,
   ) => {
     if (e.key === 'Backspace' && !e.currentTarget.value && index > 0) {
-      setOtp((prevOtp) => {
-        const updatedOtp = [...prevOtp]
-        updatedOtp[index - 1] = '' // Clear the previous value
-        return updatedOtp
+      setOtpValues((prev) => {
+        const updatedOtp = [...(prev[otpFieldName] || [])]
+        updatedOtp[index - 1] = ''
+        return { ...prev, [otpFieldName]: updatedOtp }
       })
-      inputsRef.current?.[index - 1]?.focus()
+      inputsRefs.current[otpFieldName]?.[index - 1]?.focus()
     }
   }
-
-  // const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files) {
-  //     setSelectedFiles(Array.from(e.target.files))
-  //   }
-  // }
-
-  // const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-  //   e.preventDefault()
-  //   if (e.dataTransfer.files) {
-  //     setSelectedFiles(Array.from(e.dataTransfer.files))
-  //   }
-  // }
-
-  // const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-  //   e.preventDefault()
-  // }
-
-  // const renderFileDetails = () => {
-  //   return selectedFiles.map((file, index) => (
-  //     <div key={index} className="mt-2">
-  //       <p className="text-sm text-gray-600">
-  //         {file.name} ({(file.size / 1024).toFixed(2)} KB)
-  //       </p>
-  //     </div>
-  //   ))
-  // }
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 
@@ -152,11 +119,13 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           )}
 
           <div
-            className={`${
-              field.type === 'otp' ? 'flex gap-2' : 'flex items-center gap-[8px]'
+            className={`${field.type === 'otp' ? 'flex gap-2' : 'flex items-center gap-[8px]'} ${
+              field.type === 'file'
+                ? 'flex gap-2 p-0 w-full bg-[transparent] border-none '
+                : 'flex items-center gap-[8px]'
             } w-full border mb-[12px] ${
               field.error ? 'border-red-500' : 'border-[#B3FAFF]'
-            } rounded-[6px] p-[12px] bg-white`}
+            }  rounded-[6px] p-[12px] bg-white`}
           >
             {/* Optional Icon */}
             {field.icon && <span>{field.icon}</span>}
@@ -164,32 +133,33 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             {/* OTP Input */}
             {field.type === 'otp' ? (
               (() => {
-                const otpLength = field.otpLength || 6 // Default OTP length is 6
-                const [otp, setOtp] = useState<string[]>(Array(otpLength).fill(''))
-                const inputsRef = useRef<HTMLInputElement[]>([])
+                // const otpLength = field.otpLength || 6
+                // const [otp, setOtp] = useState<string[]>(Array(otpLength).fill(''))
+                // const inputsRef = useRef<HTMLInputElement[]>([])
 
                 return (
                   <div className="w-full flex items-center justify-between">
-                    {Array.from({ length: otpLength }).map((_, idx) => (
+                    {Array.from({ length: field.otpLength || 6 }).map((_, idx) => (
                       <input
                         key={idx}
                         type="text"
                         maxLength={1}
-                        value={otp[idx]}
+                        value={otpValues[field.name]?.[idx] || ''}
                         onChange={(e) =>
                           handleOTPChange(
                             e.target.value,
                             idx,
                             field.name,
-                            otpLength,
-                            setOtp,
-                            inputsRef,
+                            field.otpLength || 6,
                             field.onChange,
                           )
                         }
-                        onKeyDown={(e) => handleOTPKeyDown(e, idx, setOtp, inputsRef)}
+                        onKeyDown={(e) => handleOTPKeyDown(e, idx, field.name)}
                         ref={(el) => {
-                          if (el) inputsRef.current[idx] = el
+                          if (!inputsRefs.current[field.name]) {
+                            inputsRefs.current[field.name] = []
+                          }
+                          if (el) inputsRefs.current[field.name][idx] = el
                         }}
                         className="w-10 h-10 text-center text-xl border border-[#B3FAFF] rounded focus:outline-none"
                       />
@@ -212,11 +182,11 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 ))}
               </select>
             ) : field.type === 'file' ? (
-              <div>
+              <div className="w-full">
                 <div
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
-                  className="border border-dashed border-[#195F7E] w-full bg-white flex items-center justify-center flex-col p-[24px]"
+                  className="border border-dashed border-[#B3FAFF] w-full bg-white flex items-center justify-center flex-col p-[24px]"
                 >
                   <input
                     id={field.name}

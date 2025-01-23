@@ -43,13 +43,16 @@ const Calendar: React.FC = () => {
 
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div key={i} className="text-xs font-medium text-center flex items-center justify-between text-gray-700 h-[52px]">
+        <div
+          key={i}
+          className="text-xs font-medium text-center flex items-center justify-between text-gray-700 h-[52px]"
+        >
           {format(addDays(startDate, i), dateFormat)}
         </div>,
       )
     }
 
-    return <div className="grid grid-cols-7 gap-1">{days}</div>
+    return <div className="flex items-center justify-between ">{days}</div>
   }
 
   const renderCells = () => {
@@ -87,7 +90,7 @@ const Calendar: React.FC = () => {
         day = addDays(day, 1)
       }
       rows.push(
-        <div key={day.toString()} className="grid grid-cols-7 gap-1">
+        <div key={day.toString()} className="flex items-center justify-between">
           {days}
         </div>,
       )
