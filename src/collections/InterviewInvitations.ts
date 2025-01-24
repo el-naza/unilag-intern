@@ -10,7 +10,6 @@ export const InterviewInvitations: CollectionConfig = {
     delete: relatedCompany,
     update: relatedCompany,
   },
-  auth: true,
   fields: [
     {
       name: 'student',
