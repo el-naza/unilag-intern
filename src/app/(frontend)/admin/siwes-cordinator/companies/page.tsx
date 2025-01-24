@@ -127,7 +127,7 @@ export default function CompaniesPage() {
   }
 
   return (
-    <div>
+    <div className='p-8'>
       <FIlterStats config={config} />
 
       <div className="flex justify-between items-center mt-8">

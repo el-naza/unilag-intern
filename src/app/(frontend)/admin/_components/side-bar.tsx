@@ -29,7 +29,7 @@ const SideBar = ({ menuLinks }: { menuLinks: INavMenu[] }) => {
             return (
                 <li
                   key={index}
-                  className={`px-4 transition-all hover:border-l-[10px] hover:border-[#B3FAFF] font-bold cursor-pointer ${pathname === menu.route ? 'border-l-[10px] border-[#B3FAFF] bg-white text-primary mr-[2px]' : 'text-white '}`}
+                  className={`px-4 transition-all hover:border-l-[10px] hover:border-[#B3FAFF] font-bold cursor-pointer ${pathname.includes(menu.route) ? 'border-l-[10px] border-[#B3FAFF] bg-white text-primary mr-[2px]' : 'text-white '}`}
                 >
                   <Link href={menu.route} className="w-full flex items-center gap-[.5rem]">
                     { Icon && <Icon className="w-5 h-5" /> }

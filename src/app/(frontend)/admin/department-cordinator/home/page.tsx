@@ -186,7 +186,7 @@ export default function HomePage() {
   })
 
   return (
-    <div>
+    <div className='p-8'>
       <FIlterStats config={config} />
 
       <div className="grid grid-cols-12 gap-4 mt-8">
