@@ -24,30 +24,32 @@ export const Companies: CollectionConfig = {
     update: anyone,
   },
   auth: true,
-  hooks: {
-    beforeOperation: [
-      async ({ args, req }) => {
-        // in order to login with matric no. as the username thru REST API
-        // if (req.data?.matricNo) args.data.username = req.data?.matricNo
-        return args
-      },
-    ],
-  },
-
   fields: [
     {
-      name: 'companyName',
+      name: 'name',
       type: 'text',
       minLength: 1,
       required: true,
     },
     {
-      name: 'email',
+      name: 'cac',
       type: 'text',
       required: true,
     },
     {
-      name: 'ripCode',
+      name: 'courseAreas',
+      type: 'text',
+      hasMany: true,
+      required: true,
+    },
+    {
+      name: 'location',
+      type: 'point',
+      required: true,
+    },
+    {
+      name: 'phone',
+      required: true,
       type: 'text',
     },
     {
@@ -56,10 +58,19 @@ export const Companies: CollectionConfig = {
       required: true,
     },
     {
-      name: 'password',
+      name: 'website',
+      type: 'text',
+    },
+    {
+      name: 'description',
       type: 'text',
       required: true,
     },
+    {
+      name: 'profileImage',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
   ],
-  timestamps: true,
 }
