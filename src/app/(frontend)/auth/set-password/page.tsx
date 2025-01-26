@@ -9,28 +9,36 @@ export default function Page() {
   const router = useRouter()
 
   return (
-    <div className="px-4 text-white pt-11">
-      <div className="text-center">
-        <h2 className="text-xl leading-[25.78px] font-medium mb-3">Set Password</h2>
-        <div className="text-[12px] text-gray-light-2 leading-[16.5px] mb-8">
-          Set a new password to proceed.
+    <div className="flex bg-[url(/images/auth-bg.png)] bg-right">
+      <div className="container max-w-xl m-auto">
+        <div className="px-4 text-white pt-11">
+          <div className="text-center">
+            <h2 className="text-xl lg:text-4xl leading-[25.78px] font-medium mb-3">Set Password</h2>
+            <div className="text-[12px] lg:text-sm text-gray-light-2 leading-[16.5px] mb-8">
+              Set a new password to proceed.
+            </div>
+          </div>
+
+          <Label>New Password</Label>
+          <Input
+            placeholder="Enter Password"
+            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5"
+          />
+          <Label className="mt-3 block">Re-enter New Password</Label>
+          <Input
+            placeholder="Enter Password"
+            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1"
+          />
+
+          <Button
+            size="lg"
+            className="w-full mt-8 text-gr"
+            onClick={() => router.push('/auth/login')}
+          >
+            Confirm
+          </Button>
         </div>
       </div>
-
-      <Label>New Password</Label>
-      <Input
-        placeholder="Enter Password"
-        className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5"
-      />
-      <Label className="mt-3 block">Re-enter New Password</Label>
-      <Input
-        placeholder="Enter Password"
-        className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1"
-      />
-
-      <Button size="lg" className="w-full mt-8 text-gr" onClick={() => router.push('/auth/login')}>
-        Confirm
-      </Button>
     </div>
   )
 }

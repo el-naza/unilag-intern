@@ -18,10 +18,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <div className="fixed h-screen w-screen -z-10 bg-[#14141499]" />
         {children}
       </div>
-      <div className="hidden lg:block">
+      <div className="hidden lg:block h-screen">
         <div className="grid grid-cols-2">
-          <div>
-            <div className="bg-[#195F7E] h-screen flex grid grid-rows-4">
+          <div className="h-screen bg-[#0B7077]">
+            <div className="bg-[#195F7E] flex grid grid-rows-4 gap-3">
               <div className="m-auto row-span-3 grid gap-14 min-w-[300px]">
                 <div className="m-auto">
                   <Image
@@ -78,7 +78,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
                   </div>
                 </div>
               </div>
-              <div className="bg-[#0B7077] py-10 px-5">
+              <div className="bg-[#0B7077] py-8 px-5">
                 <div className="grid grid-cols-4 gap-5">
                   <div className="col-span-3">
                     <div className="grid gap-5">
@@ -107,16 +107,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
               </div>
             </div>
           </div>
-          <div className="flex">
-            <Image
-              src={'/images/auth-bg.png'}
-              alt="image"
-              width={565}
-              height={954}
-              className="fixed h-screen w-full -z-10 object-contain object-left"
-            />
-            <div className="m-auto">{children}</div>
-          </div>
+          {children}
         </div>
       </div>
     </>
