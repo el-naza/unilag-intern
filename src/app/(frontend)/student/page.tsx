@@ -5,75 +5,287 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNavbar'
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
+import headerVector from '@/app/(frontend)/assets/images/header-vector.png'
+import Image from 'next/image'
+import NavUnderlineLarge from '../assets/icons/navUnderlineLg'
+import SearchIcon from '../assets/icons/search'
+import LocationIcon from '../assets/icons/location'
+import LocationPointerIcon from '../assets/icons/locationPointerIcon'
+import studentAbstractVector from '../assets/images/student-abstract-vector.svg'
+import SearchAltIcon from '../assets/icons/searchAltIcon'
+import MenuIcon from '../assets/icons/menu'
+import NotificationBellIcon from '../assets/icons/notificationBell'
+import FilterAltIcon from '../assets/icons/filterAltIcon'
+import CompanyRecommendedCard from '../components/Cards/CompanyRecommendedCard'
 
 export default function Page() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen relative text-sm text-white">
-      <div className="bg-[#195F7E] container pt-4 pb-1">
-        <StudentHeader />
-        <StudentNavbar />
-      </div>
-      <div className="container">
-        <main className="py-1 bg-white">
-          <div className="mb-1" onClick={() => router.push('/student/companies/1')}>
-            <iframe
-              className="w-full rounded-xl"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7193.3143200417435!2d-100.28889498759587!3d25.649501748537784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8662bfbef1c51a37%3A0x2aeb9d19e4fbb44b!2sCentro%20Deportivo%20Borregos%20II!5e0!3m2!1sen!2sng!4v1736921701249!5m2!1sen!2sng"
-              width="600"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen={true}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
-          </div>
-          <div>
-            <h5 className="text-black mb-3 font-bold">Company Search</h5>
-            <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
-              <svg
-                className="absolute left-1.5 top-2.5"
-                width="16"
-                height="17"
-                viewBox="0 0 16 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.99935 5.97917C6.52602 5.97917 5.33268 7.1725 5.33268 8.64583C5.33268 10.1192 6.52602 11.3125 7.99935 11.3125C9.47268 11.3125 10.666 10.1192 10.666 8.64583C10.666 7.1725 9.47268 5.97917 7.99935 5.97917ZM13.9593 7.97917C13.6527 5.19917 11.446 2.9925 8.66602 2.68583V1.3125H7.33268V2.68583C4.55268 2.9925 2.34602 5.19917 2.03935 7.97917H0.666016V9.3125H2.03935C2.34602 12.0925 4.55268 14.2992 7.33268 14.6058V15.9792H8.66602V14.6058C11.446 14.2992 13.6527 12.0925 13.9593 9.3125H15.3327V7.97917H13.9593ZM7.99935 13.3125C5.41935 13.3125 3.33268 11.2258 3.33268 8.64583C3.33268 6.06583 5.41935 3.97917 7.99935 3.97917C10.5793 3.97917 12.666 6.06583 12.666 8.64583C12.666 11.2258 10.5793 13.3125 7.99935 13.3125Z"
-                  fill="#0B7077"
+    <>
+      <div className="block lg:hidden min-h-screen relative text-sm text-white">
+        <div className="bg-[#195F7E] container pt-4 pb-1">
+          <StudentHeader />
+          <StudentNavbar />
+        </div>
+        <div className="container">
+          <main className="py-1 bg-white">
+            <div className="mb-1" onClick={() => router.push('/student/companies/1')}>
+              <iframe
+                className="w-full rounded-xl"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7193.3143200417435!2d-100.28889498759587!3d25.649501748537784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8662bfbef1c51a37%3A0x2aeb9d19e4fbb44b!2sCentro%20Deportivo%20Borregos%20II!5e0!3m2!1sen!2sng!4v1736921701249!5m2!1sen!2sng"
+                width="600"
+                height="450"
+                style={{ border: 0 }}
+                allowFullScreen={true}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+            <div>
+              <h5 className="text-black mb-3 font-bold">Company Search</h5>
+              <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
+                <LocationPointerIcon className="absolute left-1.5 top-2.5" />
+                <input
+                  className="w-full text-xs indent-6 text-black placeholder:text-[#8E8E93] outline-none border-0"
+                  type="text"
+                  placeholder="Search Destination (Office Address, Cities or Towns)"
                 />
-              </svg>
-              <input
-                className="w-full text-xs indent-6 text-black placeholder:text-[#8E8E93] outline-none border-0"
-                type="text"
-                placeholder="Search Destination (Office Address, Cities or Towns)"
+              </div>
+              <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
+                <div className="text-xs text-[#8E8E93] mb-4">Distance Search</div>
+                <div className="grid grid-cols-5 gap-4">
+                  <div className="col-span-4 grid-rows">
+                    <div className="flex justify-between mb-2">
+                      <div className="text-xs text-[#8E8E93]">0 km</div>
+                      <div className="text-xs text-[#8E8E93]">100 km</div>
+                    </div>
+                    <Slider className="col-span-5 flex" defaultValue={[33]} max={100} step={1} />
+                  </div>
+                  <div className="border border-[#F1F1F1] text-xs text-[#0B7077] px-2 flex items-center">
+                    0 km
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
+                  Search Vacancies
+                </button>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+      <div className="lg:block hidden bg-[#195F7E] min-h-screen relative text-white">
+        <Image
+          src={studentAbstractVector}
+          alt="student-abstract-vector"
+          className="absolute top-[-50px] right-0 z-0"
+        />
+
+        <div className="container">
+          <nav className="relative grid grid-cols-5 gap-2 py-4 z-10">
+            <div className="flex items-center">
+              <Image
+                width={48}
+                height={48}
+                src="/unilag-logo.png"
+                alt="Logo"
+                className="h-8 w-8 mr-2"
               />
             </div>
-            <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
-              <div className="text-xs text-[#8E8E93] mb-4">Distance Search</div>
-              <div className="grid grid-cols-5 gap-4">
-                <div className="col-span-4 grid-rows">
-                  <div className="flex justify-between mb-2">
-                    <div className="text-xs text-[#8E8E93]">0 km</div>
-                    <div className="text-xs text-[#8E8E93]">100 km</div>
-                  </div>
-                  <Slider className="col-span-5 flex" defaultValue={[33]} max={100} step={1} />
+            <div className="flex items-center">
+              <span className="font-oleo text-white text-3xl">Welcome Oni</span>
+            </div>
+            <div className="col-span-2 flex items-center">
+              <div className="relative w-3/4">
+                <input
+                  type="text"
+                  placeholder="Search For Company"
+                  className="w-full outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-black text-sm"
+                />
+                <SearchAltIcon className='className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"' />
+              </div>
+            </div>
+            <div className="grid grid-cols-3">
+              <div className="flex items-center">
+                <div className="cursor-pointer hover:bg-black p-2 rounded">
+                  <FilterAltIcon />
                 </div>
-                <div className="border border-[#F1F1F1] text-xs text-[#0B7077] px-2 flex items-center">
-                  0 km
+              </div>
+              <div className="flex items-center">
+                <div className="cursor-pointer hover:bg-black p-2 rounded">
+                  <NotificationBellIcon />
+                </div>
+              </div>
+              <div className="flex items-center">
+                <div className="cursor-pointer hover:bg-black p-2 rounded">
+                  <MenuIcon />
                 </div>
               </div>
             </div>
-            <div>
-              <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
-                Search Vacancies
-              </button>
+          </nav>
+          <main className="py-4">
+            <div className="grid sm:grid-cols-2 mb-4">
+              <div>
+                <div className="grid sm:grid-cols-3 gap-8">
+                  <div>
+                    <Image width={197} height={235} src="/smiling-woman.png" alt="smiling woman" />
+                  </div>
+                  <div className="col-span-2 flex items-center">
+                    <div className="grid grid-rows-4 gap-1">
+                      <div>
+                        <span className="text-3xl font-bold">
+                          Oni <span className="text-[#FFE75C]">Adedolapo</span> Ireti
+                        </span>
+                        <span className="ms-4 text-[#FFE75C]">23</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <div>
+                          <span className="">unilag 300level</span>
+                        </div>
+                        <div>
+                          <span className="">Computer Science</span>
+                        </div>
+                      </div>
+                      <div>
+                        <span>06, Ajose Adeogun Maryland Lagos State</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
+                          <span>0 Duration</span>
+                        </div>
+                        <div className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl">
+                          <span>Upgrade</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-4">
+              <div className="col-span-4 self-center">
+                <div className="grid grid-cols-4 gap-4">
+                  <div>
+                    <a href="#" className="relative group block text-center">
+                      <span className="text-xl">Google Map Search</span>
+                      <NavUnderlineLarge />
+                    </a>
+                  </div>
+                  <div>
+                    <a href="#" className="relative group block text-center">
+                      <span className="text-xl">Pending</span>
+                      <NavUnderlineLarge />
+                    </a>
+                  </div>
+                  <div>
+                    <a href="#" className="relative group block text-center">
+                      <span className="text-xl">Approved</span>
+                      <NavUnderlineLarge />
+                    </a>
+                  </div>
+                  <div>
+                    <a href="#" className="relative group block text-center">
+                      <span className="text-xl">History</span>
+                      <NavUnderlineLarge />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className="z-10">
+                <button className="text-[#0B7077] bg-white rounded px-4 py-2">Report Page</button>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-5 gap-4">
+              <div className="">
+                <div className="bg-white rounded-xl mb-4 p-5 grid grid-cols-6">
+                  <Slider className="col-span-5" defaultValue={[33]} max={100} step={1} />
+                  <span className="text-sm text-black text-right">km</span>
+                </div>
+                <div className="bg-white rounded-xl mb-4">
+                  <div className="relative border-b py-2">
+                    <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                    <input
+                      type="text"
+                      placeholder="Search Job"
+                      className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                    />
+                  </div>
+                  <div className="relative py-2">
+                    <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">
+                      <LocationIcon className="m-auto" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Location"
+                      className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                    />
+                  </div>
+                  <div className="pb-1 mx-1">
+                    <button className="bg-[#195F7E] rounded-xl p-4 w-full">Search Job</button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-span-4">
+                <iframe
+                  className="w-full rounded-xl"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7193.3143200417435!2d-100.28889498759587!3d25.649501748537784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8662bfbef1c51a37%3A0x2aeb9d19e4fbb44b!2sCentro%20Deportivo%20Borregos%20II!5e0!3m2!1sen!2sng!4v1736921701249!5m2!1sen!2sng"
+                  width="600"
+                  height="450"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <div className="container my-10 lg:my-24">
+        <div className="grid gap-4 lg:gap-10">
+          <div className="text-center">
+            <h4 className="text-xl lg:text-4xl text-[#FD661F] font-medium relative">
+              Recommended Companies
+              <Image
+                className="absolute right-[32%] hidden lg:block"
+                src={headerVector}
+                alt="header-vector"
+              />
+            </h4>
+          </div>
+          <div className="grid lg:grid-cols-10">
+            <div className="lg:col-start-2 lg:col-span-8 grid grid-cols-2 lg:grid-cols-6 gap-2 lg:gap-5">
+              <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
+                All Programmes
+              </div>
+              <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
+                Science
+              </div>
+              <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
+                Engineering
+              </div>
+              <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
+                Business
+              </div>
+              <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
+                Art
+              </div>
+              <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
+                Medicine
+              </div>
             </div>
           </div>
-        </main>
+          <div className="grid lg:grid-cols-4 gap-5">
+            <CompanyRecommendedCard />
+            <CompanyRecommendedCard />
+            <CompanyRecommendedCard />
+            <CompanyRecommendedCard />
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
