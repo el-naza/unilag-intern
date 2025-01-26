@@ -34,8 +34,8 @@ export default function Page() {
   ]
   return (
     <div className="min-h-screen relative text-sm text-black">
-      <div className="container">
-        <main className="py-1 bg-white">
+      <div className="container lg:max-w-6xl">
+        <main className="lg:py-20 py-1 bg-white">
           <div>
             <div className="flex justify-between my-3">
               <div>
@@ -48,7 +48,7 @@ export default function Page() {
                 flexibility.
               </p>
             </div>
-            <div>
+            <div className="block lg:hidden">
               <Carousel>
                 <CarouselContent>
                   {plans.map((plan) => (
@@ -58,6 +58,13 @@ export default function Page() {
                   ))}
                 </CarouselContent>
               </Carousel>
+            </div>
+            <div className="hidden lg:block">
+              <div className="grid grid-cols-3 gap-5">
+                {plans.map((plan) => (
+                  <PricingPackCard key={plan.id} plan={plan} />
+                ))}
+              </div>
             </div>
           </div>
         </main>
