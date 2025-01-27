@@ -1,11 +1,13 @@
 import React from 'react'
 
 type InputFieldProps = {
-  label: string
+  label?: string
   placeholder: string
   Icon?: React.ElementType
   type: string
   disabled?: boolean
+  radius?: string
+  fill?: string
 }
 
 export default function InputField({
@@ -14,16 +16,21 @@ export default function InputField({
   Icon,
   type = 'string',
   disabled = false,
+  radius,
+  fill = '#8E8E93',
 }: InputFieldProps) {
   return (
     <div>
       <label htmlFor="" className="text-[#48484A] font-[400] text-[14px]">
         {label}
       </label>
-      <div className="mt-[8px] border bg-white py-[17px] px-[13px] flex items-center gap-[8px] w-full">
+      <div
+        className="mt-[8px] border bg-white py-[17px] px-[13px] flex items-center gap-[8px] w-full"
+        style={{ borderRadius: radius }}
+      >
         {Icon && (
           <div>
-            <Icon fill="#8E8E93"/>
+            <Icon fill={fill} />
           </div>
         )}
 

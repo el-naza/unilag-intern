@@ -5,6 +5,7 @@ import BellIcon from '../assets/icons/bell'
 import schoolLogo from '../assets/images/school-logo.png'
 import companyLogo from '../assets/images/company-logo.png'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 interface naveBarProps {
   fill?: string
@@ -12,9 +13,9 @@ interface naveBarProps {
 export default function NavBar({ fill }: naveBarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navLinks = [
-    { id: '1', title: 'All Interns' },
-    { id: '2', title: 'Invitations' },
-    { id: '3', title: 'All Reports' },
+    { label: 'All Interns', path: '/company-pages/all-interns' },
+    { label: 'Invitations', path: '/company-pages/interviews' },
+    { label: 'Reports', path: '/company-pages/reports' },
   ]
 
   const toggleMenu = () => {
@@ -24,15 +25,17 @@ export default function NavBar({ fill }: naveBarProps) {
   const router = useRouter()
 
   return (
-    <div className="flex items-center justify-between px-[20px] py-[24px] w-full">
+    <div className="flex items-center justify-between lg:px-[100px] px-4 py-[24px] w-full ">
       <div onClick={() => router.push('/company-pages/home')}>
         <Image src={schoolLogo} alt="image" width={44} height={44} objectFit={'contain'} />
       </div>
 
       <div className="hidden md:block">
-        <ul className="flex items-center gap-[44px] font-[400] text-[14px]">
-          {navLinks.map((n) => (
-            <li key={n.id}>{n.title}</li>
+        <ul className="flex items-center gap-[44px] font-[400] text-[14px]  absolute left-0 right-0 flex items-center justify-center m-auto w-full ">
+          {navLinks.map((link, index) => (
+            <li key={index}>
+              <Link href={link.path}>{link.label}</Link>
+            </li>
           ))}
         </ul>
       </div>
@@ -52,8 +55,10 @@ export default function NavBar({ fill }: naveBarProps) {
             </button>
           </div>
           <ul className="flex flex-col lg:items-center gap-4 font-[400] text-[14px]">
-            {navLinks.map((n) => (
-              <li key={n.id}>{n.title}</li>
+            {navLinks.map((link, index) => (
+              <li key={index}>
+                <Link href={link.path}>{link.label}</Link>
+              </li>
             ))}
           </ul>
         </div>
@@ -61,7 +66,10 @@ export default function NavBar({ fill }: naveBarProps) {
 
       <div className="flex items-center gap-[54px]">
         <BellIcon fill={fill} />
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => router.push('/company-pages/company-profile')}
+        >
           <Image
             src={companyLogo}
             alt="image"

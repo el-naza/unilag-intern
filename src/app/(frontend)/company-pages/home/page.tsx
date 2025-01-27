@@ -3,7 +3,7 @@ import hero from '../../assets/images/company-hero-bg.png'
 import studentImage from '../../assets/images/student-img.png'
 import { useState } from 'react'
 import NavBar from '../../common/nav-bar'
-import StudentProfileCard from '../../components/Cards/student-profile-card'
+import StudentProfileCard from '../../components/Cards/studentProfileCard'
 export default function CompanyHomePage() {
   const [active, setActive] = useState<string>('  All Career Area')
   const careers = [
@@ -71,7 +71,7 @@ export default function CompanyHomePage() {
       image: studentImage.src,
     },
   ]
- 
+
   return (
     <div>
       <div

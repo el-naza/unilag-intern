@@ -71,11 +71,10 @@ const Calendar: React.FC = () => {
         const isCurrentMonth = isSameMonth(day, monthStart)
 
         days.push(
-          <div className="h-[52px]">
+          <div className="h-[52px]" key={day.toISOString()}>
             <div
-              key={day.toString()}
               onClick={() => setSelectedDate(day)}
-              className={`h-[32px] w-[32px] text-sm text-center cursor-pointer rounded-full  flex items-center justify-center ${
+              className={`h-[32px] w-[32px] text-sm text-center cursor-pointer rounded-full flex items-center justify-center ${
                 isToday
                   ? 'bg-[#0B7077] text-white'
                   : isCurrentMonth
@@ -90,7 +89,7 @@ const Calendar: React.FC = () => {
         day = addDays(day, 1)
       }
       rows.push(
-        <div key={day.toString()} className="flex items-center justify-between">
+        <div key={`row-${day.toISOString()}`} className="flex items-center justify-between">
           {days}
         </div>,
       )
