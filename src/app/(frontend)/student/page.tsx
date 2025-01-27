@@ -17,6 +17,7 @@ import MenuIcon from '../assets/icons/menu'
 import NotificationBellIcon from '../assets/icons/notificationBell'
 import FilterAltIcon from '../assets/icons/filterAltIcon'
 import CompanyRecommendedCard from '../components/Cards/CompanyRecommendedCard'
+import Link from 'next/link'
 
 export default function Page() {
   const router = useRouter()
@@ -168,33 +169,41 @@ export default function Page() {
               <div className="col-span-4 self-center">
                 <div className="grid grid-cols-4 gap-4">
                   <div>
-                    <a href="#" className="relative group block text-center">
+                    <Link href="#" className="relative group block text-center">
                       <span className="text-xl">Google Map Search</span>
                       <NavUnderlineLarge />
-                    </a>
+                    </Link>
                   </div>
                   <div>
-                    <a href="#" className="relative group block text-center">
+                    <Link
+                      href="/student/applications/pending"
+                      className="relative group block text-center"
+                    >
                       <span className="text-xl">Pending</span>
                       <NavUnderlineLarge />
-                    </a>
+                    </Link>
                   </div>
                   <div>
-                    <a href="#" className="relative group block text-center">
+                    <Link
+                      href="/student/applications/approved"
+                      className="relative group block text-center"
+                    >
                       <span className="text-xl">Approved</span>
                       <NavUnderlineLarge />
-                    </a>
+                    </Link>
                   </div>
                   <div>
-                    <a href="#" className="relative group block text-center">
+                    <Link href="/student" className="relative group block text-center">
                       <span className="text-xl">History</span>
                       <NavUnderlineLarge />
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
               <div className="z-10">
-                <button className="text-[#0B7077] bg-white rounded px-4 py-2">Report Page</button>
+                <Link href="/student/reports/create">
+                  <button className="text-[#0B7077] bg-white rounded px-4 py-2">Report Page</button>
+                </Link>
               </div>
             </div>
             <div className="grid sm:grid-cols-5 gap-4">
