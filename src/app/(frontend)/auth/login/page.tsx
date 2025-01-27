@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <div className="px-4 text-white pt-11">
       <div className="text-center">
-        <h2 className="text-xl leading-[25.78px] font-medium mb-3">Login as a Siwes Applicant</h2>
+        <h2 className="text-xl leading-[25.78px] font-medium mb-3">Login as a SIWES Applicant</h2>
         <div className="text-[12px] text-gray-light-2 leading-[16.5px] mb-8">
           {hasPassword
             ? 'Please enter your password to proceed.'
