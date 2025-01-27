@@ -6,20 +6,35 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Media } from './collections/Media'
-import { Users } from './collections/Users'
+import { Students } from './collections/Students'
 import { getServerSideURL } from './utilities/getURL'
-import { Companies } from './collections/Company'
+import { Companies } from './collections/Companies'
+import { Admins } from './collections/Admins'
+import { InterviewInvitations } from './collections/InterviewInvitations'
+import { DepartmentalCoordinators } from './collections/DepartmentalCoordinators'
+import { InternshipApplications } from './collections/InternshipApplications'
+import { Employments } from './collections/Employments'
+import { Reports } from './collections/Reports'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  // database-adapter-config-start
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
   }),
   // database-adapter-config-end
-  collections: [Media, Users, Companies],
+  collections: [
+    Media,
+    Admins,
+    Companies,
+    DepartmentalCoordinators,
+    Students,
+    InterviewInvitations,
+    InternshipApplications,
+    Employments,
+    Reports,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   plugins: [
     // storage-adapter-placeholder
