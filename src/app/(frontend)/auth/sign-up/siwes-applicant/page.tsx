@@ -5,116 +5,420 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 import { useRouter } from 'next/navigation'
+import { FieldApi, FormApi, useForm } from '@tanstack/react-form'
+import { useMutation } from '@tanstack/react-query'
+import { Student } from '@/payload-types'
+import saveDoc from '@/services/saveDoc'
+import Spinner from '@/components/spinner'
+import { toast } from 'sonner'
+import { ValidationErrors } from '@/utilities/types'
+import { Field, ValidationFieldError } from 'payload'
+import { Students } from '@/collections/Students'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { cn } from '@/utilities'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
+
+function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
+  return (
+    <>
+      {field.state.meta.isTouched && field.state.meta.errors.length ? (
+        <div className="text-[10px] leading-[16.5px] text-error -mt-[10.5px] mb-3">
+          {field.state.meta.errors.join(',')}
+        </div>
+      ) : null}
+    </>
+  )
+}
+function FormError({ form }: { form: FormApi<any, any> }) {
+  return (
+    <>
+      {form.state.errors.length ? (
+        <div className="text-[10px] leading-[16.5px] text-error mt-2">
+          {form.state.errors.join(',')}
+        </div>
+      ) : null}
+    </>
+  )
+}
 
 export default function Page() {
   const router = useRouter()
+
+  const signUpStudentMtn = useMutation({
+    mutationFn: async (student: Student) => {
+      try {
+        const res = await saveDoc('students', student)
+        console.log('res', res)
+        if (!res) return toast.error('Network err; pls try again later')
+        return res
+      } catch {
+        toast.error('An error occured while saving message; pls try again later')
+      }
+    },
+  })
+
+  const form = useForm<Student>({
+    // onSubmit: async ({ value }) => {
+    //   // Do something with form data
+    //   console.log(value)
+    // },
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        const emptyRequiredFields = Students.fields.reduce<object>(
+          (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
+            ...acc,
+            // [err.path]: `${err.label}: ${err.message}`,
+            ...(field?.required && !value[field.name] && { [field.name]: 'Required' }),
+          }),
+          {},
+        )
+
+        if (Object.keys(emptyRequiredFields).length) {
+          return {
+            form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
+            fields: emptyRequiredFields,
+          }
+        }
+
+        const res = await signUpStudentMtn.mutateAsync(value)
+        if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
+          return {
+            form: (res as ValidationErrors).errors[0].message,
+            fields: (res as ValidationErrors).errors[0].data.errors.reduce<object>(
+              (acc: ValidationFieldError, err) => ({
+                ...acc,
+                [err.path]: err.message,
+              }),
+              {},
+            ),
+          }
+        }
+
+        // success here so naviagate or toast to success
+        form.reset()
+        toast.success('Sign up successful')
+        router.push('/auth/sign-up/siwes-applicant/update-profile-image')
+
+        return null
+      },
+    },
+  })
 
   return (
     <div className="text-gray-dark-2 min-h-screen lg:min-h-full py-11 px-4 bg-white">
       <div className="text-center">
         <h2 className="text-xl leading-[25.78px] font-medium mb-2 text-black-2">
-          Sign up Login as a <br /> Siwes Applicant
+          Sign up Login as a <br /> SIWES Applicant
         </h2>
         <div className="text-[12px] text-gray-dark leading-[16.5px] mb-8 px-6">
           Complete the form to proceed with the signup process.
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-2">
-        <div>
-          <Label>First Name</Label>
-          <Input
-            placeholder="Enter Name"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Last Name</Label>
-          <Input
-            placeholder="Enter Name"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Middle Name</Label>
-          <Input
-            placeholder="Enter Name"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Matriculation Number </Label>
-          <Input
-            placeholder="Enter Matric. Number"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Email</Label>
-          <Input
-            placeholder="Enter Email"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Date of Birth</Label>
-          <Input
-            placeholder="MM/DD/YYYY"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Nationality</Label>
-          <Input
-            placeholder="Select Nationality"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>State of Origin</Label>
-          <Input
-            placeholder="Select State of Origin"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Gender</Label>
-          <Input
-            placeholder="Select Gender"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Course of Study</Label>
-          <Input
-            placeholder="Select Course of Study"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Level</Label>
-          <Input
-            placeholder="300"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-        <div>
-          <Label>Home Address</Label>
-          <Input
-            placeholder="Enter Address"
-            className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-2 border-gray-light-5 border-[1px] mb-3"
-          />
-        </div>
-      </div>
-
-      <Button
-        size="lg"
-        className="w-full mt-5"
-        variant="secondary"
-        onClick={() => router.push('/auth/sign-up/siwes-applicant/update-profile-image')}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }}
       >
-        Continue
-      </Button>
+        <form.Field
+          name="firstName"
+          children={(field) => {
+            return (
+              <>
+                <Label>First Name</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Enter Name"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="lastName"
+          children={(field) => {
+            return (
+              <>
+                <Label>Last Name</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Enter Name"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="middleName"
+          children={(field) => {
+            return (
+              <>
+                <Label>Middle Name</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Enter Name"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="matricNo"
+          children={(field) => {
+            return (
+              <>
+                <Label>Matriculation Number </Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Enter Matric. Number"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="email"
+          children={(field) => {
+            return (
+              <>
+                <Label>Email</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Enter Email"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="dob"
+          children={(field) => {
+            return (
+              <>
+                <Label>Date of Birth</Label>
+                <br />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'justify-between text-left font-normal mb-3 w-full h-11 border-gray-light-5 text-gray-dark-2',
+                        !field.state.value && 'text-muted-foreground',
+                      )}
+                    >
+                      {field.state.value ? (
+                        format(field.state.value, 'MM/dd/yyyy')
+                      ) : (
+                        <span>MM/DD/YYYY</span>
+                      )}
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <DateCalendar
+                      value={new Date(field.state.value || new Date())}
+                      onChange={(newValue) =>
+                        field.handleChange(newValue?.toISOString?.() || new Date().toISOString())
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+                <br />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="nationality"
+          children={(field) => {
+            return (
+              <>
+                <Label>Nationality</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Select Nationality"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="stateOfOrigin"
+          children={(field) => {
+            return (
+              <>
+                <Label>State of Origin</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Select State of Origin"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="stateOfOrigin"
+          children={(field) => {
+            return (
+              <>
+                <Label>State of Origin</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Select State of Origin"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="gender"
+          children={(field) => {
+            return (
+              <>
+                <Label>Gender</Label>
+                <Select
+                  value={(field.state.value as string) || ''}
+                  onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
+                  onValueChange={(value) => field.handleChange(value as any)}
+                >
+                  <SelectTrigger
+                    className={`${field.state.value ? '' : 'text-muted-foreground'} mb-3`}
+                  >
+                    <SelectValue placeholder="Select Gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(
+                      Students.fields.find(
+                        (f: Field & { name: string; options: string[] }) => f.name === field.name,
+                      ) as { options: string[] }
+                    )?.options?.map((option, i) => (
+                      <SelectItem value={option} key={i}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="course"
+          children={(field) => {
+            return (
+              <>
+                <Label>Course of Study</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Select Course of Study"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="level"
+          children={(field) => {
+            return (
+              <>
+                <Label>Level</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="300"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Field
+          name="stateOfOrigin"
+          children={(field) => {
+            return (
+              <>
+                <Label>Home Address</Label>
+                <Input
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Enter Address"
+                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        />
+        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+          {([canSubmit, isSubmitting]) => (
+            <>
+              <Button
+                type="submit"
+                disabled={!canSubmit}
+                size="lg"
+                className="w-full mt-5"
+                variant="secondary"
+                // onClick={() => router.push('/auth/sign-up/siwes-applicant/update-profile-image')}
+              >
+                Continue {isSubmitting && <Spinner />}
+              </Button>
+              <FormError form={form} />
+            </>
+          )}
+        </form.Subscribe>
+      </form>
     </div>
   )
 }

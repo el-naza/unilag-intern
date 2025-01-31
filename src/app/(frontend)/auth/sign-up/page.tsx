@@ -8,7 +8,7 @@ export default function Page() {
     <div className="text-gray-dark-3 min-h-screen lg:min-h-full flex flex-col justify-between py-11 gap-24 bg-white">
       <div className="px-4 flex flex-col items-center">
         <Image src="/images/unilag-logo.png" width={44} height={44} alt="LOGO" />
-        <div className="text-[12px] text-black-2 font-bold leading-[16.5px] mt-1">Unilag Siwes</div>
+        <div className="text-[12px] text-black-2 font-bold leading-[16.5px] mt-1">Unilag SIWES</div>
         <h1 className="mt-11 text-xl leading-[25.78px] text-center text-secondary lg:text-primary font-medium">
           Your Gateway to <br /> Opportunities
         </h1>
@@ -20,7 +20,7 @@ export default function Page() {
         </div>
         <Link href="/auth/sign-up/siwes-applicant">
           <Button size="lg" className="bg-gray-light-5 hover:bg-white/90 text-black-1 w-full mb-3">
-            Sign up as a Siwes Applicant
+            Sign up as a SIWES Applicant
           </Button>
         </Link>
         <Link href="/auth/sign-up-lecturer">

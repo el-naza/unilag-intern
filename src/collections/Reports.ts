@@ -10,7 +10,6 @@ export const Reports: CollectionConfig = {
     delete: relatedStudent,
     update: relatedStudent,
   },
-  auth: true,
   fields: [
     {
       name: 'student',

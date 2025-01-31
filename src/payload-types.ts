@@ -12,10 +12,6 @@ export interface Config {
     companies: CompanyAuthOperations;
     'departmental-coordinators': DepartmentalCoordinatorAuthOperations;
     students: StudentAuthOperations;
-    'interview-invitations': InterviewInvitationAuthOperations;
-    'internship-applications': InternshipApplicationAuthOperations;
-    employments: EmploymentAuthOperations;
-    reports: ReportAuthOperations;
   };
   collections: {
     media: Media;
@@ -64,18 +60,6 @@ export interface Config {
       })
     | (Student & {
         collection: 'students';
-      })
-    | (InterviewInvitation & {
-        collection: 'interview-invitations';
-      })
-    | (InternshipApplication & {
-        collection: 'internship-applications';
-      })
-    | (Employment & {
-        collection: 'employments';
-      })
-    | (Report & {
-        collection: 'reports';
       });
   jobs: {
     tasks: unknown;
@@ -150,78 +134,6 @@ export interface StudentAuthOperations {
   };
   unlock: {
     username: string;
-  };
-}
-export interface InterviewInvitationAuthOperations {
-  forgotPassword: {
-    email: string;
-    password: string;
-  };
-  login: {
-    email: string;
-    password: string;
-  };
-  registerFirstUser: {
-    email: string;
-    password: string;
-  };
-  unlock: {
-    email: string;
-    password: string;
-  };
-}
-export interface InternshipApplicationAuthOperations {
-  forgotPassword: {
-    email: string;
-    password: string;
-  };
-  login: {
-    email: string;
-    password: string;
-  };
-  registerFirstUser: {
-    email: string;
-    password: string;
-  };
-  unlock: {
-    email: string;
-    password: string;
-  };
-}
-export interface EmploymentAuthOperations {
-  forgotPassword: {
-    email: string;
-    password: string;
-  };
-  login: {
-    email: string;
-    password: string;
-  };
-  registerFirstUser: {
-    email: string;
-    password: string;
-  };
-  unlock: {
-    email: string;
-    password: string;
-  };
-}
-export interface ReportAuthOperations {
-  forgotPassword: {
-    email: string;
-    password: string;
-  };
-  login: {
-    email: string;
-    password: string;
-  };
-  registerFirstUser: {
-    email: string;
-    password: string;
-  };
-  unlock: {
-    email: string;
-    password: string;
   };
 }
 /**
@@ -336,6 +248,7 @@ export interface Student {
   bankCode?: string | null;
   bankName?: string | null;
   accountNo?: string | null;
+  resetPasswordOtpHash?: string | null;
   updatedAt: string;
   createdAt: string;
   email?: string | null;
@@ -360,14 +273,6 @@ export interface InterviewInvitation {
   dateTime: string;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -382,14 +287,6 @@ export interface InternshipApplication {
   interviewInvitation?: (string | null) | InterviewInvitation;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -402,14 +299,6 @@ export interface Employment {
   dateEnded?: string | null;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -422,14 +311,6 @@ export interface Report {
   details: string;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -491,22 +372,6 @@ export interface PayloadLockedDocument {
     | {
         relationTo: 'students';
         value: string | Student;
-      }
-    | {
-        relationTo: 'interview-invitations';
-        value: string | InterviewInvitation;
-      }
-    | {
-        relationTo: 'internship-applications';
-        value: string | InternshipApplication;
-      }
-    | {
-        relationTo: 'employments';
-        value: string | Employment;
-      }
-    | {
-        relationTo: 'reports';
-        value: string | Report;
       };
   updatedAt: string;
   createdAt: string;
@@ -533,22 +398,6 @@ export interface PayloadPreference {
     | {
         relationTo: 'students';
         value: string | Student;
-      }
-    | {
-        relationTo: 'interview-invitations';
-        value: string | InterviewInvitation;
-      }
-    | {
-        relationTo: 'internship-applications';
-        value: string | InternshipApplication;
-      }
-    | {
-        relationTo: 'employments';
-        value: string | Employment;
-      }
-    | {
-        relationTo: 'reports';
-        value: string | Report;
       };
   key?: string | null;
   value?:
@@ -674,6 +523,7 @@ export interface StudentsSelect<T extends boolean = true> {
   bankCode?: T;
   bankName?: T;
   accountNo?: T;
+  resetPasswordOtpHash?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -696,13 +546,6 @@ export interface InterviewInvitationsSelect<T extends boolean = true> {
   dateTime?: T;
   updatedAt?: T;
   createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -716,13 +559,6 @@ export interface InternshipApplicationsSelect<T extends boolean = true> {
   interviewInvitation?: T;
   updatedAt?: T;
   createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -734,13 +570,6 @@ export interface EmploymentsSelect<T extends boolean = true> {
   dateEnded?: T;
   updatedAt?: T;
   createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -752,13 +581,6 @@ export interface ReportsSelect<T extends boolean = true> {
   details?: T;
   updatedAt?: T;
   createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

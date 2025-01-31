@@ -10,7 +10,6 @@ export const Employments: CollectionConfig = {
     delete: relatedCompany,
     update: relatedCompany,
   },
-  auth: true,
   fields: [
     {
       name: 'student',

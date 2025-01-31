@@ -64,6 +64,15 @@ export default {
           1: '#1A1A1A',
           2: '#0B0B0B',
         },
+        error: '#FF3B30',
+        popover: {
+          DEFAULT: 'white',
+          foreground: 'black',
+        },
+        muted: {
+          foreground: '#ECECEC',
+        },
+        input: '#F1F1F1',
       },
       fontFamily: {
         sans: ['var(--font-open-sans)'],
