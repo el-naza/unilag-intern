@@ -13,15 +13,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import Autoplay from "embla-carousel-autoplay"
-import { useRef } from 'react'
+// import Autoplay from "embla-carousel-autoplay"
+// import { useRef } from 'react'
  
 
 export default function HomePage() {
 
-   const plugin = useRef(
-          Autoplay({ delay: 5000, stopOnInteraction: false })
-        )
+  //  const plugin = useRef(
+  //         Autoplay({ delay: 5000, stopOnInteraction: false })
+  //       )
 
 
   return (
@@ -192,7 +192,7 @@ export default function HomePage() {
                   align: "start",
                   loop: true,
               }}
-              plugins={[plugin.current]}
+              // plugins={[plugin.current]}
               className="w-full">
                 <CarouselContent>
                     <CarouselItem className="p-8 mx-auto grid place-content-center sm:basis-full md:basis-11/12 lg:basis-2/5">
