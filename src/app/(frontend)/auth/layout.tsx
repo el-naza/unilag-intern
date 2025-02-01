@@ -44,7 +44,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
                   </div>
                   <div className="col-span-4">
                     <div className="rounded-lg p-5 text-black bg-white">
-                      <span className="text-xl">Siwes</span>
+                      <span className="text-xl">SIWES</span>
                     </div>
                   </div>
                 </div>
@@ -61,7 +61,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
                   </div>
                   <div className="col-span-4">
                     <div className="rounded-lg p-5 text-white hover:text-black bg-[#0B7077] hover:bg-white">
-                      <span className="text-xl">Non Siwes</span>
+                      <span className="text-xl">Non SIWES</span>
                     </div>
                   </div>
                 </div>
