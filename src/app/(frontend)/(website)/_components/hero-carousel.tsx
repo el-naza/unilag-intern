@@ -7,15 +7,15 @@ import {
   } from "@/components/ui/carousel"
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-// import Autoplay from "embla-carousel-autoplay"
+import Autoplay from "embla-carousel-autoplay"
  
   
 
 const HeroCarousel = () => {
 
-    // const plugin = useRef(
-    //     Autoplay({ delay: 5000, stopOnInteraction: true })
-    //   )
+    const plugin = useRef(
+        Autoplay({ delay: 5000, stopOnInteraction: true })
+      )
 
 
   return (

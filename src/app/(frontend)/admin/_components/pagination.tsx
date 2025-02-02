@@ -24,11 +24,11 @@ const Pagination = ({ page, pageSize, total, onEmitNextPage, onEmitPreviousPage 
   return (
     <div className="flex justify-between items-center mt-8 p-4">
       <div className="flex gap-8 items-center">
-        <Button variant="link" size="icon" onClick={() => previousPage()} disabled={page === 1}>
+        <Button variant="outline" size="icon" onClick={() => previousPage()} disabled={page === 1}>
           Previous
         </Button>
         <Button
-          variant="link"
+          variant="outline"
           size="icon"
           onClick={() => nextPage()}
           disabled={page === totalPages}

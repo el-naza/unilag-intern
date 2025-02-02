@@ -28,7 +28,7 @@ export default function SiwesCordinatorLayout({ children }: { children: React.Re
     {
       label: 'Activity',
       route: '/admin/siwes-cordinator/activity',
-       iconName: 'Activity'
+      iconName: 'MessageCircleQuestion'
     },
     {
       label: 'Departmental Admins',
