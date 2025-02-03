@@ -12,6 +12,7 @@ import {
 } from '@tanstack/react-query'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { SessionProvider } from 'next-auth/react'
 
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
@@ -44,12 +45,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <QueryClientProvider client={queryClient}>
-            <div className="tracking-[0.37px]">{children}</div>
-          </QueryClientProvider>
-        </LocalizationProvider>
-        <Toaster />
+        <SessionProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <QueryClientProvider client={queryClient}>
+              <div className="tracking-[0.37px]">{children}</div>
+            </QueryClientProvider>
+          </LocalizationProvider>
+          <Toaster />
+        </SessionProvider>
       </body>
     </html>
   )

@@ -2,7 +2,7 @@
 
 import { Slider } from '@/components/ui/slider'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNavbar'
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
 import headerVector from '@/app/(frontend)/assets/images/header-vector.png'
@@ -18,10 +18,15 @@ import NotificationBellIcon from '../assets/icons/notificationBell'
 import FilterAltIcon from '../assets/icons/filterAltIcon'
 import CompanyRecommendedCard from '../components/Cards/CompanyRecommendedCard'
 import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
 
 export default function Page() {
   const router = useRouter()
+  const { data: session } = useSession()
 
+  useEffect(() => {
+    console.log(session)
+  }, [session])
   return (
     <>
       <div className="block lg:hidden min-h-screen relative text-sm text-white">
@@ -96,7 +101,9 @@ export default function Page() {
               />
             </div>
             <div className="flex items-center">
-              <span className="font-oleo text-white text-3xl">Welcome Oni</span>
+              <span onClick={() => signOut()} className="font-oleo text-white text-3xl">
+                Welcome Oni
+              </span>
             </div>
             <div className="col-span-2 flex items-center">
               <div className="relative w-3/4">
