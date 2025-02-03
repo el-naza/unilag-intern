@@ -5,11 +5,11 @@ import Link from 'next/link'
 
 export default function Page() {
   return (
-    <div className="text-gray-dark-3 min-h-screen flex flex-col justify-between py-11 gap-24 bg-white">
+    <div className="text-gray-dark-3 min-h-screen lg:min-h-full flex flex-col justify-between py-11 gap-24 bg-white">
       <div className="px-4 flex flex-col items-center">
         <Image src="/images/unilag-logo.png" width={44} height={44} alt="LOGO" />
         <div className="text-[12px] text-black-2 font-bold leading-[16.5px] mt-1">Unilag SIWES</div>
-        <h1 className="mt-11 text-xl leading-[25.78px] text-center text-secondary font-medium">
+        <h1 className="mt-11 text-xl leading-[25.78px] text-center text-secondary lg:text-primary font-medium">
           Your Gateway to <br /> Opportunities
         </h1>
       </div>

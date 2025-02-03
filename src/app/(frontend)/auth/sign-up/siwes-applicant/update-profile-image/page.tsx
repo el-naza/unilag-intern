@@ -11,7 +11,7 @@ export default function Page() {
   const [showInstructions, setShowInstruction] = useState(false)
 
   return (
-    <div className="text-gray-dark-2 min-h-screen py-11 px-4 bg-white flex flex-col">
+    <div className="text-gray-dark-2 min-h-screen lg:min-h-full py-11 px-4 bg-white flex flex-col">
       <div className="text-center">
         <h2 className="text-xl leading-[25.78px] font-medium mb-2 text-black-2">
           Upload Profile Image

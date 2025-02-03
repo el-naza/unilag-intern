@@ -12,6 +12,7 @@ import {
 } from '@tanstack/react-query'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { SessionProvider } from 'next-auth/react'
 
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
@@ -36,14 +37,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <QueryClientProvider client={queryClient}>
-            <div className="tracking-[0.37px]">{children}</div>
-          </QueryClientProvider>
-        </LocalizationProvider>
-        <Toaster />
+        <SessionProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <QueryClientProvider client={queryClient}>
+              <div className="tracking-[0.37px]">{children}</div>
+            </QueryClientProvider>
+          </LocalizationProvider>
+          <Toaster />
+        </SessionProvider>
       </body>
     </html>
   )

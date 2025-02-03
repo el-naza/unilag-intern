@@ -9,14 +9,16 @@ export default function Page() {
   const router = useRouter()
 
   return (
-    <div className="text-gray-dark-2 min-h-screen px-5 py-16 bg-white flex flex-col">
-      <div className="fixed z-10 right-0 left-0 top-0 bg-white py-5">
-        <h2 className="text-xl text-center leading-[25.78px] font-medium text-black-2">
-          Profile Preview
-        </h2>
+    <div className="text-gray-dark-2 min-h-screen lg:min-h-full px-5 pb-16 bg-white flex flex-col">
+      <div className="grid grid-cols-3 bg-white pb-5">
+        <div className=" col-span-2 flex">
+          <h2 className="m-auto lg:mx-0 text-xl text-center lg:text-left leading-[25.78px] font-medium text-black-2">
+            Profile Preview
+          </h2>
+        </div>
         <Button
           variant="ghost"
-          className="h-full text-base text-primary leading-6 absolute right-4 top-0 bottom-0 flex items-center"
+          className="h-full text-base text-primary leading-6 flex items-center"
           onClick={() => router.push('/auth/sign-up/siwes-applicant')}
         >
           Edit

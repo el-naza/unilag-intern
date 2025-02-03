@@ -114,7 +114,7 @@ export default function Page() {
   })
 
   return (
-    <div className="text-gray-dark-2 min-h-screen py-11 px-4 bg-white">
+    <div className="text-gray-dark-2 min-h-screen lg:min-h-full py-11 px-4 bg-white">
       <div className="text-center">
         <h2 className="text-xl leading-[25.78px] font-medium mb-2 text-black-2">
           Sign up Login as a <br /> SIWES Applicant
