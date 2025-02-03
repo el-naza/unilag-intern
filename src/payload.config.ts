@@ -39,7 +39,7 @@ export default buildConfig({
   cors: [getServerSideURL()].filter(Boolean),
   email: nodemailerAdapter({
     defaultFromAddress: process.env.GMAIL_USER!,
-    defaultFromName: 'Internship Portal',
+    defaultFromName: 'UNILAG INTERNSHIP',
     transportOptions: {
       auth: {
         pass: process.env.GMAIL_PASSWORD,
