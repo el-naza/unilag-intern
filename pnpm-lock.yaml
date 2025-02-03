@@ -23,6 +23,9 @@ importers:
       '@payloadcms/db-mongodb':
         specifier: latest
         version: 3.14.0(@aws-sdk/credential-providers@3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0)))(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))
+      '@payloadcms/email-nodemailer':
+        specifier: ^3.20.0
+        version: 3.20.0(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))
       '@payloadcms/next':
         specifier: latest
         version: 3.14.0(@types/react@19.0.1)(graphql@16.9.0)(monaco-editor@0.52.0)(next@15.1.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.77.4))(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
@@ -1012,6 +1015,12 @@ packages:
     resolution: {integrity: sha512-hCpPtQqM2hKpoe2fN7eWIpLlCf0lpnKdhTZd2pMDJZ5KTx6Ps6NDpMWHV3dqdPRPgSRNrkZ/6ghk36gp+jPSfA==}
     peerDependencies:
       payload: 3.14.0
+
+  '@payloadcms/email-nodemailer@3.20.0':
+    resolution: {integrity: sha512-pAqLta3hh2rj/sLSNQs/94+0WyscJYzpc0PALObz6JkiS+SLOBZuDxJDmsNb2AC/lucc2sj253Szr0+JWYMnpw==}
+    engines: {node: ^18.20.2 || >=20.9.0}
+    peerDependencies:
+      payload: 3.20.0
 
   '@payloadcms/graphql@3.14.0':
     resolution: {integrity: sha512-zOqEQ6JrKZ3jJve4XRq5SfUNxZaqBLMw7fKvVUI84tzOrQ3xXJSiyd2ZRrjpgGrSN/HopDChMv1slXe24jdQ5A==}
@@ -3218,6 +3227,10 @@ packages:
   node-releases@2.0.18:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
 
+  nodemailer@6.9.16:
+    resolution: {integrity: sha512-psAuZdTIRN08HKVd/E8ObdV6NO7NTBY3KsC30F7M4H1OnmLCUNaS56FpYxyb26zWLSyYF9Ozch9KYHhHegsiOQ==}
+    engines: {node: '>=6.0.0'}
+
   noms@0.0.0:
     resolution: {integrity: sha512-lNDU9VJaOPxUmXcLb+HQFeUgQQPtMI24Gt6hgfuMHRJgMRHMF/qZ4HJD3GDru4sSw9IQl2jPjAYnQrdIeLbwow==}
 
@@ -5350,6 +5363,11 @@ snapshots:
       - snappy
       - socks
       - supports-color
+
+  '@payloadcms/email-nodemailer@3.20.0(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))':
+    dependencies:
+      nodemailer: 6.9.16
+      payload: 3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
 
   '@payloadcms/graphql@3.14.0(graphql@16.9.0)(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))(typescript@5.7.2)':
     dependencies:
@@ -7867,6 +7885,8 @@ snapshots:
   node-addon-api@6.1.0: {}
 
   node-releases@2.0.18: {}
+
+  nodemailer@6.9.16: {}
 
   noms@0.0.0:
     dependencies:

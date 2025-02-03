@@ -22,6 +22,7 @@
     "@mui/material": "^6.4.1",
     "@mui/x-date-pickers": "^7.24.1",
     "@payloadcms/db-mongodb": "latest",
+    "@payloadcms/email-nodemailer": "^3.20.0",
     "@payloadcms/next": "latest",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-popover": "^1.1.5",

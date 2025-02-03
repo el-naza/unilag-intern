@@ -1,5 +1,6 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb' // database-adapter-import
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -36,6 +37,17 @@ export default buildConfig({
     Reports,
   ],
   cors: [getServerSideURL()].filter(Boolean),
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.GMAIL_USER!,
+    defaultFromName: 'Internship Portal',
+    transportOptions: {
+      auth: {
+        pass: process.env.GMAIL_PASSWORD,
+        user: process.env.GMAIL_USER,
+      },
+      service: 'gmail',
+    },
+  }),
   plugins: [
     // storage-adapter-placeholder
   ],
