@@ -3,13 +3,20 @@ import { useState } from 'react'
 import MailIcon from '../../assets/icons/mail'
 import DynamicForm from '../../components/Form'
 import ArrowIcon from '../../assets/icons/arrow'
+import { useMutation } from '@tanstack/react-query'
+import saveDoc from '@/services/saveDoc'
+import { toast } from 'sonner'
+import { Company } from '@/payload-types'
+import { log } from 'console'
 
 export default function Login() {
   const [companyName, setCompanyName] = useState('')
   const [companyEmail, setCompanyEmail] = useState('')
   const [email, setEmail] = useState('')
-  const [rcNumber, setRCNumber] = useState('')
+  const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
+  const [longitude, setLongitude] = useState()
+  const [latitude, setLatitude] = useState()
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [otp, setOtp] = useState('')
   const [area, setArea] = useState('')
@@ -60,6 +67,28 @@ export default function Login() {
     }
   }
 
+  const signUpCompanyMtn = useMutation({
+    mutationFn: async (company: Company) => {
+      try {
+        // If a file is included, upload it first
+        // let fileUrl = ''
+        // if (company.file) {
+        //   fileUrl = await uploadFile(company.file)
+        // }
+
+        // Save company details with file URL
+        const res = await saveDoc('companies', { ...company })
+        console.log('Company signup response:', res)
+
+        if (!res) return toast.error('Network error; please try again later')
+        console.log('Company signup response:', res)
+        return res
+      } catch {
+        toast.error('An error occurred while signing up the company; please try again later')
+      }
+    },
+  })
+
   const handleSignUp = () => {
     const newErrors: { [key: string]: string } = {}
 
@@ -67,15 +96,36 @@ export default function Login() {
       switch (signUp) {
         case 'formField':
           // Perform validation for formField step
-          if (!companyName || !companyEmail || !rcNumber || !address) {
+          if (
+            !companyName ||
+            !companyEmail ||
+            !phone ||
+            !address ||
+            !latitude ||
+            !longitude ||
+            !area
+          ) {
             // Example validation
             setErrors({
               companyName: !companyName ? 'Company name is required.' : '',
               companyEmail: !companyEmail ? 'Email is required.' : '',
-              companyRCNumber: !rcNumber ? 'RC Number is required.' : '',
+              companyphone: !phone ? 'RC Number is required.' : '',
               companyAddress: !address ? 'Address is required.' : '',
+              latitude: !latitude ? 'Latitude is required' : '',
+              longitude: !longitude ? 'Longitude is required' : '',
+              area: !area ? 'Course Area is required' : '',
             })
           } else {
+            const parsedLatitude = parseFloat(latitude)
+            const parsedLongitude = parseFloat(longitude)
+            signUpCompanyMtn.mutate({
+              name: companyName,
+              email: companyEmail,
+              phone: phone,
+              address: address,
+              courseAreas: [area],
+              location: { longitude: parsedLongitude, latitude: parsedLatitude }
+            })
             // Clear errors and proceed to file upload step
             setErrors({})
             setSignUp('file')
@@ -88,9 +138,17 @@ export default function Login() {
             setErrors({ file: 'File is required.' })
           } else {
             setErrors({})
-            console.log('Final step reached! Submitting form...')
-            // Submit the form
-            // handleSubmit()
+            // console.log('Final step reached! Submitting form...')
+            // const parsedLatitude = parseFloat(latitude)
+            // const parsedLongitude = parseFloat(longitude)
+            // signUpCompanyMtn.mutate({
+            //   name: companyName,
+            //   email: companyEmail,
+            //   phone: phone,
+            //   address: address,
+            //   courseAreas: [area],
+            //    location: { longitude: parsedLongitude, latitude: parsedLatitude },
+            // })
           }
           break
 
@@ -162,14 +220,14 @@ export default function Login() {
       message: errors.companyEmail,
     },
     {
-      name: 'companyRCNumber',
+      name: 'companyphone',
       label: 'Company RC Number',
       type: 'number',
-      value: rcNumber,
+      value: phone,
       placeholder: 'Enter RC Number ',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setRCNumber(e.target.value),
-      error: errors.companyRCNumber,
-      message: errors.companyRCNumber,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value),
+      error: errors.companyphone,
+      message: errors.companyphone,
     },
     {
       name: 'courseArea',
@@ -194,6 +252,26 @@ export default function Login() {
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value),
       error: errors.companyAddress,
       message: errors.companyAddress,
+    },
+    {
+      name: 'Longitude',
+      label: 'Longitude',
+      type: 'number',
+      value: longitude,
+      placeholder: 'Enter Longitude',
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setLongitude(e.target.value),
+      error: errors.longitude,
+      message: errors.longitude,
+    },
+    {
+      name: 'Latitude',
+      label: 'Latitude',
+      type: 'number',
+      value: latitude,
+      placeholder: 'latitude',
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setLatitude(e.target.value),
+      error: errors.latitude,
+      message: errors.latitude,
     },
   ]
   const otpField = [
@@ -268,7 +346,7 @@ export default function Login() {
         </p>
       ) : ( */}
       <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
-        Not registered yet? Sign up now to connect with top talent effortlessly!{' '}
+        Not registered yet? Sign up now to connect withcc top talent effortlessly!{' '}
         <span className="text-[#007AFF] cursor-pointer" onClick={() => setSignUp('formField')}>
           Sign up as a company
         </span>

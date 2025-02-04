@@ -44,8 +44,19 @@ export const Companies: CollectionConfig = {
     },
     {
       name: 'location',
-      type: 'point',
-      required: true,
+      type: 'group',
+      fields: [
+        {
+          name: 'longitude',
+          type: 'number',
+          required: true,
+        },
+        {
+          name: 'latitude',
+          type: 'number',
+          required: true,
+        },
+      ],
     },
     {
       name: 'phone',
@@ -70,7 +81,7 @@ export const Companies: CollectionConfig = {
       name: 'profileImage',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      // required: true,
     },
   ],
 }

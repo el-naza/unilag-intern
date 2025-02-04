@@ -180,22 +180,21 @@ export interface Admin {
  * via the `definition` "companies".
  */
 export interface Company {
-  id: string;
+  id?: string;
   name: string;
-  cac: string;
+  cac?: string;
   courseAreas: string[];
-  /**
-   * @minItems 2
-   * @maxItems 2
-   */
-  location: [number, number];
+  location: {
+    longitude: number;
+    latitude: number;
+  };
   phone: string;
   address: string;
   website?: string | null;
-  description: string;
-  profileImage: string | Media;
-  updatedAt: string;
-  createdAt: string;
+  description?: string;
+  profileImage?: (string | null) | Media;
+  updatedAt?: string;
+  createdAt?: string;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -467,7 +466,12 @@ export interface CompaniesSelect<T extends boolean = true> {
   name?: T;
   cac?: T;
   courseAreas?: T;
-  location?: T;
+  location?:
+    | T
+    | {
+        longitude?: T;
+        latitude?: T;
+      };
   phone?: T;
   address?: T;
   website?: T;
