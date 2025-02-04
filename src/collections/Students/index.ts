@@ -8,22 +8,21 @@ import { z } from 'zod'
 import * as otpGenerator from 'otp-generator'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
+import blurEmail from '@/utilities/blurEmail'
 
 const PreLogin = z.object({
   matricNo: z.string(),
 })
 
-type PreLogin = z.infer<typeof PreLogin>
-
-// test pre-login to check whether user has set password
-// test forgot password reset with otp endpoints
+export type StudentPreLogin = z.infer<typeof PreLogin>
 
 export const Students: CollectionConfig = {
   slug: 'students',
   access: {
     create: anyone,
     delete: self,
-    read: authenticatedUsers,
+    // read: authenticatedUsers,
+    read: anyone,
     update: self,
   },
   hooks: {
@@ -37,21 +36,22 @@ export const Students: CollectionConfig = {
     ],
   },
   auth: {
-    loginWithUsername: true,
+    loginWithUsername: {
+      requireEmail: true,
+    },
     forgotPassword: {
       generateEmailHTML: (args) => {
         console.log('in gen, otp frm ctx', args?.req?.context)
-        const resetPasswordURL = `https://yourfrontend.com/reset-password?token=${args?.token}`
+
         return `
           <!doctype html>
           <html>
             <body>
-              <h1>Here is my custom email template!</h1>
+              <h1>PASSWORD RESET OTP</h1>
               <p>Hello, ${args?.user.email}!</p>
-              <p>Click below to reset your password.</p>
+              <p>Use the OTP below to reset your password.</p>
               <p>
-                <a href="${resetPasswordURL}">${resetPasswordURL}</a>
-                <a href="${resetPasswordURL}">${resetPasswordURL}</a>
+                ${args?.req?.context!.otp!}
               </p>
             </body>
           </html>
@@ -75,11 +75,12 @@ export const Students: CollectionConfig = {
           where: {
             matricNo: { equals: (data as any).matricNo },
           },
+          showHiddenFields: true,
         })
 
         if (studentFindRes.docs.length === 0) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }
@@ -87,7 +88,7 @@ export const Students: CollectionConfig = {
         const { hasSetPassword } = studentFindRes.docs[0]
 
         return Response.json({
-          message: `User has ${hasSetPassword ? '' : 'not'} set password`,
+          message: `You password has${hasSetPassword ? ' ' : ' not '}been set`,
           ready: !!hasSetPassword,
         })
       },
@@ -120,14 +121,16 @@ export const Students: CollectionConfig = {
           req: req,
         })
 
+        console.log('forgot password res', res)
+
         if (!res) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }
 
-        req.payload.update({
+        const updateRes = await req.payload.update({
           collection: 'students',
           where: {
             matricNo: {
@@ -145,6 +148,8 @@ export const Students: CollectionConfig = {
 
         return Response.json({
           message: 'Success',
+          email: updateRes.docs[0].email,
+          // emailBlur: blurEmail(updateRes.docs[0].email),
         })
       },
     },
@@ -168,7 +173,7 @@ export const Students: CollectionConfig = {
 
         if (studentFindRes.docs.length === 0) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }
@@ -236,7 +241,7 @@ export const Students: CollectionConfig = {
       name: 'hasSetPassword',
       type: 'checkbox',
       defaultValue: false,
-      hidden: true,
+      // hidden: true,
     },
     {
       name: 'dob',

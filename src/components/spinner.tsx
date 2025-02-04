@@ -9,7 +9,7 @@ export default function Spinner({ className, outerSize, childSize }: SpinnerProp
   return (
     <div
       className={cn(
-        'h-6 aspect-square animate-spin items-center justify-center rounded-full border-white border-[2px] border-b-transparent',
+        'h-6 aspect-square animate-spin items-center justify-center rounded-full border-white border-[3px] border-b-transparent',
         className,
         outerSize,
       )}

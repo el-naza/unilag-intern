@@ -1,10 +1,13 @@
-interface LocationProps {
-  fill?: string
-}
-
-export default function LocationIcon({ fill = '#195F7E' }: LocationProps) {
+export default function LocationIcon({ className }: { className?: string }) {
   return (
-    <svg width="11" height="15" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      width="11"
+      height="15"
+      viewBox="0 0 11 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M5.45833 0.416992C2.71708 0.416992 0.5 2.63408 0.5 5.37533C0.5 9.09408 5.45833 14.5837 5.45833 14.5837C5.45833 14.5837 10.4167 9.09408 10.4167 5.37533C10.4167 2.63408 8.19958 0.416992 5.45833 0.416992ZM5.45833 7.14616C4.48083 7.14616 3.6875 6.35283 3.6875 5.37533C3.6875 4.39783 4.48083 3.60449 5.45833 3.60449C6.43583 3.60449 7.22917 4.39783 7.22917 5.37533C7.22917 6.35283 6.43583 7.14616 5.45833 7.14616Z"
         fill={fill}
