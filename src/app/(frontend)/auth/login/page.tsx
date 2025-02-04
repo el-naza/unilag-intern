@@ -22,9 +22,10 @@ import { useRouter } from 'next/navigation'
 import { Field, ValidationFieldError } from 'payload'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { useSendStudentOtpMtn } from '../forgot-password/page'
 
 export default function Page() {
-  const [hasPassword, setHasPassword] = useState(true)
+  const [hasPassword, setHasPassword] = useState(false)
   const [showPassword, setShowPassword] = useState(true)
   const requiredFields = useMemo(
     () => [
@@ -66,6 +67,8 @@ export default function Page() {
     },
   })
 
+  const sendOtpMtn = useSendStudentOtpMtn()
+
   const signInStudentMtn = useMutation({
     mutationFn: async ({ username, password }: StudentAuthOperations['login']) => {
       try {
@@ -82,7 +85,6 @@ export default function Page() {
           return 'Invalid credentials, please try again'
         }
 
-        // router.push(result.url)
         return
       } catch (error) {
         if (error instanceof AuthError) {
@@ -119,7 +121,6 @@ export default function Page() {
         const emptyRequiredFields = requiredFields.reduce<object>(
           (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
             ...acc,
-            // [err.path]: `${err.label}: ${err.message}`,
             ...(field?.required && !value[field.name] && { [field.name]: 'Required' }),
           }),
           {},
@@ -142,7 +143,7 @@ export default function Page() {
             return null
           } else if (res.ready === false) {
             toast.error(res.message)
-            let { message } = await sendStudentOTP({ matricNo: value.username })
+            const message = await sendOtpMtn.mutateAsync(value.username)
             toast.message(`OTP Send Status: ${message}`)
             router.push('/auth/otp-confirmation')
             return null
@@ -158,7 +159,7 @@ export default function Page() {
         const error = await signInStudentMtn.mutateAsync(value)
         if (error)
           return {
-            form: error as string,
+            form: error!,
             fields: {},
           }
 
@@ -195,18 +196,12 @@ export default function Page() {
             }}
           >
             <Label>Username</Label>
-            {/* <Input
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Matric Number"
-              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5"
-            /> */}
-            <form.Field
-              name="username"
-              children={(field) => {
+            <form.Field name="username">
+              {(field) => {
                 return (
                   <>
                     <Input
-                      // disabled={hasPassword}
+                      disabled={hasPassword}
                       name={field.name}
                       value={field.state.value || ''}
                       onBlur={field.handleBlur}
@@ -218,16 +213,10 @@ export default function Page() {
                   </>
                 )
               }}
-            />
+            </form.Field>
             {hasPassword && (
               <>
                 <Label className="mt-3 block">Password</Label>
-                {/* <Input
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter Password"
-                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1"
-                  type="password"
-                  /> */}
                 <form.Field
                   name="password"
                   children={(field) => {
@@ -264,11 +253,8 @@ export default function Page() {
                     disabled={!canSubmit}
                     size="lg"
                     className="w-full mt-8 text-gr"
-                    // onClick={(e) =>
-                    //   hasPassword ? handleSignIn(e) : setHasPassword((prev) => !prev)
-                    // }
                   >
-                    {hasPassword ? 'Login' : 'Confirm'} {isSubmitting && <Spinner />}
+                    {hasPassword ? 'Login' : 'Continue'} {isSubmitting && <Spinner />}
                   </Button>
                   <FormError form={form} />
                 </>

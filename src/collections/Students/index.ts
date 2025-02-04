@@ -8,6 +8,7 @@ import { z } from 'zod'
 import * as otpGenerator from 'otp-generator'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
+import blurEmail from '@/utilities/blurEmail'
 
 const PreLogin = z.object({
   matricNo: z.string(),
@@ -79,7 +80,7 @@ export const Students: CollectionConfig = {
 
         if (studentFindRes.docs.length === 0) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }
@@ -120,14 +121,16 @@ export const Students: CollectionConfig = {
           req: req,
         })
 
+        console.log('forgot password res', res)
+
         if (!res) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }
 
-        req.payload.update({
+        const updateRes = await req.payload.update({
           collection: 'students',
           where: {
             matricNo: {
@@ -145,6 +148,8 @@ export const Students: CollectionConfig = {
 
         return Response.json({
           message: 'Success',
+          email: updateRes.docs[0].email,
+          // emailBlur: blurEmail(updateRes.docs[0].email),
         })
       },
     },
@@ -168,7 +173,7 @@ export const Students: CollectionConfig = {
 
         if (studentFindRes.docs.length === 0) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }

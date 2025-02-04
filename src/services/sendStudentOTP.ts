@@ -7,7 +7,7 @@ import { AxiosError } from 'axios'
 export default async function sendStudentOTP(
   // col: CollectionSlug,
   data: StudentPreLogin,
-): Promise<{ message: string }> {
+): Promise<{ message: string; email?: string; emailBlur?: string }> {
   return (
     await axiosInstance
       .post(`/api/students/send-password-reset-otp`, data)
