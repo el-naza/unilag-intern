@@ -2,7 +2,7 @@
 
 import { Slider } from '@/components/ui/slider'
 import { useRouter } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNavbar'
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
 import headerVector from '@/app/(frontend)/assets/images/header-vector.png'
@@ -19,14 +19,18 @@ import FilterAltIcon from '../assets/icons/filterAltIcon'
 import CompanyRecommendedCard from '../components/Cards/CompanyRecommendedCard'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
+import getAge from '@/utilities/getAge'
+import fetchDocs from '@/services/fetchDocs'
 
 export default function Page() {
   const router = useRouter()
   const { data: session } = useSession()
 
+  const user = useMemo<any>(() => session?.user, [session])
+
   useEffect(() => {
-    console.log(session)
-  }, [session])
+    console.log(user)
+  }, [user])
   return (
     <>
       <div className="block lg:hidden min-h-screen relative text-sm text-white">
@@ -102,7 +106,7 @@ export default function Page() {
             </div>
             <div className="flex items-center">
               <span onClick={() => signOut()} className="font-oleo text-white text-3xl">
-                Welcome Oni
+                Welcome {user.firstName}
               </span>
             </div>
             <div className="col-span-2 flex items-center">
@@ -144,20 +148,20 @@ export default function Page() {
                     <div className="grid grid-rows-4 gap-1">
                       <div>
                         <span className="text-3xl font-bold">
-                          Oni <span className="text-[#FFE75C]">Adedolapo</span> Ireti
+                          {user.firstName} <span className="text-[#FFE75C]">{user.lastName}</span>
                         </span>
-                        <span className="ms-4 text-[#FFE75C]">23</span>
+                        <span className="ms-4 text-[#FFE75C]">{getAge(user.dob)}</span>
                       </div>
                       <div className="flex justify-between">
                         <div>
-                          <span className="">unilag 300level</span>
+                          <span className="">unilag {user.level}</span>
                         </div>
                         <div>
-                          <span className="">Computer Science</span>
+                          <span className="">{user.course}</span>
                         </div>
                       </div>
                       <div>
-                        <span>06, Ajose Adeogun Maryland Lagos State</span>
+                        <span>{user.homeAddress}</span>
                       </div>
                       <div className="flex gap-2">
                         <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
