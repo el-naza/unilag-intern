@@ -1,4 +1,5 @@
-import type { NextAuthConfig } from 'next-auth'
+import type { NextAuthConfig, User } from 'next-auth'
+import { JWT } from 'next-auth/jwt'
 
 export const authConfig = {
   callbacks: {
@@ -14,8 +15,14 @@ export const authConfig = {
       return true
     },
     jwt: async ({ token, user, session, trigger }) => {
+      // console.log('token aspect user', user)
       if (user) {
-        token.user = { ...(token.user as object), ...user }
+        token.user = { ...token.user, ...user } as any
+      }
+
+      if ((user as any)?.token) {
+        token.token = (user as any).token
+        delete token.user.token
       }
 
       if (trigger === 'update') {
@@ -24,8 +31,11 @@ export const authConfig = {
 
       return token
     },
-    session: async ({ session, token }: { session: any; token: any }) => {
-      session.user = token.user
+    session: async ({ session, token }) => {
+      session.user = token.user as any
+      // delete session.user.token
+      // console.log('session aspect token', token)
+      // console.log('session aspect', session)
       return session
     },
   },
