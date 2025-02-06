@@ -15,8 +15,8 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
-  const [longitude, setLongitude] = useState()
-  const [latitude, setLatitude] = useState()
+  const [longitude, setLongitude] = useState('')
+  const [latitude, setLatitude] = useState('')
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [otp, setOtp] = useState('')
   const [area, setArea] = useState('')
@@ -178,7 +178,7 @@ export default function Login() {
     {
       name: 'file',
       type: 'file',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setFile(e.target.files?.[0]),
+      // onChange: (e: React.ChangeEvent<HTMLInputElement>) => setFile(e.target.files?.[0]),
       error: errors.file,
       message: errors.file,
     },

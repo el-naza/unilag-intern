@@ -181,9 +181,9 @@ export interface Admin {
  * via the `definition` "companies".
  */
 export interface Company {
-  id?: string;
+  id: string;
   name: string;
-  cac?: string;
+  cac: string;
   courseAreas: string[];
   location: {
     longitude: number;
@@ -192,10 +192,10 @@ export interface Company {
   phone: string;
   address: string;
   website?: string | null;
-  description?: string;
+  description: string;
   profileImage?: (string | null) | Media;
-  updatedAt?: string;
-  createdAt?: string;
+  updatedAt: string;
+  createdAt: string;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
