@@ -45,8 +45,12 @@ export default {
           foreground: 'white',
         },
         secondary: {
-          DEFAULT: '#c5e0ed',
+          DEFAULT: '#195F7E',
           foreground: 'white',
+        },
+        tertiary: {
+          DEFAULT: '#c5e0ed',
+          foreground: 'black',
         },
         gray: {
           light: {

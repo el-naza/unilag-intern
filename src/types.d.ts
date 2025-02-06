@@ -1,13 +1,17 @@
-// next-auth.d.ts
 import { Admin, Company, Student } from '@/payload-types'
-// import NextAuth from 'next-auth'
 
 // import { User } from 'api'
+import 'next-auth'
 import 'next-auth/jwt'
-import 'next-auth/core/types'
+// import 'next-auth/adapters'
+
+type UserObject = (Student | Admin | Company) & { col: 'students' | 'admins' | 'companies' } & {
+  token?: string
+}
 
 interface JwtExtension {
-  token?: string // Custom field for ID token
+  token?: string // Custom field token
+  user: UserObject
   // roles?: User['roles'] // Custom user role field
 }
 
@@ -15,13 +19,12 @@ declare module 'next-auth/jwt' {
   interface JWT extends JwtExtension {}
 }
 
-// declare module 'next-auth' {
-//   interface Session {
-//     user: (Student | Admin | Company) & { col: 'students' | 'admins' | 'companies' }
-//   }
-// }
-declare module 'next-auth/core/types' {
+declare module 'next-auth' {
+  interface User extends UserObject {}
+  interface AdapterUser {
+    emailVerified?: Date | null
+  }
   interface Session {
-    user: (Student | Admin | Company) & { col: 'students' | 'admins' | 'companies' }
+    user: JwtExtension['user']
   }
 }

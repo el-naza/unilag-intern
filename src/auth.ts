@@ -32,9 +32,9 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
 
         const user = res?.data?.user
 
-        console.log('res user', user)
+        console.log('res token', res?.data?.token)
         if (user) {
-          return user
+          return { ...user, token: res.data.token }
         }
 
         return null

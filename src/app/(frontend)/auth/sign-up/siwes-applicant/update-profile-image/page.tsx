@@ -1,14 +1,31 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import updateUserImage from '@/services/updateUserImage'
+import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function Page() {
   const router = useRouter()
   const [showInstructions, setShowInstruction] = useState(false)
+
+  const updateStudentImgMtn = useMutation({
+    mutationFn: async (file: File) => {
+      try {
+        // randomly generate password for students on creation for now
+        const res = await updateUserImage(file)
+        console.log('res', res)
+        if (!res) return toast.error('Network err; pls try again later')
+        return res
+      } catch {
+        toast.error('An error occured while saving message; pls try again later')
+      }
+    },
+  })
 
   return (
     <div className="text-gray-dark-2 min-h-screen lg:min-h-full py-11 px-4 bg-white flex flex-col">

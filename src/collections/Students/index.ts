@@ -8,7 +8,6 @@ import { z } from 'zod'
 import * as otpGenerator from 'otp-generator'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
-import blurEmail from '@/utilities/blurEmail'
 
 const PreLogin = z.object({
   matricNo: z.string(),
@@ -27,7 +26,7 @@ export const Students: CollectionConfig = {
   },
   hooks: {
     beforeOperation: [
-      async ({ args, req }) => {
+      async ({ args, req, operation }) => {
         // in order to login with matric no. as the username thru REST API
         if (req.data?.matricNo && args.data) args.data.username = req.data?.matricNo
 
