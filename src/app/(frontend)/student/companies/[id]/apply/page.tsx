@@ -9,16 +9,14 @@ import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { InternshipApplication } from '@/payload-types'
 import fetchDoc from '@/services/fetchDoc'
+import fetchDocs from '@/services/fetchDocs'
 import saveDoc from '@/services/saveDoc'
 import saveFormDataDoc from '@/services/saveFormDataDoc'
 import { ValidationErrors } from '@/utilities/types'
@@ -29,14 +27,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { Field, ValidationFieldError } from 'payload'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 const Page = () => {
+  const { data: session } = useSession()
   const { id: companyId }: { id: string } = useParams()
   const [company, setCompany] = useState<any>({})
   const [open, setOpen] = useState(false)
-  const { data: session } = useSession()
+
+  const attachmentRef = useRef<HTMLInputElement>(null)
 
   const user = useMemo<any>(() => session?.user, [session])
 
@@ -48,12 +48,16 @@ const Page = () => {
   const submitApplicationMtn = useMutation({
     mutationFn: async (internshipApplication: InternshipApplication) => {
       try {
-        console.log(internshipApplication)
-        const formData = new FormData()
-        formData.set('letter', internshipApplication.letter)
-        formData.set('student', internshipApplication.student.toString())
-        formData.set('company', internshipApplication.company.toString())
-        const res = await saveFormDataDoc(formData, 'internship-applications')
+        // const formData = new FormData()
+        // formData.set('letter', internshipApplication.letter)
+        // formData.set('student', internshipApplication.student.toString())
+        // formData.set('company', internshipApplication.company.toString())
+        // const res = await saveFormDataDoc(formData, 'internship-applications')
+        const res = await saveDoc('internship-applications', {
+          letter: internshipApplication.letter,
+          student: internshipApplication.student,
+          company: internshipApplication.company,
+        })
         console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
         return res
@@ -66,6 +70,9 @@ const Page = () => {
   const form = useForm<InternshipApplication>({
     validators: {
       onSubmitAsync: async ({ value }) => {
+        value.company = companyId
+        value.student = user.id
+
         const emptyRequiredFields = InternshipApplications.fields.reduce<object>(
           (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
             ...acc,
@@ -75,11 +82,6 @@ const Page = () => {
         )
 
         if (Object.keys(emptyRequiredFields).length) {
-          console.log(Object.keys(emptyRequiredFields))
-          console.log(companyId)
-          if (user) {
-            console.log(user.id)
-          }
           return {
             form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
             fields: emptyRequiredFields,
@@ -100,11 +102,9 @@ const Page = () => {
           }
         }
 
-        // success here so naviagate or toast to success
         form.reset()
         toast.success('Application successful')
         setOpen(true)
-        // router.push('/student')
 
         return null
       },
@@ -190,38 +190,6 @@ const Page = () => {
                         )
                       }}
                     />
-                    <form.Field
-                      name="company"
-                      children={(field) => {
-                        return (
-                          <>
-                            <Input
-                              onChange={(e) => field.handleChange(e.target.value)}
-                              onBlur={field.handleBlur}
-                              value={companyId}
-                            />
-                            <FieldError field={field} />
-                          </>
-                        )
-                      }}
-                    />
-                    {user && (
-                      <form.Field
-                        name="student"
-                        children={(field) => {
-                          return (
-                            <>
-                              <Input
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                onBlur={field.handleBlur}
-                                value={user.id}
-                              />
-                              <FieldError field={field} />
-                            </>
-                          )
-                        }}
-                      />
-                    )}
                   </div>
                   <div className="mb-3">
                     <h5 className="text-black mb-2">Add Attachments</h5>
@@ -285,10 +253,20 @@ const Page = () => {
                         <div className="mb-2">Drag your file(s) to start uploading</div>
                         <div className="text-[#8E8E93] mb-2">OR</div>
                         <div>
-                          <button className="p-2 bg-white text-[#195F7E] border border-[#195F7E] font-bold rounded-md">
+                          <button
+                            type="button"
+                            onClick={() => attachmentRef.current?.click()}
+                            className="p-2 bg-white text-[#195F7E] border border-[#195F7E] font-bold rounded-md"
+                          >
                             Browse files
                           </button>
                         </div>
+                        <input
+                          className="hidden"
+                          ref={attachmentRef}
+                          type="file"
+                          name="attachment"
+                        />
                       </div>
                     </div>
                     <div className="text-[#8E8E93] text-xs">
@@ -296,7 +274,7 @@ const Page = () => {
                     </div>
                   </div>
                   <div className="mb-3">
-                    <Dialog onOpenChange={setOpen}>
+                    <Dialog open={open} onOpenChange={setOpen}>
                       {/* <DialogTrigger asChild> */}
                       <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                         {([canSubmit, isSubmitting]) => (
@@ -328,7 +306,10 @@ const Page = () => {
                           </p>
                         </div>
                         <DialogFooter>
-                          <button className="w-full rounded p-2 text-xs bg-[#0B7077] text-white text-center">
+                          <button
+                            onClick={() => setOpen(false)}
+                            className="w-full rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+                          >
                             Continue
                           </button>
                         </DialogFooter>

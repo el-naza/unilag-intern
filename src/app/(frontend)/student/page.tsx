@@ -23,7 +23,7 @@ import getAge from '@/utilities/getAge'
 import fetchDocs from '@/services/fetchDocs'
 import { Companies } from '@/collections/Companies'
 
-export default function Page() {
+const Page = () => {
   const router = useRouter()
   const { data: session } = useSession()
 
@@ -45,7 +45,7 @@ export default function Page() {
         <div>
           <div className="block lg:hidden min-h-screen relative text-sm text-white">
             <div className="bg-[#195F7E] container pt-4 pb-1">
-              <StudentHeader />
+              <StudentHeader user={user} />
               <StudentNavbar />
             </div>
             <div className="container">
@@ -333,3 +333,5 @@ export default function Page() {
     </>
   )
 }
+
+export default Page

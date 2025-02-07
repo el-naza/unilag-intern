@@ -47,7 +47,7 @@ const Page = () => {
               </div>
               <div className="mb-3">
                 <h5 className="text-black font-medium">Date of Birth</h5>
-                <p className="text-[#8E8E93] mb-3">{getAge(user.dob)}</p>
+                <p className="text-[#8E8E93] mb-3">{user.dob.slice(0, 10)}</p>
               </div>
               <div className="mb-3">
                 <h5 className="text-black font-medium">Nationality</h5>
