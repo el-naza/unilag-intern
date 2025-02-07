@@ -184,7 +184,6 @@ export interface Company {
   id: string;
   name: string;
   cac: string;
-  hasSetPassword?: boolean | null;
   courseAreas: string[];
   location: {
     longitude: number;
@@ -195,6 +194,7 @@ export interface Company {
   website?: string | null;
   description: string;
   profileImage?: (string | null) | Media;
+  resetPasswordOtpHash?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -479,6 +479,7 @@ export interface CompaniesSelect<T extends boolean = true> {
   website?: T;
   description?: T;
   profileImage?: T;
+  resetPasswordOtpHash?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

@@ -53,10 +53,7 @@ export const Companies: CollectionConfig = {
         })
 
         if (companyFindRes.docs.length === 0) {
-          return Response.json(
-            { message: 'This email. has not been registered' },
-            { status: 404 },
-          )
+          return Response.json({ message: 'This email. has not been registered' }, { status: 404 })
         }
 
         const { hasSetPassword } = companyFindRes.docs[0]
@@ -227,6 +224,11 @@ export const Companies: CollectionConfig = {
       name: 'email',
       required: true,
       type: 'text',
+    },
+    {
+      name: 'hasSetPassword',
+      type: 'text',
+      defaultValue: false,
     },
     {
       name: 'address',

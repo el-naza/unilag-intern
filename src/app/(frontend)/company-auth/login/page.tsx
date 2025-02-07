@@ -8,6 +8,9 @@ import saveDoc from '@/services/saveDoc'
 import { toast } from 'sonner'
 import { Company } from '@/payload-types'
 import { log } from 'console'
+import { signIn } from 'next-auth/react'
+import { AuthError } from 'next-auth'
+import companyPreLogin from '@/services/company/companyPreLogin'
 
 export default function Login() {
   const [companyName, setCompanyName] = useState('')
@@ -26,20 +29,142 @@ export default function Login() {
   const [signUp, setSignUp] = useState<'formField' | 'file' | undefined>()
   const [file, setFile] = useState([])
 
+  // const companyPreLoginMtn = useMutation({
+  //   mutationFn: async (email: string) => {
+  //     try {
+  //       const res = await companyPreLogin({ email })
+  //       console.log('res', res)
+  //       if (!res) {
+  //         const message = 'Network err; pls try again later'
+  //         toast.error(message)
+  //         return { message }
+  //       }
+  //       return res
+  //     } catch {
+  //       const message = 'An error occured; pls try again later'
+  //       toast.error(message)
+  //       return { message }
+  //     }
+  //   },
+  // })
+
+  // const handleLogin = () => {
+  //   const newErrors: { [key: string]: string } = {}
+  //   if (!companyName) newErrors.companyName = 'Company name is required.'
+  //   setErrors(newErrors)
+
+  //   if (Object.keys(newErrors).length === 0) {
+  //     // Submit form
+  //     switch (step) {
+  //       case 'company':
+  //         if (!companyName) {
+  //           setErrors({ companyName: 'Company name is required.' })
+  //         } else {
+  //           setErrors({})
+  //           setStep('showEmail') // Proceed to the next step
+  //         }
+  //         break
+
+  //       case 'showEmail':
+  //         if (!email) {
+  //           setErrors({ email: 'Email is required.' })
+  //         } else {
+  //           setErrors({})
+  //           setStep('showOTP') // Proceed to the next step
+  //         }
+  //         break
+
+  //       case 'showOTP':
+  //         if (!otp) {
+  //           setErrors({ otp: 'OTP is required.' })
+  //         } else {
+  //           setErrors({})
+  //           setStep('showSignUp') // Proceed to the next step
+  //         }
+  //         break
+
+  //       default:
+  //         console.log('Final step reached!')
+  //     }
+  //   }
+  // }
+  const companyPreLoginMtn = useMutation({
+    mutationFn: async (email: string) => {
+      try {
+        const res = await companyPreLogin({ email })
+        console.log('res', res)
+        if (!res) {
+          const message = 'Network err; pls try again later'
+          toast.error(message)
+          return { message }
+        }
+        return res
+      } catch {
+        const message = 'An error occurred; pls try again later'
+        toast.error(message)
+        return { message }
+      }
+    },
+  })
+
+  const signInCompanyMtn = useMutation({
+    mutationFn: async ({ email, password }: { email: string; password: string }) => {
+      try {
+        const result = await signIn('credentials', {
+          email: email, // Using email as username
+          password,
+          col: 'companies', // Specifying the collection as 'companies'
+          redirect: false,
+        })
+
+        console.log('Company login result', result)
+
+        if (!result?.url) {
+          return 'Invalid credentials, please try again'
+        }
+        return
+      } catch (error) {
+        if (error instanceof AuthError) {
+          switch (error.type) {
+            case 'CredentialsSignin':
+              console.log('*****err', error.message)
+              if (error.message) {
+                let nonsense = 'Read more at https://errors.authjs.dev#credentialssignin'
+                if (error.message.endsWith(nonsense)) {
+                  return (
+                    error.message.substring(0, error.message.length - nonsense.length) ||
+                    'Invalid credential.'
+                  )
+                }
+                return error.message
+              }
+              return 'Invalid credential.'
+            default:
+              console.log('err', error)
+              return 'Something went wrong.'
+          }
+        }
+
+        return 'An error occurred; pls try again later'
+      }
+    },
+  })
+
+  // Handling Login Steps
   const handleLogin = () => {
     const newErrors: { [key: string]: string } = {}
+
     if (!companyName) newErrors.companyName = 'Company name is required.'
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length === 0) {
-      // Submit form
       switch (step) {
         case 'company':
           if (!companyName) {
             setErrors({ companyName: 'Company name is required.' })
           } else {
             setErrors({})
-            setStep('showEmail') // Proceed to the next step
+            setStep('showEmail') // Proceed to email step
           }
           break
 
@@ -48,7 +173,7 @@ export default function Login() {
             setErrors({ email: 'Email is required.' })
           } else {
             setErrors({})
-            setStep('showOTP') // Proceed to the next step
+            setStep('showOTP') // Proceed to OTP step
           }
           break
 
@@ -57,7 +182,16 @@ export default function Login() {
             setErrors({ otp: 'OTP is required.' })
           } else {
             setErrors({})
-            setStep('showSignUp') // Proceed to the next step
+            setStep('showSignUp') // Proceed to final step
+          }
+          break
+
+        case 'showSignUp':
+          if (!email || !password) {
+            setErrors({ password: 'Password is required.' })
+          } else {
+            setErrors({})
+            signInCompanyMtn.mutate({ email, password }) // Final authentication
           }
           break
 
@@ -124,7 +258,7 @@ export default function Login() {
               phone: phone,
               address: address,
               courseAreas: [area],
-              location: { longitude: parsedLongitude, latitude: parsedLatitude }
+              location: { longitude: parsedLongitude, latitude: parsedLatitude },
             })
             // Clear errors and proceed to file upload step
             setErrors({})
