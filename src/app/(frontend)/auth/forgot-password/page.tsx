@@ -95,41 +95,49 @@ export default function Page() {
             </div>
           </div>
 
-          <Label>Username</Label>
-          <form.Field
-            name="matricNo"
-            children={(field) => {
-              return (
-                <>
-                  <Input
-                    name={field.name}
-                    value={field.state.value || ''}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Matric Number"
-                    className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5"
-                  />
-                  <FieldError field={field} />
-                </>
-              )
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              form.handleSubmit()
             }}
-          />
+          >
+            <Label>Username</Label>
+            <form.Field
+              name="matricNo"
+              children={(field) => {
+                return (
+                  <>
+                    <Input
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Matric Number"
+                      className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5"
+                    />
+                    <FieldError field={field} />
+                  </>
+                )
+              }}
+            />
 
-          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-            {([canSubmit, isSubmitting]) => (
-              <>
-                <Button
-                  type="submit"
-                  disabled={!canSubmit}
-                  size="lg"
-                  className="w-full mt-8 text-gr"
-                >
-                  Send OTP {isSubmitting && <Spinner />}
-                </Button>
-                <FormError form={form} />
-              </>
-            )}
-          </form.Subscribe>
+            <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+              {([canSubmit, isSubmitting]) => (
+                <>
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit}
+                    size="lg"
+                    className="w-full mt-8 text-gr"
+                  >
+                    Send OTP {isSubmitting && <Spinner />}
+                  </Button>
+                  <FormError form={form} />
+                </>
+              )}
+            </form.Subscribe>
+          </form>
         </div>
       </div>
     </div>

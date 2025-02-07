@@ -143,8 +143,16 @@ export default function Page() {
             return null
           } else if (res.ready === false) {
             toast.error(res.message)
-            const message = await sendOtpMtn.mutateAsync(value.username)
-            toast.message(`OTP Send Status: ${message}`)
+
+            const error = await sendOtpMtn.mutateAsync(value.username)
+            if (error) {
+              toast.error('Failed to auto-request OTP; pls request an OTP manually')
+              router.push('/auth/forgot-password')
+              return
+            }
+
+            toast.message(`Use the OTP sent to set your password`)
+
             router.push('/auth/otp-confirmation')
             return null
           } else {

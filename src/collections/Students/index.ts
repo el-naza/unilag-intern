@@ -8,7 +8,6 @@ import { z } from 'zod'
 import * as otpGenerator from 'otp-generator'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
-import blurEmail from '@/utilities/blurEmail'
 
 const PreLogin = z.object({
   matricNo: z.string(),
@@ -27,7 +26,7 @@ export const Students: CollectionConfig = {
   },
   hooks: {
     beforeOperation: [
-      async ({ args, req }) => {
+      async ({ args, req, operation }) => {
         // in order to login with matric no. as the username thru REST API
         if (req.data?.matricNo && args.data) args.data.username = req.data?.matricNo
 
@@ -207,6 +206,43 @@ export const Students: CollectionConfig = {
           message: 'Success',
           token: resetPasswordToken,
         })
+      },
+    },
+    {
+      method: 'post',
+      path: '/reset-password',
+      handler: async (req) => {
+        const { password, token } = await req.json?.()
+        console.log('***called here')
+
+        if (!password || !token) {
+          return Response.json({ message: 'password and token must be specified' }, { status: 400 })
+        }
+
+        await req.payload.update({
+          collection: 'students',
+          where: {
+            resetPasswordToken: {
+              equals: token,
+            },
+          },
+          data: {
+            hasSetPassword: true,
+          },
+          req: req,
+        })
+
+        return Response.json(
+          await req.payload.resetPassword({
+            collection: 'students',
+            data: {
+              password,
+              token,
+            },
+            req: req, // pass a Request object to be provided to all hooks
+            overrideAccess: false,
+          }),
+        )
       },
     },
   ],

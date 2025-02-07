@@ -68,7 +68,7 @@ export default function Page() {
           }
         }
 
-        if (value.password.length !== 8) {
+        if (value.password.length < 8) {
           return {
             form: 'Password must be up to 8 characters.',
             fields: {},
@@ -92,7 +92,7 @@ export default function Page() {
 
         // success here so naviagate or toast to success !!
         form.reset()
-        toast.success('OTP verification is successful')
+        toast.success('Password set successfully')
         router.push('/auth/login')
 
         return null
