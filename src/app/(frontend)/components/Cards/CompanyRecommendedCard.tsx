@@ -7,7 +7,7 @@ import enrolledStudent3 from '../../assets/images/enrolled-student-3.svg'
 import enrolledStudent4 from '../../assets/images/enrolled-student-4.svg'
 import enrolledStudent5 from '../../assets/images/enrolled-student-5.svg'
 
-export default function CompanyRecommendedCard() {
+export default function CompanyRecommendedCard({ company }) {
   return (
     <div className="shadow rounded-lg">
       <div className="rounded-t-lg relative flex flex-col">

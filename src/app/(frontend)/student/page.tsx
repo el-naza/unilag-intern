@@ -2,7 +2,7 @@
 
 import { Slider } from '@/components/ui/slider'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNavbar'
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
 import headerVector from '@/app/(frontend)/assets/images/header-vector.png'
@@ -21,15 +21,23 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import getAge from '@/utilities/getAge'
 import fetchDocs from '@/services/fetchDocs'
+import { Companies } from '@/collections/Companies'
 
 export default function Page() {
   const router = useRouter()
   const { data: session } = useSession()
 
+  const [companies, setCompanies] = useState<any[]>([])
+
   const user = useMemo<any>(() => session?.user, [session])
 
+  const fetchCompanies = async () => {
+    const res: any = await fetchDocs('companies')
+    setCompanies(res.docs)
+  }
+
   useEffect(() => {
-    console.log(user)
+    fetchCompanies()
   }, [user])
   return (
     <>
@@ -299,10 +307,9 @@ export default function Page() {
             </div>
           </div>
           <div className="grid lg:grid-cols-4 gap-5">
-            <CompanyRecommendedCard />
-            <CompanyRecommendedCard />
-            <CompanyRecommendedCard />
-            <CompanyRecommendedCard />
+            {companies.map((company) => (
+              <CompanyRecommendedCard key={company.id} company={company} />
+            ))}
           </div>
         </div>
       </div>
