@@ -8,10 +8,16 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { useDropzone } from 'react-dropzone'
 
 export default function Page() {
   const router = useRouter()
   const [showInstructions, setShowInstruction] = useState(false)
+  // const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  //   onDrop,
+  //   noClick: true,
+  //   accept: { 'image/*': [] },
+  // })
 
   const updateStudentImgMtn = useMutation({
     mutationFn: async (file: File) => {
@@ -45,6 +51,7 @@ export default function Page() {
       >
         <Image src="/static-icons/info-icon.svg" width={16} height={16} alt="icon" />
       </Button>
+
       <div className="border-dashed border-secondary/50 border-[2px] rounded-lg flex flex-col items-center py-6 mt-3">
         <Image src="/static-icons/upload-icon.svg" width={42} height={42} alt="icon" />
         <div className="mt-3 mb-2 text-black-2 text-[12px]">
