@@ -1,10 +1,25 @@
+'use client'
+
 import CompanySuggestionCard from '@/app/(frontend)/components/Cards/CompanySuggestionCard'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import advertText from '../../../assets/images/adverts.png'
+import { useParams } from 'next/navigation'
+import fetchDoc from '@/services/fetchDoc'
 
-export default async function Page() {
+const Page = () => {
+  const { id }: { id: string } = useParams()
+  const [company, setCompany] = useState<any>({})
+
+  const fetchCompany = async () => {
+    const res: any = await fetchDoc('companies', id)
+    setCompany(res)
+  }
+
+  useEffect(() => {
+    fetchCompany()
+  }, [])
   return (
     <div className="min-h-screen relative text-sm text-black bg-white lg:bg-[#195F7E] py-0">
       <div className="container">
@@ -42,14 +57,9 @@ export default async function Page() {
               <div className="lg:col-span-2 p-4">
                 <div className="flex gap-2 items-center mb-3">
                   <Image height={32} width={32} src="/company-logo.png" alt="company-logo" />
-                  <h5 className="text-black font-bold">CRM SHOPPING MALL</h5>
+                  <h5 className="text-black font-bold uppercase">{company.name}</h5>
                 </div>
-                <p className="text-[#8E8E93] text-xs mb-3">
-                  CMR Shopping Mall is a premier retail and lifestyle destination that redefines the
-                  shopping and entertainment experience. Located at the heart of [Insert Location],
-                  CMR is designed to cater to diverse needs, offering a vibrant mix of retail,
-                  dining, entertainment, and leisure all under one roof.
-                </p>
+                <p className="text-[#8E8E93] text-xs mb-3">{company.description}</p>
                 <div className="grid grid-cols-2 gap-4 text-xs mb-4">
                   <div className="grid grid-rows-1 gap-1">
                     <svg
@@ -101,7 +111,9 @@ export default async function Page() {
                       />
                     </svg>
                     <div className="text-[#0B7077]">Career Area</div>
-                    <div className="text-[#48484A]">Marketing</div>
+                    {company.courseAreas && (
+                      <div className="text-[#48484A]">{company.courseAreas.join(', ')}</div>
+                    )}
                   </div>
                   <div className="grid grid-rows-1 gap-1">
                     <svg
@@ -137,7 +149,7 @@ export default async function Page() {
                     2 vacancies
                   </div>
                   <div className="col-span-2">
-                    <Link href={'/student/companies/1/apply'}>
+                    <Link href={`/student/companies/${id}/apply`}>
                       <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
                         Apply Now
                       </button>
@@ -186,3 +198,5 @@ export default async function Page() {
     </div>
   )
 }
+
+export default Page
