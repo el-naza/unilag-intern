@@ -113,11 +113,11 @@ export default function MapPage() {
 
           {/* Map Section */}
           <div className="w-full lg:flex-grow h-[300px] lg:h-[447px] rounded-[20px]">
-            <MapContainer style={{ height: '100%', width: '100%' }}>
+            {/* <MapContainer style={{ height: '100%', width: '100%' }}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <Marker position={mapCenter} />
               <SetMapCenter center={mapCenter} />
-            </MapContainer>
+            </MapContainer> */}
           </div>
         </div>
 
