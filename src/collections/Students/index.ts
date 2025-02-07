@@ -192,6 +192,43 @@ export const Students: CollectionConfig = {
         })
       },
     },
+    {
+      method: 'post',
+      path: '/reset-password',
+      handler: async (req) => {
+        const { password, token } = await req.json?.()
+        console.log('***called here')
+
+        if (!password || !token) {
+          return Response.json({ message: 'password and token must be specified' }, { status: 400 })
+        }
+
+        await req.payload.update({
+          collection: 'students',
+          where: {
+            resetPasswordToken: {
+              equals: token,
+            },
+          },
+          data: {
+            hasSetPassword: true,
+          },
+          req: req,
+        })
+
+        return Response.json(
+          await req.payload.resetPassword({
+            collection: 'students',
+            data: {
+              password,
+              token,
+            },
+            req: req, // pass a Request object to be provided to all hooks
+            overrideAccess: false,
+          }),
+        )
+      },
+    },
   ],
   fields: [
     {
