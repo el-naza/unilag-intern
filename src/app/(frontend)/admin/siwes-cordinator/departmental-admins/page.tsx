@@ -10,7 +10,7 @@ import {
   TableBody,
   TableCell,
 } from '@/components/ui/table'
-import { EllipsisVertical, Plus, Edit2, Trash } from 'lucide-react'
+import { EllipsisVertical, Plus, Edit2, Trash, ListFilter } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
   DropdownMenu,
@@ -27,6 +27,16 @@ import {
   flexRender,
 } from '@tanstack/react-table'
 import Pagination from '../../_components/pagination'
+import AddAdmin from './add-admin'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
 type Admin = {
   name: string
@@ -122,16 +132,49 @@ export default function DepartmentalAdminsPage() {
   }
 
   return (
-    <div className='p-8'>
+    <div className="p-8">
       <FIlterStats config={config} />
 
       <div className="flex justify-between items-center mt-8">
         <div></div>
         <div className="flex gap-4 items-center">
-          <Input placeholder="Search by name, matric no..." className="border-[1px]" />
-          <Button>
-            <Plus /> Add Admin
-          </Button>
+          <div className="flex gap-2 items-center bg-white border-[1px] pr-3 rounded-md">
+            <Input placeholder="Search by name, matric no..." />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <ListFilter />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-white border-none">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+                    <span>Company Name</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+                    <span>CAC Number</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+                    <span>Location</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus /> Add Admin
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-screen-md bg-white">
+              <DialogHeader>
+                <DialogTitle>Departmental Admins</DialogTitle>
+              </DialogHeader>
+
+              <AddAdmin />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

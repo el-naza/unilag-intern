@@ -28,21 +28,21 @@ import {
 } from '@tanstack/react-table'
 import Pagination from '../../_components/pagination'
 
-type Report = {
-  companyName: string
-  reportNumber: string
-  studentName: string
-  reportMessage: string
-  reportDate: string
+type Activity = {
+  users: string
+  activities: string
+  message: string
+  status: string
+  timeDate: string
 }
 
-const defaultData: Report[] = [
+const defaultData: Activity[] = [
   {
-    companyName: 'Facebook',
-    reportNumber: '0012',
-    studentName: 'Mark',
-    reportMessage: 'Doing well',
-    reportDate: '02/03/2025',
+    users: 'Lucas Ray',
+    activities: 'Request Accepted',
+    message: 'Dear [Applicant], we are pleased to inform you',
+    status: 'Successful',
+    timeDate: '11:24 am - 02/03/2025',
   },
 ]
 

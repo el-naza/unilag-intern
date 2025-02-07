@@ -10,7 +10,7 @@ import {
   TableBody,
   TableCell,
 } from '@/components/ui/table'
-import { EllipsisVertical, Plus, Edit2, Trash } from 'lucide-react'
+import { EllipsisVertical, Plus, Edit2, Trash, ListFilter } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
@@ -28,6 +28,12 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import Pagination from '../../_components/pagination'
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import AddStudent from './add-student'
 
 type Student = {
   name: string
@@ -135,7 +141,7 @@ export default function StudentPage() {
   }
 
   return (
-    <div className='p-8'>
+    <div className="p-8">
       <FIlterStats config={config} />
 
       <div className="flex justify-between items-center mt-8">
@@ -170,10 +176,38 @@ export default function StudentPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <Input placeholder="Search by name, matric no..." className="border-[1px]" />
-          <Button>
-            <Plus /> Add Student
-          </Button>
+          <div className="flex gap-2 items-center bg-white border-[1px] pr-3 rounded-md">
+            <Input placeholder="Search by name, matric no..." />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <ListFilter />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-white border-none">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+                    <span>Student Name</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+                    <span>Course</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+                    <span>Matric Number</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus /> Add Student
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-screen-md overflow-auto bg-white">
+            <AddStudent />
+          </DialogContent>
+        </Dialog>
         </div>
       </div>
 

@@ -1,14 +1,6 @@
 'use client'
 import React from 'react'
-import {
-  Bell,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  LogOut,
-  Settings,
-  User,
-} from 'lucide-react'
+import { Bell, ChevronLeft, ChevronRight, ChevronDown, LogOut, Settings, User } from 'lucide-react'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import './tool-bar.scss'
@@ -59,16 +51,16 @@ const ToolBar = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
                   <User />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
                   <Settings />
                   <span>Settings</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
                 <LogOut />
                 <span>Log out</span>
               </DropdownMenuItem>

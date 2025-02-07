@@ -10,7 +10,7 @@ import {
   TableBody,
   TableCell,
 } from '@/components/ui/table'
-import { EllipsisVertical, Plus, Edit2, Trash } from 'lucide-react'
+import { EllipsisVertical, Plus, Edit2, Trash, ListFilter } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
@@ -28,6 +28,12 @@ import {
   flexRender,
 } from '@tanstack/react-table'
 import Pagination from '../../_components/pagination'
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import AddCompany from './add-company'
 
 type Company = {
   name: string
@@ -127,7 +133,7 @@ export default function CompaniesPage() {
   }
 
   return (
-    <div className='p-8'>
+    <div className="p-8">
       <FIlterStats config={config} />
 
       <div className="flex justify-between items-center mt-8">
@@ -162,10 +168,37 @@ export default function CompaniesPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <Input placeholder="Search by name, location..." className="border-[1px]" />
-          <Button>
-            <Plus /> Add Company
-          </Button>
+          <div className="flex gap-2 items-center bg-white border-[1px] pr-3 rounded-md">
+            <Input placeholder="Search by name, matric no..." />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <ListFilter />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-white border-none">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+                    <span>Company Name</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+                    <span>Location</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus /> Add Company
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-screen-md overflow-auto bg-white">
+            <AddCompany />
+          </DialogContent>
+        </Dialog>
+         
         </div>
       </div>
 
