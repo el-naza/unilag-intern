@@ -8,7 +8,7 @@ import { z } from 'zod'
 import * as otpGenerator from 'otp-generator'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
-
+import { generateEmailHTML } from '../../utilities/generateEmail'
 const PreLogin = z.object({
   matricNo: z.string(),
 })
@@ -39,23 +39,7 @@ export const Students: CollectionConfig = {
       requireEmail: true,
     },
     forgotPassword: {
-      generateEmailHTML: (args) => {
-        console.log('in gen, otp frm ctx', args?.req?.context)
-
-        return `
-          <!doctype html>
-          <html>
-            <body>
-              <h1>PASSWORD RESET OTP</h1>
-              <p>Hello, ${args?.user.email}!</p>
-              <p>Use the OTP below to reset your password.</p>
-              <p>
-                ${args?.req?.context!.otp!}
-              </p>
-            </body>
-          </html>
-        `
-      },
+      generateEmailHTML,
     },
   },
   endpoints: [

@@ -184,6 +184,7 @@ export interface Company {
   id: string;
   name: string;
   cac: string;
+  hasSetPassword?: boolean | null;
   courseAreas: string[];
   location: {
     longitude: number;
