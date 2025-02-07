@@ -22,7 +22,7 @@ import { useRouter } from 'next/navigation'
 import { Field, ValidationFieldError } from 'payload'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { useSendStudentOtpMtn } from '../forgot-password/page'
+import useSendStudentOtpMtn from '../forgot-password/useSendStudentOtpMtn'
 
 export default function Page() {
   const [hasPassword, setHasPassword] = useState(false)
