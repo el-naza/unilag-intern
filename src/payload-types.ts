@@ -183,16 +183,17 @@ export interface Admin {
 export interface Company {
   id: string;
   name: string;
-  cac: string;
-  courseAreas: string[];
+  cac?: string | null;
+  courseAreas: ('Mathematics' | 'Science' | 'History' | 'Engineering' | 'Arts')[];
   location: {
     longitude: number;
     latitude: number;
   };
   phone: string;
-  address: string;
+  hasSetPassword?: boolean | null;
+  address?: string | null;
   website?: string | null;
-  description: string;
+  description?: string | null;
   profileImage?: (string | null) | Media;
   resetPasswordOtpHash?: string | null;
   updatedAt: string;
@@ -475,6 +476,7 @@ export interface CompaniesSelect<T extends boolean = true> {
         latitude?: T;
       };
   phone?: T;
+  hasSetPassword?: T;
   address?: T;
   website?: T;
   description?: T;

@@ -1,16 +1,27 @@
 'use client'
-import { useState } from 'react'
 import MailIcon from '../../assets/icons/mail'
 import DynamicForm from '../../components/Form'
+import FieldError from '@/components/FieldError'
+import FormError from '@/components/FormError'
+import Spinner from '@/components/spinner'
+import { Button } from '@/components/ui/button'
 import ArrowIcon from '../../assets/icons/arrow'
 import { useMutation } from '@tanstack/react-query'
 import saveDoc from '@/services/saveDoc'
 import { toast } from 'sonner'
-import { Company } from '@/payload-types'
+import { Company, CompanyAuthOperations } from '@/payload-types'
 import { log } from 'console'
 import { signIn } from 'next-auth/react'
 import { AuthError } from 'next-auth'
 import companyPreLogin from '@/services/company/companyPreLogin'
+import { useMemo, useState } from 'react'
+import { Field, ValidationFieldError } from 'payload'
+import { useForm } from '@tanstack/react-form'
+import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Link } from 'lucide-react'
+import useSendCompanyOtpMtn from '../forgot-password/useSendCompanyOtpMtn'
 
 export default function Login() {
   const [companyName, setCompanyName] = useState('')
@@ -25,9 +36,32 @@ export default function Login() {
   const [area, setArea] = useState('')
   const [step, setStep] = useState<
     'company' | 'showEmail' | 'showOTP' | 'showSignUp' | 'showUpload'
-  >('company')
+  >('showEmail')
   const [signUp, setSignUp] = useState<'formField' | 'file' | undefined>()
   const [file, setFile] = useState([])
+  const [hasPassword, setHasPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(true)
+  const [password, setPassword] = useState('')
+  const requiredFields = useMemo(
+    () => [
+      {
+        name: 'email',
+        type: 'text',
+        required: true,
+      },
+      ...(hasPassword
+        ? [
+            {
+              name: 'password',
+              type: 'text',
+              required: true,
+            },
+          ]
+        : []),
+    ],
+    [hasPassword],
+  )
+  const router = useRouter()
 
   // const companyPreLoginMtn = useMutation({
   //   mutationFn: async (email: string) => {
@@ -107,11 +141,14 @@ export default function Login() {
     },
   })
 
+  const sendOtpMtn = useSendCompanyOtpMtn()
+
   const signInCompanyMtn = useMutation({
-    mutationFn: async ({ email, password }: { email: string; password: string }) => {
+    mutationFn: async ({ email, password }: CompanyAuthOperations['login']) => {
       try {
+        console.log(email, password)
         const result = await signIn('credentials', {
-          email: email, // Using email as username
+          email, // Using email as email
           password,
           col: 'companies', // Specifying the collection as 'companies'
           redirect: false,
@@ -150,306 +187,82 @@ export default function Login() {
     },
   })
 
-  // Handling Login Steps
-  const handleLogin = () => {
-    const newErrors: { [key: string]: string } = {}
 
-    if (!companyName) newErrors.companyName = 'Company name is required.'
-    setErrors(newErrors)
+  const form = useForm<CompanyAuthOperations['login']>({
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        const emptyRequiredFields = requiredFields.reduce<object>(
+          (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
+            ...acc,
+            ...(field?.required && !value[field.name] && { [field.name]: 'Required' }),
+          }),
+          {},
+        )
 
-    if (Object.keys(newErrors).length === 0) {
-      switch (step) {
-        case 'company':
-          if (!companyName) {
-            setErrors({ companyName: 'Company name is required.' })
-          } else {
-            setErrors({})
-            setStep('showEmail') // Proceed to email step
+        if (Object.keys(emptyRequiredFields).length) {
+          return {
+            form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
+            fields: emptyRequiredFields,
           }
-          break
+        }
 
-        case 'showEmail':
-          if (!email) {
-            setErrors({ email: 'Email is required.' })
+        if (!hasPassword) {
+          const res = await companyPreLoginMtn.mutateAsync(value.email)
+          console.log('pre login res', res)
+
+          if (res?.ready) {
+            toast.message(res.message)
+            setHasPassword(true)
+            return null
+          } else if (!res.ready) {
+            toast.error(res.message)
+
+            const error = await sendOtpMtn.mutateAsync(value.email)
+            console.log('sendOtpMtn', error)
+            if (error) {
+              toast.error('Failed to auto-request OTP; pls request an OTP manually')
+              router.push('/company-auth/forgot-password')
+              return
+            }
+            toast.message(`Use the OTP sent to set your password`)
+            console.log("move to otp")
+            router.push('/company-auth/otp-confirmation')
+            return null
           } else {
-            setErrors({})
-            setStep('showOTP') // Proceed to OTP step
+            toast.error(res.message)
+            return {
+              form: res.message,
+              fields: {},
+            }
           }
-          break
+        }
 
-        case 'showOTP':
-          if (!otp) {
-            setErrors({ otp: 'OTP is required.' })
-          } else {
-            setErrors({})
-            setStep('showSignUp') // Proceed to final step
+        const error = await signInCompanyMtn.mutateAsync(value)
+        if (error)
+          return {
+            form: error!,
+            fields: {},
           }
-          break
 
-        case 'showSignUp':
-          if (!email || !password) {
-            setErrors({ password: 'Password is required.' })
-          } else {
-            setErrors({})
-            signInCompanyMtn.mutate({ email, password }) // Final authentication
-          }
-          break
+        // success here so naviagate or toast to success !!
+        form.reset()
+        toast.success('Sign in successful')
+        router.push('/company-pages/home')
 
-        default:
-          console.log('Final step reached!')
-      }
-    }
-  }
-
-  const signUpCompanyMtn = useMutation({
-    mutationFn: async (company: Company) => {
-      try {
-        // If a file is included, upload it first
-        // let fileUrl = ''
-        // if (company.file) {
-        //   fileUrl = await uploadFile(company.file)
-        // }
-
-        // Save company details with file URL
-        const res = await saveDoc('companies', { ...company })
-        console.log('Company signup response:', res)
-
-        if (!res) return toast.error('Network error; please try again later')
-        console.log('Company signup response:', res)
-        return res
-      } catch {
-        toast.error('An error occurred while signing up the company; please try again later')
-      }
+        return null
+      },
     },
   })
 
-  const handleSignUp = () => {
-    const newErrors: { [key: string]: string } = {}
-
-    if (Object.keys(newErrors).length === 0) {
-      switch (signUp) {
-        case 'formField':
-          // Perform validation for formField step
-          if (
-            !companyName ||
-            !companyEmail ||
-            !phone ||
-            !address ||
-            !latitude ||
-            !longitude ||
-            !area
-          ) {
-            // Example validation
-            setErrors({
-              companyName: !companyName ? 'Company name is required.' : '',
-              companyEmail: !companyEmail ? 'Email is required.' : '',
-              companyphone: !phone ? 'RC Number is required.' : '',
-              companyAddress: !address ? 'Address is required.' : '',
-              latitude: !latitude ? 'Latitude is required' : '',
-              longitude: !longitude ? 'Longitude is required' : '',
-              area: !area ? 'Course Area is required' : '',
-            })
-          } else {
-            const parsedLatitude = parseFloat(latitude)
-            const parsedLongitude = parseFloat(longitude)
-            signUpCompanyMtn.mutate({
-              name: companyName,
-              email: companyEmail,
-              phone: phone,
-              address: address,
-              courseAreas: [area],
-              location: { longitude: parsedLongitude, latitude: parsedLatitude },
-            })
-            // Clear errors and proceed to file upload step
-            setErrors({})
-            setSignUp('file')
-          }
-          break
-
-        case 'file':
-          // Perform validation for file step
-          if (!file) {
-            setErrors({ file: 'File is required.' })
-          } else {
-            setErrors({})
-            // console.log('Final step reached! Submitting form...')
-            // const parsedLatitude = parseFloat(latitude)
-            // const parsedLongitude = parseFloat(longitude)
-            // signUpCompanyMtn.mutate({
-            //   name: companyName,
-            //   email: companyEmail,
-            //   phone: phone,
-            //   address: address,
-            //   courseAreas: [area],
-            //    location: { longitude: parsedLongitude, latitude: parsedLatitude },
-            // })
-          }
-          break
-
-        default:
-          console.log('Unknown step')
-      }
-    }
-  }
-
-  const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    console.log(`${e.target.name}: ${e.target.value}`)
-  }
-
-  const companyField = [
-    {
-      name: 'companyName',
-      label: 'Company Name',
-      type: 'text',
-      value: companyName,
-      placeholder: 'Enter Company Name',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setCompanyName(e.target.value),
-      error: errors.companyName,
-      message: errors.companyName,
-    },
-  ]
-  const uploadField = [
-    {
-      name: 'file',
-      type: 'file',
-      // onChange: (e: React.ChangeEvent<HTMLInputElement>) => setFile(e.target.files?.[0]),
-      error: errors.file,
-      message: errors.file,
-    },
-  ]
-
-  const emailField = [
-    {
-      name: 'email',
-      label: 'Email',
-      type: 'email',
-      value: email,
-      placeholder: 'Enter Email',
-      icon: <MailIcon fill={errors.companyName ? 'red' : '#0B7077'} />,
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
-      error: errors.email,
-      message: errors.email,
-    },
-  ]
-
-  const signUpField = [
-    {
-      name: 'companyName',
-      label: 'Company Name',
-      type: 'text',
-      value: companyName,
-      placeholder: 'Enter Company Name',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setCompanyName(e.target.value),
-      error: errors.companyName,
-      message: errors.companyName,
-    },
-    {
-      name: 'companyEmail',
-      label: 'Company Email',
-      type: 'email',
-      value: companyEmail,
-      placeholder: 'Enter Email',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setCompanyEmail(e.target.value),
-      error: errors.companyEmail,
-      message: errors.companyEmail,
-    },
-    {
-      name: 'companyphone',
-      label: 'Company RC Number',
-      type: 'number',
-      value: phone,
-      placeholder: 'Enter RC Number ',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value),
-      error: errors.companyphone,
-      message: errors.companyphone,
-    },
-    {
-      name: 'courseArea',
-      label: 'Company Course Area',
-      type: 'select',
-      value: area,
-      options: [
-        { label: 'Select Area', value: '' },
-        { label: 'Admin', value: 'admin' },
-        { label: 'User', value: 'user' },
-      ],
-      onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setArea(e.target.value),
-      error: '',
-      // message: 'Role selected.',
-    },
-    {
-      name: 'companyAddress',
-      label: 'Company Address',
-      type: 'text',
-      value: address,
-      placeholder: 'Enter Address ',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value),
-      error: errors.companyAddress,
-      message: errors.companyAddress,
-    },
-    {
-      name: 'Longitude',
-      label: 'Longitude',
-      type: 'number',
-      value: longitude,
-      placeholder: 'Enter Longitude',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setLongitude(e.target.value),
-      error: errors.longitude,
-      message: errors.longitude,
-    },
-    {
-      name: 'Latitude',
-      label: 'Latitude',
-      type: 'number',
-      value: latitude,
-      placeholder: 'latitude',
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setLatitude(e.target.value),
-      error: errors.latitude,
-      message: errors.latitude,
-    },
-  ]
-  const otpField = [
-    {
-      name: 'otp',
-      label: 'Enter OTP',
-      type: 'otp',
-      otpLength: 6,
-      onChange: handleFieldChange,
-    },
-  ]
-
-  const fields =
-    step === 'company'
-      ? companyField
-      : step === 'showEmail'
-        ? emailField
-        : step === 'showOTP'
-          ? otpField
-          : []
-
-  const signUpFields = signUp === 'formField' ? signUpField : signUp === 'file' ? uploadField : []
-  const goBack = () => {
-    if (signUp === 'file') {
-      setSignUp('formField')
-    } else if (signUp === 'formField') {
-      setSignUp(null)
-    } else if (step === 'showOTP') {
-      setStep('showEmail')
-    } else if (step === 'showEmail') {
-      setStep('company')
-    }
-  }
 
   return (
     <div className="">
-      {step !== 'company' || signUp ? (
         <button
-          onClick={goBack}
+          // onClick={goBack}
           className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
         >
           <ArrowIcon /> Back
         </button>
-      ) : null}
       <h2 className="font-[500] text-[24px] text-center mt-[40px]">
         {step === 'company'
           ? 'Login into your Siwes Company Profile'
@@ -466,24 +279,83 @@ export default function Login() {
         Enter your company name to proceed with the login process
         {/* '} */}
       </p>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }}
+      >
+        <Label>Comapny Email</Label>
+        <form.Field name="email">
+          {(field) => {
+            return (
+              <>
+                <Input
+                  disabled={hasPassword}
+                  name={field.name}
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Email"
+                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-black border"
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        </form.Field>
+        {hasPassword && (
+          <>
+            <Label className="mt-3 block">Password</Label>
+            <form.Field
+              name="password"
+              children={(field) => {
+                return (
+                  <>
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Enter Password"
+                      className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border"
+                    />
+                    <FieldError field={field} />
+                  </>
+                )
+              }}
+            />
+            <Link
+              href="/auth/forgot-password"
+              className="text-accent-teal underline text-[12px] leading-[16.5px]"
+            >
+              Forgotten Password
+            </Link>
+          </>
+        )}
 
-      <DynamicForm
-        fields={signUp ? signUpFields : fields}
-        onSubmit={signUp === 'formField' ? handleSignUp : handleLogin}
-        submitButtonText="Proceed"
-      />
-
-      {/* {success ? (
-        <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
-          Can’t remember your email address? Contact our customer service at 090 0000 1123{' '}
-          <span className="text-[#007AFF]">090 0000 1123</span> for assistance.{' '}
-        </p>
-      ) : ( */}
+        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+          {([canSubmit, isSubmitting]) => (
+            <>
+              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8 text-gr">
+                {hasPassword ? 'Login' : 'Continue'} {isSubmitting && <Spinner />}
+              </Button>
+              <FormError form={form} />
+            </>
+          )}
+        </form.Subscribe>
+      </form>
+    
       <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
         Not registered yet? Sign up now to connect withcc top talent effortlessly!{' '}
-        <span className="text-[#007AFF] cursor-pointer" onClick={() => setSignUp('formField')}>
+       <Link
+          href="/company-auth/sign-up"
+          className="text-[#007AFF] cursor-pointer"
+        >
           Sign up as a company
-        </span>
+        </Link>
       </p>
       {/* )} */}
     </div>

@@ -10,10 +10,11 @@ import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
 
-
 const PreLogin = z.object({
   email: z.string().email(),
 })
+
+export type CompanyPreLogin = z.infer<typeof PreLogin>
 
 // type PreLogin = z.infer<typeof PreLogin>
 
@@ -71,7 +72,7 @@ export const Companies: CollectionConfig = {
         const { data } = PreLogin.safeParse(await req.json?.())
 
         if (!data) {
-          return Response.json({ message: 'Matric no. not specified' }, { status: 400 })
+          return Response.json({ message: 'Email. not specified' }, { status: 400 })
         }
 
         // gen otp and add to context for use in the html gen
@@ -128,31 +129,28 @@ export const Companies: CollectionConfig = {
       method: 'post',
       path: '/verify-password-reset-otp',
       handler: async (req) => {
-        const { matricNo, otp } = await req.json?.()
+        const { email, otp } = await req.json?.()
 
-        if (!matricNo || !otp) {
+        if (!email || !otp) {
           return Response.json({ message: 'email and otp must be specified' }, { status: 400 })
         }
 
         const companyFindRes = await req.payload.find({
-          collection: 'students',
+          collection: 'companies',
           where: {
-            matricNo: { equals: matricNo },
+            email: { equals: email },
           },
           showHiddenFields: true,
         })
 
         if (companyFindRes.docs.length === 0) {
-          return Response.json(
-            { message: 'This matric no. has not been registered' },
-            { status: 404 },
-          )
+          return Response.json({ message: 'This email has not been registered' }, { status: 404 })
         }
 
         const { resetPasswordOtpHash, resetPasswordToken, resetPasswordExpiration, id } =
           companyFindRes.docs[0]
 
-        console.log('matric no', matricNo, resetPasswordToken)
+        console.log('Email', email, resetPasswordToken)
 
         if (!resetPasswordToken || !resetPasswordExpiration) {
           return Response.json({ message: 'Password reset not started.' }, { status: 400 })
@@ -180,6 +178,43 @@ export const Companies: CollectionConfig = {
         })
       },
     },
+    {
+      method: 'post',
+      path: '/reset-password',
+      handler: async (req) => {
+        const { password, token } = await req.json?.()
+        console.log('***called here')
+
+        if (!password || !token) {
+          return Response.json({ message: 'password and token must be specified' }, { status: 400 })
+        }
+
+        await req.payload.update({
+          collection: 'companies',
+          where: {
+            resetPasswordToken: {
+              equals: token,
+            },
+          },
+          data: {
+            hasSetPassword: true,
+          },
+          req: req,
+        })
+
+        return Response.json(
+          await req.payload.resetPassword({
+            collection: 'companies',
+            data: {
+              password,
+              token,
+            },
+            req: req, // pass a Request object to be provided to all hooks
+            overrideAccess: false,
+          }),
+        )
+      },
+    },
   ],
   fields: [
     {
@@ -191,11 +226,11 @@ export const Companies: CollectionConfig = {
     {
       name: 'cac',
       type: 'text',
-      required: true,
     },
     {
       name: 'courseAreas',
-      type: 'text',
+      type: 'select',
+      options: ['Mathematics', 'Science', 'History', 'Engineering', 'Arts'],
       hasMany: true,
       required: true,
     },
@@ -205,12 +240,12 @@ export const Companies: CollectionConfig = {
       fields: [
         {
           name: 'longitude',
-          type: 'number',
+          type: 'text',
           required: true,
         },
         {
           name: 'latitude',
-          type: 'number',
+          type: 'text',
           required: true,
         },
       ],
@@ -227,13 +262,12 @@ export const Companies: CollectionConfig = {
     },
     {
       name: 'hasSetPassword',
-      type: 'text',
+      type: 'checkbox',
       defaultValue: false,
     },
     {
       name: 'address',
       type: 'text',
-      required: true,
     },
     {
       name: 'website',
@@ -242,7 +276,6 @@ export const Companies: CollectionConfig = {
     {
       name: 'description',
       type: 'text',
-      required: true,
     },
     {
       name: 'profileImage',
@@ -254,6 +287,14 @@ export const Companies: CollectionConfig = {
       name: 'resetPasswordOtpHash',
       type: 'text',
       hidden: true,
+    },
+    {
+      name: 'updatedAt',
+      type: 'text',
+    },
+    {
+      name: 'createdAt',
+      type: 'text',
     },
   ],
 }
