@@ -45,7 +45,7 @@ const Page = () => {
         <div>
           <div className="block lg:hidden min-h-screen relative text-sm text-white">
             <div className="bg-[#195F7E] container pt-4 pb-1">
-              <StudentHeader user={user} />
+              <StudentHeader />
               <StudentNavbar />
             </div>
             <div className="container">

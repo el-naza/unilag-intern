@@ -2,8 +2,14 @@ import Image from 'next/image'
 import React from 'react'
 import companyBanner from '@/app/(frontend)/assets/images/company-banner.svg'
 import Link from 'next/link'
+import deleteDoc from '@/services/deleteDoc'
 
-export default function CompanyPendingApplicationCard() {
+export default function CompanyPendingApplicationCard({ application }) {
+  const cancelApplication = async () => {
+    const res = await deleteDoc('internship-applications', application.id + 1)
+    console.log(res)
+  }
+
   return (
     <div className="grid grid-cols-4 sm:grid-cols-6 rounded-lg border border-[#F1F1F1]">
       <Image
@@ -16,14 +22,19 @@ export default function CompanyPendingApplicationCard() {
       <div className="col-span-3 sm:col-span-5 grid p-1">
         <div className="mt-auto sm:my-auto">
           <div className="ms-2">
-            <h5 className="text-black mb-0 text-[12px]">CMR SHOPPING MALL</h5>
-            <p className="text-[10px] text-[#8E8E93] mb-0">Career Area: Marketing</p>
+            <h5 className="text-black mb-0 text-[12px]">{application.company.name}</h5>
+            <p className="text-[10px] text-[#8E8E93] mb-0">
+              Career Area: {application.company.courseAreas.join(', ')}
+            </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
-            <button className="text-[10px] w-full rounded p-1 bg-[#ECECEC] text-[#48484A] text-center">
+            <button
+              onClick={cancelApplication}
+              className="text-[10px] w-full rounded p-1 bg-[#ECECEC] text-[#48484A] text-center"
+            >
               Cancel Application
             </button>
-            <Link href="/student/applications/pending/1">
+            <Link href={`/student/applications/pending/${application.id}`}>
               <button className="text-[10px] w-full rounded p-1 bg-[#0B7077] text-white text-center">
                 View Application
               </button>

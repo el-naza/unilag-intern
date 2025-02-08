@@ -2,8 +2,14 @@ import Image from 'next/image'
 import React from 'react'
 import companyLogo from '@/app/(frontend)/assets/images/company-logo.svg'
 import RedCancelIcon from '../../assets/icons/redcancel'
+import deleteDoc from '@/services/deleteDoc'
 
-export default function CompanyLargePendingApplicationCard() {
+export default function CompanyLargePendingApplicationCard({ application }) {
+  const cancelApplication = async () => {
+    const res = await deleteDoc('internship-applications', application.id)
+    console.log(res)
+  }
+
   return (
     <div className="bg-[#EBE7E77A] rounded-lg p-10 ps-0">
       <div className="grid grid-cols-10">
@@ -12,22 +18,10 @@ export default function CompanyLargePendingApplicationCard() {
         </div>
         <div className="col-span-6">
           <div>
-            <h5 className="text-lg mb-6 font-medium">Orange Company Ltd.</h5>
+            <h5 className="text-lg mb-6 font-medium">{application.company.name}</h5>
             <div className="mb-6">
-              <h5 className="text-black font-medium mb-3">Acceptance Message</h5>
-              <p className="text-[#8E8E93] mb-3">
-                Dear [Applicant’s Name],
-                <br />
-                <br />
-                We are pleased to inform you that you have been accepted for the [position name] at
-                CMR Shopping Mall as part of your SIWES program. Congratulations on this
-                achievement!
-                <br />
-                <br />
-                We are excited to have you join our team and look forward to supporting your growth
-                and development throughout your placement. Further details about your start date,
-                responsibilities, and onboarding process will be shared shortly.
-              </p>
+              <h5 className="text-black font-medium mb-3">Application Message</h5>
+              <p className="text-[#8E8E93] mb-3">{application.letter}</p>
               <h5 className="text-black font-bold mb-2">Attachments</h5>
               <div className="w-full bg-white p-4 rounded-lg border border-[#F1F1F1] rounded mb-2">
                 <div className="flex justify-between">
@@ -96,7 +90,7 @@ export default function CompanyLargePendingApplicationCard() {
                 </button>
               </div>
               <div>
-                <button className="bg-[#9597A7] rounded-lg p-2 w-full">
+                <button onClick={cancelApplication} className="bg-[#9597A7] rounded-lg p-2 w-full">
                   <span className="text-white text-sm">Cancel</span>
                 </button>
               </div>

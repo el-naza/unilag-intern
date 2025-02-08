@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNavbar'
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
 import CompanyPendingApplicationCard from '@/app/(frontend)/components/Cards/CompanyPendingApplicationCard'
@@ -8,8 +8,22 @@ import Image from 'next/image'
 import advertText from '../../../assets/images/adverts.png'
 import Link from 'next/link'
 import CompanyLargePendingApplicationCard from '@/app/(frontend)/components/Cards/CompanyLargePendingApplicationCard'
+import { InternshipApplication } from '@/payload-types'
+import fetchDocs from '@/services/fetchDocs'
 
 export default function Page() {
+  const [pendingApplications, setPendingApplications] = useState<InternshipApplication[]>([])
+
+  const fetchPendingApplications = async () => {
+    const res: any = await fetchDocs('internship-applications')
+
+    console.log(res)
+    setPendingApplications(res.docs)
+  }
+
+  useEffect(() => {
+    fetchPendingApplications()
+  }, [])
   return (
     <div className="min-h-screen relative text-sm text-white bg-white lg:bg-[#195F7E] py-0 lg:py-20">
       <div className="lg:hidden block">
@@ -23,9 +37,12 @@ export default function Page() {
               <h6 className="text-[#48484A]">Pending Applications</h6>
             </div>
             <div className="grid gap-4">
-              <CompanyPendingApplicationCard />
-              <CompanyPendingApplicationCard />
-              <CompanyPendingApplicationCard />
+              {pendingApplications.map((pendingApplication) => (
+                <CompanyPendingApplicationCard
+                  key={pendingApplication.id}
+                  application={pendingApplication}
+                />
+              ))}
             </div>
           </main>
         </div>
@@ -55,8 +72,12 @@ export default function Page() {
                 <div className="p-5">
                   <h5 className="text-2xl font-medium mb-5">Pending Companies</h5>
                   <div className="grid gap-4">
-                    <CompanyLargePendingApplicationCard />
-                    <CompanyLargePendingApplicationCard />
+                    {pendingApplications.map((pendingApplication) => (
+                      <CompanyLargePendingApplicationCard
+                        key={pendingApplication.id}
+                        application={pendingApplication}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
