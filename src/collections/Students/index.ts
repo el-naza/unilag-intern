@@ -13,22 +13,20 @@ const PreLogin = z.object({
   matricNo: z.string(),
 })
 
-type PreLogin = z.infer<typeof PreLogin>
-
-// test pre-login to check whether user has set password
-// test forgot password reset with otp endpoints
+export type StudentPreLogin = z.infer<typeof PreLogin>
 
 export const Students: CollectionConfig = {
   slug: 'students',
   access: {
     create: anyone,
     delete: self,
-    read: authenticatedUsers,
+    // read: authenticatedUsers,
+    read: anyone,
     update: self,
   },
   hooks: {
     beforeOperation: [
-      async ({ args, req }) => {
+      async ({ args, req, operation }) => {
         // in order to login with matric no. as the username thru REST API
         if (req.data?.matricNo && args.data) args.data.username = req.data?.matricNo
 
@@ -37,21 +35,22 @@ export const Students: CollectionConfig = {
     ],
   },
   auth: {
-    loginWithUsername: true,
+    loginWithUsername: {
+      requireEmail: true,
+    },
     forgotPassword: {
       generateEmailHTML: (args) => {
         console.log('in gen, otp frm ctx', args?.req?.context)
-        const resetPasswordURL = `https://yourfrontend.com/reset-password?token=${args?.token}`
+
         return `
           <!doctype html>
           <html>
             <body>
-              <h1>Here is my custom email template!</h1>
+              <h1>PASSWORD RESET OTP</h1>
               <p>Hello, ${args?.user.email}!</p>
-              <p>Click below to reset your password.</p>
+              <p>Use the OTP below to reset your password.</p>
               <p>
-                <a href="${resetPasswordURL}">${resetPasswordURL}</a>
-                <a href="${resetPasswordURL}">${resetPasswordURL}</a>
+                ${args?.req?.context!.otp!}
               </p>
             </body>
           </html>
@@ -75,11 +74,12 @@ export const Students: CollectionConfig = {
           where: {
             matricNo: { equals: (data as any).matricNo },
           },
+          showHiddenFields: true,
         })
 
         if (studentFindRes.docs.length === 0) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }
@@ -87,7 +87,7 @@ export const Students: CollectionConfig = {
         const { hasSetPassword } = studentFindRes.docs[0]
 
         return Response.json({
-          message: `User has ${hasSetPassword ? '' : 'not'} set password`,
+          message: `You password has${hasSetPassword ? ' ' : ' not '}been set`,
           ready: !!hasSetPassword,
         })
       },
@@ -120,14 +120,16 @@ export const Students: CollectionConfig = {
           req: req,
         })
 
+        console.log('forgot password res', res)
+
         if (!res) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }
 
-        req.payload.update({
+        const updateRes = await req.payload.update({
           collection: 'students',
           where: {
             matricNo: {
@@ -145,6 +147,8 @@ export const Students: CollectionConfig = {
 
         return Response.json({
           message: 'Success',
+          email: updateRes.docs[0].email,
+          // emailBlur: blurEmail(updateRes.docs[0].email),
         })
       },
     },
@@ -168,7 +172,7 @@ export const Students: CollectionConfig = {
 
         if (studentFindRes.docs.length === 0) {
           return Response.json(
-            { message: 'This matric no. has not been registered yet' },
+            { message: 'This matric no. has not been registered' },
             { status: 404 },
           )
         }
@@ -204,6 +208,43 @@ export const Students: CollectionConfig = {
         })
       },
     },
+    {
+      method: 'post',
+      path: '/reset-password',
+      handler: async (req) => {
+        const { password, token } = await req.json?.()
+        console.log('***called here')
+
+        if (!password || !token) {
+          return Response.json({ message: 'password and token must be specified' }, { status: 400 })
+        }
+
+        await req.payload.update({
+          collection: 'students',
+          where: {
+            resetPasswordToken: {
+              equals: token,
+            },
+          },
+          data: {
+            hasSetPassword: true,
+          },
+          req: req,
+        })
+
+        return Response.json(
+          await req.payload.resetPassword({
+            collection: 'students',
+            data: {
+              password,
+              token,
+            },
+            req: req, // pass a Request object to be provided to all hooks
+            overrideAccess: false,
+          }),
+        )
+      },
+    },
   ],
   fields: [
     {
@@ -236,7 +277,7 @@ export const Students: CollectionConfig = {
       name: 'hasSetPassword',
       type: 'checkbox',
       defaultValue: false,
-      hidden: true,
+      // hidden: true,
     },
     {
       name: 'dob',

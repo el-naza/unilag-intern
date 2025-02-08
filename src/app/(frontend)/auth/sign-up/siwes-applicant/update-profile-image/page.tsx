@@ -1,17 +1,40 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import updateUserImage from '@/services/updateUserImage'
+import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
+import { useDropzone } from 'react-dropzone'
 
 export default function Page() {
   const router = useRouter()
   const [showInstructions, setShowInstruction] = useState(false)
+  // const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  //   onDrop,
+  //   noClick: true,
+  //   accept: { 'image/*': [] },
+  // })
+
+  const updateStudentImgMtn = useMutation({
+    mutationFn: async (file: File) => {
+      try {
+        // randomly generate password for students on creation for now
+        const res = await updateUserImage(file)
+        console.log('res', res)
+        if (!res) return toast.error('Network err; pls try again later')
+        return res
+      } catch {
+        toast.error('An error occured while saving message; pls try again later')
+      }
+    },
+  })
 
   return (
-    <div className="text-gray-dark-2 min-h-screen py-11 px-4 bg-white flex flex-col">
+    <div className="text-gray-dark-2 min-h-screen lg:min-h-full py-11 px-4 bg-white flex flex-col">
       <div className="text-center">
         <h2 className="text-xl leading-[25.78px] font-medium mb-2 text-black-2">
           Upload Profile Image
@@ -28,6 +51,7 @@ export default function Page() {
       >
         <Image src="/static-icons/info-icon.svg" width={16} height={16} alt="icon" />
       </Button>
+
       <div className="border-dashed border-secondary/50 border-[2px] rounded-lg flex flex-col items-center py-6 mt-3">
         <Image src="/static-icons/upload-icon.svg" width={42} height={42} alt="icon" />
         <div className="mt-3 mb-2 text-black-2 text-[12px]">

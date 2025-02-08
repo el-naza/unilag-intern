@@ -131,6 +131,7 @@ export interface StudentAuthOperations {
   registerFirstUser: {
     password: string;
     username: string;
+    email: string;
   };
   unlock: {
     username: string;
@@ -251,7 +252,7 @@ export interface Student {
   resetPasswordOtpHash?: string | null;
   updatedAt: string;
   createdAt: string;
-  email?: string | null;
+  email: string;
   username: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;

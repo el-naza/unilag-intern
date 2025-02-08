@@ -17,7 +17,7 @@ import { Students } from '@/collections/Students'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
-import { cn } from '@/utilities'
+import { cn, randomString } from '@/utilities'
 import {
   Select,
   SelectContent,
@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
+import { password } from 'node_modules/payload/dist/fields/validations'
 
 function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
@@ -56,7 +57,8 @@ export default function Page() {
   const signUpStudentMtn = useMutation({
     mutationFn: async (student: Student) => {
       try {
-        const res = await saveDoc('students', student)
+        // randomly generate password for students on creation for now
+        const res = await saveDoc('students', { ...student, password: randomString(10) })
         console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
         return res
@@ -67,16 +69,11 @@ export default function Page() {
   })
 
   const form = useForm<Student>({
-    // onSubmit: async ({ value }) => {
-    //   // Do something with form data
-    //   console.log(value)
-    // },
     validators: {
       onSubmitAsync: async ({ value }) => {
         const emptyRequiredFields = Students.fields.reduce<object>(
           (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
             ...acc,
-            // [err.path]: `${err.label}: ${err.message}`,
             ...(field?.required && !value[field.name] && { [field.name]: 'Required' }),
           }),
           {},
@@ -106,7 +103,8 @@ export default function Page() {
         // success here so naviagate or toast to success
         form.reset()
         toast.success('Sign up successful')
-        router.push('/auth/sign-up/siwes-applicant/update-profile-image')
+        // router.push('/auth/sign-up/siwes-applicant/update-profile-image')
+        router.push('/student')
 
         return null
       },
@@ -114,7 +112,7 @@ export default function Page() {
   })
 
   return (
-    <div className="text-gray-dark-2 min-h-screen py-11 px-4 bg-white">
+    <div className="text-gray-dark-2 min-h-screen lg:min-h-full py-11 px-4 bg-white">
       <div className="text-center">
         <h2 className="text-xl leading-[25.78px] font-medium mb-2 text-black-2">
           Sign up Login as a <br /> SIWES Applicant
@@ -297,16 +295,16 @@ export default function Page() {
           }}
         />
         <form.Field
-          name="stateOfOrigin"
+          name="homeAddress"
           children={(field) => {
             return (
               <>
-                <Label>State of Origin</Label>
+                <Label>Home Address</Label>
                 <Input
                   value={field.state.value || ''}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Select State of Origin"
+                  placeholder="Enter Address"
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
@@ -384,18 +382,33 @@ export default function Page() {
           }}
         />
         <form.Field
-          name="stateOfOrigin"
+          name="internshipType"
           children={(field) => {
             return (
               <>
-                <Label>Home Address</Label>
-                <Input
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Enter Address"
-                  className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
-                />
+                <Label>Internship Type</Label>
+                <Select
+                  value={(field.state.value as string) || ''}
+                  onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
+                  onValueChange={(value) => field.handleChange(value as any)}
+                >
+                  <SelectTrigger
+                    className={`${field.state.value ? '' : 'text-muted-foreground'} mb-3`}
+                  >
+                    <SelectValue placeholder="Select Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(
+                      Students.fields.find(
+                        (f: Field & { name: string; options: string[] }) => f.name === field.name,
+                      ) as { options: string[] }
+                    )?.options?.map((option, i) => (
+                      <SelectItem value={option} key={i}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FieldError field={field} />
               </>
             )
@@ -410,7 +423,6 @@ export default function Page() {
                 size="lg"
                 className="w-full mt-5"
                 variant="secondary"
-                // onClick={() => router.push('/auth/sign-up/siwes-applicant/update-profile-image')}
               >
                 Continue {isSubmitting && <Spinner />}
               </Button>
