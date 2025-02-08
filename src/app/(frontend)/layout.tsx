@@ -1,8 +1,20 @@
+'use client'
+
 import { cn } from 'src/utilities/cn'
 import { Poppins } from 'next/font/google'
 import React from 'react'
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 
 import './globals.css'
+import { Toaster } from '@/components/ui/sonner'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
@@ -11,6 +23,8 @@ const poppins = Poppins({
   display: 'swap',
   fallback: ['sans-serif'],
 })
+
+const queryClient = new QueryClient()
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -24,7 +38,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body>
-        <div className="tracking-[0.37px]">{children}</div>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <QueryClientProvider client={queryClient}>
+            <div className="tracking-[0.37px]">{children}</div>
+          </QueryClientProvider>
+        </LocalizationProvider>
+        <Toaster />
       </body>
     </html>
   )

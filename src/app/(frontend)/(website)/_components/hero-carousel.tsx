@@ -34,8 +34,8 @@ const HeroCarousel = () => {
         </h1>
 
         <div className="flex gap-12 mt-12">
-          <Button className="bg-primary text-white">I'm a student</Button>
-          <Button className="bg-secondary text-white">I'm a company</Button>
+          <Button className="bg-primary text-white">I&apos;m a student</Button>
+          <Button className="bg-secondary text-white">I&apos;m a company</Button>
         </div>
       </div>
 
@@ -76,7 +76,7 @@ const HeroCarousel = () => {
                 className="w-[30rem]"
               />
 
-              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffffba] rounded-[15px] backdrop-blur-2xl animate-[bounce_3.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -86,11 +86,11 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="font-semibold">250k</p>
-                  <p className="text-sm">Company Listed</p>
+                  <p className="text-xs">Company Listed</p>
                 </div>
               </div>
 
-              <div className="absolute top-[33rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffffba] rounded-[15px] backdrop-blur-2xl animate-[bounce_3s_ease-in-out_infinite]">
+              <div className="absolute top-[33rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -99,7 +99,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
+                  <p className="text-xs">Tutors</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
@@ -123,7 +123,7 @@ const HeroCarousel = () => {
                 className="w-[30rem]"
               />
 
-              <div className="absolute top-[33rem] right-[12rem] flex gap-2 items-center p-[.7rem] bg-[#ffffffba] rounded-[15px] backdrop-blur-2xl animate-[bounce_3.5s_ease-in-out_infinite]">
+              <div className="absolute top-[33rem] right-[12rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -137,7 +137,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffffba] rounded-[15px] backdrop-blur-2xl animate-[bounce_3s_ease-in-out_infinite]">
+              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -170,7 +170,7 @@ const HeroCarousel = () => {
                 className="w-[40rem]"
               />
 
-              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffffba] rounded-[15px] backdrop-blur-2xl animate-[bounce_3.5s_ease-in-out_infinite]">
+              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -184,7 +184,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffffba] rounded-[15px] backdrop-blur-2xl animate-[bounce_3s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -217,7 +217,7 @@ const HeroCarousel = () => {
                 className="w-[30rem]"
               />
 
-              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffffba] rounded-[15px] backdrop-blur-2xl animate-[bounce_3.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -231,7 +231,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[33rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffffba] rounded-[15px] backdrop-blur-2xl animate-[bounce_3s_ease-in-out_infinite]">
+              <div className="absolute top-[33rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
