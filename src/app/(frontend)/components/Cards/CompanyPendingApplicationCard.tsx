@@ -1,13 +1,29 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import companyBanner from '@/app/(frontend)/assets/images/company-banner.svg'
 import Link from 'next/link'
 import deleteDoc from '@/services/deleteDoc'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { toast } from 'sonner'
 
-export default function CompanyPendingApplicationCard({ application }) {
+export default function CompanyPendingApplicationCard({ application, onDelete }) {
+  const [open, setOpen] = useState(false)
+
   const cancelApplication = async () => {
-    const res = await deleteDoc('internship-applications', application.id + 1)
+    const res = await deleteDoc('internship-applications', application.id)
     console.log(res)
+    toast.success('Deletion successful')
+    onDelete()
   }
 
   return (
@@ -28,12 +44,34 @@ export default function CompanyPendingApplicationCard({ application }) {
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
-            <button
-              onClick={cancelApplication}
-              className="text-[10px] w-full rounded p-1 bg-[#ECECEC] text-[#48484A] text-center"
-            >
-              Cancel Application
-            </button>
+            <AlertDialog open={open} onOpenChange={setOpen}>
+              <AlertDialogTrigger asChild>
+                <button className="text-[10px] w-full rounded p-1 bg-[#ECECEC] text-[#48484A] text-center">
+                  Cancel Application
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-white rounded-lg">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-[#FF3B30] text-start font-normal">
+                    Cancel Application
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-[#B7B7B7] text-start">
+                    You are about to cancel this application
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="grid grid-cols-2 gap-2 items-center">
+                  <AlertDialogCancel className="mt-0 text-[#48484A] border-0">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={cancelApplication}
+                    className="text-white bg-[#FF3B30] hover:bg-[#FF3B30]"
+                  >
+                    Confirm
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <Link href={`/student/applications/pending/${application.id}`}>
               <button className="text-[10px] w-full rounded p-1 bg-[#0B7077] text-white text-center">
                 View Application

@@ -41,6 +41,7 @@ export default function Page() {
                 <CompanyPendingApplicationCard
                   key={pendingApplication.id}
                   application={pendingApplication}
+                  onDelete={fetchPendingApplications}
                 />
               ))}
             </div>
@@ -76,6 +77,7 @@ export default function Page() {
                       <CompanyLargePendingApplicationCard
                         key={pendingApplication.id}
                         application={pendingApplication}
+                        onDelete={fetchPendingApplications}
                       />
                     ))}
                   </div>

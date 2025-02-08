@@ -25,7 +25,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Field, ValidationFieldError } from 'payload'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -33,6 +33,7 @@ import { toast } from 'sonner'
 const Page = () => {
   const { data: session } = useSession()
   const { id: companyId }: { id: string } = useParams()
+  const router = useRouter()
   const [company, setCompany] = useState<any>({})
   const [open, setOpen] = useState(false)
 
@@ -110,6 +111,11 @@ const Page = () => {
       },
     },
   })
+
+  const viewApplications = () => {
+    setOpen(false)
+    router.push('/student/applications/pending')
+  }
 
   useEffect(() => {
     fetchCompany()
@@ -307,7 +313,7 @@ const Page = () => {
                         </div>
                         <DialogFooter>
                           <button
-                            onClick={() => setOpen(false)}
+                            onClick={viewApplications}
                             className="w-full rounded p-2 text-xs bg-[#0B7077] text-white text-center"
                           >
                             Continue
