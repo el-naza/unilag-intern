@@ -1,9 +1,25 @@
+'use client'
+
 import RedCancelIcon from '@/app/(frontend)/assets/icons/redcancel'
+import fetchDoc from '@/services/fetchDoc'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import { useParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
-export default async function Page() {
+const Page = () => {
+  const { id: applicationId }: { id: string } = useParams()
+  const [pendingApplication, setPendingApplication] = useState<any>({})
+
+  const fetchPendingApplication = async () => {
+    const res: any = await fetchDoc('internship-applications', applicationId)
+    setPendingApplication(res)
+  }
+
+  useEffect(() => {
+    fetchPendingApplication()
+  }, [])
+
   return (
     <div className="min-h-screen relative text-sm text-black">
       <div className="container">
@@ -14,7 +30,7 @@ export default async function Page() {
                 <h5 className="text-black font-bold">Application</h5>
               </div>
               <div>
-                <Link href="/student/applications/pending/1/edit">
+                <Link href={`/student/applications/pending/${applicationId}/edit`}>
                   <span className="text-[#0B7077]">Edit</span>
                 </Link>
               </div>
@@ -24,33 +40,13 @@ export default async function Page() {
                 <Image width={40} height={40} src="/cmr-logo.png" alt="cmr-logo" />
               </div>
               <div className="col-span-7">
-                <h5 className="text-black font-bold">CRM SHOPPING MALL</h5>
-                <span className="text-[#8E8E93] text-xs">163889584994</span>
+                <h5 className="text-black font-bold">{pendingApplication?.company?.name}</h5>
+                <span className="text-[#8E8E93] text-xs">{pendingApplication?.company?.cac}</span>
               </div>
             </div>
             <div className="mb-3">
               <h5 className="text-black font-bold mb-3">Application letter</h5>
-              <p className="text-[#8E8E93] mb-3">
-                Dear [Hiring Manager’s Name],
-                <br />
-                <br />
-                I am writing to express my interest in the SIWES placement opportunity at CMR
-                Shopping Mall. I am currently a [your course] student at [your institution], and I
-                believe this role aligns perfectly with my academic background and career
-                aspirations.
-                <br />
-                <br />
-                Enclosed are my CV and the required documents, including my SIWES approval letter
-                from my institution. I am eager to contribute my skills and gain valuable experience
-                in retail operations and customer service during my placement.
-                <br />
-                <br />
-                Thank you for considering my application. I look forward to the opportunity to
-                discuss how I can contribute to your team.
-                <br />
-                <br />
-                Best regards, [Your Full Name] [Your Contact Information]
-              </p>
+              <p className="text-[#8E8E93] mb-3">{pendingApplication?.letter}</p>
             </div>
             <div className="mb-3">
               <h5 className="text-black font-bold mb-2">Attachments</h5>
@@ -120,3 +116,5 @@ export default async function Page() {
     </div>
   )
 }
+
+export default Page

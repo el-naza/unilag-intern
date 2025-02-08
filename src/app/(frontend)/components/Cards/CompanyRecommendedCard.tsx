@@ -62,10 +62,8 @@ export default function CompanyRecommendedCard({ company }) {
         <div className="grid gap-2">
           <span className="text-xs text-[#777795]">1 - 28 July 2022</span>
           <h5 className="text-[#195F7E] text-md font-bold">{company.name}</h5>
-          <p className="text-xs text-[#4D4D4D]">
-            Product Management Masterclass, you will learn with Sarah Johnson - Head of Product
-            Customer Platform Gojek Indonesia.
-          </p>
+          <p className="text-xs text-[#4D4D4D]">{company.description}</p>
+          <p className="text-xs text-[#4D4D4D]">{company.address}</p>
         </div>
         <div className="grid grid-cols-2">
           <div className="flex">

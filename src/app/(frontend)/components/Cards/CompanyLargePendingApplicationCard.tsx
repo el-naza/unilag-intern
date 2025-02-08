@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 export default function CompanyLargePendingApplicationCard({ application, onDelete }) {
   const [open, setOpen] = useState(false)
@@ -101,9 +102,11 @@ export default function CompanyLargePendingApplicationCard({ application, onDele
             </div>
             <div className="grid grid-cols-4 gap-4 text-xs mb-3">
               <div>
-                <button className="bg-[#0B7077] rounded-lg p-2 w-full">
-                  <span className="text-white text-sm">Edit</span>
-                </button>
+                <Link href={`/student/applications/pending/${application.id}/edit`}>
+                  <button className="bg-[#0B7077] rounded-lg p-2 w-full">
+                    <span className="text-white text-sm">Edit</span>
+                  </button>
+                </Link>
               </div>
               <div>
                 <AlertDialog open={open} onOpenChange={setOpen}>

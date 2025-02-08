@@ -17,12 +17,10 @@ export default function StudentHeader() {
               <ProfilePicture />
             </Link>
           </div>
-          {user && (
-            <div className="col-span-4">
-              <div className="text-[#FFCC00] font-bold">{`${user.firstName} ${user.lastName}`}</div>
-              <div className="text-xs">{`UNILAG ${user.level} ${user.course}`}</div>
-            </div>
-          )}
+          <div className="col-span-4">
+            <div className="text-[#FFCC00] font-bold">{`${user?.firstName} ${user?.lastName}`}</div>
+            <div className="text-xs">{`UNILAG ${user?.level} ${user?.course}`}</div>
+          </div>
         </div>
       </div>
       <div className="grid grid-cols-2">

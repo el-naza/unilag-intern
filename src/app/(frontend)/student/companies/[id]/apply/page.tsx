@@ -52,7 +52,7 @@ const Page = () => {
         // const formData = new FormData()
         // formData.set('letter', internshipApplication.letter)
         // formData.set('student', internshipApplication.student.toString())
-        // formData.set('company', internshipApplication.company.toString())
+        // formData.set('company', internshipApplication.company?.toString())
         // const res = await saveFormDataDoc(formData, 'internship-applications')
         const res = await saveDoc('internship-applications', {
           letter: internshipApplication.letter,
@@ -72,7 +72,7 @@ const Page = () => {
     validators: {
       onSubmitAsync: async ({ value }) => {
         value.company = companyId
-        value.student = user.id
+        value.student = user?.id
 
         const emptyRequiredFields = InternshipApplications.fields.reduce<object>(
           (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
@@ -161,8 +161,8 @@ const Page = () => {
                     <Image width={40} height={40} src="/cmr-logo.png" alt="cmr-logo" />
                   </div>
                   <div className="col-span-7">
-                    <h5 className="text-black font-bold uppercase">{company.name}</h5>
-                    <span className="text-[#8E8E93] text-xs">{company.cac}</span>
+                    <h5 className="text-black font-bold uppercase">{company?.name}</h5>
+                    <span className="text-[#8E8E93] text-xs">{company?.cac}</span>
                   </div>
                 </div>
 
@@ -281,7 +281,6 @@ const Page = () => {
                   </div>
                   <div className="mb-3">
                     <Dialog open={open} onOpenChange={setOpen}>
-                      {/* <DialogTrigger asChild> */}
                       <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                         {([canSubmit, isSubmitting]) => (
                           <>
@@ -297,10 +296,6 @@ const Page = () => {
                           </>
                         )}
                       </form.Subscribe>
-                      {/* <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
-                        Send Application
-                      </button> */}
-                      {/* </DialogTrigger> */}
                       <DialogContent className="bg-white rounded-lg">
                         <DialogTitle className="hidden"></DialogTitle>
                         <DialogDescription className="hidden"></DialogDescription>
@@ -324,7 +319,6 @@ const Page = () => {
                   </div>
                 </form>
               </div>
-
               <div className="hidden lg:block rounded-lg bg-[#EBE7E77A] flex p-5">
                 <Image className="m-auto" src={advertText} alt="advert-text" />
               </div>
