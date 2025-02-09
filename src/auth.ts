@@ -12,16 +12,17 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       credentials: {
         username: { label: 'Username', type: 'text', placeholder: 'johndoe' },
         password: { label: 'Password', type: 'password' },
+        email: { label: 'email', type: 'email' },
       },
       async authorize(credentials) {
-        console.log('Auth credentails: ', credentials);
-        
-        const { username, password, col }: any = credentials
-        console.log('creds input', username, password)
+        console.log('Credentials: ', credentials)
+        const { username, password, col, email }: any = credentials
+        // console.log('creds input', username, password)
         const res = await axiosInstance
           .post(`/api/${col}/login`, {
             username,
             password,
+            email,
           })
           .catch((err: AxiosError) => err.response)
 

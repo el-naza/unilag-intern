@@ -8,7 +8,8 @@ interface ButtonProps {
   border?: string
   fontWeight?: string
   fontSize?: string
-  textWrap?:string
+  textWrap?: string
+  borderRadius?: string
   handleClick?: () => void
 }
 
@@ -23,11 +24,12 @@ export default function MainButton({
   fontWeight = 'font-bold',
   textWrap = 'whitespace-nowrap',
   fontSize = 'text-[14px]',
+  borderRadius = 'rounded-[12px]',
   handleClick,
 }: ButtonProps) {
   return (
     <button
-      className={`${width} ${height} ${backgroundColor} ${padding} ${color} ${border} ${fontWeight} ${fontSize} ${textWrap} rounded-[12px]`}
+      className={`${width} ${height} ${backgroundColor} ${padding} ${color} ${border} ${fontWeight} ${fontSize} ${textWrap} ${borderRadius}`}
       onClick={handleClick}
     >
       {title}

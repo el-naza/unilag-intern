@@ -1,9 +1,32 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import companyLogo from '@/app/(frontend)/assets/images/company-logo.svg'
 import RedCancelIcon from '../../assets/icons/redcancel'
+import deleteDoc from '@/services/deleteDoc'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { toast } from 'sonner'
+import Link from 'next/link'
 
-export default function CompanyLargePendingApplicationCard() {
+export default function CompanyLargePendingApplicationCard({ application, onDelete }) {
+  const [open, setOpen] = useState(false)
+
+  const cancelApplication = async () => {
+    const res = await deleteDoc('internship-applications', application.id)
+    console.log(res)
+    toast.success('Deletion successful')
+    onDelete()
+  }
+
   return (
     <div className="bg-[#EBE7E77A] rounded-lg p-10 ps-0">
       <div className="grid grid-cols-10">
@@ -12,22 +35,10 @@ export default function CompanyLargePendingApplicationCard() {
         </div>
         <div className="col-span-6">
           <div>
-            <h5 className="text-lg mb-6 font-medium">Orange Company Ltd.</h5>
+            <h5 className="text-lg mb-6 font-medium">{application.company.name}</h5>
             <div className="mb-6">
-              <h5 className="text-black font-medium mb-3">Acceptance Message</h5>
-              <p className="text-[#8E8E93] mb-3">
-                Dear [Applicant’s Name],
-                <br />
-                <br />
-                We are pleased to inform you that you have been accepted for the [position name] at
-                CMR Shopping Mall as part of your SIWES program. Congratulations on this
-                achievement!
-                <br />
-                <br />
-                We are excited to have you join our team and look forward to supporting your growth
-                and development throughout your placement. Further details about your start date,
-                responsibilities, and onboarding process will be shared shortly.
-              </p>
+              <h5 className="text-black font-medium mb-3">Application Message</h5>
+              <p className="text-[#8E8E93] mb-3">{application.letter}</p>
               <h5 className="text-black font-bold mb-2">Attachments</h5>
               <div className="w-full bg-white p-4 rounded-lg border border-[#F1F1F1] rounded mb-2">
                 <div className="flex justify-between">
@@ -91,14 +102,41 @@ export default function CompanyLargePendingApplicationCard() {
             </div>
             <div className="grid grid-cols-4 gap-4 text-xs mb-3">
               <div>
-                <button className="bg-[#0B7077] rounded-lg p-2 w-full">
-                  <span className="text-white text-sm">Edit</span>
-                </button>
+                <Link href={`/student/applications/pending/${application.id}/edit`}>
+                  <button className="bg-[#0B7077] rounded-lg p-2 w-full">
+                    <span className="text-white text-sm">Edit</span>
+                  </button>
+                </Link>
               </div>
               <div>
-                <button className="bg-[#9597A7] rounded-lg p-2 w-full">
-                  <span className="text-white text-sm">Cancel</span>
-                </button>
+                <AlertDialog open={open} onOpenChange={setOpen}>
+                  <AlertDialogTrigger asChild>
+                    <button className="bg-[#9597A7] rounded-lg p-2 w-full">
+                      <span className="text-white text-sm">Cancel</span>
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-white rounded-lg">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-[#FF3B30] text-start font-normal">
+                        Cancel Application
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-[#B7B7B7] text-start">
+                        You are about to cancel this application
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="grid grid-cols-2 gap-2 items-center">
+                      <AlertDialogCancel className="mt-0 text-[#48484A] border-0">
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={cancelApplication}
+                        className="text-white bg-[#FF3B30] hover:bg-[#FF3B30]"
+                      >
+                        Confirm
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>

@@ -8,7 +8,7 @@ import Link from 'next/link'
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { AdminAuthOperations } from '@/payload-types'
-import { signIn } from '@/auth'
+import { signIn } from 'next-auth/react'
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
 import { AuthError } from 'next-auth'
@@ -48,11 +48,11 @@ export default function AdminPage() {
   const signInAdmin = useMutation({
     mutationFn: async ({ email, password }: AdminAuthOperations['login']) => {
       try {
-        console.log('Crede: ', email, password)
+        console.log('Payload', email, password)
         const result = await signIn('credentials', {
-          username: email,
+          email,
           password,
-          col: 'admin',
+          col: 'admins',
           redirect: false,
         })
 

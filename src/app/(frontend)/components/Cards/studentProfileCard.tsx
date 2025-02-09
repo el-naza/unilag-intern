@@ -1,0 +1,41 @@
+import { useRouter } from 'next/navigation'
+import defaultProfileImage from '../../assets/images/profile-image.webp'
+
+type StudentProfile = {
+  id: string
+  name: string
+  course: string
+  cgpa: string
+  image: string
+}
+
+type StudentProfileCardProps = {
+  student: StudentProfile
+  // onClick?: (id: string) => void
+}
+
+export default function StudentProfileCard({ student }: StudentProfileCardProps) {
+  const { id, name, course, cgpa } = student
+  const router = useRouter()
+  return (
+    <div
+      className="relative h-[240px] w-full text-white rounded-[4px] border overflow-hidden flex items-end cursor-pointer"
+      style={{
+        backgroundImage: `url(${defaultProfileImage.src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        borderRadius: '4px',
+      }}
+      onClick={() => router.push(`/company-pages/student-details/${id}`)}
+    >
+      <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+      <div className="z-10 w-full text-white p-[8px]">
+        <p className="font-[700] text-[14px] mb-[4px]">{name}</p>
+        <div className="flex items-center justify-between font-[400] text-[12px]">
+          <p>{course}</p>
+          <p>{cgpa} CGPA</p>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -15,6 +15,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 import { SessionProvider } from 'next-auth/react'
 
 import './globals.css'
+import 'animate.css'
 import { Toaster } from '@/components/ui/sonner'
 
 const poppins = Poppins({
