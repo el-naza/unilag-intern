@@ -240,12 +240,12 @@ export const Companies: CollectionConfig = {
       fields: [
         {
           name: 'longitude',
-          type: 'text',
+          type: 'number',
           required: true,
         },
         {
           name: 'latitude',
-          type: 'text',
+          type: 'number',
           required: true,
         },
       ],

@@ -1,7 +1,4 @@
 'use client'
-import MailIcon from '../../assets/icons/mail'
-import DynamicForm from '../../components/Form'
-import ArrowIcon from '../../assets/icons/arrow'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,11 +8,7 @@ import { Company } from '@/payload-types'
 import Spinner from '@/components/spinner'
 import { ValidationErrors } from '@/utilities/types'
 import { Field, ValidationFieldError } from 'payload'
-import { Students } from '@/collections/Students'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { CalendarIcon } from 'lucide-react'
-import { format } from 'date-fns'
-import { cn, randomString } from '@/utilities'
+import {  randomString } from '@/utilities'
 import {
   Select,
   SelectContent,
@@ -23,9 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 import { useRouter } from 'next/navigation'
-import { FieldApi, FormApi, useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Companies } from '@/collections/Companies'
@@ -62,7 +53,7 @@ export default function OTPConfirmation() {
     mutationFn: async (company: Company) => {
       try {
         console.log(company)
-        const res = await saveDoc('companies', { ...company,  })
+        const res = await saveDoc('companies', { ...company, password: randomString(10) })
         console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
         return res
@@ -292,8 +283,6 @@ export default function OTPConfirmation() {
             )
           }}
         />
-
-       
 
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
