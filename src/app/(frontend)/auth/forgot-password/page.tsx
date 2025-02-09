@@ -6,47 +6,10 @@ import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import sendStudentOTP from '@/services/sendStudentOTP'
-import { authStore } from '@/store/authStore'
 import { useForm } from '@tanstack/react-form'
-import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-
-export function useSendStudentOtpMtn() {
-  return useMutation({
-    mutationFn: async (matricNo: string) => {
-      try {
-        let res = await sendStudentOTP({ matricNo })
-
-        console.log('res', res)
-        if (!res) {
-          const errMsg = 'Network err; pls try again later'
-          toast.error(errMsg)
-          return errMsg
-        }
-
-        if (res.email) {
-          authStore.setState((state) => {
-            return {
-              ...state,
-              matricNo,
-              email: res.email!,
-            }
-          })
-
-          return
-        }
-
-        return res.message
-      } catch {
-        const errMsg = 'An error occured; pls try again later'
-        toast.error(errMsg)
-        return errMsg
-      }
-    },
-  })
-}
+import useSendStudentOtpMtn from './useSendStudentOtpMtn'
 
 export default function Page() {
   const router = useRouter()
