@@ -7,12 +7,13 @@ import { getToken } from 'next-auth/jwt'
 import { headers } from 'next/headers'
 import { CollectionSlug } from 'payload'
 
-export default async function fetchDocs<T>(
+export default async function deleteDoc<T>(
   col: CollectionSlug,
+  id: string,
 ): Promise<{ data: T } | ValidationErrors> {
   return (
     await axiosInstance
-      .get(`/api/${col}`, {
+      .delete(`/api/${col}/${id}`, {
         headers: {
           Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
         },

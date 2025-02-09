@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import ProfilePicture from '../../../assets/icons/profilepicture'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 export default function StudentHeader() {
+  const { data: session } = useSession()
+
+  const user = useMemo<any>(() => session?.user, [session])
+
   return (
     <div className="grid grid-cols-5 mb-4">
       <div className="col-span-4">
@@ -13,8 +18,8 @@ export default function StudentHeader() {
             </Link>
           </div>
           <div className="col-span-4">
-            <div className="text-[#FFCC00] font-bold">Oni Adedolapo Ireti</div>
-            <div className="text-xs">UNILAG 300level Computer Science</div>
+            <div className="text-[#FFCC00] font-bold">{`${user?.firstName} ${user?.lastName}`}</div>
+            <div className="text-xs">{`UNILAG ${user?.level} ${user?.course}`}</div>
           </div>
         </div>
       </div>

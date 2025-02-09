@@ -11,18 +11,12 @@ type Response = {
   message: string
 }
 
-export default async function updateDoc(
+export default async function saveFormDataDoc(
+  formData: FormData,
   col: CollectionSlug,
-  id: string,
-  update: object,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  console.log(
-    '***Token',
-    (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
-      ?.token!,
-  )
   return await axiosInstance
-    .patch<Response | ErrorResponse>(`/api/${col}/${id}`, update, {
+    .post<Response | ErrorResponse>(`/api/${col}`, formData, {
       headers: {
         Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },

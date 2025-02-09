@@ -1,8 +1,11 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Where } from 'payload'
 
 import { authenticatedUsers } from '@/access/authenticated-users'
 import { self } from '@/access/self'
 import { anyone } from '@/access/anyone'
+import { parse } from 'qs-esm'
+// import { NextResponse as Response } from 'next/server'
+// import { z } from 'zod'
 import { generateEmailHTML } from '../../utilities/generateEmail'
 import { NextResponse as Response } from 'next/server'
 import * as otpGenerator from 'otp-generator'
@@ -85,7 +88,7 @@ export const Companies: CollectionConfig = {
           },
         ) as string
 
-        let res = await req.payload.forgotPassword({
+        const res = await req.payload.forgotPassword({
           collection: 'companies',
           data: {
             email: data!.email,
@@ -213,6 +216,27 @@ export const Companies: CollectionConfig = {
             overrideAccess: false,
           }),
         )
+      },
+    },
+    {
+      method: 'get',
+      path: '/search',
+      handler: async (req) => {
+        const { name } = req.query
+
+        if (!name) {
+          return Response.json({ message: 'Please enter a valid job name' }, { status: 400 })
+        }
+
+        const where: Where = parse(req.query)
+
+        const companyFindRes = await req.payload.find({
+          collection: 'companies',
+          where,
+          showHiddenFields: true,
+        })
+
+        return Response.json({ data: companyFindRes }, { status: 200 })
       },
     },
   ],
