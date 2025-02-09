@@ -14,6 +14,8 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        console.log('Auth credentails: ', credentials);
+        
         const { username, password, col }: any = credentials
         console.log('creds input', username, password)
         const res = await axiosInstance
