@@ -22,6 +22,8 @@ import { useSession, signOut } from 'next-auth/react'
 import getAge from '@/utilities/getAge'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '../components/Layouts/Loader'
+import { MapContainer, TileLayer, Popup, Marker } from 'react-leaflet'
+import dynamic from 'next/dynamic'
 
 const Page = () => {
   const router = useRouter()
@@ -31,6 +33,15 @@ const Page = () => {
   const [companies, setCompanies] = useState<any[]>([])
 
   const user = useMemo<any>(() => session?.user, [session])
+
+  const Map = useMemo(
+    () =>
+      dynamic(() => import('@/app/(frontend)/components/Layouts/Map'), {
+        loading: () => <p>A map is loading</p>,
+        ssr: false,
+      }),
+    [],
+  )
 
   const fetchCompanies = async () => {
     const res: any = await fetchDocs('companies')
@@ -275,7 +286,21 @@ const Page = () => {
                     </div>
                   </div>
                   <div className="col-span-4">
-                    <iframe
+                    <div className="w-full h-[480px]">
+                      <Map posix={[9.0563, 7.4985]} />
+                    </div>
+                    {/* <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+                      <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+                      <Marker position={[9.072264, 7.4985]}>
+                        <Popup>
+                          A pretty CSS3 popup. <br /> Easily customizable.
+                        </Popup>
+                      </Marker>
+                    </MapContainer> */}
+                    {/* <iframe
                       className="w-full rounded-xl"
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7193.3143200417435!2d-100.28889498759587!3d25.649501748537784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8662bfbef1c51a37%3A0x2aeb9d19e4fbb44b!2sCentro%20Deportivo%20Borregos%20II!5e0!3m2!1sen!2sng!4v1736921701249!5m2!1sen!2sng"
                       width="600"
@@ -284,7 +309,7 @@ const Page = () => {
                       allowFullScreen={true}
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe>
+                    ></iframe> */}
                   </div>
                 </div>
               </main>
