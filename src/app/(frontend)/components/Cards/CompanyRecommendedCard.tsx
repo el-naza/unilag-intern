@@ -71,7 +71,7 @@ export default function CompanyRecommendedCard({ company }) {
           </div>
           <div>
             <Link href={`/student/companies/${company.id}`}>
-              <button className="bg-[#195F7E] hover:bg-[#104055] rounded-lg p-2 text-xs text-white w-full">
+              <button className="bg-[#195F7E] hover:bg-primary/90 rounded-lg p-2 text-xs text-white w-full">
                 Enroll Now
               </button>
             </Link>
