@@ -1,8 +1,9 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Where } from 'payload'
 
 import { authenticatedUsers } from '@/access/authenticated-users'
 import { self } from '@/access/self'
 import { anyone } from '@/access/anyone'
+import { parse } from 'qs-esm'
 // import { NextResponse as Response } from 'next/server'
 // import { z } from 'zod'
 
@@ -71,6 +72,29 @@ export const Companies: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: true,
+    },
+  ],
+  endpoints: [
+    {
+      method: 'get',
+      path: '/search',
+      handler: async (req) => {
+        const { name } = req.query
+
+        if (!name) {
+          return Response.json({ message: 'Please enter a valid job name' }, { status: 400 })
+        }
+
+        const where: Where = parse(req.query)
+
+        const companyFindRes = await req.payload.find({
+          collection: 'companies',
+          where,
+          showHiddenFields: true,
+        })
+
+        return Response.json({ data: companyFindRes }, { status: 200 })
+      },
     },
   ],
 }

@@ -22,8 +22,19 @@ import { useSession, signOut } from 'next-auth/react'
 import getAge from '@/utilities/getAge'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '../components/Layouts/Loader'
-import { MapContainer, TileLayer, Popup, Marker } from 'react-leaflet'
 import dynamic from 'next/dynamic'
+import { ValidationErrors } from '@/utilities/types'
+import { Field, ValidationFieldError } from 'payload'
+import { useForm } from '@tanstack/react-form'
+import { useMutation } from '@tanstack/react-query'
+import { Companies } from '@/collections/Companies'
+import { Company } from '@/payload-types'
+import searchJobs from '@/services/searchJobs'
+import { toast } from 'sonner'
+import FieldError from '@/components/FieldError'
+import FormError from '@/components/FormError'
+import Spinner from '@/components/spinner'
+import { Button } from '@/components/ui/button'
 
 const Page = () => {
   const router = useRouter()
@@ -31,6 +42,8 @@ const Page = () => {
 
   const [loading, setLoading] = useState<boolean>(true)
   const [companies, setCompanies] = useState<any[]>([])
+  const [searchedCompanies, setSearchedCompanies] = useState<any[]>([])
+  const [distance, setDistance] = useState<number[]>([20])
 
   const user = useMemo<any>(() => session?.user, [session])
 
@@ -48,6 +61,66 @@ const Page = () => {
     setCompanies(res.docs)
     setLoading(false)
   }
+
+  const searchJobsMtn = useMutation({
+    mutationFn: async (company: Company) => {
+      try {
+        const res = await searchJobs({
+          name: company.name,
+          address: company.address,
+        })
+        console.log('res', res)
+        return res
+      } catch {
+        toast.error('An error occured while fetching jobs; pls try again later')
+      }
+    },
+  })
+
+  const form = useForm<Company>({
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        const fieldNamesToValidate = ['name']
+
+        const emptyRequiredFields = Companies.fields
+          .filter((field: Field & { required: boolean; name: string }) =>
+            fieldNamesToValidate.includes(field.name),
+          ) // Filter only specified fields
+          .reduce<object>(
+            (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
+              ...acc,
+              ...(field?.required && !value[field.name] && { [field.name]: 'Required' }),
+            }),
+            {},
+          )
+
+        if (Object.keys(emptyRequiredFields).length) {
+          return {
+            form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
+            fields: emptyRequiredFields,
+          }
+        }
+
+        const res: any = await searchJobsMtn.mutateAsync(value)
+        if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
+          return {
+            form: (res as ValidationErrors).errors[0].message,
+            fields: (res as ValidationErrors).errors[0].data.errors.reduce<object>(
+              (acc: ValidationFieldError, err) => ({
+                ...acc,
+                [err.path]: err.message,
+              }),
+              {},
+            ),
+          }
+        }
+
+        setSearchedCompanies(res.docs)
+
+        return null
+      },
+    },
+  })
 
   useEffect(() => {
     fetchCompanies()
@@ -78,7 +151,7 @@ const Page = () => {
                   ></iframe>
                 </div>
                 <div>
-                  <h5 className="text-black mb-3 font-bold">Company Search</h5>
+                  <h5 className="text-black mb-3 font-bold">Companies Search</h5>
                   <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
                     <LocationPointerIcon className="absolute left-1.5 top-2.5" />
                     <input
@@ -97,13 +170,14 @@ const Page = () => {
                         </div>
                         <Slider
                           className="col-span-5 flex"
-                          defaultValue={[33]}
+                          value={distance}
+                          onValueChange={setDistance}
                           max={100}
                           step={1}
                         />
                       </div>
                       <div className="border border-[#F1F1F1] text-xs text-[#0B7077] px-2 flex items-center">
-                        0 km
+                        {distance}km
                       </div>
                     </div>
                   </div>
@@ -143,7 +217,7 @@ const Page = () => {
                   <div className="relative w-3/4">
                     <input
                       type="text"
-                      placeholder="Search For Company"
+                      placeholder="Search For Companies"
                       className="w-full outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-black text-sm"
                     />
                     <SearchAltIcon className='className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"' />
@@ -256,50 +330,93 @@ const Page = () => {
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-5 gap-4">
-                  <div className="">
-                    <div className="bg-white rounded-xl mb-4 p-5 grid grid-cols-6">
-                      <Slider className="col-span-5" defaultValue={[33]} max={100} step={1} />
-                      <span className="text-sm text-black text-right">km</span>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      form.handleSubmit()
+                    }}
+                  >
+                    <div className="bg-white rounded-xl mb-4 p-5 grid grid-cols-12">
+                      <Slider
+                        className="col-span-9"
+                        value={distance}
+                        onValueChange={setDistance}
+                        max={100}
+                        step={1}
+                      />
+                      <span className="col-span-3 text-sm text-black text-right">{distance}km</span>
                     </div>
                     <div className="bg-white rounded-xl mb-4">
                       <div className="relative border-b py-2">
-                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                        <input
-                          type="text"
-                          placeholder="Search Job"
-                          className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
-                        />
+                        <form.Field name="name">
+                          {(field) => {
+                            return (
+                              <>
+                                <div className="relative">
+                                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                                  <input
+                                    name={field.name}
+                                    value={field.state.value || ''}
+                                    onBlur={field.handleBlur}
+                                    onChange={(e) => field.handleChange(e.target.value)}
+                                    placeholder="Search Job"
+                                    className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                                  />
+                                </div>
+                                <div className="indent-7">
+                                  <FieldError field={field} />
+                                </div>
+                              </>
+                            )
+                          }}
+                        </form.Field>
                       </div>
                       <div className="relative py-2">
                         <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">
                           <LocationIcon className="m-auto" />
                         </div>
-                        <input
-                          type="text"
-                          placeholder="Location"
-                          className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
-                        />
+                        <form.Field name="address">
+                          {(field) => {
+                            return (
+                              <>
+                                <input
+                                  name={field.name}
+                                  value={field.state.value || ''}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  placeholder="Location"
+                                  className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                                />
+                                <FieldError field={field} />
+                              </>
+                            )
+                          }}
+                        </form.Field>
                       </div>
                       <div className="pb-1 mx-1">
-                        <button className="bg-[#195F7E] rounded-xl p-4 w-full">Search Job</button>
+                        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                          {([canSubmit, isSubmitting]) => (
+                            <>
+                              <Button
+                                type="submit"
+                                disabled={!canSubmit}
+                                size="lg"
+                                className="bg-[#195F7E] rounded-xl p-4 w-full"
+                              >
+                                Search Job {isSubmitting && <Spinner />}
+                              </Button>
+                              <FormError form={form} />
+                            </>
+                          )}
+                        </form.Subscribe>
                       </div>
                     </div>
-                  </div>
+                  </form>
                   <div className="col-span-4">
                     <div className="w-full h-[480px]">
                       <Map posix={[9.0563, 7.4985]} />
                     </div>
-                    {/* <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
-                      <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      />
-                      <Marker position={[9.072264, 7.4985]}>
-                        <Popup>
-                          A pretty CSS3 popup. <br /> Easily customizable.
-                        </Popup>
-                      </Marker>
-                    </MapContainer> */}
                     {/* <iframe
                       className="w-full rounded-xl"
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7193.3143200417435!2d-100.28889498759587!3d25.649501748537784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8662bfbef1c51a37%3A0x2aeb9d19e4fbb44b!2sCentro%20Deportivo%20Borregos%20II!5e0!3m2!1sen!2sng!4v1736921701249!5m2!1sen!2sng"
