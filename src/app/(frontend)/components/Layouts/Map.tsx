@@ -56,8 +56,7 @@ const Map = ({ zoom = defaults.zoom, companies }: MapProps) => {
       center={center}
       zoom={zoom}
       scrollWheelZoom={false}
-      style={{ height: '100%', width: '100%' }}
-      className="rounded-xl"
+      className="rounded-xl w-full min-h-[400px] lg:h-full"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

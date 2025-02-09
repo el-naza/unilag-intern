@@ -137,9 +137,9 @@ const Page = () => {
               <StudentNavbar />
             </div>
             <div className="container">
-              <main className="py-1 bg-white">
-                <div className="mb-1" onClick={() => router.push('/student/companies/1')}>
-                  <iframe
+              <main className="py-1">
+                <div className="mb-1">
+                  {/* <iframe
                     className="w-full rounded-xl"
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7193.3143200417435!2d-100.28889498759587!3d25.649501748537784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8662bfbef1c51a37%3A0x2aeb9d19e4fbb44b!2sCentro%20Deportivo%20Borregos%20II!5e0!3m2!1sen!2sng!4v1736921701249!5m2!1sen!2sng"
                     width="600"
@@ -148,44 +148,105 @@ const Page = () => {
                     allowFullScreen={true}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
+                  ></iframe> */}
+                  <Map companies={searchedCompanies} />
                 </div>
                 <div>
                   <h5 className="text-black mb-3 font-bold">Companies Search</h5>
-                  <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
-                    <LocationPointerIcon className="absolute left-1.5 top-2.5" />
-                    <input
-                      className="w-full text-xs indent-6 text-black placeholder:text-[#8E8E93] outline-none border-0"
-                      type="text"
-                      placeholder="Search Destination (Office Address, Cities or Towns)"
-                    />
-                  </div>
-                  <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
-                    <div className="text-xs text-[#8E8E93] mb-4">Distance Search</div>
-                    <div className="grid grid-cols-5 gap-4">
-                      <div className="col-span-4 grid-rows">
-                        <div className="flex justify-between mb-2">
-                          <div className="text-xs text-[#8E8E93]">0 km</div>
-                          <div className="text-xs text-[#8E8E93]">100 km</div>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      form.handleSubmit()
+                    }}
+                  >
+                    <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
+                      <form.Field name="name">
+                        {(field) => {
+                          return (
+                            <>
+                              <div className="relative">
+                                <SearchIcon className="absolute -left-2 bottom-[-1px] text-gray-500" />
+                                <input
+                                  name={field.name}
+                                  value={field.state.value || ''}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  className="w-full text-xs indent-6 text-black placeholder:text-[#8E8E93] outline-none border-0"
+                                  placeholder="Search Company Name"
+                                />
+                              </div>
+                              <div className="indent-7">
+                                <FieldError field={field} />
+                              </div>
+                            </>
+                          )
+                        }}
+                      </form.Field>
+                    </div>
+                    <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
+                      <form.Field name="address">
+                        {(field) => {
+                          return (
+                            <>
+                              <div className="relative">
+                                <LocationPointerIcon className="absolute left-0 top-[2px]" />
+                                <input
+                                  name={field.name}
+                                  value={field.state.value || ''}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  className="w-full text-xs indent-6 text-black placeholder:text-[#8E8E93] outline-none border-0"
+                                  placeholder="Search Destination (Office Address, Cities or Towns)"
+                                />
+                              </div>
+                              <div className="indent-7">
+                                <FieldError field={field} />
+                              </div>
+                            </>
+                          )
+                        }}
+                      </form.Field>
+                    </div>
+                    <div className="relative p-2 border border-[#F1F1F1] rounded mb-2">
+                      <div className="text-xs text-[#8E8E93] mb-4">Distance Search</div>
+                      <div className="grid grid-cols-5 gap-4">
+                        <div className="col-span-4 grid-rows">
+                          <div className="flex justify-between mb-2">
+                            <div className="text-xs text-[#8E8E93]">0 km</div>
+                            <div className="text-xs text-[#8E8E93]">100 km</div>
+                          </div>
+                          <Slider
+                            className="col-span-5 flex"
+                            value={distance}
+                            onValueChange={setDistance}
+                            max={100}
+                            step={1}
+                          />
                         </div>
-                        <Slider
-                          className="col-span-5 flex"
-                          value={distance}
-                          onValueChange={setDistance}
-                          max={100}
-                          step={1}
-                        />
-                      </div>
-                      <div className="border border-[#F1F1F1] text-xs text-[#0B7077] px-2 flex items-center">
-                        {distance}km
+                        <div className="border border-[#F1F1F1] text-xs text-[#0B7077] px-2 flex items-center">
+                          {distance}km
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div>
-                    <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
-                      Search Vacancies
-                    </button>
-                  </div>
+                    <div>
+                      <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                        {([canSubmit, isSubmitting]) => (
+                          <>
+                            <Button
+                              type="submit"
+                              disabled={!canSubmit}
+                              size="lg"
+                              className="bg-[#195F7E] rounded-xl p-4 w-full"
+                            >
+                              Search Vacancies {isSubmitting && <Spinner />}
+                            </Button>
+                            <FormError form={form} />
+                          </>
+                        )}
+                      </form.Subscribe>
+                    </div>
+                  </form>
                 </div>
               </main>
             </div>
@@ -417,16 +478,6 @@ const Page = () => {
                     <div className="w-full h-[480px]">
                       <Map companies={searchedCompanies} />
                     </div>
-                    {/* <iframe
-                      className="w-full rounded-xl"
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7193.3143200417435!2d-100.28889498759587!3d25.649501748537784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8662bfbef1c51a37%3A0x2aeb9d19e4fbb44b!2sCentro%20Deportivo%20Borregos%20II!5e0!3m2!1sen!2sng!4v1736921701249!5m2!1sen!2sng"
-                      width="600"
-                      height="450"
-                      style={{ border: 0 }}
-                      allowFullScreen={true}
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe> */}
                   </div>
                 </div>
               </main>
