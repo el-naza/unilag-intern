@@ -1,9 +1,12 @@
 'use client'
 import hero from '../../assets/images/company-hero-bg.png'
 import studentImage from '../../assets/images/student-img.png'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import NavBar from '../../common/nav-bar'
 import StudentProfileCard from '../../components/Cards/studentProfileCard'
+import fetchDocs from '@/services/fetchDocs'
+import Loader from '../../components/Layouts/Loader'
+import { useRouter } from 'next/navigation'
 export default function CompanyHomePage() {
   const [active, setActive] = useState<string>('  All Career Area')
   const careers = [
@@ -15,62 +18,22 @@ export default function CompanyHomePage() {
     { title: 'Medicine' },
   ]
 
-  const students = [
-    {
-      name: 'Kotu Faruq',
-      course: 'Mathematics',
-      cgpa: '3.5',
-      image: studentImage.src,
-    },
-    {
-      name: 'Jane Doe',
-      course: 'Physics',
-      cgpa: '3.8',
-      image: studentImage.src,
-    },
-    {
-      name: 'John Smith',
-      course: 'Engineering',
-      cgpa: '3.6',
-      image: studentImage.src,
-    },
-    {
-      name: 'Kotu Faruq',
-      course: 'Mathematics',
-      cgpa: '3.5',
-      image: studentImage.src,
-    },
-    {
-      name: 'Jane Doe',
-      course: 'Physics',
-      cgpa: '3.8',
-      image: studentImage.src,
-    },
-    {
-      name: 'John Smith',
-      course: 'Engineering',
-      cgpa: '3.6',
-      image: studentImage.src,
-    },
-    {
-      name: 'Kotu Faruq',
-      course: 'Mathematics',
-      cgpa: '3.5',
-      image: studentImage.src,
-    },
-    {
-      name: 'Jane Doe',
-      course: 'Physics',
-      cgpa: '3.8',
-      image: studentImage.src,
-    },
-    {
-      name: 'John Smith',
-      course: 'Engineering',
-      cgpa: '3.6',
-      image: studentImage.src,
-    },
-  ]
+  const [loading, setLoading] = useState<boolean>(true)
+  const [students, setStudents] = useState<any>([])
+
+  const fetchStudents = async () => {
+    const res: any = await fetchDocs('students')
+    setStudents(res.docs)
+    console.log(students)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchStudents()
+  }, [])
+
+  const router = useRouter()
+
 
   return (
     <div>
@@ -113,11 +76,18 @@ export default function CompanyHomePage() {
 
       <div className="max-w-full md:max-w-[866px] m-auto px-4 pb-[100px]">
         <p className="py-[7px] font-[500] text-[20px]">Student List</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[14px] p-[12px]">
-          {students.map((student, index) => (
+        {loading ? (
+          <Loader />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[14px] p-[12px]">
+            {students.map((student) => (
+              <StudentProfileCard key={student.id} student={student}  />
+            ))}
+          </div>
+        )}
+        {/* {students.map((student, index) => (
             <StudentProfileCard key={index} student={student} />
-          ))}
-        </div>
+          ))} */}
       </div>
     </div>
   )
