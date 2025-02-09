@@ -35,7 +35,6 @@ import FieldError from '@/components/FieldError'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
-import { LatLngExpression, LatLngTuple } from 'leaflet'
 
 const Page = () => {
   const router = useRouter()
@@ -45,16 +44,6 @@ const Page = () => {
   const [companies, setCompanies] = useState<any[]>([])
   const [searchedCompanies, setSearchedCompanies] = useState<any[]>([])
   const [distance, setDistance] = useState<number[]>([20])
-  const [positions, setPositions] = useState<LatLngExpression[] | LatLngTuple[]>([
-    [9.0563, 7.4985],
-    [9.0563, 7.4988],
-  ])
-
-  const addPosition = () => {
-    setPositions((p) => {
-      return [...p, [9.0563, 7.4993]]
-    })
-  }
 
   const user = useMemo<any>(() => session?.user, [session])
 
@@ -78,7 +67,7 @@ const Page = () => {
       try {
         const res = await searchJobs({
           name: company.name,
-          address: company.address,
+          ...(company.address ? { address: company.address } : {}),
         })
         console.log('res', res)
         return res
@@ -288,10 +277,7 @@ const Page = () => {
                             <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                               <span>0 Duration</span>
                             </div>
-                            <div
-                              onClick={addPosition}
-                              className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl"
-                            >
+                            <div className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl">
                               <span>Upgrade</span>
                             </div>
                           </div>
@@ -429,7 +415,7 @@ const Page = () => {
                   </form>
                   <div className="col-span-4">
                     <div className="w-full h-[480px]">
-                      <Map positions={positions} />
+                      <Map companies={searchedCompanies} />
                     </div>
                     {/* <iframe
                       className="w-full rounded-xl"

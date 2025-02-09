@@ -1,11 +1,12 @@
 interface LocationProps {
   fill?: string
+  className?: string
 }
 
-export default function LocationIcon({ fill = '#195F7E' }: LocationProps) {
+export default function LocationIcon({ fill = '#195F7E', className }: LocationProps) {
   return (
     <svg
-      // className={className}
+      className={className}
       width="11"
       height="15"
       viewBox="0 0 11 15"
