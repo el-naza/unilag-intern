@@ -3,7 +3,7 @@ import defaultProfileImage from '../../assets/images/profile-image.webp'
 
 type StudentProfile = {
   id: string
-  name: string
+  firstName: string
   course: string
   cgpa: string
   image: string
@@ -15,7 +15,7 @@ type StudentProfileCardProps = {
 }
 
 export default function StudentProfileCard({ student }: StudentProfileCardProps) {
-  const { id, name, course, cgpa } = student
+  const { id, firstName, course, cgpa } = student
   const router = useRouter()
   return (
     <div
@@ -30,7 +30,7 @@ export default function StudentProfileCard({ student }: StudentProfileCardProps)
     >
       <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black/50 via-transparent to-transparent" />
       <div className="z-10 w-full text-white p-[8px]">
-        <p className="font-[700] text-[14px] mb-[4px]">{name}</p>
+        <p className="font-[700] text-[14px] mb-[4px]">{firstName}</p>
         <div className="flex items-center justify-between font-[400] text-[12px]">
           <p>{course}</p>
           <p>{cgpa} CGPA</p>

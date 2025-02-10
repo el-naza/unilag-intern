@@ -46,7 +46,6 @@ export default function StudentInvitation() {
 
   const sendInvitationMtn = useMutation({
     mutationFn: async (invitation: InterviewInvitation) => {
-      console.log('invitation', invitation)
       try {
         const res = await saveDoc('interview-invitations', invitation)
         if (!res) return toast.error('Network error; please try again later')

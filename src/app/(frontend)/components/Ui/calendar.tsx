@@ -35,6 +35,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect }) => {
       <button
         onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
         className="text-gray-500 hover:text-black border rounded h-7 w-7 bg-white"
+        type='button'
       >
         &#8249;
       </button>
@@ -42,6 +43,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect }) => {
       <button
         onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
         className="text-gray-500 hover:text-black border rounded h-7 w-7 bg-white"
+        type='button'
       >
         &#8250;
       </button>

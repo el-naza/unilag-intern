@@ -165,6 +165,7 @@ export default function OTPConfirmation() {
                 <Label>Email</Label>
                 <Input
                   value={field.state.value || ''}
+                  type="email"
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Enter Email"

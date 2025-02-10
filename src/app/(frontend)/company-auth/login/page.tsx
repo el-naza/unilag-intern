@@ -294,6 +294,7 @@ export default function Login() {
                 <Input
                   disabled={hasPassword}
                   name={field.name}
+                  type='email'
                   value={field.state.value || ''}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
