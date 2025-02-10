@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import React from 'react'
 import companyBanner from '@/app/(frontend)/assets/images/company-banner.svg'
@@ -11,8 +13,22 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog'
+import { InterviewInvitation } from '@/payload-types'
+import formatDate from '@/utilities/formatDate'
 
-export default function CompanyApprovedApplicationCard() {
+interface Props {
+  interviewInvitation: InterviewInvitation
+  onRespond: (value: InterviewInvitation) => void
+}
+
+export default function CompanyApprovedApplicationCard({ interviewInvitation, onRespond }: Props) {
+  const declineInterview = () => {
+    onRespond({
+      ...interviewInvitation,
+      status: 'declined',
+    })
+  }
+
   return (
     <div className="grid grid-cols-4 sm:grid-cols-6 rounded-lg border border-[#F1F1F1]">
       <Image
@@ -25,14 +41,16 @@ export default function CompanyApprovedApplicationCard() {
       <div className="col-span-3 grid sm:col-span-5 p-1">
         <div className="mt-auto sm:my-auto">
           <div className="ms-2 leading-normal">
-            <h5 className="text-black mb-0 text-[12px]">CMR SHOPPING MALL</h5>
-            <p className="text-[10px] text-[#8E8E93]">Career Area: Marketing</p>
+            <h5 className="text-black mb-0 text-[12px]">{interviewInvitation.company.name}</h5>
             <p className="text-[10px] text-[#8E8E93]">
-              Interview Scheduled: 10:30am, 25th July 2025
+              Career Area: {interviewInvitation.company.courseAreas.join(', ')}
+            </p>
+            <p className="text-[10px] text-[#8E8E93]">
+              Interview Scheduled: {formatDate(interviewInvitation.dateTime)}
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
-            <Link href="/student/applications/approved/1">
+            <Link href={`/student/applications/approved/${interviewInvitation.id}`}>
               <button className="text-[10px] w-full rounded p-1 bg-[#0B7077] text-white text-center">
                 View Details
               </button>
