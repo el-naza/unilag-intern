@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import companyBanner from '@/app/(frontend)/assets/images/company-banner.svg'
 import Link from 'next/link'
 import {
@@ -15,18 +15,34 @@ import {
 } from '@/components/ui/dialog'
 import { InterviewInvitation } from '@/payload-types'
 import formatDate from '@/utilities/formatDate'
+import { toast } from 'sonner'
+import Spinner from '@/components/spinner'
 
 interface Props {
   interviewInvitation: InterviewInvitation
-  onRespond: (value: InterviewInvitation) => void
+  onRespond: (value: InterviewInvitation) => Promise<void>
 }
 
 export default function CompanyApprovedApplicationCard({ interviewInvitation, onRespond }: Props) {
-  const declineInterview = () => {
-    onRespond({
+  const [open, setOpen] = useState<boolean>(false)
+  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [declineReason, setDeclineReason] = useState<string>('')
+
+  const handleDeclineReasonInput = (e: any) => {
+    setDeclineReason(e.target.value)
+  }
+
+  const declineInterview = async () => {
+    setSubmitting(true)
+    await onRespond({
       ...interviewInvitation,
       status: 'declined',
+      declineReason,
     })
+    setDeclineReason('')
+    setSubmitting(false)
+    setOpen(false)
+    toast.success('Application declined successfully')
   }
 
   return (
@@ -55,12 +71,14 @@ export default function CompanyApprovedApplicationCard({ interviewInvitation, on
                 View Details
               </button>
             </Link>
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="text-[10px] w-full rounded p-1 bg-[#ECECEC] text-[#48484A] text-center">
-                  Decline Invitation
-                </button>
-              </DialogTrigger>
+            <Dialog open={open} onOpenChange={setOpen}>
+              {interviewInvitation.status !== 'declined' && (
+                <DialogTrigger asChild>
+                  <button className="text-[10px] w-full rounded p-1 bg-[#ECECEC] text-[#48484A] text-center">
+                    Decline Invitation
+                  </button>
+                </DialogTrigger>
+              )}
               <DialogContent className="bg-white rounded-lg gap-2">
                 <DialogTitle className="text-[#0B7077] font-normal">Reject Student</DialogTitle>
                 <DialogDescription className="text-[#8E8E93]">
@@ -68,6 +86,7 @@ export default function CompanyApprovedApplicationCard({ interviewInvitation, on
                 </DialogDescription>
                 <div className="grid gap-4 text-center">
                   <textarea
+                    onChange={handleDeclineReasonInput}
                     className="text-sm w-full placeholder:text-[#ECECEC] p-2 border border-[#ECECEC] rounded mb-2"
                     rows={5}
                     placeholder="Enter Reason"
@@ -77,8 +96,14 @@ export default function CompanyApprovedApplicationCard({ interviewInvitation, on
                   <DialogClose className="col-start-3 text-xs bg-white text-[#48484A] border-0">
                     Cancel
                   </DialogClose>
-                  <button className="w-full rounded p-2 text-xs bg-[#0B7077] text-white text-center">
-                    Continue
+                  <button
+                    disabled={submitting}
+                    onClick={declineInterview}
+                    className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+                  >
+                    <div className="flex m-auto">
+                      <span>Continue</span> {submitting && <Spinner className="ms-1 h-4" />}
+                    </div>
                   </button>
                 </DialogFooter>
               </DialogContent>

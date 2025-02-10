@@ -107,11 +107,13 @@ export default function CompanyLargeApprovedApplicationCard({
               </div>
               <div>
                 <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger asChild>
-                    <button className="bg-[#A71C51] rounded-lg p-2 min-w-40">
-                      <span className="text-white text-sm">Reject</span>
-                    </button>
-                  </DialogTrigger>
+                  {interviewInvitation.status !== 'declined' && (
+                    <DialogTrigger asChild>
+                      <button className="bg-[#A71C51] rounded-lg p-2 min-w-40">
+                        <span className="text-white text-sm">Reject</span>
+                      </button>
+                    </DialogTrigger>
+                  )}
                   <DialogContent className="bg-white rounded-lg gap-2">
                     <DialogTitle className="text-[#0B7077] font-normal">Reject Student</DialogTitle>
                     <DialogDescription className="text-[#8E8E93]">
