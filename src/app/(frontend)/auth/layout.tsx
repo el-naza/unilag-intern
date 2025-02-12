@@ -38,8 +38,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
                     alt="auth-line"
                   />
                   <div className="m-auto">
-                    <div className="relative h-[50px] w-[50px] rounded-full border-4 border-white bg-transparent">
-                      <div className="absolute top-[15%] left-[15%] h-[30px] w-[30px] rounded-full border-4 border-white bg-white bg-transparent"></div>
+                    <div className="relative h-[50px] w-[50px] rounded-full border-4 border-white flex justify-center items-center bg-transparent">
+                      <div className=" h-[30px] w-[30px] rounded-full border-4 border-white bg-white bg-transparent"></div>
                     </div>
                   </div>
                   <div className="col-span-4">
@@ -55,8 +55,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
                     alt="auth-line"
                   />
                   <div className="m-auto">
-                    <div className="relative h-[50px] w-[50px] rounded-full border-4 border-white bg-transparent">
-                      <div className="hidden group-hover:block absolute top-[15%] left-[15%] h-[30px] w-[30px] rounded-full border-4 border-white bg-white bg-transparent"></div>
+                    <div className="relative h-[50px] w-[50px] rounded-full border-4 border-white flex justify-center items-center bg-transparent">
+                      <div className="hidden group-hover:block  h-[30px] w-[30px] rounded-full border-4 border-white bg-white bg-transparent"></div>
                     </div>
                   </div>
                   <div className="col-span-4">
@@ -67,8 +67,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
                 </div>
                 <div className="grid grid-cols-5 gap-4 group cursor-pointer">
                   <div className="m-auto">
-                    <div className="relative h-[50px] w-[50px] rounded-full border-4 border-white bg-transparent">
-                      <div className="hidden group-hover:block absolute top-[15%] left-[15%] h-[30px] w-[30px] rounded-full border-4 border-white bg-white bg-transparent"></div>
+                    <div className="relative h-[50px] w-[50px] rounded-full border-4 border-white flex justify-center items-center bg-transparent">
+                      <div className="hidden group-hover:block  h-[30px] w-[30px] rounded-full border-4 border-white bg-white bg-transparent"></div>
                     </div>
                   </div>
                   <div className="col-span-4">
