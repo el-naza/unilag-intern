@@ -16,10 +16,11 @@ import { DepartmentalCoordinators } from './collections/DepartmentalCoordinators
 import { InternshipApplications } from './collections/InternshipApplications'
 import { Employments } from './collections/Employments'
 import { Reports } from './collections/Reports'
+import { Concert_One } from 'next/font/google'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
+console.log('usr pass', process.env.EMAIL_USER, process.env.EMAIL_PASSWORD)
 export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
