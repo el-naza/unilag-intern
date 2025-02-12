@@ -20,7 +20,7 @@ import { Concert_One } from 'next/font/google'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-console.log('usr pass', process.env.EMAIL_USER, process.env.EMAIL_PASSWORD)
+
 export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
