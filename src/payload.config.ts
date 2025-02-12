@@ -42,7 +42,6 @@ export default buildConfig({
     defaultFromName: 'UNILAG INTERNSHIP',
     transportOptions: {
       host: 'smtp.titan.email',
-      secure: true,
       port: 465,
       auth: {
         user: process.env.EMAIL_USER,
