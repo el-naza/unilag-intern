@@ -1,14 +1,15 @@
-import type { CollectionConfig } from 'payload'
-
+import type { CollectionConfig, Where } from 'payload'
 import { companies } from '@/access/companies'
-import { relatedCompany } from '@/access/relatedCompany'
+import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
+import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 
 export const InterviewInvitations: CollectionConfig = {
   slug: 'interview-invitations',
   access: {
+    read: relatedStudentOrCompany,
     create: companies,
     delete: relatedCompany,
-    update: relatedCompany,
+    update: relatedStudentOrCompany,
   },
   fields: [
     {
@@ -32,6 +33,54 @@ export const InterviewInvitations: CollectionConfig = {
       name: 'dateTime',
       type: 'date',
       required: true,
+    },
+    {
+      name: 'status',
+      type: 'select',
+      options: ['pending', 'accepted', 'declined'],
+      defaultValue: 'pending',
+    },
+    {
+      name: 'declineReason',
+      type: 'text',
+    },
+  ],
+  endpoints: [
+    {
+      method: 'get',
+      path: '/',
+      handler: async (req) => {
+        const where: Where = {
+          ...(req.user?.collection === 'companies'
+            ? { company: { equals: req.user.id } }
+            : req.user?.collection === 'students'
+              ? { student: { equals: req.user.id } }
+              : {}),
+        }
+
+        const interviewInvitationFindRes = await req.payload.find({
+          collection: 'interview-invitations',
+          where,
+          showHiddenFields: true,
+        })
+
+        return Response.json({ data: interviewInvitationFindRes }, { status: 200 })
+      },
+    },
+    {
+      method: 'get',
+      path: '/:id',
+      handler: async (req) => {
+        const { id } = req.routeParams
+
+        const interviewInvitationFindRes = await req.payload.findByID({
+          collection: 'interview-invitations',
+          id,
+          showHiddenFields: true,
+        })
+
+        return Response.json(interviewInvitationFindRes, { status: 200 })
+      },
     },
   ],
 }

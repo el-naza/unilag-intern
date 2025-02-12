@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload'
 
-import { authenticatedUsers } from '@/access/authenticated-users'
 import { self } from '@/access/self'
 import { anyone } from '@/access/anyone'
 import { NextResponse as Response } from 'next/server'
@@ -40,23 +39,23 @@ export const Students: CollectionConfig = {
     },
     forgotPassword: {
       generateEmailHTML,
-  //     generateEmailHTML: (args) => {
-  //       console.log('Generating email, OTP from context:', args?.req?.context)
+      //     generateEmailHTML: (args) => {
+      //       console.log('Generating email, OTP from context:', args?.req?.context)
 
-  //       return `
-  //   <!doctype html>
-  //   <html>
-  //     <body>
-  //       <h1>PASSWORD RESET OTP</h1>
-  //       <p>Hello, ${args?.user.email}!</p>
-  //       <p>Use the OTP below to reset your password.</p>
-  //       <p>
-  //         ${args?.req?.context?.otp}
-  //       </p>
-  //     </body>
-  //   </html>
-  // `
-  //     },
+      //       return `
+      //   <!doctype html>
+      //   <html>
+      //     <body>
+      //       <h1>PASSWORD RESET OTP</h1>
+      //       <p>Hello, ${args?.user.email}!</p>
+      //       <p>Use the OTP below to reset your password.</p>
+      //       <p>
+      //         ${args?.req?.context?.otp}
+      //       </p>
+      //     </body>
+      //   </html>
+      // `
+      //     },
     },
   },
   endpoints: [
@@ -113,7 +112,7 @@ export const Students: CollectionConfig = {
           },
         ) as string
 
-        let res = await req.payload.forgotPassword({
+        const res = await req.payload.forgotPassword({
           collection: 'students',
           data: {
             username: data!.matricNo,

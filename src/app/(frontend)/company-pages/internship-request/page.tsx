@@ -2,11 +2,16 @@
 import NavBar from '../../common/nav-bar'
 import hero from '../../assets/images/company-hero-bg.png'
 import invitationImage from '../../assets/images/initation-image.png'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PlusIcon from '../../assets/icons/plus'
 import Table from '../../components/table'
 import BlurBackground from '../../components/Layout/blurBackground'
 import InvitationTabs from '../../components/Ui/tab'
+import fetchDocs from '@/services/fetchDocs'
+import { toast } from 'sonner'
+import updateDoc from '@/services/updateDoc'
+import { useMutation } from '@tanstack/react-query'
+import { InterviewInvitation } from '@/payload-types'
 
 export default function InternshipRequest() {
   const [active, setActive] = useState<string>('Internship Post')
@@ -18,67 +23,104 @@ export default function InternshipRequest() {
     { title: 'Rejected Request ' },
   ]
 
+  const [internReq, setInternReq] = useState<any>([])
+  const [tableData, setTableData] = useState<any>([])
+
+  // const fetchInternReq = async () => {
+  //   const res: any = await fetchDocs('interview-invitations')
+  //   setInternReq(res)
+  //   console.log(internReq)
+  //   setLoading(false)
+  // }
+
+  const fetchInternReq = async () => {
+    const res: any = await fetchDocs('interview-invitations')
+    setInternReq(res?.data?.docs || [])
+    setTableData(res?.data)
+  }
+
+  useEffect(() => {
+    fetchInternReq()
+  }, [])
+
+  // const respondToInterviewMtn = useMutation({
+  //   mutationFn: async (interviewInvitation: InterviewInvitation) => {
+  //     try {
+  //       console.log(interviewInvitation)
+  //       const res = await updateDoc(
+  //         'interview-invitations',
+  //         interviewInvitation.id,
+  //         interviewInvitation,
+  //       )
+  //       console.log('res', res)
+  //       if (!res) return toast.error('Network err; pls try again later')
+  //       return res
+  //     } catch {
+  //       toast.error('An error occured while updating; pls try again later')
+  //     }
+  //   },
+  // })
+
+  const respondToInterviewMtn = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      try {
+        console.log('Updating interview invitation:', { id, status });
+  
+        const res = await updateDoc('interview-invitations', id, { status });
+  
+        console.log('Response:', res);
+        if (!res) return toast.error('Network error; please try again later');
+  
+        return res;
+      } catch {
+        toast.error('An error occurred while updating; please try again later');
+      }
+    },
+  });
+  
+
+  const handleRespond = async (id: string, status: string) => {
+    await respondToInterviewMtn.mutateAsync({ id, status });
+  };
+  
   const [currentPage, setCurrentPage] = useState(1)
 
   const headers = ['Student Name', 'Application', 'Date', '']
 
-  const tableData = [
-    {
-      id: 1,
-      name: 'Omkar Lucas',
-      imageUrl: invitationImage.src,
-      application: 'Enclosed are my CV and required documents.',
-      date: '02/03/2023',
-    },
-    {
-      id: 2,
-      name: 'Jane Doe',
-      imageUrl: invitationImage.src,
-      application: 'Submitted all required materials for review.',
-      date: '03/15/2023',
-    },
-    {
-      id: 3,
-      name: 'John Smith',
-      imageUrl: invitationImage.src,
-      application: 'Application includes all necessary documents.',
-      date: '04/10/2023',
-    },
-    {
-      id: 4,
-      name: 'Maria Gonzalez',
-      imageUrl: invitationImage.src,
-      application: 'Attached are my credentials and required forms.',
-      date: '05/22/2023',
-    },
-    {
-      id: 5,
-      name: 'Alex Johnson',
-      imageUrl: invitationImage.src,
-      application: 'Here is my completed application for review.',
-      date: '06/18/2023',
-    },
-  ]
-  const rows = tableData.map((item) => [
-    <div key={`${item.id}-name`} className="flex items-center">
-      <img src={item.imageUrl} alt={item.name} className="w-8 h-8 rounded-full mr-2" />
-      {item.name}
-    </div>,
-    <p key={`${item.id}-application`} className="text-[12px] font-[400]">
-      {item.application}
-    </p>,
-    <p key={`${item.id}-date`} className="text-[12px] font-[400]">
-      {item.date}
-    </p>,
-    <div key={`${item.id}-actions`}>
-      <button className="text-green-500 hover:underline lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowwrap">
-        ✔ Accept
-      </button>
-      <button className="text-red-500 hover:underline bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]">
-        ✘ Reject
-      </button>
-    </div>,
-  ])
+  const rows =
+    internReq &&
+    internReq.map((item) => [
+      <div key={`${item.id}-name`} className="flex items-center">
+        <img
+          src={item.student.imageUrl || '/default-avatar.png'}
+          alt={item.student.firstName}
+          className="w-8 h-8 rounded-full mr-2"
+        />
+        {`${item.student.firstName} ${item.student.lastName}`}
+      </div>,
+      <p key={`${item.id}-application`} className="text-[12px] font-[400]">
+        {item.company.name}
+      </p>,
+      <p key={`${item.id}-date`} className="text-[12px] font-[400]">
+        {new Date(item.createdAt).toLocaleDateString()}
+      </p>,
+      <div key={`${item.id}-actions`}>
+        <button
+          className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
+          onClick={() => handleRespond(item.id, 'accepted')}
+          disabled={respondToInterviewMtn.isPending}
+        >
+          ✔ Accept
+        </button>
+        <button
+          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
+          onClick={() => handleRespond(item.id, 'declined')}
+          disabled={respondToInterviewMtn.isPending}
+        >
+          ✘ Declne
+        </button>
+      </div>,
+    ])
 
   const totalPages = tableData.length
   const totalItems = 1234

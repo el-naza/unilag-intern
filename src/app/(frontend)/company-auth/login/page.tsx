@@ -187,7 +187,6 @@ export default function Login() {
     },
   })
 
-
   const form = useForm<CompanyAuthOperations['login']>({
     validators: {
       onSubmitAsync: async ({ value }) => {
@@ -225,7 +224,7 @@ export default function Login() {
               return
             }
             toast.message(`Use the OTP sent to set your password`)
-            console.log("move to otp")
+            console.log('move to otp')
             router.push('/company-auth/otp-confirmation')
             return null
           } else {
@@ -254,15 +253,14 @@ export default function Login() {
     },
   })
 
-
   return (
     <div className="">
-        <button
-          // onClick={goBack}
-          className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
-        >
-          <ArrowIcon /> Back
-        </button>
+      <button
+        // onClick={goBack}
+        className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
+      >
+        <ArrowIcon /> Back
+      </button>
       <h2 className="font-[500] text-[24px] text-center mt-[40px]">
         {step === 'company'
           ? 'Login into your Siwes Company Profile'
@@ -294,7 +292,7 @@ export default function Login() {
                 <Input
                   disabled={hasPassword}
                   name={field.name}
-                  type='email'
+                  type="email"
                   value={field.state.value || ''}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -348,13 +346,10 @@ export default function Login() {
           )}
         </form.Subscribe>
       </form>
-    
+
       <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
         Not registered yet? Sign up now to connect withcc top talent effortlessly!{' '}
-       <Link
-          href="/company-auth/sign-up"
-          className="text-[#007AFF] cursor-pointer"
-        >
+        <Link href="/company-auth/sign-up" className="text-[#007AFF] cursor-pointer">
           Sign up as a company
         </Link>
       </p>
@@ -362,3 +357,4 @@ export default function Login() {
     </div>
   )
 }
+

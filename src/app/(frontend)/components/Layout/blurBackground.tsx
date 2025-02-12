@@ -9,6 +9,7 @@ export default function BlurBackground({
   return (
     <div
       className={` lg:p-[12px] border border-[#F1F1F1] rounded-[12px] ${background} mt-[12px] backdrop-blur-lg pb-[100px] lg:pb-0 `}
+      style={{ maxHeight: '600px', overflowY: 'scroll', scrollbarWidth: 'none' }}
     >
       {children}
     </div>
