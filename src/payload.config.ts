@@ -38,14 +38,16 @@ export default buildConfig({
   ],
   cors: [getServerSideURL()].filter(Boolean),
   email: nodemailerAdapter({
-    defaultFromAddress: process.env.GMAIL_USER!,
+    defaultFromAddress: process.env.EMAIL_USER!,
     defaultFromName: 'UNILAG INTERNSHIP',
     transportOptions: {
+      host: 'smtp.titan.email',
+      secure: true,
+      port: 465,
       auth: {
-        pass: process.env.GMAIL_PASSWORD,
-        user: process.env.GMAIL_USER,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
       },
-      service: 'gmail',
     },
   }),
   plugins: [
