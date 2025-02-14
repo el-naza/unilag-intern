@@ -12,16 +12,10 @@ import { toast } from 'sonner'
 import updateDoc from '@/services/updateDoc'
 import { useMutation } from '@tanstack/react-query'
 import { InterviewInvitation } from '@/payload-types'
+import Loader from '../../components/Layouts/Loader'
 
 export default function InternshipRequest() {
-  const [active, setActive] = useState<string>('Internship Post')
-
-  const careers = [
-    { title: 'Internship Post' },
-    { title: 'Interviews' },
-    { title: 'Internship Request ', total: '2' },
-    { title: 'Rejected Request ' },
-  ]
+  const [loading, setLoading] = useState<boolean>(true)
 
   const [internReq, setInternReq] = useState<any>([])
   const [tableData, setTableData] = useState<any>([])
@@ -37,6 +31,7 @@ export default function InternshipRequest() {
     const res: any = await fetchDocs('interview-invitations')
     setInternReq(res?.data?.docs || [])
     setTableData(res?.data)
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -64,25 +59,24 @@ export default function InternshipRequest() {
   const respondToInterviewMtn = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       try {
-        console.log('Updating interview invitation:', { id, status });
-  
-        const res = await updateDoc('interview-invitations', id, { status });
-  
-        console.log('Response:', res);
-        if (!res) return toast.error('Network error; please try again later');
-  
-        return res;
+        console.log('Updating interview invitation:', { id, status })
+
+        const res = await updateDoc('interview-invitations', id, { status })
+
+        console.log('Response:', res)
+        if (!res) return toast.error('Network error; please try again later')
+
+        return res
       } catch {
-        toast.error('An error occurred while updating; please try again later');
+        toast.error('An error occurred while updating; please try again later')
       }
     },
-  });
-  
+  })
 
   const handleRespond = async (id: string, status: string) => {
-    await respondToInterviewMtn.mutateAsync({ id, status });
-  };
-  
+    await respondToInterviewMtn.mutateAsync({ id, status })
+  }
+
   const [currentPage, setCurrentPage] = useState(1)
 
   const headers = ['Student Name', 'Application', 'Date', '']
@@ -152,16 +146,20 @@ export default function InternshipRequest() {
             <InvitationTabs />
             <BlurBackground>
               <p className="px-4 font-[400] text-[16px]"> Internship Request</p>
-              <div className="mt-[12px]">
-                <Table
-                  headers={headers}
-                  rows={rows}
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  totalItems={totalItems}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+              {loading ? (
+                <Loader height="auto" background="transparent" />
+              ) : (
+                <div className="mt-[12px]">
+                  <Table
+                    headers={headers}
+                    rows={rows}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
             </BlurBackground>
           </div>
         </div>

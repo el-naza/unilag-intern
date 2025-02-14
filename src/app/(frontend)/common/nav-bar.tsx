@@ -14,7 +14,7 @@ export default function NavBar({ fill }: naveBarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navLinks = [
     { label: 'All Interns', path: '/company-pages/all-interns' },
-    { label: 'Invitations', path: '/company-pages/interviews' },
+    { label: 'Invitations', path: '/company-pages/internship-post' },
     { label: 'Reports', path: '/company-pages/reports' },
   ]
 

@@ -94,7 +94,7 @@ export default function OTPConfirmation() {
   return (
     <div className="">
       <button
-        // onClick={goBack}
+        onClick={()=>router.back()}
         className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
       >
         <ArrowIcon /> Back
@@ -152,23 +152,7 @@ export default function OTPConfirmation() {
         </form.Subscribe>
       </form>
 
-      {/* <DynamicForm
-        fields={signUp ? signUpFields : fields}
-        onSubmit={signUp === 'formField' ? handleSignUp : handleLogin}
-        submitButtonText="Proceed"
-      /> */}
-
-      {/* {success ? (
-        <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
-          Can’t remember your email address? Contact our customer service at 090 0000 1123{' '}
-          <span className="text-[#007AFF]">090 0000 1123</span> for assistance.{' '}
-        </p>
-      ) : ( */}
-      <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
-        Not registered yet? Sign up now to connect withcc top talent effortlessly!{' '}
-        <span className="text-[#007AFF] cursor-pointer">Sign up as a company</span>
-      </p>
-      {/* )} */}
+      
     </div>
   )
 }
