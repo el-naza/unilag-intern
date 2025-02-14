@@ -6,25 +6,28 @@ interface IPaginationProps {
   page: number
   pageSize: number
   total: number,
-  onEmitNextPage: () => void
-  onEmitPreviousPage: () => void
+  hasNext: boolean,
+  hasPrevious: boolean,
+  onEmitNextPage: (page: number) => void
+  onEmitPreviousPage: (page: number) => void
 }
 
-const Pagination = ({ page, pageSize, total, onEmitNextPage, onEmitPreviousPage }: IPaginationProps) => {
-  const totalPages = Math.ceil(total / pageSize)
+const Pagination = ({ page, pageSize, total, hasNext, hasPrevious, onEmitNextPage, onEmitPreviousPage }: IPaginationProps) => {
 
   const previousPage = () => {
-    onEmitPreviousPage()
+    const previousPage = page - 1
+    onEmitPreviousPage(previousPage)
   }
 
   const nextPage = () => {
-    onEmitNextPage()
+    const nextPage = page + 1
+    onEmitNextPage(nextPage)
   }
 
   return (
     <div className="flex justify-between items-center mt-8 p-4">
       <div className="flex gap-8 items-center w-[20%]">
-        <Button variant="outline" size="icon" className='w-full' onClick={() => previousPage()} disabled={page === 1}>
+        <Button variant="outline" size="icon" className='w-full' onClick={() => previousPage()} disabled={!hasPrevious}>
           Previous
         </Button>
         <Button
@@ -32,7 +35,7 @@ const Pagination = ({ page, pageSize, total, onEmitNextPage, onEmitPreviousPage 
           size="icon"
           className='w-full'
           onClick={() => nextPage()}
-          disabled={page === totalPages}
+          disabled={!hasNext}
         >
           Next
         </Button>
@@ -42,7 +45,7 @@ const Pagination = ({ page, pageSize, total, onEmitNextPage, onEmitPreviousPage 
         Total: {total}{' '}
         <span className="text-accent-blue">
           {' '}
-          - Page {page} of {totalPages}
+          - Page {page} of {pageSize}
         </span>
       </p>
     </div>

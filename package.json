@@ -23,6 +23,7 @@
     "@mui/x-date-pickers": "^7.24.1",
     "@payloadcms/db-mongodb": "latest",
     "@payloadcms/email-nodemailer": "latest",
+    "@payloadcms/email-resend": "latest",
     "@payloadcms/next": "latest",
     "@payloadcms/richtext-lexical": "^3.17.1",
     "@radix-ui/react-alert-dialog": "^1.1.4",

@@ -112,13 +112,14 @@ export default function AdminPage() {
         }
 
         const error = await signInAdmin.mutateAsync(value)
-        if (error)
+        if (error) {
           console.log('Error on sigin: ', error);
           
           return {
             form: error!,
             fields: {},
           }
+        }
 
         // success here so naviagate or toast to success !!
         form.reset()

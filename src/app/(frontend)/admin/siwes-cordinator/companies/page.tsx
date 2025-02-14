@@ -1,18 +1,6 @@
 'use client'
-import React, { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from '@/components/ui/table'
-import { EllipsisVertical, Plus, Edit2, Trash, ListFilter } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,40 +8,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 import {
-  PaginationState,
-  useReactTable,
-  getCoreRowModel,
-  getPaginationRowModel,
-  flexRender,
-} from '@tanstack/react-table'
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import getAllCompanies from '@/services/admin/get-all-companies'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { format } from 'date-fns'
+import { Edit2, EllipsisVertical, ListFilter, Plus, Trash } from 'lucide-react'
+import React, { useEffect, useMemo, useState } from 'react'
+import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import AddCompany from './add-company'
 
 type Company = {
   name: string
-  cacNumber: string
+  cac: string
   email: string
-  phoneNumber: string
-  location: string
-  date: string
+  phone: string
+  location: { latitude: number; longitude: number }
+  createdAt: string
 }
-
-const defaultData: Company[] = [
-  {
-    name: 'tanner',
-    cacNumber: 'MP/2323/2323',
-    email: 'test@mail.com',
-    phoneNumber: '090283823823',
-    location: 'Lagos State',
-    date: '02/03/2025',
-  },
-]
 
 export default function CompaniesPage() {
   const config: IFIlterConfig = {
@@ -65,15 +46,31 @@ export default function CompaniesPage() {
     ],
   }
 
+  const [loading, setLoading] = useState<boolean>(true)
+  const [companies, setCompanies] = useState<Company[]>([])
   const [filter, setFilter] = React.useState<string>('all')
-  const [data, setData] = useState(() => defaultData)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const [perPage, setPerPage] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
   const [total, setTotal] = useState(0)
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [hasNext, setHasNext] = useState(false)
+  const [hasPrevious, setHasPrevious] = useState(false)
+
+  const fetchCompanies = async (params?: any) => {
+    const res: any = await getAllCompanies('companies', params)
+    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    setCompanies(docs)
+    setPerPage(page)
+    setPageSize(totalPages)
+    setHasNext(hasNextPage)
+    setHasPrevious(hasPrevPage)
+    setTotal(totalDocs)
+
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchCompanies()
+  }, [])
 
   const columns = useMemo(
     () => [
@@ -83,9 +80,9 @@ export default function CompaniesPage() {
         accessorKey: 'name',
       },
       {
-        id: 'cacNumber',
+        id: 'cac',
         header: 'CAC Number',
-        accessorKey: 'cacNumber',
+        accessorKey: 'cac',
       },
       {
         id: 'email',
@@ -93,19 +90,27 @@ export default function CompaniesPage() {
         accessorKey: 'email',
       },
       {
-        id: 'phoneNumber',
+        id: 'phone',
         header: 'Phone Number',
-        accessorKey: 'phoneNumber',
+        accessorKey: 'phone',
       },
       {
         id: 'location',
         header: 'Location',
         accessorKey: 'location',
+        cell: ({ getValue }) => {
+          const location = getValue()
+          return `Lat :${location.latitude}, Lng: ${location.longitude}`
+        },
       },
       {
-        id: 'date',
+        id: 'createdAt',
         header: 'Date',
-        accessorKey: 'date',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const rawDate = getValue()
+          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+        },
       },
     ],
     [],
@@ -113,23 +118,20 @@ export default function CompaniesPage() {
 
   const table = useReactTable({
     columns,
-    data,
+    data: companies,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    state: {
-      pagination,
-    },
   })
 
-  const paginationProps = { page, pageSize, total }
+  const paginationProps = { page: perPage, pageSize, total, hasNext, hasPrevious }
 
-  const nextPage = () => {
-    console.log('Next Page')
+  const nextPage = (page: number) => {
+    setLoading(true)
+    fetchCompanies({ page })
   }
 
-  const previousPage = () => {
-    console.log('Previous Page')
+  const previousPage = (page: number) => {
+    setLoading(true)
+    fetchCompanies({ page })
   }
 
   return (
@@ -189,22 +191,21 @@ export default function CompaniesPage() {
           </div>
 
           <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus /> Add Company
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-screen-md overflow-auto bg-white">
-            <AddCompany />
-          </DialogContent>
-        </Dialog>
-         
+            <DialogTrigger asChild>
+              <Button>
+                <Plus /> Add Company
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-screen-md overflow-auto bg-white">
+              <AddCompany />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
       <div className="mt-4 p-4 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <p>All Companies</p>
+          <p>All Companies {loading && 'Loading...'}</p>
 
           <Button>Export Data</Button>
         </div>

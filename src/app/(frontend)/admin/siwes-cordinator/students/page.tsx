@@ -1,18 +1,6 @@
 'use client'
-import React, { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from '@/components/ui/table'
-import { EllipsisVertical, Plus, Edit2, Trash, ListFilter } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,42 +8,38 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 import {
-  PaginationState,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import getAllStudents from '@/services/admin/get-all-students'
+import {
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
+  useReactTable
 } from '@tanstack/react-table'
+import { format } from 'date-fns'
+import { Edit2, EllipsisVertical, ListFilter, Plus, Trash } from 'lucide-react'
+import React, { useEffect, useMemo, useState } from 'react'
+import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import AddStudent from './add-student'
 
 type Student = {
-  name: string
-  matNumber: string
+  firstName: string
+  matricNo: string
   course: string
-  phoneNumber: string
-  state: string
+  email: string
+  stateOfOrigin: string
   status: string
   date: string
 }
-
-const defaultData: Student[] = [
-  {
-    name: 'tanner',
-    matNumber: 'MP/2323/2323',
-    course: 'Maths',
-    phoneNumber: '090283823823',
-    state: 'Lagos State',
-    status: 'Scheduled',
-    date: '02/03/2025',
-  },
-]
 
 export default function StudentPage() {
   const config: IFIlterConfig = {
@@ -68,27 +52,49 @@ export default function StudentPage() {
     ],
   }
 
-  const [filter, setFilter] = useState<string>('all')
-  const [data, setData] = useState(() => defaultData)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [students, setStudents] = useState<Student[]>([])
+  const [filter, setFilter] = React.useState<string>('all')
+  const [perPage, setPerPage] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
   const [total, setTotal] = useState(0)
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [hasNext, setHasNext] = useState(false)
+  const [hasPrevious, setHasPrevious] = useState(false)
+
+  const fetchStudents = async (params?: any) => {
+    const res: any = await getAllStudents('students', params)
+    console.log('Students: ', res);
+    
+    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    setStudents(docs)
+    setPerPage(page)
+    setPageSize(totalPages)
+    setHasNext(hasNextPage)
+    setHasPrevious(hasPrevPage)
+    setTotal(totalDocs)
+
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchStudents()
+  }, [])
 
   const columns = useMemo(
     () => [
       {
-        id: 'name',
+        id: 'firstName',
         header: 'Student Name',
-        accessorKey: 'name',
+        accessorKey: 'firstName',
+        cell: ({ getValue, row }) => {
+          const rowData = row.original;
+          return `${getValue()} ${rowData.lastName}` 
+        },
       },
       {
-        id: 'matNumber',
+        id: 'matricNo',
         header: 'Matric Number',
-        accessorKey: 'matNumber',
+        accessorKey: 'matricNo',
       },
       {
         id: 'course',
@@ -96,14 +102,14 @@ export default function StudentPage() {
         accessorKey: 'course',
       },
       {
-        id: 'phoneNumber',
-        header: 'Phone Number',
-        accessorKey: 'phoneNumber',
+        id: 'email',
+        header: 'Email',
+        accessorKey: 'email',
       },
       {
-        id: 'state',
+        id: 'stateOfOrigin',
         header: 'State',
-        accessorKey: 'state',
+        accessorKey: 'stateOfOrigin',
       },
       {
         id: 'status',
@@ -111,9 +117,13 @@ export default function StudentPage() {
         accessorKey: 'status',
       },
       {
-        id: 'date',
+        id: 'createdAt',
         header: 'Date',
-        accessorKey: 'date',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const rawDate = getValue()
+          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+        },
       },
     ],
     [],
@@ -121,23 +131,20 @@ export default function StudentPage() {
 
   const table = useReactTable({
     columns,
-    data,
+    data: students,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    state: {
-      pagination,
-    },
   })
 
-  const paginationProps = { page, pageSize, total }
+  const paginationProps = { page: perPage, pageSize, total, hasNext, hasPrevious }
 
-  const nextPage = () => {
-    console.log('Next Page')
+  const nextPage = (page: number) => {
+    setLoading(true)
+    fetchStudents({ page })
   }
 
-  const previousPage = () => {
-    console.log('Previous Page')
+  const previousPage = (page: number) => {
+    setLoading(true)
+    fetchStudents({ page })
   }
 
   return (
@@ -199,15 +206,15 @@ export default function StudentPage() {
             </DropdownMenu>
           </div>
           <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus /> Add Student
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-screen-md overflow-auto bg-white">
-            <AddStudent />
-          </DialogContent>
-        </Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus /> Add Student
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-screen-md overflow-auto bg-white">
+              <AddStudent />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
