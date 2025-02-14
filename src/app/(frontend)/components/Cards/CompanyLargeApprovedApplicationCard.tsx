@@ -1,8 +1,69 @@
-import Image from 'next/image'
-import React from 'react'
-import companyLogo from '@/app/(frontend)/assets/images/company-logo.svg'
+'use client'
 
-export default function CompanyLargeApprovedApplicationCard() {
+import Image from 'next/image'
+import React, { useMemo, useState } from 'react'
+import companyLogo from '@/app/(frontend)/assets/images/company-logo.svg'
+import { InterviewInvitation } from '@/payload-types'
+import formatDate from '@/utilities/formatDate'
+import Link from 'next/link'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog'
+import Spinner from '@/components/spinner'
+import { toast } from 'sonner'
+
+interface Props {
+  interviewInvitation: InterviewInvitation
+  onRespond: (value: InterviewInvitation) => Promise<void>
+}
+
+export default function CompanyLargeApprovedApplicationCard({
+  interviewInvitation,
+  onRespond,
+}: Props) {
+  const [open, setOpen] = useState<boolean>(false)
+  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [declineReason, setDeclineReason] = useState<string>('')
+
+  const action = useMemo(
+    (): 'Accept' | 'Decline' => (interviewInvitation.status === 'declined' ? 'Accept' : 'Decline'),
+    [interviewInvitation],
+  )
+
+  const handleDeclineReasonInput = (e: any) => {
+    setDeclineReason(e.target.value)
+  }
+
+  const acceptInterview = async () => {
+    setSubmitting(true)
+    await onRespond({
+      ...interviewInvitation,
+      status: 'accepted',
+    })
+    setSubmitting(false)
+    setOpen(false)
+    toast.success('Invitation accepted successfully')
+  }
+
+  const declineInterview = async () => {
+    setSubmitting(true)
+    await onRespond({
+      ...interviewInvitation,
+      status: 'declined',
+      declineReason,
+    })
+    setDeclineReason('')
+    setSubmitting(false)
+    setOpen(false)
+    toast.success('Invitation declined successfully')
+  }
+
   return (
     <div className="bg-[#EBE7E77A] rounded-lg p-10 ps-0">
       <div className="grid grid-cols-10">
@@ -11,22 +72,10 @@ export default function CompanyLargeApprovedApplicationCard() {
         </div>
         <div className="col-span-6">
           <div>
-            <h5 className="text-lg mb-6 font-medium">Orange Company Ltd.</h5>
+            <h5 className="text-lg mb-6 font-medium">{interviewInvitation.company.name}</h5>
             <div className="mb-6">
               <h5 className="text-black font-medium mb-3">Acceptance Message</h5>
-              <p className="text-[#8E8E93] mb-3">
-                Dear [Applicant’s Name],
-                <br />
-                <br />
-                We are pleased to inform you that you have been accepted for the [position name] at
-                CMR Shopping Mall as part of your SIWES program. Congratulations on this
-                achievement!
-                <br />
-                <br />
-                We are excited to have you join our team and look forward to supporting your growth
-                and development throughout your placement. Further details about your start date,
-                responsibilities, and onboarding process will be shared shortly.
-              </p>
+              <p className="text-[#8E8E93] mb-3">{interviewInvitation.message}</p>
             </div>
             <div className="grid grid-cols-2 gap-4 text-xs mb-3">
               <div className="grid grid-rows-1 gap-1">
@@ -43,7 +92,7 @@ export default function CompanyLargeApprovedApplicationCard() {
                   />
                 </svg>
                 <div className="text-[#0B7077]">Interview Time</div>
-                <div className="text-[#48484A]">10:30am, 25th July 2025</div>
+                <div className="text-[#48484A]">{formatDate(interviewInvitation.dateTime)}</div>
               </div>
               <div className="grid grid-rows-1 gap-1">
                 <svg
@@ -63,17 +112,61 @@ export default function CompanyLargeApprovedApplicationCard() {
                   />
                 </svg>
                 <div className="text-[#0B7077]">Location</div>
-                <div className="text-[#48484A]">Ikeja, Lagos</div>
+                <div className="text-[#48484A]">{interviewInvitation.company.address}</div>
               </div>
               <div>
-                <button className="bg-[#9597A7] rounded-lg p-2 min-w-40">
-                  <span className="text-white text-sm">View Documents</span>
-                </button>
+                <Link href={`/student/applications/approved/${interviewInvitation.id}`}>
+                  <button className="bg-[#9597A7] rounded-lg p-2 min-w-40">
+                    <span className="text-white text-sm">View Details</span>
+                  </button>
+                </Link>
               </div>
               <div>
-                <button className="bg-[#A71C51] rounded-lg p-2 min-w-40">
-                  <span className="text-white text-sm">Reject</span>
-                </button>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <button className="bg-[#A71C51] rounded-lg p-2 min-w-40">
+                      <span className="text-white text-sm">{action}</span>
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-white rounded-lg gap-2">
+                    <DialogTitle className="text-[#0B7077] font-normal">
+                      {action} Invitation
+                    </DialogTitle>
+                    {interviewInvitation.status !== 'declined' && (
+                      <>
+                        <DialogDescription className="text-[#8E8E93]">
+                          Reason for {action}
+                        </DialogDescription>
+                        <div className="grid gap-4 text-center">
+                          <textarea
+                            onChange={handleDeclineReasonInput}
+                            className="text-sm w-full placeholder:text-[#ECECEC] p-2 border border-[#ECECEC] rounded mb-2"
+                            rows={5}
+                            placeholder="Enter Reason"
+                          ></textarea>
+                        </div>
+                      </>
+                    )}
+                    <DialogFooter className="grid grid-cols-5 gap-1">
+                      <DialogClose className="col-start-3 text-xs bg-white text-[#48484A] border-0">
+                        Cancel
+                      </DialogClose>
+                      <button
+                        disabled={submitting}
+                        onClick={
+                          interviewInvitation.status !== 'declined'
+                            ? declineInterview
+                            : acceptInterview
+                        }
+                        className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+                      >
+                        <div className="flex m-auto">
+                          <span>Continue</span> {submitting && <Spinner className="ms-1 h-4" />}
+                        </div>
+                      </button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>

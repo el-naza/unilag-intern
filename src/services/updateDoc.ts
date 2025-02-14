@@ -11,7 +11,7 @@ type Response = {
   message: string
 }
 
-export default async function updateProfileImage(
+export default async function updateDoc(
   col: CollectionSlug,
   id: string,
   update: object,

@@ -183,18 +183,19 @@ export interface Admin {
 export interface Company {
   id: string;
   name: string;
-  cac: string;
-  courseAreas: string[];
-  /**
-   * @minItems 2
-   * @maxItems 2
-   */
-  location: [number, number];
+  cac?: string | null;
+  courseAreas: ('Mathematics' | 'Science' | 'History' | 'Engineering' | 'Arts')[];
+  location: {
+    longitude: number;
+    latitude: number;
+  };
   phone: string;
-  address: string;
+  hasSetPassword?: boolean | null;
+  address?: string | null;
   website?: string | null;
-  description: string;
-  profileImage: string | Media;
+  description?: string | null;
+  profileImage?: (string | null) | Media;
+  resetPasswordOtpHash?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -272,6 +273,8 @@ export interface InterviewInvitation {
   company: string | Company;
   message: string;
   dateTime: string;
+  status?: ('pending' | 'accepted' | 'declined') | null;
+  declineReason?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -468,12 +471,19 @@ export interface CompaniesSelect<T extends boolean = true> {
   name?: T;
   cac?: T;
   courseAreas?: T;
-  location?: T;
+  location?:
+    | T
+    | {
+        longitude?: T;
+        latitude?: T;
+      };
   phone?: T;
+  hasSetPassword?: T;
   address?: T;
   website?: T;
   description?: T;
   profileImage?: T;
+  resetPasswordOtpHash?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -545,6 +555,8 @@ export interface InterviewInvitationsSelect<T extends boolean = true> {
   company?: T;
   message?: T;
   dateTime?: T;
+  status?: T;
+  declineReason?: T;
   updatedAt?: T;
   createdAt?: T;
 }

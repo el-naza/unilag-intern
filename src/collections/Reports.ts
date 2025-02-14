@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { students } from '@/access/sutdents'
-import { relatedStudent } from '@/access/relatedStudent'
+import { relatedStudent } from '@/access/reports/relatedStudent'
 
 export const Reports: CollectionConfig = {
   slug: 'reports',
