@@ -36,11 +36,10 @@ const HeroCarousel = () => {
         </h1>
 
         <div className="flex gap-12 mt-12">
-        <Link href="/auth"> <Button className="bg-primary text-white">I&apos;m a student</Button></Link>
-        <Link href="/auth"> <Button className="bg-secondary text-white">I&apos;m a company</Button></Link>
+        <Link href="/auth/login"> <Button className="bg-primary text-white">I&apos;m a student</Button></Link>
+        <Link href="/company-auth/login"> <Button className="bg-secondary text-white">I&apos;m a company</Button></Link>
          
-          
-        </div>
+        </div> 
       </div>
 
       <div className={`absolute z-10 bottom-[16rem] w-[8rem] right-[45%] rounded-full aspect-square grid place-content-center border-[15px] border-[ #D2E6E4] ${playBgColors[currentSlide]} `}>
