@@ -46,6 +46,7 @@ const Page = () => {
 
   const handleRespond = async (value: InterviewInvitation) => {
     await respondToInterviewMtn.mutateAsync(value)
+    await fetchInterviewInvitations()
   }
 
   useEffect(() => {

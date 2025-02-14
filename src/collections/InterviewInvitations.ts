@@ -2,6 +2,7 @@ import type { CollectionConfig, Where } from 'payload'
 import { companies } from '@/access/companies'
 import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
 import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
+import { parse } from 'qs-esm'
 
 export const InterviewInvitations: CollectionConfig = {
   slug: 'interview-invitations',
@@ -50,12 +51,17 @@ export const InterviewInvitations: CollectionConfig = {
       method: 'get',
       path: '/',
       handler: async (req) => {
+        const { status } = req.query
+
+        const whereStatus: Where = parse(req.query)
+
         const where: Where = {
           ...(req.user?.collection === 'companies'
             ? { company: { equals: req.user.id } }
             : req.user?.collection === 'students'
               ? { student: { equals: req.user.id } }
               : {}),
+          ...(status ? whereStatus : {}),
         }
 
         const interviewInvitationFindRes = await req.payload.find({
@@ -64,7 +70,7 @@ export const InterviewInvitations: CollectionConfig = {
           showHiddenFields: true,
         })
 
-        return Response.json({ data: interviewInvitationFindRes }, { status: 200 })
+        return Response.json(interviewInvitationFindRes, { status: 200 })
       },
     },
     {
