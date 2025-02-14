@@ -13,10 +13,12 @@ import {
   DialogTitle,
   DialogDescription,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog'
 import AssignCompany from './assign-company'
+import { useParams } from 'next/navigation'
 
-export default function StudentDetailPage({ params }: { params: { id: string } }) {
+export default function StudentDetailPage() {
+  const { id }: { id: string } = useParams()
   const formattedDate = format(new Date(), 'EEEE do MMMM yyyy')
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -43,12 +45,10 @@ export default function StudentDetailPage({ params }: { params: { id: string } }
             <p className="text-sm text-white">Mathematics</p>
           </div>
         </div>
-        
+
         <Dialog>
           <DialogTrigger asChild>
-          <Button className="bg-gray-light-2 text-black-2">
-            Assigned Siwes
-          </Button>
+            <Button className="bg-gray-light-2 text-black-2">Assigned Siwes</Button>
           </DialogTrigger>
           <DialogContent className="max-w-screen-lg overflow-auto bg-white">
             <DialogHeader>

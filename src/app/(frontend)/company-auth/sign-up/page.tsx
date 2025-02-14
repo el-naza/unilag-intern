@@ -260,11 +260,11 @@ export default function OTPConfirmation() {
               <>
                 <Label>Course Areas</Label>
                 <Select
-                  value={(field.state.value as string[])|| ''}
+                  value={field.state?.value?.[0] || ''}
                   onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
                   onValueChange={(value) => {
                     console.log('Selected Course Area:', value) // Debugging
-                    field.handleChange(value as any)
+                    field.handleChange([value] as any)
                   }}
                   // value={(field.state.value as string) || ''}
                   // onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
@@ -276,7 +276,8 @@ export default function OTPConfirmation() {
                   >
                     <SelectValue placeholder="Select Course Area" className="text-[#969a9b]" />
                   </SelectTrigger>
-                  <SelectContent>''
+                  <SelectContent>
+                    ''
                     {(
                       Companies.fields.find(
                         (f: Field & { name: string; options: string[] }) => f.name === field.name,
