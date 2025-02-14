@@ -80,7 +80,7 @@ export default function CompanyHomePage() {
           <Loader />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[14px] p-[12px]">
-            {students.map((student) => (
+            {students && students.map((student) => (
               <StudentProfileCard key={student.id} student={student}  />
             ))}
           </div>

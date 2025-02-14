@@ -1,51 +1,82 @@
 'use client'
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { LatLngExpression, LatLngTuple } from 'leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { LatLngBounds, LatLngExpression, LatLngTuple } from 'leaflet'
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import 'leaflet-defaulticon-compatibility'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
+import { Company } from '@/payload-types'
 
 interface MapProps {
-  positions: LatLngExpression[] | LatLngTuple[]
+  companies: Company[]
   zoom?: number
 }
 
-const defaults = {
+const defaults: { zoom: number; center: LatLngExpression } = {
   zoom: 19,
+  center: [9.0563, 7.4985],
 }
 
-const Map = ({ zoom = defaults.zoom, positions }: MapProps) => {
-  const [mapPositions, setMapPositions] = useState<LatLngExpression[]>(positions)
+const Map = ({ zoom = defaults.zoom, companies }: MapProps) => {
+  const companiesWithLocation = useMemo(
+    () => companies.filter((company) => company.location.latitude && company.location.longitude),
+    [companies],
+  )
 
-  useEffect(() => {
-    setMapPositions(positions)
-  }, [positions]) // Update map when positions change
+  const positions = useMemo<LatLngExpression[] | LatLngTuple[]>(
+    () =>
+      companiesWithLocation.map((company) => [
+        company.location.latitude,
+        company.location.longitude,
+      ]),
+    [companiesWithLocation],
+  )
+
+  const center = useMemo(() => (positions.length ? positions[0] : defaults.center), [positions])
+
+  const MapCentralizer = ({ positions }: { positions: LatLngExpression[] | LatLngTuple[] }) => {
+    const map = useMap()
+
+    useEffect(() => {
+      if (positions.length) {
+        const bounds = new LatLngBounds(positions as LatLngExpression[] | LatLngTuple[])
+        map.fitBounds(bounds, { padding: [50, 50] })
+      }
+    }, [map, positions])
+
+    return null
+  }
 
   return (
     <MapContainer
-      center={positions[0]}
+      center={center}
       zoom={zoom}
       scrollWheelZoom={false}
-      style={{ height: '100%', width: '100%' }}
-      className="rounded-xl"
+      className="rounded-xl w-full min-h-[400px] lg:h-full"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {mapPositions.map((position: LatLngExpression | LatLngTuple, index: number) => (
-        <Marker key={`position-${index}`} position={position} draggable={false}>
+
+      <MapCentralizer positions={positions} />
+
+      {companiesWithLocation.map((company, index) => (
+        <Marker
+          key={`position-${index}`}
+          position={[company.location.latitude, company.location.longitude]}
+          draggable={false}
+        >
           <Popup>
             <div className="grid gap-2">
-              <div className="font-medium">Company Name</div>
-              <div>Company description</div>
+              <div className="font-medium">{company.name}</div>
+              <div>{company.description}</div>
               <div className="text-right">
-                <Link href={'/student'}>
+                <Link href={`/student/companies/${company.id}/apply`}>
                   <Button size="sm">Apply</Button>
                 </Link>
               </div>

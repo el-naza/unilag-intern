@@ -1,3 +1,5 @@
+
+
 'use client'
 import React, { useState } from 'react'
 import {
@@ -11,24 +13,37 @@ import {
   addDays,
   isSameMonth,
   isSameDay,
+  isBefore,
 } from 'date-fns'
 
-const Calendar: React.FC = () => {
+interface CalendarProps {
+  selectedDate: Date
+  onDateSelect: (date: Date) => void
+}
+
+const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState(new Date())
+
+  const handleDateClick = (date: Date) => {
+    if (!isBefore(date, new Date())) {
+      onDateSelect(date) // Update selected date in parent component
+    }
+  }
 
   const renderHeader = () => (
-    <div className="flex justify-between items-center mb-[16px]">
+    <div className="flex justify-between items-center mb-4">
       <button
         onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-        className="text-gray-500 hover:text-black border rounded h-[28px] w-[28px] bg-white"
+        className="text-gray-500 hover:text-black border rounded h-7 w-7 bg-white"
+        type='button'
       >
         &#8249;
       </button>
-      <h2 className="text-[16px] font-[400] text-black">{format(currentMonth, 'MMMM yyyy')}</h2>
+      <h2 className="text-lg font-medium text-black">{format(currentMonth, 'MMMM yyyy')}</h2>
       <button
         onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-        className="text-gray-500 hover:text-black border rounded h-[28px] w-[28px] bg-white"
+        className="text-gray-500 hover:text-black border rounded h-7 w-7 bg-white"
+        type='button'
       >
         &#8250;
       </button>
@@ -38,21 +53,20 @@ const Calendar: React.FC = () => {
   const renderDays = () => {
     const days: React.ReactNode[] = []
     const dateFormat = 'EEE'
-
     const startDate = startOfWeek(currentMonth, { weekStartsOn: 0 })
 
     for (let i = 0; i < 7; i++) {
       days.push(
         <div
           key={i}
-          className="text-xs font-medium text-center flex items-center justify-between text-gray-700 h-[52px]"
+          className="text-xs font-medium text-center text-gray-700 h-12 flex items-center justify-center"
         >
           {format(addDays(startDate, i), dateFormat)}
         </div>,
       )
     }
 
-    return <div className="flex items-center justify-between ">{days}</div>
+    return <div className="grid grid-cols-7">{days}</div>
   }
 
   const renderCells = () => {
@@ -67,20 +81,28 @@ const Calendar: React.FC = () => {
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
-        const isToday = isSameDay(day, selectedDate)
+        const isToday = isSameDay(day, new Date()) // Today's date
+        const isSelected = isSameDay(day, selectedDate) // Selected date
         const isCurrentMonth = isSameMonth(day, monthStart)
+        const isPastDate = isBefore(day, new Date())
 
         days.push(
-          <div className="h-[52px]" key={day.toISOString()}>
+          <div key={day.getTime()} className="h-12 flex items-center justify-center">
             <div
-              onClick={() => setSelectedDate(day)}
-              className={`h-[32px] w-[32px] text-sm text-center cursor-pointer rounded-full flex items-center justify-center ${
-                isToday
-                  ? 'bg-[#0B7077] text-white'
-                  : isCurrentMonth
-                    ? 'text-black hover:bg-gray-100'
-                    : 'text-gray-400'
-              }`}
+              onClick={() => handleDateClick(day)}
+              className={`h-8 w-8 text-sm text-center cursor-pointer rounded-full flex items-center justify-center transition-all 
+                ${
+                  isSelected
+                    ? 'bg-[#0B7077] text-white' // Green color for selected date
+                    : isToday
+                      ? 'bg-[#0B7077] text-white' // Default highlight for today
+                      : isPastDate
+                        ? 'text-gray-300 cursor-not-allowed' // Grey out past dates
+                        : isCurrentMonth
+                          ? 'text-black hover:bg-gray-200' // Regular days
+                          : 'text-gray-400'
+                }
+              `}
             >
               {format(day, 'd')}
             </div>
@@ -89,7 +111,7 @@ const Calendar: React.FC = () => {
         day = addDays(day, 1)
       }
       rows.push(
-        <div key={`row-${day.toISOString()}`} className="flex items-center justify-between">
+        <div key={day.getTime()} className="grid grid-cols-7">
           {days}
         </div>,
       )
@@ -100,7 +122,7 @@ const Calendar: React.FC = () => {
   }
 
   return (
-    <div className="w-[full]  rounded-lg p-4">
+    <div className="w-full rounded-lg p-4">
       {renderHeader()}
       {renderDays()}
       {renderCells()}

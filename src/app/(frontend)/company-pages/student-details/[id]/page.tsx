@@ -80,9 +80,14 @@ export default function StudentDetails() {
               />
               <button
                 className="mt-[24px] w-full py-[12px] rounded-[6px] bg-[#0B7077] flex items-center justify-center  gap-[8px] font-[500] text-[16px] text-[#FFFFFF] "
-                onClick={() => router.push('/company-pages/invite')}
+                // onClick={() => router.push('/company-pages/invite')}
+                  onClick={() => router.push(`/company-pages/student-details/${studentId}/invite`)}
+
               >
-                <MailIcon fill="#FFFFFF" /> Send Invitation
+                <MailIcon
+                  fill="#FFFFFF"
+                />{' '}
+                Send Invitation
               </button>
             </div>
             <div className="lg:w-[568px] w-full">

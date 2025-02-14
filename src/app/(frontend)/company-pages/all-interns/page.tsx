@@ -95,7 +95,7 @@ export default function AllInterns() {
               }}
             >
               {students.map((student, index) => (
-                <StudentProfileCard key={index} student={student} />
+                <StudentProfileCard key={index} student={student as any} />
               ))}
             </div>
           </div>

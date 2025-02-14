@@ -273,6 +273,8 @@ export interface InterviewInvitation {
   company: string | Company;
   message: string;
   dateTime: string;
+  status?: ('pending' | 'accepted' | 'declined') | null;
+  declineReason?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -553,6 +555,8 @@ export interface InterviewInvitationsSelect<T extends boolean = true> {
   company?: T;
   message?: T;
   dateTime?: T;
+  status?: T;
+  declineReason?: T;
   updatedAt?: T;
   createdAt?: T;
 }

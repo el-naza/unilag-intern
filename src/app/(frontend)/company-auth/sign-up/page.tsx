@@ -165,6 +165,7 @@ export default function OTPConfirmation() {
                 <Label>Email</Label>
                 <Input
                   value={field.state.value || ''}
+                  type="email"
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Enter Email"
@@ -259,11 +260,11 @@ export default function OTPConfirmation() {
               <>
                 <Label>Course Areas</Label>
                 <Select
-                  value={(field.state.value as string[])|| ''}
+                  value={field.state?.value?.[0] || ''}
                   onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
                   onValueChange={(value) => {
                     console.log('Selected Course Area:', value) // Debugging
-                    field.handleChange(value as any)
+                    field.handleChange([value] as any)
                   }}
                   // value={(field.state.value as string) || ''}
                   // onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}

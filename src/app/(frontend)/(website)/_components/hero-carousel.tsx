@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+
 import Autoplay from 'embla-carousel-autoplay'
 
 const HeroCarousel = () => {
@@ -34,9 +36,10 @@ const HeroCarousel = () => {
         </h1>
 
         <div className="flex gap-12 mt-12">
-          <Button className="bg-primary text-white">I&apos;m a student</Button>
-          <Button className="bg-secondary text-white">I&apos;m a company</Button>
-        </div>
+        <Link href="/auth/login"> <Button className="bg-primary text-white">I&apos;m a student</Button></Link>
+        <Link href="/company-auth/login"> <Button className="bg-secondary text-white">I&apos;m a company</Button></Link>
+         
+        </div> 
       </div>
 
       <div className={`absolute z-10 bottom-[16rem] w-[8rem] right-[45%] rounded-full aspect-square grid place-content-center border-[15px] border-[ #D2E6E4] ${playBgColors[currentSlide]} `}>
