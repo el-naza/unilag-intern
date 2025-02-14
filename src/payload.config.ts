@@ -1,6 +1,7 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb' // database-adapter-import
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -37,16 +38,22 @@ export default buildConfig({
     Reports,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.GMAIL_USER!,
+  // email: nodemailerAdapter({
+  //   defaultFromAddress: process.env.EMAIL_USER!,
+  //   defaultFromName: 'UNILAG INTERNSHIP',
+  //   transportOptions: {
+  //     host: 'smtp.titan.email',
+  //     port: 465,
+  //     auth: {
+  //       user: process.env.EMAIL_USER,
+  //       pass: process.env.EMAIL_PASSWORD,
+  //     },
+  //   },
+  // }),
+  email: resendAdapter({
+    defaultFromAddress: process.env.EMAIL_USER!,
     defaultFromName: 'UNILAG INTERNSHIP',
-    transportOptions: {
-      auth: {
-        pass: process.env.GMAIL_PASSWORD,
-        user: process.env.GMAIL_USER,
-      },
-      service: 'gmail',
-    },
+    apiKey: process.env.RESEND_API_KEY || '',
   }),
   plugins: [
     // storage-adapter-placeholder

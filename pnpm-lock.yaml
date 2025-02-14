@@ -26,6 +26,9 @@ importers:
       '@payloadcms/email-nodemailer':
         specifier: latest
         version: 3.23.0(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))
+      '@payloadcms/email-resend':
+        specifier: latest
+        version: 3.23.0(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))
       '@payloadcms/next':
         specifier: latest
         version: 3.14.0(@types/react@19.0.1)(graphql@16.9.0)(monaco-editor@0.52.0)(next@15.1.0(@babel/core@7.26.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.77.4))(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
@@ -1307,6 +1310,12 @@ packages:
 
   '@payloadcms/email-nodemailer@3.23.0':
     resolution: {integrity: sha512-Zr2iF0Zwl9+dc/1TmLJOir/XYYGFYthe18wVtW6ogzb2giw6JTJJD+DuPTJySDFy3nZLnFha16H6M9CwbHfj2g==}
+    engines: {node: ^18.20.2 || >=20.9.0}
+    peerDependencies:
+      payload: 3.23.0
+
+  '@payloadcms/email-resend@3.23.0':
+    resolution: {integrity: sha512-hpStkZwTepU+Cm95MqGdbvQ8PVEeoqRi0gGUdaG8wL5IiL9K39wp0WepC1qG8n+XsYsjg9KJkxD+nwhovzV5FA==}
     engines: {node: ^18.20.2 || >=20.9.0}
     peerDependencies:
       payload: 3.23.0
@@ -6868,6 +6877,10 @@ snapshots:
   '@payloadcms/email-nodemailer@3.23.0(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))':
     dependencies:
       nodemailer: 6.9.16
+      payload: 3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
+
+  '@payloadcms/email-resend@3.23.0(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))':
+    dependencies:
       payload: 3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
 
   '@payloadcms/graphql@3.14.0(graphql@16.9.0)(payload@3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2))(typescript@5.7.2)':
