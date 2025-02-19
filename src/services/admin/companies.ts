@@ -11,7 +11,7 @@ type Response = {
   message: string
 }
 
-export default async function getAllStudents(
+export async function getAllCompanies(
   col: CollectionSlug,
   params?: any
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
@@ -24,6 +24,36 @@ export default async function getAllStudents(
   return await axiosInstance
     .get<Response | ErrorResponse>(`/api/${col}`, {
       params,
+      headers: {
+        Authorization: `Bearer ${authResult?.token}`,
+      },
+    })
+    .catch((error: AxiosError) => {
+      if (error.response)
+        return {
+          status: error.response.status,
+          data: error.response.data as ErrorResponse,
+        }
+    })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
+}
+
+export async function getCompany(
+  col: CollectionSlug,
+  companyId: string
+): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  
+  const authResult = await getToken({
+    req: { headers: await headers() },
+    secret: process.env.NEXTAUTH_SECRET,
+  })
+
+  return await axiosInstance
+    .get<Response | ErrorResponse>(`/api/${col}/${companyId}`, {
       headers: {
         Authorization: `Bearer ${authResult?.token}`,
       },

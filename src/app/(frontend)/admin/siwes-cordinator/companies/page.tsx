@@ -18,7 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import getAllCompanies from '@/services/admin/get-all-companies'
+import { getAllCompanies } from '@/services/admin/companies'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Edit2, EllipsisVertical, ListFilter, Plus, Trash } from 'lucide-react'
@@ -26,8 +26,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddCompany from './add-company'
+import { useRouter } from 'next/navigation'
 
-type Company = {
+export type Company = {
   name: string
   cac: string
   email: string
@@ -54,6 +55,7 @@ export default function CompaniesPage() {
   const [total, setTotal] = useState(0)
   const [hasNext, setHasNext] = useState(false)
   const [hasPrevious, setHasPrevious] = useState(false)
+  const router = useRouter()
 
   const fetchCompanies = async (params?: any) => {
     const res: any = await getAllCompanies('companies', params)
@@ -134,6 +136,11 @@ export default function CompaniesPage() {
     fetchCompanies({ page })
   }
 
+  const editCompany = (rowRecord: any) => {
+    const companyId = rowRecord.original.id
+    router.push(`/admin/siwes-cordinator/companies/${companyId}`)
+  }
+
   return (
     <div className="p-8">
       <FIlterStats config={config} />
@@ -205,7 +212,7 @@ export default function CompaniesPage() {
 
       <div className="mt-4 p-4 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <p>All Companies {loading && 'Loading...'}</p>
+          <p>All Companies</p>
 
           <Button>Export Data</Button>
         </div>
@@ -245,7 +252,7 @@ export default function CompaniesPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 bg-white border-none">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editCompany(row)}>
                           <Edit2 />
                           <span>Edit</span>
                         </DropdownMenuItem>

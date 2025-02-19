@@ -1,64 +1,73 @@
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-} from '@radix-ui/react-dropdown-menu'
-import {
-  PaginationState,
-  useReactTable,
-  getCoreRowModel,
-  getPaginationRowModel,
-  flexRender,
-} from '@tanstack/react-table'
-import { EllipsisVertical, Edit2, Trash } from 'lucide-react'
-import React, { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { getAllCompanies } from '@/services/admin/companies'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { format } from 'date-fns'
+import { useEffect, useMemo, useState } from 'react'
 import Pagination from '../../../_components/pagination'
+import { Company } from '../../companies/page'
 
-type Company = {
-  name: string
-  cacNumber: string
-  email: string
-  phoneNumber: string
-  location: string
-  date: string
-}
-
-const defaultData: Company[] = [
-  {
-    name: 'tanner',
-    cacNumber: 'MP/2323/2323',
-    email: 'test@mail.com',
-    phoneNumber: '090283823823',
-    location: 'Lagos State',
-    date: '02/03/2025',
-  },
-]
-
-const AssignCompany = () => {
-  const [data, setData] = useState(() => defaultData)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+const AssignCompany = ({ studentId }) => {
+  const [loading, setLoading] = useState<boolean>(true)
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [perPage, setPerPage] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
   const [total, setTotal] = useState(0)
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [hasNext, setHasNext] = useState(false)
+  const [hasPrevious, setHasPrevious] = useState(false)
+  const [rowSelection, setRowSelection] = useState({})
+
+  const fetchCompanies = async (params?: any) => {
+    const res: any = await getAllCompanies('companies', params)
+    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    setCompanies(docs)
+    setPerPage(page)
+    setPageSize(totalPages)
+    setHasNext(hasNextPage)
+    setHasPrevious(hasPrevPage)
+    setTotal(totalDocs)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchCompanies()
+  }, [])
 
   const columns = useMemo(
     () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <input
+            type="checkbox"
+            checked={table.getIsAllRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          />
+        ),
+        cell: ({ row }) => (
+          <input
+            type="checkbox"
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        ),
+      },
       {
         id: 'name',
         header: 'Company Name',
         accessorKey: 'name',
       },
       {
-        id: 'cacNumber',
+        id: 'cac',
         header: 'CAC Number',
-        accessorKey: 'cacNumber',
+        accessorKey: 'cac',
       },
       {
         id: 'email',
@@ -66,19 +75,27 @@ const AssignCompany = () => {
         accessorKey: 'email',
       },
       {
-        id: 'phoneNumber',
+        id: 'phone',
         header: 'Phone Number',
-        accessorKey: 'phoneNumber',
+        accessorKey: 'phone',
       },
       {
         id: 'location',
         header: 'Location',
         accessorKey: 'location',
+        cell: ({ getValue }) => {
+          const location = getValue()
+          return `Lat: ${location.latitude}, Lng: ${location.longitude}`
+        },
       },
       {
-        id: 'date',
+        id: 'createdAt',
         header: 'Date',
-        accessorKey: 'date',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const rawDate = getValue()
+          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+        },
       },
     ],
     [],
@@ -86,80 +103,67 @@ const AssignCompany = () => {
 
   const table = useReactTable({
     columns,
-    data,
+    data: companies,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
     state: {
-      pagination,
+      rowSelection,
     },
+    onRowSelectionChange: setRowSelection,
   })
 
-  const paginationProps = { page, pageSize, total }
+  const selectedCompanies = table.getSelectedRowModel().rows.map((row) => row.original)
+  const paginationProps = { page: perPage, pageSize, total, hasNext, hasPrevious }
 
-  const nextPage = () => {
-    console.log('Next Page')
+  const nextPage = (page: number) => {
+    setLoading(true)
+    fetchCompanies({ page })
   }
 
-  const previousPage = () => {
-    console.log('Previous Page')
+  const previousPage = (page: number) => {
+    setLoading(true)
+    fetchCompanies({ page })
+  }
+
+  const assignToCompany = () => {
+    console.log('Selected Companies:', selectedCompanies)
+    console.log('Student Id:', studentId)
   }
 
   return (
-    <div className='mt-8'>
+    <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
         <p>All Companies</p>
-
-        <Button>Assign to Company</Button>
+        <Button
+          disabled={selectedCompanies.length === 0}
+          onClick={() => assignToCompany()}
+        >
+          Assign to Company
+        </Button>
       </div>
 
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                )
-              })}
-              <TableHead></TableHead>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(header.column.columnDef.header, header.getContext())}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
 
         <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+            <TableRow key={row.id} selected={row.getIsSelected()}>
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
-              <TableCell className="float-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost">
-                      <EllipsisVertical className="text-primary" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 bg-white border-none">
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem>
-                        <Edit2 />
-                        <span>Edit</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Trash />
-                        <span>Delete</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>

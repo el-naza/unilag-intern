@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { format } from 'date-fns'
 import { MessageSquareText } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -16,18 +16,31 @@ import {
 } from '@/components/ui/dialog'
 import AssignCompany from './assign-company'
 import { useParams } from 'next/navigation'
+import { getStudent } from '@/services/admin/students'
 
 export default function StudentDetailPage() {
   const { id }: { id: string } = useParams()
   const formattedDate = format(new Date(), 'EEEE do MMMM yyyy')
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [siwesForm, setSiwesForm] = useState<File | null>(null)
+  const [student, setStudent] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
   const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0])
+      setSiwesForm(event.target.files[0])
     }
   }
+
+  const fetchStudentDetail = async () => {
+    const res: any = await getStudent('students', id)
+    setStudent(res.data)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchStudentDetail()
+  }, [])
 
   return (
     <div className="p-8">
@@ -41,8 +54,10 @@ export default function StudentDetailPage() {
           </Avatar>
 
           <div>
-            <h3 className="font-semibold text-[1.2rem] text-white">Melinda Fowoshere</h3>
-            <p className="text-sm text-white">Mathematics</p>
+            <h3 className="font-semibold text-[1.2rem] text-white">
+              {student?.firstName} {student?.lastName}
+            </h3>
+            <p className="text-sm text-white">{student?.course}</p>
           </div>
         </div>
 
@@ -50,13 +65,13 @@ export default function StudentDetailPage() {
           <DialogTrigger asChild>
             <Button className="bg-gray-light-2 text-black-2">Assigned Siwes</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-screen-lg overflow-auto bg-white">
+          <DialogContent className="max-w-screen-lg max-h-[90vh] overflow-auto bg-white">
             <DialogHeader>
               <DialogTitle>Assign Company</DialogTitle>
               <DialogDescription>Assign company to a student</DialogDescription>
             </DialogHeader>
 
-            <AssignCompany />
+            <AssignCompany studentId={student?.id} />
           </DialogContent>
         </Dialog>
       </div>
@@ -69,6 +84,8 @@ export default function StudentDetailPage() {
           <div>
             <Label className="mt-3 block">First Name</Label>
             <Input
+              value={student?.firstName || ''}
+              readOnly
               placeholder="Enter First Name"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -77,6 +94,8 @@ export default function StudentDetailPage() {
           <div>
             <Label className="mt-3 block">Last Name</Label>
             <Input
+              value={student?.lastName || ''}
+              readOnly
               placeholder="Enter Last Name"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -85,6 +104,8 @@ export default function StudentDetailPage() {
           <div>
             <Label className="mt-3 block">Middle Name</Label>
             <Input
+              value={student?.middleName || ''}
+              readOnly
               placeholder="Enter Middle Name"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -93,6 +114,8 @@ export default function StudentDetailPage() {
           <div className="relative">
             <Label className="mt-3 block">Email</Label>
             <Input
+              value={student?.email || ''}
+              readOnly
               placeholder="Enter Email"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -101,6 +124,8 @@ export default function StudentDetailPage() {
           <div>
             <Label className="mt-3 block">Phone</Label>
             <Input
+              value={student?.phone || ''}
+              readOnly
               placeholder="Enter Phone"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -109,6 +134,8 @@ export default function StudentDetailPage() {
           <div>
             <Label className="mt-3 block"> Location</Label>
             <Input
+              value={student?.homeAddress || ''}
+              readOnly
               placeholder="Enter Location"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -120,8 +147,20 @@ export default function StudentDetailPage() {
 
         <div className="grid grid-cols-3 gap-4 mb-8 mt-4">
           <div>
+            <Label className="mt-3 block">Matric No</Label>
+            <Input
+              value={student?.matricNo || ''}
+              readOnly
+              placeholder="Enter CGPA"
+              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+            />
+          </div>
+
+          <div>
             <Label className="mt-3 block">CGPA</Label>
             <Input
+              value={student?.cgpa || ''}
+              readOnly
               placeholder="Enter CGPA"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -130,7 +169,19 @@ export default function StudentDetailPage() {
           <div>
             <Label className="mt-3 block">Department</Label>
             <Input
+              value={student?.course || ''}
+              readOnly
               placeholder="Enter CDepartmentGPA"
+              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+            />
+          </div>
+
+          <div>
+            <Label className="mt-3 block">Level</Label>
+            <Input
+              value={student?.level || ''}
+              readOnly
+              placeholder="Enter CGPA"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
           </div>
@@ -139,7 +190,7 @@ export default function StudentDetailPage() {
         <h3 className="font-medium text-[1.2rem]">Siwes Form</h3>
         <p className="text-sm">Upload Student Siwes Form</p>
 
-        {!selectedFile && (
+        {!siwesForm && (
           <div className="mt-4">
             <Input
               type="file"
@@ -149,7 +200,7 @@ export default function StudentDetailPage() {
           </div>
         )}
 
-        {selectedFile && <p>{selectedFile.name}</p>}
+        {siwesForm && <p>{siwesForm.name}</p>}
 
         <h3 className="font-medium text-[1.2rem] mt-8">Siwes Reports</h3>
         <p className="text-sm">All supervisors reports</p>

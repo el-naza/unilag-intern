@@ -18,20 +18,18 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import getAllStudents from '@/services/admin/get-all-students'
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable
-} from '@tanstack/react-table'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Edit2, EllipsisVertical, ListFilter, Plus, Trash } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from './add-student'
+import { getAllStudents } from '@/services/admin/students'
+import { useRouter } from 'next/navigation'
 
-type Student = {
+export type Student = {
+  id: string
   firstName: string
   matricNo: string
   course: string
@@ -60,11 +58,12 @@ export default function StudentPage() {
   const [total, setTotal] = useState(0)
   const [hasNext, setHasNext] = useState(false)
   const [hasPrevious, setHasPrevious] = useState(false)
+  const router = useRouter()
 
   const fetchStudents = async (params?: any) => {
     const res: any = await getAllStudents('students', params)
-    console.log('Students: ', res);
-    
+    console.log('Students: ', res)
+
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
     setStudents(docs)
     setPerPage(page)
@@ -87,8 +86,8 @@ export default function StudentPage() {
         header: 'Student Name',
         accessorKey: 'firstName',
         cell: ({ getValue, row }) => {
-          const rowData = row.original;
-          return `${getValue()} ${rowData.lastName}` 
+          const rowData = row.original
+          return `${getValue()} ${rowData.lastName}`
         },
       },
       {
@@ -145,6 +144,11 @@ export default function StudentPage() {
   const previousPage = (page: number) => {
     setLoading(true)
     fetchStudents({ page })
+  }
+
+  const editStudent = (rowRecord: any) => {
+    const studentId = rowRecord.original.id
+    router.push(`/admin/siwes-cordinator/students/${studentId}`)
   }
 
   return (
@@ -260,7 +264,7 @@ export default function StudentPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 bg-white border-none">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editStudent(row)}>
                           <Edit2 />
                           <span>Edit</span>
                         </DropdownMenuItem>
