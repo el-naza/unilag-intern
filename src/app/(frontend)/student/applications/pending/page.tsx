@@ -19,7 +19,6 @@ export default function Page() {
   const fetchPendingApplications = async () => {
     const res: any = await fetchDocs('internship-applications')
 
-    console.log(res)
     setPendingApplications(res.docs)
     setLoading(false)
   }
