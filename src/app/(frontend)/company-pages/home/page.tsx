@@ -34,7 +34,6 @@ export default function CompanyHomePage() {
 
   const router = useRouter()
 
-
   return (
     <div>
       <div
@@ -77,17 +76,13 @@ export default function CompanyHomePage() {
       <div className="max-w-full md:max-w-[866px] m-auto px-4 pb-[100px]">
         <p className="py-[7px] font-[500] text-[20px]">Student List</p>
         {loading ? (
-          <Loader />
+          <Loader height="auto" background="transparent" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[14px] p-[12px]">
-            {students && students.map((student) => (
-              <StudentProfileCard key={student.id} student={student}  />
-            ))}
+            {students &&
+              students.map((student) => <StudentProfileCard key={student.id} student={student} />)}
           </div>
         )}
-        {/* {students.map((student, index) => (
-            <StudentProfileCard key={index} student={student} />
-          ))} */}
       </div>
     </div>
   )

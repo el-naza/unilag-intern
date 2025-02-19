@@ -57,7 +57,7 @@ importers:
         specifier: ^0.41.3
         version: 0.41.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
       '@tanstack/react-query':
-        specifier: ^5.64.2
+        specifier: ^5.66.0
         version: 5.66.0(react@19.0.0)
       '@tanstack/react-store':
         specifier: ^0.7.0

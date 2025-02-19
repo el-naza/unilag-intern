@@ -47,7 +47,9 @@ export default function StudentInvitation() {
   const sendInvitationMtn = useMutation({
     mutationFn: async (invitation: InterviewInvitation) => {
       try {
+        console.log('payload ' + invitation)
         const res = await saveDoc('interview-invitations', invitation)
+        console.log('res ' + res)
         if (!res) return toast.error('Network error; please try again later')
         return res
       } catch {
@@ -149,7 +151,7 @@ export default function StudentInvitation() {
                 className="h-[300px] w-full object-cover rounded"
               />
 
-              <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+              {/* <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                 {([canSubmit, isSubmitting]) => (
                   <>
                     <Button
@@ -163,7 +165,7 @@ export default function StudentInvitation() {
                     <FormError form={form} />
                   </>
                 )}
-              </form.Subscribe>
+              </form.Subscribe> */}
 
               {/* <button
                 type="submit"
