@@ -41,18 +41,20 @@ export default function StudentHeader() {
           </Link>
         </div>
         <div className="flex ms-auto my-auto">
-          <svg
-            width="24"
-            height="25"
-            viewBox="0 0 24 25"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 9.036L12.94 12.146H15.76L13.49 13.766L14.42 16.776L12 14.936L9.58 16.776L10.51 13.766L8.24 12.146H11.06L12 9.036ZM12 2.146L9.58 10.146H2L8.17 14.556L5.83 22.146L12 17.456L18.18 22.146L15.83 14.556L22 10.146H14.42L12 2.146Z"
-              fill="#FF9500"
-            />
-          </svg>
+          <Link href="/student/pricing">
+            <svg
+              width="24"
+              height="25"
+              viewBox="0 0 24 25"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 9.036L12.94 12.146H15.76L13.49 13.766L14.42 16.776L12 14.936L9.58 16.776L10.51 13.766L8.24 12.146H11.06L12 9.036ZM12 2.146L9.58 10.146H2L8.17 14.556L5.83 22.146L12 17.456L18.18 22.146L15.83 14.556L22 10.146H14.42L12 2.146Z"
+                fill="#FF9500"
+              />
+            </svg>
+          </Link>
         </div>
       </div>
     </div>
