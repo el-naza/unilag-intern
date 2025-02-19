@@ -54,7 +54,6 @@ function FormError({ form }: { form: FormApi<any, any> }) {
 }
 
 export default function OTPConfirmation() {
-  const goBack = () => {}
 
   const router = useRouter()
 

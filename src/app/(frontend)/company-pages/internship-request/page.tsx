@@ -11,24 +11,19 @@ import fetchDocs from '@/services/fetchDocs'
 import { toast } from 'sonner'
 import updateDoc from '@/services/updateDoc'
 import { useMutation } from '@tanstack/react-query'
-import { InterviewInvitation } from '@/payload-types'
 import Loader from '../../components/Layouts/Loader'
+import { useRouter } from 'next/navigation'
 
 export default function InternshipRequest() {
+  const router = useRouter()
   const [loading, setLoading] = useState<boolean>(true)
 
   const [internReq, setInternReq] = useState<any>([])
   const [tableData, setTableData] = useState<any>([])
 
-  // const fetchInternReq = async () => {
-  //   const res: any = await fetchDocs('interview-invitations')
-  //   setInternReq(res)
-  //   console.log(internReq)
-  //   setLoading(false)
-  // }
-
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('interview-invitations')
+    console.log(res)
     setInternReq(res?.data?.docs || [])
     setTableData(res?.data)
     setLoading(false)
@@ -37,24 +32,6 @@ export default function InternshipRequest() {
   useEffect(() => {
     fetchInternReq()
   }, [])
-
-  // const respondToInterviewMtn = useMutation({
-  //   mutationFn: async (interviewInvitation: InterviewInvitation) => {
-  //     try {
-  //       console.log(interviewInvitation)
-  //       const res = await updateDoc(
-  //         'interview-invitations',
-  //         interviewInvitation.id,
-  //         interviewInvitation,
-  //       )
-  //       console.log('res', res)
-  //       if (!res) return toast.error('Network err; pls try again later')
-  //       return res
-  //     } catch {
-  //       toast.error('An error occured while updating; pls try again later')
-  //     }
-  //   },
-  // })
 
   const respondToInterviewMtn = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
@@ -101,18 +78,19 @@ export default function InternshipRequest() {
       <div key={`${item.id}-actions`}>
         <button
           className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
-          onClick={() => handleRespond(item.id, 'accepted')}
-          disabled={respondToInterviewMtn.isPending}
+          onClick={() => router.push(`/company-pages/student-details/${item.student.id}`)}
+          // onClick={() => handleRespond(item.id, 'accepted')}
+          // disabled={respondToInterviewMtn.isPending}
         >
-          ✔ Accept
+          View Details
         </button>
-        <button
+        {/* <button
           className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
           onClick={() => handleRespond(item.id, 'declined')}
           disabled={respondToInterviewMtn.isPending}
         >
           ✘ Declne
-        </button>
+        </button> */}
       </div>,
     ])
 
@@ -146,7 +124,7 @@ export default function InternshipRequest() {
             <InvitationTabs />
             <BlurBackground>
               <p className="px-4 font-[400] text-[16px]"> Internship Request</p>
-              {loading ? (
+              {loading  ? (
                 <Loader height="auto" background="transparent" />
               ) : (
                 <div className="mt-[12px]">

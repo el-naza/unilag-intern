@@ -94,6 +94,8 @@ export default function StudentInvitation() {
           }
         }
 
+        console.log(value)
+
         const res = await sendInvitationMtn.mutateAsync(value)
         if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
           return {
@@ -151,7 +153,7 @@ export default function StudentInvitation() {
                 className="h-[300px] w-full object-cover rounded"
               />
 
-              {/* <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+              <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                 {([canSubmit, isSubmitting]) => (
                   <>
                     <Button
@@ -160,12 +162,12 @@ export default function StudentInvitation() {
                       size="lg"
                       className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px]"
                     >
-                      Send Application {isSubmitting && <Spinner />}
+                      <MailIcon fill="#FFFFFF" /> Send Application {isSubmitting && <Spinner />}
                     </Button>
                     <FormError form={form} />
                   </>
                 )}
-              </form.Subscribe> */}
+              </form.Subscribe>
 
               {/* <button
                 type="submit"
