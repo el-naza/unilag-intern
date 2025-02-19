@@ -24,8 +24,8 @@ export default function InternshipRequest() {
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('interview-invitations')
     console.log(res)
-    setInternReq(res?.data?.docs || [])
-    setTableData(res?.data)
+    setInternReq(res?.docs || [])
+    setTableData(res)
     setLoading(false)
   }
 
@@ -94,7 +94,7 @@ export default function InternshipRequest() {
       </div>,
     ])
 
-  const totalPages = tableData.length
+  const totalPages = tableData?.length
   const totalItems = 1234
 
   const handlePageChange = (page: number) => {

@@ -22,10 +22,10 @@ export default function AwaitingInterview() {
     try {
       const res: any = await fetchDocs('interview-invitations')
       if (res) {
-        console.log(res.data.docs)
+        console.log(res?.docs)
         // const getPending = res.data.docs.filter((s) => s.status === 'accepted')
         // console.log(getPending)
-        setInternshipApplicants(res?.data?.docs || [])
+        setInternshipApplicants(res?.docs || [])
       } else {
         console.warn('No internship data found:', res)
       }
@@ -103,7 +103,7 @@ export default function AwaitingInterview() {
                           rescheduleClick: () =>
                             router.push(
                               `/company-pages/student-details/${invitation.student.id}/invite`,
-                            ), 
+                            ),
                         }}
                       />
                     ))}
