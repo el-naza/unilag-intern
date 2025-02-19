@@ -115,9 +115,9 @@ const Page = () => {
     },
   })
 
-  const viewApplications = () => {
+  const goHome = () => {
     setOpen(false)
-    router.push('/student/applications/pending')
+    router.push('/student')
   }
 
   useEffect(() => {
@@ -317,7 +317,7 @@ const Page = () => {
                             </div>
                             <DialogFooter>
                               <button
-                                onClick={viewApplications}
+                                onClick={goHome}
                                 className="w-full rounded p-2 text-xs bg-[#0B7077] text-white text-center"
                               >
                                 Continue

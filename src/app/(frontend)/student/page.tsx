@@ -80,26 +80,26 @@ const Page = () => {
   const form = useForm<Company>({
     validators: {
       onSubmitAsync: async ({ value }) => {
-        const fieldNamesToValidate = ['name']
+        // const fieldNamesToValidate = ['name']
 
-        const emptyRequiredFields = Companies.fields
-          .filter((field: Field & { required: boolean; name: string }) =>
-            fieldNamesToValidate.includes(field.name),
-          ) // Filter only specified fields
-          .reduce<object>(
-            (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
-              ...acc,
-              ...(field?.required && !value[field.name] && { [field.name]: 'Required' }),
-            }),
-            {},
-          )
+        // const emptyRequiredFields = Companies.fields
+        //   .filter((field: Field & { required: boolean; name: string }) =>
+        //     fieldNamesToValidate.includes(field.name),
+        //   ) // Filter only specified fields
+        //   .reduce<object>(
+        //     (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
+        //       ...acc,
+        //       ...(field?.required && !value[field.name] && { [field.name]: 'Required' }),
+        //     }),
+        //     {},
+        //   )
 
-        if (Object.keys(emptyRequiredFields).length) {
-          return {
-            form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
-            fields: emptyRequiredFields,
-          }
-        }
+        // if (Object.keys(emptyRequiredFields).length) {
+        //   return {
+        //     form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
+        //     fields: emptyRequiredFields,
+        //   }
+        // }
 
         const res: any = await searchJobsMtn.mutateAsync(value)
         if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
