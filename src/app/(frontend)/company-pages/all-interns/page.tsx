@@ -9,62 +9,7 @@ import { useEffect, useState } from 'react'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '../../components/Layouts/Loader'
 export default function AllInterns() {
-  // const students = [
-  //   {
-  //     name: 'Kotu Faruq',
-  //     course: 'Mathematics',
-  //     cgpa: '3.5',
-  //     image: studentImage.src,
-  //   },
-  //   {
-  //     name: 'Jane Doe',
-  //     course: 'Physics',
-  //     cgpa: '3.8',
-  //     image: studentImage.src,
-  //   },
-  //   {
-  //     name: 'John Smith',
-  //     course: 'Engineering',
-  //     cgpa: '3.6',
-  //     image: studentImage.src,
-  //   },
-  //   {
-  //     name: 'Kotu Faruq',
-  //     course: 'Mathematics',
-  //     cgpa: '3.5',
-  //     image: studentImage.src,
-  //   },
-  //   {
-  //     name: 'Jane Doe',
-  //     course: 'Physics',
-  //     cgpa: '3.8',
-  //     image: studentImage.src,
-  //   },
-  //   {
-  //     name: 'John Smith',
-  //     course: 'Engineering',
-  //     cgpa: '3.6',
-  //     image: studentImage.src,
-  //   },
-  //   {
-  //     name: 'Kotu Faruq',
-  //     course: 'Mathematics',
-  //     cgpa: '3.5',
-  //     image: studentImage.src,
-  //   },
-  //   {
-  //     name: 'Jane Doe',
-  //     course: 'Physics',
-  //     cgpa: '3.8',
-  //     image: studentImage.src,
-  //   },
-  //   {
-  //     name: 'John Smith',
-  //     course: 'Engineering',
-  //     cgpa: '3.6',
-  //     image: studentImage.src,
-  //   },
-  // ]
+ 
 
   const [loading, setLoading] = useState<boolean>(true)
   const [students, setStudents] = useState<any>([])

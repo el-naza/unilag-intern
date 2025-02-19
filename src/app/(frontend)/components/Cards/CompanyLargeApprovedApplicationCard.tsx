@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import companyLogo from '@/app/(frontend)/assets/images/company-logo.svg'
 import { InterviewInvitation } from '@/payload-types'
 import formatDate from '@/utilities/formatDate'
@@ -31,8 +31,24 @@ export default function CompanyLargeApprovedApplicationCard({
   const [submitting, setSubmitting] = useState<boolean>(false)
   const [declineReason, setDeclineReason] = useState<string>('')
 
+  const action = useMemo(
+    (): 'Accept' | 'Decline' => (interviewInvitation.status === 'declined' ? 'Accept' : 'Decline'),
+    [interviewInvitation],
+  )
+
   const handleDeclineReasonInput = (e: any) => {
     setDeclineReason(e.target.value)
+  }
+
+  const acceptInterview = async () => {
+    setSubmitting(true)
+    await onRespond({
+      ...interviewInvitation,
+      status: 'accepted',
+    })
+    setSubmitting(false)
+    setOpen(false)
+    toast.success('Invitation accepted successfully')
   }
 
   const declineInterview = async () => {
@@ -45,7 +61,7 @@ export default function CompanyLargeApprovedApplicationCard({
     setDeclineReason('')
     setSubmitting(false)
     setOpen(false)
-    toast.success('Application declined successfully')
+    toast.success('Invitation declined successfully')
   }
 
   return (
@@ -107,33 +123,41 @@ export default function CompanyLargeApprovedApplicationCard({
               </div>
               <div>
                 <Dialog open={open} onOpenChange={setOpen}>
-                  {interviewInvitation.status !== 'declined' && (
-                    <DialogTrigger asChild>
-                      <button className="bg-[#A71C51] rounded-lg p-2 min-w-40">
-                        <span className="text-white text-sm">Reject</span>
-                      </button>
-                    </DialogTrigger>
-                  )}
+                  <DialogTrigger asChild>
+                    <button className="bg-[#A71C51] rounded-lg p-2 min-w-40">
+                      <span className="text-white text-sm">{action}</span>
+                    </button>
+                  </DialogTrigger>
                   <DialogContent className="bg-white rounded-lg gap-2">
-                    <DialogTitle className="text-[#0B7077] font-normal">Reject Student</DialogTitle>
-                    <DialogDescription className="text-[#8E8E93]">
-                      Reason for Rejection
-                    </DialogDescription>
-                    <div className="grid gap-4 text-center">
-                      <textarea
-                        onChange={handleDeclineReasonInput}
-                        className="text-sm w-full placeholder:text-[#ECECEC] p-2 border border-[#ECECEC] rounded mb-2"
-                        rows={5}
-                        placeholder="Enter Reason"
-                      ></textarea>
-                    </div>
+                    <DialogTitle className="text-[#0B7077] font-normal">
+                      {action} Invitation
+                    </DialogTitle>
+                    {interviewInvitation.status !== 'declined' && (
+                      <>
+                        <DialogDescription className="text-[#8E8E93]">
+                          Reason for {action}
+                        </DialogDescription>
+                        <div className="grid gap-4 text-center">
+                          <textarea
+                            onChange={handleDeclineReasonInput}
+                            className="text-sm w-full placeholder:text-[#ECECEC] p-2 border border-[#ECECEC] rounded mb-2"
+                            rows={5}
+                            placeholder="Enter Reason"
+                          ></textarea>
+                        </div>
+                      </>
+                    )}
                     <DialogFooter className="grid grid-cols-5 gap-1">
                       <DialogClose className="col-start-3 text-xs bg-white text-[#48484A] border-0">
                         Cancel
                       </DialogClose>
                       <button
                         disabled={submitting}
-                        onClick={declineInterview}
+                        onClick={
+                          interviewInvitation.status !== 'declined'
+                            ? declineInterview
+                            : acceptInterview
+                        }
                         className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
                       >
                         <div className="flex m-auto">

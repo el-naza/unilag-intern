@@ -12,7 +12,7 @@ export default function Page() {
         <div className="text-base leading-6">
           Log in and stay connected to companies that matter.
         </div>
-      </div>
+      </div> 
 
       <div className="px-[30px] text-center text-sm leading-6">
         <Link href="/auth/login">

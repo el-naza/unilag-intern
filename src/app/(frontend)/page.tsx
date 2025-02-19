@@ -7,7 +7,7 @@ export default function Page() {
   const router = useRouter()
 
   useEffect(() => {
-    router.replace('/auth')
+    router.replace('home')
   }, [])
   return null
 }
