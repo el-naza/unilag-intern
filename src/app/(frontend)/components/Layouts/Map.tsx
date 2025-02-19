@@ -76,7 +76,7 @@ const Map = ({ zoom = defaults.zoom, companies }: MapProps) => {
               <div className="font-medium">{company.name}</div>
               <div>{company.description}</div>
               <div className="text-right">
-                <Link href={`/student/companies/${company.id}/apply`}>
+                <Link href={`/student/companies/${company.id}`}>
                   <Button size="sm">Apply</Button>
                 </Link>
               </div>

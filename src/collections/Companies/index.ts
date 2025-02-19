@@ -37,6 +37,23 @@ export const Companies: CollectionConfig = {
       generateEmailHTML,
     },
   },
+  // hooks: {
+  //   afterRead: [
+  //     async ({ doc, req }) => {
+  //       const internships = await req.payload.find({
+  //         collection: 'internships',
+  //         where: {
+  //           company: {
+  //             equals: doc.id,
+  //           },
+  //         },
+  //       })
+
+  //       doc.internships = internships.docs
+  //       return doc
+  //     },
+  //   ],
+  // },
   endpoints: [
     {
       method: 'post',
