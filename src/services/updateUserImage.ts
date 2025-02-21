@@ -1,39 +1,44 @@
 'use server'
 
-import axiosInstance from '@/utilities/axiosInstance'
 import { ServiceResponse, ErrorResponse } from '@/utilities/types'
-import { AxiosError } from 'axios'
 import { getToken } from 'next-auth/jwt'
 import { headers } from 'next/headers'
+import uploadMedia from './uploadMedia'
+import updateDoc from './updateDoc'
+import { CollectionSlug } from 'payload'
 
 type Response = {
   message: string
 }
 
 export default async function updateUserImage(
+  col: CollectionSlug,
+  userId: string,
   file: File,
+  authToken: string | undefined,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  const formData = new FormData()
-  formData.append('file', file)
+  if (!authToken)
+    return {
+      status: 401,
+      data: { message: 'No auth token supplied' },
+    }
 
-  //todo figure out the user's collection and id; and then call uploadMedia and then updateDoc
+  const mediaUploadRes = await uploadMedia(
+    file,
+    authToken ||
+      ((await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
+        ?.token! as string),
+  )
 
-  return await axiosInstance
-    .post<Response | ErrorResponse>(`/api/media`, formData, {
-      headers: {
-        Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
-      },
-    })
-    .catch((error: AxiosError) => {
-      if (error.response)
-        return {
-          status: error.response.status,
-          data: error.response.data as ErrorResponse,
-        }
-    })
-    .then((res) => ({
-      success: true,
-      status: res?.status,
-      data: res?.data,
-    }))
+  console.log('media upload res', mediaUploadRes)
+  if (!mediaUploadRes?.data?.doc?.id) return mediaUploadRes
+
+  return await updateDoc(
+    col,
+    userId,
+    {
+      image: mediaUploadRes?.data?.doc?.id!,
+    },
+    authToken,
+  )
 }
