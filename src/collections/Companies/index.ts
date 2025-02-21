@@ -302,7 +302,7 @@ export const Companies: CollectionConfig = {
       type: 'text',
     },
     {
-      name: 'profileImage',
+      name: 'image',
       type: 'upload',
       relationTo: 'media',
       // required: true,

@@ -15,6 +15,7 @@ export default async function updateDoc(
   col: CollectionSlug,
   id: string,
   update: object,
+  authToken: string | undefined,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   console.log(
     '***Token',
@@ -24,7 +25,7 @@ export default async function updateDoc(
   return await axiosInstance
     .patch<Response | ErrorResponse>(`/api/${col}/${id}`, update, {
       headers: {
-        Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+        Authorization: `Bearer ${authToken || (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },
     })
     .catch((error: AxiosError) => {

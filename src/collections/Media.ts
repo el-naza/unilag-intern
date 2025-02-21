@@ -13,7 +13,7 @@ export const Media: CollectionConfig = {
   slug: 'media',
   access: {
     create: authenticatedUsers,
-    delete: authenticatedUsers,
+    delete: () => false,
     read: anyone,
     update: authenticatedUsers,
   },
@@ -34,7 +34,7 @@ export const Media: CollectionConfig = {
     beforeOperation: [
       ({ req, operation }) => {
         if ((operation === 'create' || operation === 'update') && req.file) {
-          req.file.name = req.user?.id + '-' + Date.now() + req.user?.id
+          req.file.name = (req.user?.id ? `${req.user.id}-` : '') + Date.now() + '-' + req.file.name
         }
       },
     ],
