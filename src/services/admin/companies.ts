@@ -13,7 +13,7 @@ type Response = {
 
 export async function getAllCompanies(
   col: CollectionSlug,
-  params?: any
+  params?: string
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   
   const authResult = await getToken({
@@ -22,8 +22,7 @@ export async function getAllCompanies(
   })
 
   return await axiosInstance
-    .get<Response | ErrorResponse>(`/api/${col}`, {
-      params,
+    .get<Response | ErrorResponse>(`/api/${col}/?${params}`, {
       headers: {
         Authorization: `Bearer ${authResult?.token}`,
       },

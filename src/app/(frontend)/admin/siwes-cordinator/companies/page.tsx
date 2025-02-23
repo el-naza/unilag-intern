@@ -21,12 +21,22 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { getAllCompanies } from '@/services/admin/companies'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Edit2, EllipsisVertical, ListFilter, Plus, Trash } from 'lucide-react'
+import { Edit2, EllipsisVertical, Plus, Trash } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddCompany from './add-company'
 import { useRouter } from 'next/navigation'
+import { useDebounce } from '@/custom-hooks/useDebounce'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export type Company = {
   name: string
@@ -38,14 +48,14 @@ export type Company = {
 }
 
 export default function CompaniesPage() {
-  const config: IFIlterConfig = {
+  const [config, setConfig] = useState<IFIlterConfig>({
     page: 'Companies',
     showFilters: true,
     stats: [
-      { label: 'Total No of Companies', iconName: 'Building2', count: 100 },
-      { label: 'Assigned Companies', iconName: 'CircleCheck', count: 20 },
+      { label: 'Total No of Companies', iconName: 'Building2', count: 0 },
+      { label: 'Assigned Companies', iconName: 'CircleCheck', count: 0 },
     ],
-  }
+  })
 
   const [loading, setLoading] = useState<boolean>(true)
   const [companies, setCompanies] = useState<Company[]>([])
@@ -57,7 +67,7 @@ export default function CompaniesPage() {
   const [hasPrevious, setHasPrevious] = useState(false)
   const router = useRouter()
 
-  const fetchCompanies = async (params?: any) => {
+  const fetchCompanies = async (params?: string) => {
     const res: any = await getAllCompanies('companies', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
     setCompanies(docs)
@@ -66,6 +76,13 @@ export default function CompaniesPage() {
     setHasNext(hasNextPage)
     setHasPrevious(hasPrevPage)
     setTotal(totalDocs)
+
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      stats: prevConfig.stats.map((stat, index) =>
+        index === 0 ? { ...stat, count: totalDocs } : stat,
+      ),
+    }))
 
     setLoading(false)
   }
@@ -128,18 +145,39 @@ export default function CompaniesPage() {
 
   const nextPage = (page: number) => {
     setLoading(true)
-    fetchCompanies({ page })
+    fetchCompanies(`page=${page}`)
   }
 
   const previousPage = (page: number) => {
     setLoading(true)
-    fetchCompanies({ page })
+    fetchCompanies(`page=${page}`)
   }
 
   const editCompany = (rowRecord: any) => {
     const companyId = rowRecord.original.id
     router.push(`/admin/siwes-cordinator/companies/${companyId}`)
   }
+
+  const [query, setQuery] = useState('')
+  const [searchFilter, setSearchFilter] = React.useState<'name' | 'cac' | 'email' | 'phone'>('name')
+  const debouncedQuery = useDebounce(query)
+
+  useEffect(() => {
+    switch (searchFilter) {
+      case 'name':
+        fetchCompanies(new URLSearchParams({ 'where[name][like]': debouncedQuery }).toString())
+        break
+      case 'cac':
+        fetchCompanies(new URLSearchParams({ 'where[cac][like]': debouncedQuery }).toString())
+        break
+      case 'email':
+        fetchCompanies(new URLSearchParams({ 'where[email][like]': debouncedQuery }).toString())
+        break
+      case 'phone':
+        fetchCompanies(new URLSearchParams({ 'where[phone][like]': debouncedQuery }).toString())
+        break
+    }
+  }, [debouncedQuery])
 
   return (
     <div className="p-8">
@@ -177,25 +215,27 @@ export default function CompaniesPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <div className="flex gap-2 items-center bg-white border-[1px] pr-3 rounded-md">
-            <Input placeholder="Search by name, matric no..." />
+          <Select value={searchFilter} onValueChange={(value) => setSearchFilter(value as 'name' | 'cac' | 'email')}>
+            <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Filter By</SelectLabel>
+                <SelectItem value="name">Company Name</SelectItem>
+                <SelectItem value="cac">CAC Number</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="phone">Phone Number</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <ListFilter />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white border-none">
-                <DropdownMenuGroup>
-                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
-                    <span>Company Name</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
-                    <span>Location</span>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <Input
+            className='border-[1px] border-gray-light-2 w-[full]'
+            placeholder="Search by name, cac, email..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
 
           <Dialog>
             <DialogTrigger asChild>

@@ -1,17 +1,12 @@
 'use client'
-import React, { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from '@/components/ui/table'
-import { EllipsisVertical, Plus, Edit2, Trash } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,14 +14,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 import {
-  PaginationState,
-  useReactTable,
-  getCoreRowModel,
-  getPaginationRowModel,
-  flexRender,
-} from '@tanstack/react-table'
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { useDebounce } from '@/custom-hooks/useDebounce'
+import { getAllAdmins } from '@/services/admin/admins'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { Edit2, EllipsisVertical, Plus, Trash } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useMemo, useState } from 'react'
+import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
+import AddAdmin from './add-admin'
 
 type Admin = {
   name: string
@@ -37,32 +51,47 @@ type Admin = {
   employedStudents: number
 }
 
-const defaultData: Admin[] = [
-  {
-    name: 'tanner',
-    department: 'Management',
-    email: 'test@mail.com',
-    phoneNumber: '090283823823',
-    numberOfStudents: 20,
-    employedStudents: 10,
-  },
-]
-
 export default function DepartmentalAdminsPage() {
-  const config: IFIlterConfig = {
+  const [config, setConfig] = useState<IFIlterConfig>({
     page: 'Departmental Admins',
     showFilters: false,
-    stats: [{ label: 'Total No of Admins', iconName: 'Shield', count: 100 }],
+    stats: [{ label: 'Total No of Admins', iconName: 'Shield', count: 0 }],
+  })
+
+  const [loading, setLoading] = useState<boolean>(true)
+  const [admins, setAdmins] = useState<Admin[]>([])
+  const [perPage, setPerPage] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [hasNext, setHasNext] = useState(false)
+  const [hasPrevious, setHasPrevious] = useState(false)
+  const router = useRouter()
+
+  const fetchAdmins = async (params?: string) => {
+    const res: any = await getAllAdmins('admins', params)
+    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    console.log('Admins: ', docs)
+
+    setAdmins(docs)
+    setPerPage(page)
+    setPageSize(totalPages)
+    setHasNext(hasNextPage)
+    setHasPrevious(hasPrevPage)
+    setTotal(totalDocs)
+
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      stats: prevConfig.stats.map((stat, index) =>
+        index === 0 ? { ...stat, count: totalDocs } : stat,
+      ),
+    }))
+
+    setLoading(false)
   }
 
-  const [data, setData] = useState(() => defaultData)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const [total, setTotal] = useState(0)
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  useEffect(() => {
+    fetchAdmins()
+  }, [])
 
   const columns = useMemo(
     () => [
@@ -102,36 +131,93 @@ export default function DepartmentalAdminsPage() {
 
   const table = useReactTable({
     columns,
-    data,
+    data: admins,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    state: {
-      pagination,
-    },
   })
 
-  const paginationProps = { page, pageSize, total }
+  const paginationProps = { page: perPage, pageSize, total, hasNext, hasPrevious }
 
-  const nextPage = () => {
-    console.log('Next Page')
+  const nextPage = (page: number) => {
+    setLoading(true)
+    fetchAdmins(`page=${page}`)
   }
 
-  const previousPage = () => {
-    console.log('Previous Page')
+  const previousPage = (page: number) => {
+    setLoading(true)
+    fetchAdmins(`page=${page}`)
   }
+
+  const [query, setQuery] = useState('')
+  const [searchFilter, setSearchFilter] = React.useState<'name' | 'department' | 'email' | 'phone'>(
+    'name',
+  )
+  const debouncedQuery = useDebounce(query)
+
+  useEffect(() => {
+    switch (searchFilter) {
+      case 'name':
+        fetchAdmins(new URLSearchParams({ 'where[name][like]': debouncedQuery }).toString())
+        break
+      case 'department':
+        fetchAdmins(new URLSearchParams({ 'where[department][like]': debouncedQuery }).toString())
+        break
+      case 'email':
+        fetchAdmins(new URLSearchParams({ 'where[email][like]': debouncedQuery }).toString())
+        break
+      case 'phone':
+        fetchAdmins(new URLSearchParams({ 'where[phone][like]': debouncedQuery }).toString())
+        break
+    }
+  }, [debouncedQuery])
 
   return (
-    <div className='p-8'>
+    <div className="p-8">
       <FIlterStats config={config} />
 
       <div className="flex justify-between items-center mt-8">
         <div></div>
         <div className="flex gap-4 items-center">
-          <Input placeholder="Search by name, matric no..." className="border-[1px]" />
-          <Button>
-            <Plus /> Add Admin
-          </Button>
+          <Select
+            value={searchFilter}
+            onValueChange={(value) =>
+              setSearchFilter(value as 'name' | 'department' | 'email' | 'phone')
+            }
+          >
+            <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Filter By</SelectLabel>
+                <SelectItem value="name">Admin Name</SelectItem>
+                <SelectItem value="department">Department</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="phone">Phone</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Input
+            className="border-[1px] border-gray-light-2 w-[full]"
+            placeholder="Search by name, department, eamil..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus /> Add Admin
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-screen-md bg-white">
+              <DialogHeader>
+                <DialogTitle>Departmental Admins</DialogTitle>
+              </DialogHeader>
+
+              <AddAdmin />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

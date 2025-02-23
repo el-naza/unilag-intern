@@ -10,6 +10,15 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
   Table,
   TableBody,
   TableCell,
@@ -18,15 +27,16 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { useDebounce } from '@/custom-hooks/useDebounce'
+import { getAllStudents } from '@/services/admin/students'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Edit2, EllipsisVertical, ListFilter, Plus, Trash } from 'lucide-react'
+import { Edit2, EllipsisVertical, Plus, Trash } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from './add-student'
-import { getAllStudents } from '@/services/admin/students'
-import { useRouter } from 'next/navigation'
 
 export type Student = {
   id: string
@@ -40,15 +50,15 @@ export type Student = {
 }
 
 export default function StudentPage() {
-  const config: IFIlterConfig = {
+  const [config, setConfig] = useState<IFIlterConfig>({
     page: 'Students',
     showFilters: true,
     stats: [
-      { label: 'Total No of Siwes Students', iconName: 'GraduationCap', count: 100 },
-      { label: 'Employed Siwes Student', iconName: 'CircleCheck', count: 20 },
-      { label: 'Unemployed Siwes Student', iconName: 'CircleX', count: 10 },
+      { label: 'Total No of Siwes Students', iconName: 'GraduationCap', count: 0 },
+      { label: 'Employed Siwes Student', iconName: 'CircleCheck', count: 0 },
+      { label: 'Unemployed Siwes Student', iconName: 'CircleX', count: 0 },
     ],
-  }
+  })
 
   const [loading, setLoading] = useState<boolean>(true)
   const [students, setStudents] = useState<Student[]>([])
@@ -60,10 +70,8 @@ export default function StudentPage() {
   const [hasPrevious, setHasPrevious] = useState(false)
   const router = useRouter()
 
-  const fetchStudents = async (params?: any) => {
+  const fetchStudents = async (params?: string) => {
     const res: any = await getAllStudents('students', params)
-    console.log('Students: ', res)
-
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
     setStudents(docs)
     setPerPage(page)
@@ -71,6 +79,13 @@ export default function StudentPage() {
     setHasNext(hasNextPage)
     setHasPrevious(hasPrevPage)
     setTotal(totalDocs)
+
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      stats: prevConfig.stats.map((stat, index) =>
+        index === 0 ? { ...stat, count: totalDocs } : stat,
+      ),
+    }))
 
     setLoading(false)
   }
@@ -138,12 +153,12 @@ export default function StudentPage() {
 
   const nextPage = (page: number) => {
     setLoading(true)
-    fetchStudents({ page })
+    fetchStudents(`page=${page}`)
   }
 
   const previousPage = (page: number) => {
     setLoading(true)
-    fetchStudents({ page })
+    fetchStudents(`page=${page}`)
   }
 
   const editStudent = (rowRecord: any) => {
@@ -151,11 +166,32 @@ export default function StudentPage() {
     router.push(`/admin/siwes-cordinator/students/${studentId}`)
   }
 
+  const [query, setQuery] = useState('')
+  const [searchFilter, setSearchFilter] = React.useState<
+    'student-name' | 'course' | 'matric-number'
+  >('student-name')
+  const debouncedQuery = useDebounce(query)
+
+  useEffect(() => {
+    switch (searchFilter) {
+      case 'student-name':
+        fetchStudents(new URLSearchParams({ 'where[firstName][like]': debouncedQuery }).toString())
+        break
+      case 'course':
+        fetchStudents(new URLSearchParams({ 'where[course][like]': debouncedQuery }).toString())
+        break
+      case 'matric-number':
+        fetchStudents(new URLSearchParams({ 'where[matricNo][like]': debouncedQuery }).toString())
+        break
+    }
+  }, [debouncedQuery])
+
+
   return (
     <div className="p-8">
       <FIlterStats config={config} />
 
-      <div className="flex justify-between items-center mt-8">
+      <div className="flex justify-between items-center mt-8 w-full">
         <ToggleGroup
           type="single"
           value={filter}
@@ -187,28 +223,27 @@ export default function StudentPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <div className="flex gap-2 items-center bg-white border-[1px] pr-3 rounded-md">
-            <Input placeholder="Search by name, matric no..." />
+          <Select value={searchFilter} onValueChange={(value) => setSearchFilter(value as 'student-name' | 'course' | 'matric-number')}>
+            <SelectTrigger className='border-[1px] border-gray-light-2 bg-white w-[180px]'>
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Filter By</SelectLabel>
+                <SelectItem value="student-name">Student Name</SelectItem>
+                <SelectItem value="course">Course</SelectItem>
+                <SelectItem value="matric-number">Matric Number</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <ListFilter />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white border-none">
-                <DropdownMenuGroup>
-                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
-                    <span>Student Name</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
-                    <span>Course</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
-                    <span>Matric Number</span>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <Input
+            className='border-[1px] border-gray-light-2 w-[full]'
+            placeholder="Search by name, matric no..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+
           <Dialog>
             <DialogTrigger asChild>
               <Button>
