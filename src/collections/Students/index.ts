@@ -27,7 +27,8 @@ export const Students: CollectionConfig = {
     beforeOperation: [
       async ({ args, req, operation }) => {
         // in order to login with matric no. as the username thru REST API
-        if (req.data?.matricNo && args.data) args.data.username = req.data?.matricNo
+        if (req.data?.matricNo && args.data)
+          args.data.username = req.data?.matricNo?.toLowerCase?.()
 
         return args
       },
@@ -323,7 +324,7 @@ export const Students: CollectionConfig = {
       options: ['SIWES', 'TEACHING PRACTICE'],
     },
     {
-      name: 'picture',
+      name: 'image',
       type: 'upload',
       relationTo: 'media',
     },

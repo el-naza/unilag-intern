@@ -27,6 +27,8 @@ import {
 } from '@/components/ui/select'
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 import { password } from 'node_modules/payload/dist/fields/validations'
+import signInUser from '@/services/signinUser'
+import { authStore } from '@/store/authStore'
 
 function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
@@ -58,9 +60,11 @@ export default function Page() {
     mutationFn: async (student: Student) => {
       try {
         // randomly generate password for students on creation for now
-        const res = await saveDoc('students', { ...student, password: randomString(10) })
+
+        const res = await saveDoc('students', student)
         console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
+
         return res
       } catch {
         toast.error('An error occured while saving message; pls try again later')
@@ -86,7 +90,8 @@ export default function Page() {
           }
         }
 
-        const res = await signUpStudentMtn.mutateAsync(value)
+        const userCreationObj = { ...value, password: randomString(10) }
+        const res = await signUpStudentMtn.mutateAsync(userCreationObj)
         if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
           return {
             form: (res as ValidationErrors).errors[0].message,
@@ -100,11 +105,29 @@ export default function Page() {
           }
         }
 
-        // success here so naviagate or toast to success
+        const signInRes = await signInUser({
+          username: userCreationObj.matricNo || userCreationObj.username,
+          password: userCreationObj.password,
+          col: 'students',
+        }).catch(() => {})
+
         form.reset()
-        toast.success('Sign up successful')
-        // router.push('/auth/sign-up/siwes-applicant/update-profile-image')
-        router.push('/student')
+
+        if (signInRes?.data?.token) {
+          authStore.setState((state) => {
+            return {
+              ...state,
+              signUpAuthToken: signInRes?.data?.token!,
+              signedUpUserId: signInRes?.data?.user?.id!,
+            }
+          })
+          router.push('/auth/sign-up/siwes-applicant/update-profile-image')
+        } else {
+          router.push('/auth/login')
+          toast.success('Sign up successful, enter your matric no. to continue')
+
+          // router.push('/auth/sign-up/siwes-applicant/update-profile-image')
+        }
 
         return null
       },

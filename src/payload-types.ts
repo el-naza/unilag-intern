@@ -194,7 +194,7 @@ export interface Company {
   address?: string | null;
   website?: string | null;
   description?: string | null;
-  profileImage?: (string | null) | Media;
+  image?: (string | null) | Media;
   resetPasswordOtpHash?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -246,7 +246,7 @@ export interface Student {
   course: string;
   level: string;
   internshipType: 'SIWES' | 'TEACHING PRACTICE';
-  picture?: (string | null) | Media;
+  image?: (string | null) | Media;
   bankCode?: string | null;
   bankName?: string | null;
   accountNo?: string | null;
@@ -482,7 +482,7 @@ export interface CompaniesSelect<T extends boolean = true> {
   address?: T;
   website?: T;
   description?: T;
-  profileImage?: T;
+  image?: T;
   resetPasswordOtpHash?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -530,7 +530,7 @@ export interface StudentsSelect<T extends boolean = true> {
   course?: T;
   level?: T;
   internshipType?: T;
-  picture?: T;
+  image?: T;
   bankCode?: T;
   bankName?: T;
   accountNo?: T;

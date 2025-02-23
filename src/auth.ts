@@ -3,6 +3,7 @@ import { authConfig } from './auth.config'
 import Credentials from 'next-auth/providers/credentials'
 import axiosInstance from '@/utilities/axiosInstance'
 import { AxiosError } from 'axios'
+import signInUser from './services/signinUser'
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
@@ -15,16 +16,8 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         email: { label: 'email', type: 'email' },
       },
       async authorize(credentials) {
-        console.log('Credentials: ', credentials)
-        const { username, password, col, email }: any = credentials
         // console.log('creds input', username, password)
-        const res = await axiosInstance
-          .post(`/api/${col}/login`, {
-            username,
-            password,
-            email,
-          })
-          .catch((err: AxiosError) => err.response)
+        const res = await signInUser(credentials)
 
         // console.log('res', res?.data)
 
@@ -35,7 +28,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
 
         const user = res?.data?.user
 
-        console.log('res token', res?.data?.token)
+        // console.log('res token', res?.data?.token)
         if (user) {
           return { ...user, token: res.data.token }
         }
