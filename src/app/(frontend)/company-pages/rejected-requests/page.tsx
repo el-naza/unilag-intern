@@ -7,7 +7,6 @@ import PlusIcon from '../../assets/icons/plus'
 import Table from '../../components/table'
 import BlurBackground from '../../components/Layout/blurBackground'
 import InvitationTabs from '../../components/Ui/tab'
-import { InvitationDetails } from '../internship-request/page'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '../../components/Layouts/Loader'
 
@@ -20,7 +19,6 @@ export default function RejectedRequest() {
 
   const [internReq, setInternReq] = useState<any>([])
   const [tableData, setTableData] = useState<any>([])
-  const [invitationDetails, setInvitationDetails] = useState<InvitationDetails | null>(null)
 
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('interview-invitations')
