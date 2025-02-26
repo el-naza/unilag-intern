@@ -20,7 +20,7 @@ import fetchDoc from '@/services/fetchDoc'
 import DownloadIcon from '../../assets/icons/download'
 import DownloadFileIcon from '../../assets/icons/downloadFile'
 
-interface InvitationDetails {
+export interface InvitationDetails {
   message: string
   id: string
   student: { id: string }
@@ -35,7 +35,7 @@ export default function InternshipRequest() {
 
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('interview-invitations')
-    console.log(res)
+    // console.log(res)
     setInternReq(res?.docs || [])
     setTableData(res)
     setLoading(false)
@@ -110,9 +110,9 @@ export default function InternshipRequest() {
       <div key={`${item.id}-actions`}>
         <button
           className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
-          // onClick={() => router.push(`/company-pages/student-details/${item.student.id}`)}
-          onClick={() => handleRespond(item.id, 'accepted')}
-          disabled={respondToInterviewMtn.isPending}
+          onClick={() => router.push(`/company-pages/student-details/${item.student.id}`)}
+          // onClick={() => handleRespond(item.id, 'accepted')}
+          // disabled={respondToInterviewMtn.isPending}
         >
           Accept
         </button>

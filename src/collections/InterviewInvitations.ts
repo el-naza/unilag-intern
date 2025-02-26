@@ -92,14 +92,14 @@
 // }
 
 
-import type { CollectionConfig, Where, GlobalBeforeChangeHook  } from 'payload'
+import type { CollectionConfig, Where, BeforeChangeHook  } from 'payload'
 import { companies } from '@/access/companies'
 import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
 import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 import { parse } from 'qs-esm'
 
 // Hook to create an employment record when status is updated to 'accepted'
-const createEmploymentOnAcceptance: GlobalBeforeChangeHook = async ({ data, req, originalDoc }) => {
+const createEmploymentOnAcceptance: BeforeChangeHook = async ({ data, req, originalDoc }) => {
   if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
     await req.payload.create({
       collection: 'employments',

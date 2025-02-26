@@ -22,7 +22,7 @@ export default function AwaitingInterview() {
     try {
       const res: any = await fetchDocs('interview-invitations')
       if (res) {
-        console.log(res?.docs)
+        console.log(res)
         // const getDateTime = res.data.docs.filter((s) => s.dateTime)
         // console.log(getDateTime)
         setInternshipApplicants(res?.docs || [])

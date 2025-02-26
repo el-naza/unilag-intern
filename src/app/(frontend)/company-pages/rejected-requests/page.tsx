@@ -2,74 +2,68 @@
 import NavBar from '../../common/nav-bar'
 import hero from '../../assets/images/company-hero-bg.png'
 import invitationImage from '../../assets/images/initation-image.png'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PlusIcon from '../../assets/icons/plus'
 import Table from '../../components/table'
 import BlurBackground from '../../components/Layout/blurBackground'
 import InvitationTabs from '../../components/Ui/tab'
+import { InvitationDetails } from '../internship-request/page'
+import fetchDocs from '@/services/fetchDocs'
+import Loader from '../../components/Layouts/Loader'
 
 export default function RejectedRequest() {
   const [currentPage, setCurrentPage] = useState(1)
 
-  const headers = ['Student Name', 'Application', 'Rejected Date']
+  const headers = ['Student Name', 'Application', 'Date', '']
 
-  const tableData = [
-    {
-      id: 1,
-      name: 'Omkar Lucas',
-      imageUrl: invitationImage.src,
-      application: 'Enclosed are my CV and required documents.',
-      date: '02/03/2023',
-    },
-    {
-      id: 2,
-      name: 'Jane Doe',
-      imageUrl: invitationImage.src,
-      application: 'Submitted all required materials for review.',
-      date: '03/15/2023',
-    },
-    {
-      id: 3,
-      name: 'John Smith',
-      imageUrl: invitationImage.src,
-      application: 'Application includes all necessary documents.',
-      date: '04/10/2023',
-    },
-    {
-      id: 4,
-      name: 'Maria Gonzalez',
-      imageUrl: invitationImage.src,
-      application: 'Attached are my credentials and required forms.',
-      date: '05/22/2023',
-    },
-    {
-      id: 5,
-      name: 'Alex Johnson',
-      imageUrl: invitationImage.src,
-      application: 'Here is my completed application for review.',
-      date: '06/18/2023',
-    },
-  ]
-  const rows = tableData.map((item) => [
-    <div key={`${item.id}-name`} className="flex items-center">
-      <img src={item.imageUrl} alt={item.name} className="w-8 h-8 rounded-full mr-2" />
-      {item.name}
-    </div>,
-    <p key={`${item.id}-application`} className="text-[12px] font-[400]">
-      {item.application}
-    </p>,
-    <p key={`${item.id}-date`} className="text-[12px] font-[400]">
-      {item.date}
-    </p>,
-  ])
+  const [loading, setLoading] = useState<boolean>(true)
 
-  const totalPages = tableData.length
-  const totalItems = 1234
+  const [internReq, setInternReq] = useState<any>([])
+  const [tableData, setTableData] = useState<any>([])
+  const [invitationDetails, setInvitationDetails] = useState<InvitationDetails | null>(null)
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-    console.log('Page changed to:', page)
+  const fetchInternReq = async () => {
+    const res: any = await fetchDocs('interview-invitations')
+    // console.log(res)
+    const getRejected = res?.docs.filter((s: any) => s.status === 'declined')
+    console.log(getRejected)
+    setInternReq(getRejected)
+    setTableData(res)
+    setLoading(false)
   }
+
+  useEffect(() => {
+    fetchInternReq()
+  }, [])
+
+  const rows =
+    internReq &&
+    internReq.map((item) => [
+      <div
+        key={`${item.id}-name`}
+        // onClick={() => handleOpenModal(item.id)}
+        className="flex items-center"
+      >
+        <img
+          src={item.student.imageUrl || '/default-avatar.png'}
+          alt={item.student.firstName}
+          className="w-8 h-8 rounded-full mr-2"
+        />
+        {`${item.student.firstName} ${item.student.lastName}`}
+      </div>,
+      <p
+        key={`${item.id}-application`}
+        className="text-[12px] font-[400] w-[100%] overflow-hidden whitespace-nowrap text-ellipsis"
+      >
+        {item.message}
+      </p>,
+      <p key={`${item.id}-date`} className="text-[12px] font-[400]">
+        {new Date(item.createdAt).toLocaleDateString()}
+      </p>,
+    ])
+
+  const totalPages = tableData?.length
+  const totalItems = 1234
 
   return (
     <div className="pb-[600px]">
@@ -93,16 +87,20 @@ export default function RejectedRequest() {
             <InvitationTabs />
             <BlurBackground>
               <p className="px-4 font-[400] text-[16px]"> Internship Request</p>
-              <div className="mt-[12px]">
-                <Table
-                  headers={headers}
-                  rows={rows}
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  totalItems={totalItems}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+              {loading ? (
+                <Loader height="auto" background="transparent" />
+              ) : (
+                <div className="mt-[12px]">
+                  <Table
+                    headers={headers}
+                    rows={rows}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    // onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
             </BlurBackground>
           </div>
         </div>
