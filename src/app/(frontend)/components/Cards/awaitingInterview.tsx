@@ -42,11 +42,7 @@ export default function AwaitingInterviewCard({ awaitingInterview }: AwaitingInt
 
   return (
     <div>
-      {status && (
-        <h3 className="text-[#48484A] font-[400] text-[16px] mb-[15px]">
-          {isPast ? 'Completed interview' : 'Awaiting interview'}
-        </h3>
-      )}
+     
 
       <div className="border border-[#F1F1F1] rounded-[8px] overflow-hidden lg:max-w-[414px] mb-4 px-[14px] py-[9px]">
         <div className="flex items-center gap-3 mb-[12px]">

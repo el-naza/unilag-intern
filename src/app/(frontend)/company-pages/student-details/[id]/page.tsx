@@ -80,7 +80,7 @@ export default function StudentDetails() {
                 width={0}
                 height={300}
                 // objectFit={'contain'}
-                className="h-[300px] w-full object-cover rounde"
+                className="h-[300px] w-full object-cover rounded"
               />
               <button
                 className="mt-[24px] w-full py-[12px] rounded-[6px] bg-[#0B7077] flex items-center justify-center  gap-[8px] font-[500] text-[16px] text-[#FFFFFF] "
@@ -143,7 +143,7 @@ export default function StudentDetails() {
                         </button>
 
                         <button className="bg-[#DCF4FF] flex items-center justify-center text-[#DCF4FF] hover:bg-[#DCF4FF] hover:text-white transition h-[24px] w-[24px]">
-                          <DownloadIcon />
+                          {/* <DownloadIcon /> */}
                         </button>
                       </div>
                     </div>

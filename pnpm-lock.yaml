@@ -150,7 +150,7 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       payload:
-        specifier: latest
+        specifier: ^3.14.0
         version: 3.14.0(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
       qs-esm:
         specifier: ^7.0.2
