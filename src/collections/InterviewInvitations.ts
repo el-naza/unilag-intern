@@ -1,21 +1,21 @@
-import type { CollectionConfig, Where, BeforeChangeHook  } from 'payload'
+import type { CollectionConfig, Where } from 'payload'
 import { companies } from '@/access/companies'
 import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
 import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 import { parse } from 'qs-esm'
 
 // Hook to create an employment record when status is updated to 'accepted'
-const createEmploymentOnAcceptance: BeforeChangeHook = async ({ data, req, originalDoc }) => {
-  if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
-    await req.payload.create({
-      collection: 'employments',
-      data: {
-        student: originalDoc.student,
-        company: originalDoc.company,
-      },
-    })
-  }
-}
+// const createEmploymentOnAcceptance: BeforeChangeHook = async ({ data, req, originalDoc }) => {
+//   if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
+//     await req.payload.create({
+//       collection: 'employments',
+//       data: {
+//         student: originalDoc.student,
+//         company: originalDoc.company,
+//       },
+//     })
+//   }
+// }
 
 export const InterviewInvitations: CollectionConfig = {
   slug: 'interview-invitations',
@@ -60,7 +60,19 @@ export const InterviewInvitations: CollectionConfig = {
     },
   ],
   hooks: {
-    beforeChange: [createEmploymentOnAcceptance],
+    beforeChange: [
+      ({ data, req, originalDoc }) => {
+        if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
+          req.payload.create({
+            collection: 'employments',
+            data: {
+              student: originalDoc.student,
+              company: originalDoc.company,
+            },
+          })
+        }
+      },
+    ],
   },
   endpoints: [
     {
