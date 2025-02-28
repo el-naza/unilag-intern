@@ -210,7 +210,7 @@ export default function CompanyHomePage() {
               </div>
             </div>
           </AppDropDown>
-          <div className="flex items-center gap-2 overflow-x-scroll max-w-[550px] border" >
+          <div className="flex items-center gap-2 overflow-x-scroll max-w-[550px]">
             {[
               ...selectedCategoryOptions,
               ...selectedFacultyOptions,
@@ -341,6 +341,16 @@ export default function CompanyHomePage() {
                           styles={getCustomStyles()}
                         />
                       </div>
+                    </div>
+
+                    <div className='lg:flex items-center justify-between '>
+                      <button className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-transparent text-[#0B7077]">
+                        Clear
+                      </button>
+                      <button className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-[#0B7077] text-white">
+                        {' '}
+                        Result
+                      </button>
                     </div>
                   </div>
                 </div>
