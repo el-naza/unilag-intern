@@ -171,7 +171,7 @@ export default function InternshipRequest() {
                 </div>
               )}
             </BlurBackground>
-          </div>
+           </div>
         </div>
       </div>
 
