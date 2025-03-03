@@ -23,6 +23,7 @@ export interface Config {
     'internship-applications': InternshipApplication;
     employments: Employment;
     reports: Report;
+    internships: Internship;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -38,6 +39,7 @@ export interface Config {
     'internship-applications': InternshipApplicationsSelect<false> | InternshipApplicationsSelect<true>;
     employments: EmploymentsSelect<false> | EmploymentsSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
+    internships: InternshipsSelect<false> | InternshipsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -318,6 +320,25 @@ export interface Report {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internships".
+ */
+export interface Internship {
+  id: string;
+  company: string | Company;
+  postDescription: string;
+  jobDescription: string;
+  location?: 'Lagos' | null;
+  applicants?: (string | Student)[] | null;
+  deadline?: string | null;
+  startDate: string;
+  endDate: string;
+  picture?: (string | null) | Media;
+  status?: ('open' | 'closed') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -358,6 +379,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reports';
         value: string | Report;
+      } | null)
+    | ({
+        relationTo: 'internships';
+        value: string | Internship;
       } | null);
   globalSlug?: string | null;
   user:
@@ -592,6 +617,24 @@ export interface ReportsSelect<T extends boolean = true> {
   student?: T;
   title?: T;
   details?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internships_select".
+ */
+export interface InternshipsSelect<T extends boolean = true> {
+  company?: T;
+  postDescription?: T;
+  jobDescription?: T;
+  location?: T;
+  applicants?: T;
+  deadline?: T;
+  startDate?: T;
+  endDate?: T;
+  picture?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

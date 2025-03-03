@@ -54,7 +54,6 @@ function FormError({ form }: { form: FormApi<any, any> }) {
 }
 
 export default function OTPConfirmation() {
-  const goBack = () => {}
 
   const router = useRouter()
 
@@ -118,18 +117,14 @@ export default function OTPConfirmation() {
   return (
     <div className="">
       <button
-        onClick={goBack}
+        onClick={() => router.back()}
         className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
       >
         <ArrowIcon /> Back
       </button>
       <h2 className="font-[500] text-[24px] text-center mt-[40px]">Sign up as a Siwes Company'</h2>
       <p className="text-center text-gray-dark-2 font-[400] text-[14px] mt-8 mb-[40px]">
-        {/* {success
-          ? 'Complete this email address ex…………56@gmail.com and we’ll send you an OTP for confirmation.' */}
-        {/* : ' */}
-        Enter your company name to proceed with the login process
-        {/* '} */}
+        Enter your company information to proceed
       </p>
 
       <form
@@ -314,9 +309,14 @@ export default function OTPConfirmation() {
 
       <p className="font-[400] text-[12px] text-gray-dark-2 leading-[16px] mt-[12px] text-cente r">
         Already have an account ?
-        <span className="text-[#007AFF] cursor-pointer"> login as a company</span>
+        <span
+          className="text-[#007AFF] cursor-pointer"
+          onClick={() => router.push('/company-auth/login')}
+        >
+          {' '}
+          login as a company
+        </span>
       </p>
-      {/* )} */}
     </div>
   )
 }

@@ -12,6 +12,7 @@ import { Media } from './collections/Media'
 import { Students } from './collections/Students'
 import { getServerSideURL } from './utilities/getURL'
 import { Companies } from './collections/Companies'
+import { Internships } from './collections/Companies/Internships'
 import { Admins } from './collections/Admins'
 import { InterviewInvitations } from './collections/InterviewInvitations'
 import { DepartmentalCoordinators } from './collections/DepartmentalCoordinators'
@@ -37,6 +38,7 @@ export default buildConfig({
     InternshipApplications,
     Employments,
     Reports,
+    Internships
   ],
   cors: [getServerSideURL()].filter(Boolean),
   // email: nodemailerAdapter({

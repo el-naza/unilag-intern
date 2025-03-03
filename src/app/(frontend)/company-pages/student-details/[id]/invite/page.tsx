@@ -47,7 +47,9 @@ export default function StudentInvitation() {
   const sendInvitationMtn = useMutation({
     mutationFn: async (invitation: InterviewInvitation) => {
       try {
+        console.log('payload ' + invitation)
         const res = await saveDoc('interview-invitations', invitation)
+        console.log('res ' + res)
         if (!res) return toast.error('Network error; please try again later')
         return res
       } catch {
@@ -91,6 +93,8 @@ export default function StudentInvitation() {
             fields: emptyRequiredFields,
           }
         }
+
+        console.log(value)
 
         const res = await sendInvitationMtn.mutateAsync(value)
         if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
@@ -158,7 +162,7 @@ export default function StudentInvitation() {
                       size="lg"
                       className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px]"
                     >
-                      Send Application {isSubmitting && <Spinner />}
+                      <MailIcon fill="#FFFFFF" /> Send Application {isSubmitting && <Spinner />}
                     </Button>
                     <FormError form={form} />
                   </>
