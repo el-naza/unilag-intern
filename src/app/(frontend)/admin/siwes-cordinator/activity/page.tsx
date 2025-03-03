@@ -138,7 +138,7 @@ export default function ReportPage() {
   }
 
   const [query, setQuery] = useState('')
-  const [searchFilter, setSearchFilter] = React.useState<'user' | 'activity'>('user')
+  const [searchFilter, setSearchFilter] = React.useState<'user' | 'activity'>()
   const debouncedQuery = useDebounce(query)
 
   useEffect(() => {
@@ -160,7 +160,6 @@ export default function ReportPage() {
         <div></div>
         <div className="flex gap-4 items-center">
           <Select
-            value={searchFilter}
             onValueChange={(value) => setSearchFilter(value as 'user' | 'activity')}
           >
             <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">

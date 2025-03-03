@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import { Edit2, EllipsisVertical, ListFilter, Plus, Share } from 'lucide-react'
 import {
@@ -35,6 +35,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import Pagination from '../../_components/pagination'
+import { getAllReports } from '@/services/admin/reports'
 
 type Report = {
   companyName: string
@@ -43,16 +44,6 @@ type Report = {
   reportMessage: string
   reportDate: string
 }
-
-const defaultReportData: Report[] = [
-  {
-    companyName: 'Facebook',
-    reportNumber: '0012',
-    studentName: 'Mark',
-    reportMessage: 'Doing well',
-    reportDate: '02/03/2025',
-  },
-]
 
 type EmployedStudent = {
   name: string
@@ -89,7 +80,7 @@ export default function HomePage() {
     { month: 'September', desktop: 120 },
     { month: 'October', desktop: 201 },
     { month: 'November', desktop: 112 },
-    { month: 'December', desktop: 200 }
+    { month: 'December', desktop: 200 },
   ]
 
   const chartConfig = {
@@ -104,14 +95,30 @@ export default function HomePage() {
   } satisfies ChartConfig
 
   // Report Table Configurations
-  const [reportData, setReportData] = useState(() => defaultReportData)
-  const [reportPage, setReportPage] = useState(1)
-  const [reportPageSize, setReportPageSize] = useState(10)
+  const [reportLoading, setReportLoading] = useState<boolean>(true)
+  const [reportData, setReportData] = useState<Report[]>([])
+  const [reportPage, setReportPage] = useState(0)
+  const [reportPageSize, setReportPageSize] = useState(0)
   const [reportTotal, setReportTotal] = useState(0)
-  const [reportPagination, setReportPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [reportHasNext, setReportHasNext] = useState(false)
+  const [reportHasPrevious, setReportHasPrevious] = useState(false)
+
+  const fetchReports = async (params?: string) => {
+    const res: any = await getAllReports('reports', params)
+    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    setReportData(docs)
+    setReportPage(page)
+    setReportPageSize(totalPages)
+    setReportHasNext(hasNextPage)
+    setReportHasPrevious(hasPrevPage)
+    setReportTotal(totalDocs)
+
+    setReportLoading(false)
+  }
+
+  useEffect(() => {
+    fetchReports()
+  }, [])
 
   const reportColumns = useMemo(
     () => [
@@ -148,25 +155,39 @@ export default function HomePage() {
     columns: reportColumns,
     data: reportData,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setReportPagination,
-    state: {
-      pagination: reportPagination,
-    },
   })
 
-  const reportPaginationProps = { reportPage, reportPageSize, reportTotal }
-
-  const reportNextPage = () => {
-    console.log('Next Page')
+  const reportPaginationProps = {
+    page: reportPage,
+    pageSize: reportPageSize,
+    total: reportTotal,
+    hasNext: reportHasNext,
+    hasPrevious: reportHasPrevious,
   }
 
-  const reportPreviousPage = () => {
-    console.log('Previous Page')
+  const reportNextPage = (page: number) => {
+    setReportLoading(true)
+    fetchReports(`page=${page}`)
+  }
+
+  const reportPreviousPage = (page: number) => {
+    setReportLoading(true)
+    fetchReports(`page=${page}`)
   }
 
   // Employed  Table Configurations
-  const [employedData, setEmployedData] = useState(() => defaultEmployedStudentData)
+  const [employedData, setEmployedData] = useState<EmployedStudent[]>([])
+
+  const fetchEmployedStudent = async () => {
+    const recentParams = new URLSearchParams({ sort: new Date().toISOString() }).toString()
+    const res: any = await getAllReports('employments', recentParams)
+    const { docs } = res.data
+    setEmployedData(docs)
+  }
+
+  useEffect(() => {
+    fetchEmployedStudent()
+  }, [])
 
   const employedColumns = useMemo(
     () => [
@@ -191,7 +212,7 @@ export default function HomePage() {
   })
 
   return (
-    <div className='p-8'>
+    <div className="p-8">
       <FIlterStats config={config} />
 
       <div className="grid grid-cols-12 gap-4 mt-8">
@@ -334,9 +355,7 @@ export default function HomePage() {
         </Table>
 
         <Pagination
-          page={reportPaginationProps.reportPage}
-          pageSize={reportPaginationProps.reportPageSize}
-          total={reportPaginationProps.reportTotal}
+          {...reportPaginationProps}
           onEmitNextPage={reportNextPage}
           onEmitPreviousPage={reportPreviousPage}
         />

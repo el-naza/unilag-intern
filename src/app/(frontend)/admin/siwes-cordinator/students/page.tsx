@@ -169,7 +169,7 @@ export default function StudentPage() {
   const [query, setQuery] = useState('')
   const [searchFilter, setSearchFilter] = React.useState<
     'student-name' | 'course' | 'matric-number'
-  >('student-name')
+  >()
   const debouncedQuery = useDebounce(query)
 
   useEffect(() => {
@@ -223,7 +223,7 @@ export default function StudentPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <Select value={searchFilter} onValueChange={(value) => setSearchFilter(value as 'student-name' | 'course' | 'matric-number')}>
+          <Select onValueChange={(value) => setSearchFilter(value as 'student-name' | 'course' | 'matric-number')}>
             <SelectTrigger className='border-[1px] border-gray-light-2 bg-white w-[180px]'>
               <SelectValue placeholder="Filter" />
             </SelectTrigger>

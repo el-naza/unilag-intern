@@ -67,15 +67,14 @@ export default function ReportPage() {
     setTotal(totalDocs)
 
     setConfig((prevConfig) => {
-      if (prevConfig.stats[0].count === totalDocs) return prevConfig; // Prevent unnecessary re-renders
+      if (prevConfig.stats[0].count === totalDocs) return prevConfig
       return {
         ...prevConfig,
         stats: prevConfig.stats.map((stat, index) =>
           index === 0 ? { ...stat, count: totalDocs } : stat,
         ),
-      };
-    });
-    
+      }
+    })
 
     setLoading(false)
   }
@@ -134,7 +133,7 @@ export default function ReportPage() {
   }
 
   const [query, setQuery] = useState('')
-  const [searchFilter, setSearchFilter] = React.useState<'company' | 'report-number'>('company')
+  const [searchFilter, setSearchFilter] = React.useState<'company' | 'report-number'>()
   const debouncedQuery = useDebounce(query)
 
   useEffect(() => {
@@ -159,7 +158,6 @@ export default function ReportPage() {
 
         <div className="flex gap-4 items-center">
           <Select
-            value={searchFilter}
             onValueChange={(value) => setSearchFilter(value as 'company' | 'report-number')}
           >
             <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">

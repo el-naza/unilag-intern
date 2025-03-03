@@ -148,9 +148,7 @@ export default function DepartmentalAdminsPage() {
   }
 
   const [query, setQuery] = useState('')
-  const [searchFilter, setSearchFilter] = React.useState<'name' | 'department' | 'email' | 'phone'>(
-    'name',
-  )
+  const [searchFilter, setSearchFilter] = React.useState<'name' | 'department' | 'email' | 'phone'>()
   const debouncedQuery = useDebounce(query)
 
   useEffect(() => {
@@ -178,7 +176,6 @@ export default function DepartmentalAdminsPage() {
         <div></div>
         <div className="flex gap-4 items-center">
           <Select
-            value={searchFilter}
             onValueChange={(value) =>
               setSearchFilter(value as 'name' | 'department' | 'email' | 'phone')
             }

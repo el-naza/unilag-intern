@@ -159,7 +159,7 @@ export default function CompaniesPage() {
   }
 
   const [query, setQuery] = useState('')
-  const [searchFilter, setSearchFilter] = React.useState<'name' | 'cac' | 'email' | 'phone'>('name')
+  const [searchFilter, setSearchFilter] = React.useState<'name' | 'cac' | 'email' | 'phone'>()
   const debouncedQuery = useDebounce(query)
 
   useEffect(() => {
@@ -215,7 +215,7 @@ export default function CompaniesPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <Select value={searchFilter} onValueChange={(value) => setSearchFilter(value as 'name' | 'cac' | 'email')}>
+          <Select onValueChange={(value) => setSearchFilter(value as 'name' | 'cac' | 'email')}>
             <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">
               <SelectValue placeholder="Filter" />
             </SelectTrigger>
