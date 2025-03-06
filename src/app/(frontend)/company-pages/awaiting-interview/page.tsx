@@ -46,8 +46,7 @@ export default function AwaitingInterview() {
         console.log('Updating interview invitation:', { id, status })
 
         const res = await updateDoc('interview-invitations', id, { status })
-
-        console.log('Response:', res)
+       
         if (!res) return toast.error('Network error; please try again later')
 
         return res

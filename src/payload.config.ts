@@ -23,6 +23,8 @@ import { Reports } from './collections/Reports'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+console.log('s3 region', process.env.S3_REGION)
+
 export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
@@ -38,7 +40,7 @@ export default buildConfig({
     InternshipApplications,
     Employments,
     Reports,
-    Internships
+    Internships,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   // email: nodemailerAdapter({

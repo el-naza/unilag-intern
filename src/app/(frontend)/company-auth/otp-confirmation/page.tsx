@@ -16,6 +16,8 @@ import FieldError from '@/components/FieldError'
 import FormError from '@/components/FormError'
 import { Button } from '@/components/ui/button'
 import verifyCompanyOTP from '@/services/company/verifyCompanyOTP'
+import useSendCompanyOtpMtn from '../forgot-password/useSendCompanyOtpMtn'
+import Link from 'next/link'
 
 export default function OTPConfirmation() {
   const router = useRouter()
@@ -24,6 +26,24 @@ export default function OTPConfirmation() {
   // useEffect(() => {
   //   if (!authState.email) router.replace('/auth/forgot-password')
   // }, [])
+  const sendOtpMtn = useSendCompanyOtpMtn()
+
+  const handleResendOTP = async ({ email }) => {
+    const error = await sendOtpMtn.mutateAsync(email)
+    if (error) {
+      return {
+        form: error!,
+        fields: {},
+      }
+    }
+
+    // success here so naviagate or toast to success !!
+
+    toast.success('OTP sent successfully')
+    router.push('/company-auth/otp-confirmation')
+
+    return null
+  }
 
   const verifyOtpMtn = useMutation({
     mutationFn: async (otp: string) => {
@@ -94,7 +114,7 @@ export default function OTPConfirmation() {
   return (
     <div className="">
       <button
-        onClick={()=>router.back()}
+        onClick={() => router.back()}
         className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
       >
         <ArrowIcon /> Back
@@ -140,6 +160,10 @@ export default function OTPConfirmation() {
           }}
         />
 
+        <span className='cursor-pointer ' onClick={() => router.push('/company-auth/forgot-password')}>
+          Resend
+        </span>
+
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <>
@@ -151,8 +175,6 @@ export default function OTPConfirmation() {
           )}
         </form.Subscribe>
       </form>
-
-      
     </div>
   )
 }
