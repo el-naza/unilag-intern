@@ -21,7 +21,7 @@ export default {
         xl: '2rem',
       },
       screens: {
-        '2xl': '86rem',
+        '2xl': '96rem',
         lg: '64rem',
         md: '48rem',
         sm: '40rem',

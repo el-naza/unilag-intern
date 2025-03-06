@@ -258,140 +258,144 @@ const Page = () => {
               className="absolute top-[-50px] right-0 z-0"
             />
 
-            <div className="container">
-              <nav className="relative grid grid-cols-5 gap-2 py-4 z-10">
-                <div className="flex items-center">
-                  <Image
-                    width={48}
-                    height={48}
-                    src="/unilag-logo.png"
-                    alt="Logo"
-                    className="h-8 w-8 mr-2"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <span onClick={() => signOut()} className="font-oleo text-white text-3xl">
-                    Welcome {user?.firstName}
-                  </span>
-                </div>
-                <div className="col-span-2 flex items-center">
-                  <div className="relative w-3/4">
-                    <input
-                      type="text"
-                      placeholder="Search For Companies"
-                      className="w-full outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-black text-sm"
+            <div>
+              <div className="container">
+                <nav className="relative grid grid-cols-5 gap-2 py-4 z-10">
+                  <div className="flex items-center">
+                    <Image
+                      width={48}
+                      height={48}
+                      src="/unilag-logo.png"
+                      alt="Logo"
+                      className="h-8 w-8 mr-2"
                     />
-                    <SearchAltIcon className='className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"' />
-                  </div>
-                </div>
-                <div className="grid grid-cols-3">
-                  <div className="flex items-center">
-                    <div className="cursor-pointer hover:bg-black p-2 rounded">
-                      <FilterAltIcon />
-                    </div>
                   </div>
                   <div className="flex items-center">
-                    <div className="cursor-pointer hover:bg-black p-2 rounded">
-                      <NotificationBellIcon />
+                    <span onClick={() => signOut()} className="font-oleo text-white text-3xl">
+                      Welcome {user?.firstName}
+                    </span>
+                  </div>
+                  <div className="col-span-2 flex items-center">
+                    <div className="relative w-3/4">
+                      <input
+                        type="text"
+                        placeholder="Search For Companies"
+                        className="w-full outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-black text-sm"
+                      />
+                      <SearchAltIcon className='className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"' />
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <div className="cursor-pointer hover:bg-black p-2 rounded">
-                      <MenuIcon />
-                    </div>
-                  </div>
-                </div>
-              </nav>
-              <main className="py-4">
-                <div className="grid sm:grid-cols-2 mb-4">
-                  <div>
-                    <div className="grid sm:grid-cols-3 gap-8">
-                      <div>
-                        <Image
-                          width={197}
-                          height={235}
-                          src="/smiling-woman.png"
-                          alt="smiling woman"
-                        />
+                  <div className="grid grid-cols-3">
+                    <div className="flex items-center">
+                      <div className="cursor-pointer hover:bg-black p-2 rounded">
+                        <FilterAltIcon />
                       </div>
-                      <div className="col-span-2 flex items-center">
-                        <div className="grid grid-rows-4 gap-1">
-                          <div>
-                            <span className="text-3xl font-bold">
-                              {user?.firstName}{' '}
-                              <span className="text-[#FFE75C]">{user?.lastName}</span>
-                            </span>
-                            <span className="ms-4 text-[#FFE75C]">{getAge(user?.dob)}</span>
-                          </div>
-                          <div className="flex justify-between">
+                    </div>
+                    <div className="flex items-center">
+                      <div className="cursor-pointer hover:bg-black p-2 rounded">
+                        <NotificationBellIcon />
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="cursor-pointer hover:bg-black p-2 rounded">
+                        <MenuIcon />
+                      </div>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+              <main>
+                <div className="container">
+                  <div className="grid sm:grid-cols-2 mb-4">
+                    <div>
+                      <div className="grid sm:grid-cols-3 gap-8">
+                        <div>
+                          <Image
+                            width={197}
+                            height={235}
+                            src="/smiling-woman.png"
+                            alt="smiling woman"
+                          />
+                        </div>
+                        <div className="col-span-2 flex items-center">
+                          <div className="grid grid-rows-4 gap-1">
                             <div>
-                              <span className="">unilag {user?.level}</span>
+                              <span className="text-3xl font-bold">
+                                {user?.firstName}{' '}
+                                <span className="text-[#FFE75C]">{user?.lastName}</span>
+                              </span>
+                              <span className="ms-4 text-[#FFE75C]">{getAge(user?.dob)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <div>
+                                <span className="">unilag {user?.level}</span>
+                              </div>
+                              <div>
+                                <span className="">{user?.course}</span>
+                              </div>
                             </div>
                             <div>
-                              <span className="">{user?.course}</span>
+                              <span>{user?.homeAddress}</span>
                             </div>
-                          </div>
-                          <div>
-                            <span>{user?.homeAddress}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
-                              <span>0 Duration</span>
-                            </div>
-                            <div className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl">
-                              <span>Upgrade</span>
+                            <div className="flex gap-2">
+                              <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
+                                <span>0 Duration</span>
+                              </div>
+                              <div className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl">
+                                <span>Upgrade</span>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="grid sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-4">
-                  <div className="col-span-4 self-center">
-                    <div className="grid grid-cols-4 gap-4">
-                      <div>
-                        <Link href="#" className="relative group block text-center">
-                          <span className="text-xl">Map Search</span>
-                          <NavUnderlineLarge />
-                        </Link>
-                      </div>
-                      <div>
-                        <Link
-                          href="/student/applications/pending"
-                          className="relative group block text-center"
-                        >
-                          <span className="text-xl">Pending</span>
-                          <NavUnderlineLarge />
-                        </Link>
-                      </div>
-                      <div>
-                        <Link
-                          href="/student/applications/approved"
-                          className="relative group block text-center"
-                        >
-                          <span className="text-xl">Approved</span>
-                          <NavUnderlineLarge />
-                        </Link>
-                      </div>
-                      <div>
-                        <Link href="/student" className="relative group block text-center">
-                          <span className="text-xl">History</span>
-                          <NavUnderlineLarge />
-                        </Link>
+                  <div className="grid sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-0">
+                    <div className="col-span-4 self-center">
+                      <div className="grid grid-cols-4 gap-4">
+                        <div>
+                          <Link href="#" className="relative group block text-center">
+                            <span className="text-xl">Map Search</span>
+                            <NavUnderlineLarge />
+                          </Link>
+                        </div>
+                        <div>
+                          <Link
+                            href="/student/applications/pending"
+                            className="relative group block text-center"
+                          >
+                            <span className="text-xl">Pending</span>
+                            <NavUnderlineLarge />
+                          </Link>
+                        </div>
+                        <div>
+                          <Link
+                            href="/student/applications/approved"
+                            className="relative group block text-center"
+                          >
+                            <span className="text-xl">Approved</span>
+                            <NavUnderlineLarge />
+                          </Link>
+                        </div>
+                        <div>
+                          <Link href="/student" className="relative group block text-center">
+                            <span className="text-xl">History</span>
+                            <NavUnderlineLarge />
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="z-10">
-                    <Link href="/student/reports/create">
-                      <button className="text-[#0B7077] bg-white rounded px-4 py-2">
-                        Report Page
-                      </button>
-                    </Link>
+                    <div className="z-10">
+                      <Link href="/student/reports/create">
+                        <button className="text-[#0B7077] bg-white rounded px-4 py-2">
+                          Report Page
+                        </button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-5 gap-4">
-                  <form
+                  {/* <form
                     onSubmit={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
@@ -473,9 +477,93 @@ const Page = () => {
                         </form.Subscribe>
                       </div>
                     </div>
-                  </form>
-                  <div className="col-span-4">
-                    <div className="w-full h-[480px]">
+                  </form> */}
+                  <div className="col-span-5">
+                    <div className="w-full bg-white text-black py-4 px-8 grid grid-cols-3 gap-2">
+                      <div className="flex self-center">
+                        <h3 className="text-lg">Company Search</h3>
+                      </div>
+                      <div className="col-span-2">
+                        <form
+                        // onSubmit={(e) => {
+                        //   e.preventDefault()
+                        //   e.stopPropagation()
+                        //   form.handleSubmit()
+                        // }}
+                        >
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="relative border rounded">
+                              <form.Field name="name">
+                                {(field) => {
+                                  return (
+                                    <>
+                                      <div className="relative">
+                                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                                        <input
+                                          name={field.name}
+                                          value={field.state.value || ''}
+                                          onBlur={field.handleBlur}
+                                          onChange={(e) => {
+                                            field.handleChange(e.target.value)
+                                            form.handleSubmit()
+                                          }}
+                                          placeholder="Search Job"
+                                          className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                                        />
+                                      </div>
+                                      <div className="indent-7">
+                                        <FieldError field={field} />
+                                      </div>
+                                    </>
+                                  )
+                                }}
+                              </form.Field>
+                            </div>
+
+                            <div className="relative border rounded">
+                              <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">
+                                <LocationIcon className="m-auto" />
+                              </div>
+                              <form.Field name="address">
+                                {(field) => {
+                                  return (
+                                    <>
+                                      <input
+                                        name={field.name}
+                                        value={field.state.value || ''}
+                                        onBlur={field.handleBlur}
+                                        onChange={(e) => {
+                                          field.handleChange(e.target.value)
+                                          form.handleSubmit()
+                                        }}
+                                        placeholder="Location"
+                                        className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                                      />
+                                      <FieldError field={field} />
+                                    </>
+                                  )
+                                }}
+                              </form.Field>
+                            </div>
+                            <div className="bg-white rounded-xl grid grid-cols-12">
+                              <Slider
+                                className="col-span-9"
+                                value={distance}
+                                onValueChange={setDistance}
+                                max={100}
+                                step={1}
+                              />
+                              <div className="col-span-3 flex self-center">
+                                <span className="text-sm border text-black text-right p-2 ms-2 rounded">
+                                  {distance}km
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div className="w-full h-[740px]">
                       <Map companies={searchedCompanies} />
                     </div>
                   </div>
