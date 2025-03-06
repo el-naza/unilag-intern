@@ -28,7 +28,7 @@ export const Companies: CollectionConfig = {
   slug: 'companies',
   access: {
     create: anyone,
-    delete: anyone,
+    delete: self,
     read: anyone,
     update: anyone,
   },

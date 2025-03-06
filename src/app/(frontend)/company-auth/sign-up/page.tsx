@@ -108,6 +108,15 @@ export default function OTPConfirmation() {
           }
         }
 
+        if (!(res as any)?.success) {
+          toast.error('An error occured while signing up; pls try again later')
+          return {
+            form: 'An error occured while signing up; pls try again later',
+          }
+        }
+
+        console.log('sign up res', res)
+
         console.log('user created obj  ' + userCreationObj.email)
 
         const signInRes = await signInUserClient({
@@ -115,17 +124,17 @@ export default function OTPConfirmation() {
           password: userCreationObj.password,
           col: 'companies',
         })
-        
-          // .then((res) => {
-          //   const data = JSON.stringify(res)
-          //   console.log('data ' + data)
-          //   console.log('response ' + res)
-          //   return res
-          // })
-          // .catch((e) => {
-          //   console.log('err', e)
-          //   return e
-          // })
+
+        // .then((res) => {
+        //   const data = JSON.stringify(res)
+        //   console.log('data ' + data)
+        //   console.log('response ' + res)
+        //   return res
+        // })
+        // .catch((e) => {
+        //   console.log('err', e)
+        //   return e
+        // })
 
         console.log('signInRes ' + signInRes)
         // success here so naviagate or toast to success

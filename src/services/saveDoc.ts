@@ -11,22 +11,24 @@ export default async function saveDoc<T>(
   col: CollectionSlug,
   data: T,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  // console.log('save doc', col, data)
   return await axiosInstance
     .post(`/api/${col}`, data, {
       headers: {
         Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },
     })
-    .catch((error: AxiosError) => {
-      if (error.response)
-        return {
-          status: error.response.status,
-          data: error.response.data as ErrorResponse,
-        }
-    })
     .then((res) => ({
       success: true,
       status: res?.status,
       data: res?.data,
     }))
+    .catch((error: AxiosError) => {
+      console.error('save doc err', error?.response?.data)
+      if (error.response)
+        return {
+          status: error.response.status,
+          ...(error.response.data as ErrorResponse),
+        }
+    })
 }
