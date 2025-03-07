@@ -1,7 +1,6 @@
 'use client'
 
 import { Slider } from '@/components/ui/slider'
-import { useRouter } from 'next/navigation'
 import React, { useEffect, useMemo, useState } from 'react'
 import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNavbar'
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
@@ -16,7 +15,6 @@ import SearchAltIcon from '../assets/icons/searchAltIcon'
 import MenuIcon from '../assets/icons/menu'
 import NotificationBellIcon from '../assets/icons/notificationBell'
 import FilterAltIcon from '../assets/icons/filterAltIcon'
-import CompanyRecommendedCard from '../components/Cards/CompanyRecommendedCard'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import getAge from '@/utilities/getAge'
@@ -24,10 +22,9 @@ import fetchDocs from '@/services/fetchDocs'
 import Loader from '../components/Layouts/Loader'
 import dynamic from 'next/dynamic'
 import { ValidationErrors } from '@/utilities/types'
-import { Field, ValidationFieldError } from 'payload'
+import { ValidationFieldError } from 'payload'
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
-import { Companies } from '@/collections/Companies'
 import { Company } from '@/payload-types'
 import searchJobs from '@/services/searchJobs'
 import { toast } from 'sonner'
@@ -35,17 +32,28 @@ import FieldError from '@/components/FieldError'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
+import courseAreas from '@/utilities/courseAreas'
+import CompanyCard from '../components/Cards/CompanyCard'
 
 const Page = () => {
-  const router = useRouter()
   const { data: session } = useSession()
 
   const [loading, setLoading] = useState<boolean>(true)
   const [companies, setCompanies] = useState<any[]>([])
   const [searchedCompanies, setSearchedCompanies] = useState<any[]>([])
   const [distance, setDistance] = useState<number[]>([20])
+  const [filter, setFilter] = useState<{ careerArea: string }>({ careerArea: '' })
+  const [page, setPage] = useState<number>(1)
 
   const user = useMemo<any>(() => session?.user, [session])
+
+  const filteredCompanies = useMemo<any[]>(
+    () =>
+      searchedCompanies.filter((company) => {
+        return filter.careerArea ? company.courseAreas.includes(filter.careerArea) : true
+      }),
+    [searchedCompanies, filter],
+  )
 
   const Map = useMemo(
     () =>
@@ -55,6 +63,11 @@ const Page = () => {
       }),
     [],
   )
+
+  const handleCourseAreaChange = (courseArea: string) => {
+    setPage(1)
+    setFilter({ careerArea: courseArea })
+  }
 
   const fetchCompanies = async () => {
     const res: any = await fetchDocs('companies')
@@ -70,6 +83,8 @@ const Page = () => {
           ...(company.address ? { address: company.address } : {}),
         })
         console.log('res', res)
+        setPage(1)
+        setFilter({ careerArea: '' })
         return res
       } catch {
         toast.error('An error occured while fetching jobs; pls try again later')
@@ -563,8 +578,61 @@ const Page = () => {
                         </form>
                       </div>
                     </div>
-                    <div className="w-full h-[740px]">
-                      <Map companies={searchedCompanies} />
+                    <div className="flex flex-wrap">
+                      {searchedCompanies.length ? (
+                        <div className="w-1/4 bg-white text-black p-4 relative mt-[-70px]">
+                          <div className="mb-4">
+                            <div className="flex justify-between self-center mb-4">
+                              <h3 className="text-lg">Search Results</h3>
+                            </div>
+                            <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide">
+                              <div
+                                onClick={() => handleCourseAreaChange('')}
+                                className={`${filter.careerArea === '' ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
+                              >
+                                All Career Area
+                              </div>
+                              {courseAreas.map((courseArea) => (
+                                <div
+                                  onClick={() => handleCourseAreaChange(courseArea)}
+                                  key={courseArea}
+                                  className={`${filter.careerArea === courseArea ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
+                                >
+                                  {courseArea}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div
+                            className={`h-[660px] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
+                          >
+                            {filteredCompanies.map((company, companyIndex) => (
+                              <CompanyCard key={`company-${companyIndex}`} company={company} />
+                            ))}
+                            {filteredCompanies.map((company, companyIndex) => (
+                              <CompanyCard key={`company-${companyIndex}`} company={company} />
+                            ))}
+                            {filteredCompanies.map((company, companyIndex) => (
+                              <CompanyCard key={`company-${companyIndex}`} company={company} />
+                            ))}
+                            {filteredCompanies.map((company, companyIndex) => (
+                              <CompanyCard key={`company-${companyIndex}`} company={company} />
+                            ))}
+                            {filteredCompanies.map((company, companyIndex) => (
+                              <CompanyCard key={`company-${companyIndex}`} company={company} />
+                            ))}
+                            {filteredCompanies.map((company, companyIndex) => (
+                              <CompanyCard key={`company-${companyIndex}`} company={company} />
+                            ))}
+                            {filteredCompanies.map((company, companyIndex) => (
+                              <CompanyCard key={`company-${companyIndex}`} company={company} />
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+                      <div className={`h-[740px] ${searchedCompanies.length ? 'w-3/4' : 'w-full'}`}>
+                        <Map companies={filteredCompanies} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -589,26 +657,19 @@ const Page = () => {
                   <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
                     All Programmes
                   </div>
-                  <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
-                    Science
-                  </div>
-                  <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
-                    Engineering
-                  </div>
-                  <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
-                    Business
-                  </div>
-                  <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
-                    Art
-                  </div>
-                  <div className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs">
-                    Medicine
-                  </div>
+                  {courseAreas.map((courseArea) => (
+                    <div
+                      key={courseArea}
+                      className="cursor-pointer transition text-center rounded-lg p-2 border-2 border-[#818C96] text-[#818C96] hover:border-[#195F7E] hover:bg-[#195F7E] hover:text-white text-xs"
+                    >
+                      {courseArea}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="grid lg:grid-cols-4 gap-5">
                 {companies.map((company) => (
-                  <CompanyRecommendedCard key={company.id} company={company} />
+                  <CompanyCard key={company.id} company={company} />
                 ))}
               </div>
             </div>

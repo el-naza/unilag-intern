@@ -12,6 +12,7 @@ import * as otpGenerator from 'otp-generator'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
+import courseAreas from '@/utilities/courseAreas'
 
 const PreLogin = z.object({
   email: z.string().email(),
@@ -271,7 +272,7 @@ export const Companies: CollectionConfig = {
     {
       name: 'courseAreas',
       type: 'select',
-      options: ['Mathematics', 'Science', 'History', 'Engineering', 'Arts'],
+      options: courseAreas,
       hasMany: true,
       required: true,
     },
