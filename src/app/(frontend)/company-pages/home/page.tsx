@@ -1,6 +1,5 @@
 'use client'
 import hero from '../../assets/images/company-hero-bg.png'
-import studentImage from '../../assets/images/student-img.png'
 import { useEffect, useState } from 'react'
 import NavBar from '../../common/nav-bar'
 import StudentProfileCard from '../../components/Cards/studentProfileCard'
@@ -10,6 +9,10 @@ import FilterIcon from '../../assets/icons/filter'
 import AppDropDown from '../../components/Dropdown'
 import Select from 'react-select'
 import FilterListIcon from '../../assets/icons/filterList'
+import searchStudents from '@/services/searchStudents'
+import { Student } from '@/payload-types'
+import { Button } from '@/components/ui/button'
+import Spinner from '@/components/spinner'
 
 type Option = { value: string | number; label: string }
 
@@ -18,17 +21,19 @@ export default function CompanyHomePage() {
   const [selected, setSelected] = useState<string | null>(null)
   const [antionAnchor, setActionAnchor] = useState<HTMLElement | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [searchLoading, setSearchLoading] = useState<boolean>(false)
+  const [cleaerSearchLoading, setclearSearchLoading] = useState<boolean>(false)
   const [students, setStudents] = useState<any>([])
   const [selectedCategoryOptions, setSelectedCategoryOptions] = useState<Option[]>([])
   const [selectedFacultyOptions, setSelectedFacultyOptions] = useState<Option[]>([])
   const [selectedDepartmentOptions, setSelectedDepartmentOptions] = useState<Option[]>([])
+  const [searchParams, setSearchParams] = useState({ internshipType: '', gender: '', matricNo: '' })
+  const [error, setError] = useState<string | null>(null)
 
   const careers = [
-    { title: '  All Career Area' },
+    { title: 'All Career Area' },
     { title: 'SIWES' },
     { title: 'Teaching Practice' },
-    { title: 'Housemanship' },
-    { title: 'Others' },
   ]
 
   const fetchStudents = async () => {
@@ -42,9 +47,9 @@ export default function CompanyHomePage() {
   }, [])
 
   const internCategoryOptions = [
-    { value: 'siwes', label: 'SIWES' },
-    { value: 'teaching-practice', label: 'Teaching Practice' },
-    { value: 'housemanship', label: 'Housemanship' },
+    { value: 'SIWES', label: 'SIWES' },
+    { value: 'tTEACHING PRACTICE', label: 'Teaching Practice' },
+    // { value: 'housemanship', label: 'Housemanship' },
   ]
 
   const internFacultyOptions = [
@@ -116,6 +121,71 @@ export default function CompanyHomePage() {
     setDropdowns((prev) => ({ ...prev, [key]: null }))
   }
 
+  const handleSearch = async () => {
+    setSearchLoading(true)
+    setError(null)
+
+    const formattedSearchParams = {
+      ...searchParams,
+      internshipType: selectedCategoryOptions.map((opt) => opt.value).join(','),
+      faculty: selectedFacultyOptions.map((opt) => opt.value).join(','),
+      department: selectedDepartmentOptions.map((opt) => opt.value),
+      // gender: selected,
+      gender: selected || undefined,
+    }
+
+    try {
+      const response = await searchStudents<Student[]>(formattedSearchParams as {})
+
+      if ('errors' in response) {
+        setError('An error occurred while fetching students.')
+      } else {
+        console.log(response)
+        setStudents(response.docs)
+      }
+    } catch (err) {
+      setError('Failed to fetch students.')
+    } finally {
+      setSearchLoading(false)
+    }
+  }
+  const clearFilters = async () => {
+    setclearSearchLoading(true)
+    setSelected('')
+    setSearchParams({})
+    setSelectedCategoryOptions([])
+    setSelectedFacultyOptions([])
+    setSelectedDepartmentOptions([])
+
+    try {
+      await fetchStudents()
+    } finally {
+      setSearchLoading(false)
+    }
+  }
+
+  const handleFilterClick = async (type) => {
+    setActive(type)
+    setLoading(true)
+
+    const formattedSearchParams = {
+      ...searchParams,
+      internshipType: type === 'All Career Area' ? undefined : type, // Use type directly
+    }
+
+    try {
+      if (type === 'All Career Area') {
+        await fetchStudents() // Fetch all students when "All Career Area" is selected
+      } else {
+        const response = await searchStudents<Student[]>(formattedSearchParams as {})
+        console.log(response)
+        setStudents(response.docs)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div>
       <div
@@ -145,7 +215,9 @@ export default function CompanyHomePage() {
                       active === c.title ? 'bg-[#0B7077]' : ''
                     }`}
                     key={c.title}
-                    onClick={() => setActive(c.title)}
+                    onClick={() => handleFilterClick(c.title)}
+
+                    // onClick={() => setActive(c.title)}
                   >
                     {c.title}
                   </button>
@@ -275,13 +347,13 @@ export default function CompanyHomePage() {
 
                     <div
                       className="mb-[6px] py-[9.6px] px-[5.6px] flex items-center gap-[5.6px] cursor-pointer"
-                      onClick={() => setSelected('female')}
+                      onClick={() => setSelected('FEMALE')}
                     >
                       <input
                         type="radio"
                         name="student"
-                        checked={selected === 'female'}
-                        onChange={() => setSelected('female')}
+                        checked={selected === 'FEMALE'}
+                        onChange={() => setSelected('FEMALE')}
                         className="h-[13px] w-[13px] accent-[#0B7077] border border-[#B7B7B7]"
                       />
                       <p className="font-[400] text-[14px] text-[#454545]">Female Student</p>
@@ -289,13 +361,13 @@ export default function CompanyHomePage() {
 
                     <div
                       className="mb-[6px] py-[9.6px] px-[5.6px] flex items-center gap-[5.6px] cursor-pointer"
-                      onClick={() => setSelected('male')}
+                      onClick={() => setSelected('MALE')}
                     >
                       <input
                         type="radio"
                         name="student"
-                        checked={selected === 'male'}
-                        onChange={() => setSelected('male')}
+                        checked={selected === 'MALE'}
+                        onChange={() => setSelected('MALE')}
                         className="h-[13px] w-[13px] accent-[#0B7077] border border-[#B7B7B7]"
                       />
                       <p className="font-[400] text-[14px] text-[#454545]">Male Student</p>
@@ -304,53 +376,54 @@ export default function CompanyHomePage() {
                     <div className="mt-[20px]">
                       <div className="mb-[20px]">
                         <p className="font-[400] text-[12px]">Intern Categories</p>
+
                         <Select
-                          options={internCategoryOptions as []}
+                          options={internCategoryOptions}
                           isMulti
                           value={selectedCategoryOptions}
-                          onChange={setSelectedCategoryOptions as any}
-                          placeholder="select Category"
-                          className="basic-multi-select text-[10px] font-[400] text-[#454545] border-[#E0E0E0] rounded-[6px] mt-[8px]"
-                          classNamePrefix="select"
-                          styles={getCustomStyles()}
+                          onChange={(options) => setSelectedCategoryOptions(options as any)}
+                          placeholder="Select Category"
                         />
                       </div>
                       <div className="mb-[20px]">
                         <p className="font-[400] text-[12px]">Intern Faculty</p>
+
                         <Select
-                          options={internFacultyOptions as []}
+                          options={internFacultyOptions}
                           isMulti
                           value={selectedFacultyOptions}
-                          onChange={setSelectedFacultyOptions as any}
-                          placeholder="select Faculty"
-                          className="basic-multi-select text-[10px] font-[400] text-[#454545] border-[#E0E0E0] rounded-[6px] mt-[8px]"
-                          classNamePrefix="select"
-                          styles={getCustomStyles()}
+                          onChange={(options) => setSelectedFacultyOptions(options as any)}
+                          placeholder="Select Faculty"
                         />
                       </div>
                       <div className="mb-[20px]">
-                        <p className="font-[400] text-[12px]">Intern Faculty</p>
+                        <p className="font-[400] text-[12px]">Intern Department</p>
+
                         <Select
-                          options={internDepartmentOptions as []}
+                          options={internDepartmentOptions}
                           isMulti
                           value={selectedDepartmentOptions}
-                          onChange={setSelectedDepartmentOptions as any}
-                          placeholder="select Department"
-                          className="basic-multi-select text-[10px] font-[400] text-[#454545] border-[#E0E0E0] rounded-[6px] mt-[8px]"
-                          classNamePrefix="select"
-                          styles={getCustomStyles()}
+                          onChange={(options) => setSelectedDepartmentOptions(options as any)}
+                          placeholder="Select Department"
                         />
                       </div>
                     </div>
 
-                    <div className='lg:flex items-center justify-between '>
-                      <button className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-transparent text-[#0B7077]">
-                        Clear
-                      </button>
-                      <button className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-[#0B7077] text-white">
-                        {' '}
-                        Result
-                      </button>
+                    <div className="lg:flex items-center justify-between ">
+                      <Button
+                        className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-transparent text-[#0B7077] border "
+                        onClick={clearFilters}
+                        disabled={cleaerSearchLoading}
+                      >
+                        {cleaerSearchLoading ? <Spinner /> : 'Clear'}
+                      </Button>
+                      <Button
+                        className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-[#0B7077] text-white"
+                        onClick={handleSearch}
+                        disabled={searchLoading}
+                      >
+                        {searchLoading ? <Spinner /> : 'Result'}
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -362,8 +435,11 @@ export default function CompanyHomePage() {
           <Loader height="auto" background="transparent" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[14px] p-[12px]">
-            {students &&
-              students.map((student) => <StudentProfileCard key={student.id} student={student} />)}
+            {students.length > 0 ? (
+              students.map((student) => <StudentProfileCard key={student.id} student={student} />)
+            ) : (
+              <p>No students found</p>
+            )}
           </div>
         )}
       </div>

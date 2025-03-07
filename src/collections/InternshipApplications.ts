@@ -24,6 +24,12 @@ export const InternshipApplications: CollectionConfig = {
       required: true,
     },
     {
+      name: 'internship',
+      type: 'relationship',
+      relationTo: 'internships',
+      required: true,
+    },
+    {
       name: 'letter',
       type: 'text',
       required: true,
