@@ -609,24 +609,6 @@ const Page = () => {
                             {filteredCompanies.map((company, companyIndex) => (
                               <CompanyCard key={`company-${companyIndex}`} company={company} />
                             ))}
-                            {filteredCompanies.map((company, companyIndex) => (
-                              <CompanyCard key={`company-${companyIndex}`} company={company} />
-                            ))}
-                            {filteredCompanies.map((company, companyIndex) => (
-                              <CompanyCard key={`company-${companyIndex}`} company={company} />
-                            ))}
-                            {filteredCompanies.map((company, companyIndex) => (
-                              <CompanyCard key={`company-${companyIndex}`} company={company} />
-                            ))}
-                            {filteredCompanies.map((company, companyIndex) => (
-                              <CompanyCard key={`company-${companyIndex}`} company={company} />
-                            ))}
-                            {filteredCompanies.map((company, companyIndex) => (
-                              <CompanyCard key={`company-${companyIndex}`} company={company} />
-                            ))}
-                            {filteredCompanies.map((company, companyIndex) => (
-                              <CompanyCard key={`company-${companyIndex}`} company={company} />
-                            ))}
                           </div>
                         </div>
                       ) : null}
