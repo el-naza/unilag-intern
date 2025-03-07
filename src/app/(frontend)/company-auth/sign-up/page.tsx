@@ -55,7 +55,7 @@ function FormError({ form }: { form: FormApi<any, any> }) {
   )
 }
 
-export default function OTPConfirmation() {
+export default function SignUp() {
   const router = useRouter()
 
   const signUpCompanytMtn = useMutation({
