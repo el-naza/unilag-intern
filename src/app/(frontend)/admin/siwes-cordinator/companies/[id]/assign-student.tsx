@@ -1,65 +1,83 @@
 'use client'
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-} from '@radix-ui/react-dropdown-menu'
-import {
-  PaginationState,
-  useReactTable,
-  getCoreRowModel,
-  getPaginationRowModel,
-  flexRender,
-} from '@tanstack/react-table'
-import { EllipsisVertical, Edit2, Trash } from 'lucide-react'
-import React, { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { getAllStudents } from '@/services/admin/students'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { useEffect, useMemo, useState } from 'react'
 import Pagination from '../../../_components/pagination'
+import { Student } from '../../students/page'
+import { format } from 'date-fns'
 
-type Company = {
-  name: string
-  cacNumber: string
-  email: string
-  phoneNumber: string
-  location: string
-  date: string
-}
-
-const defaultData: Company[] = [
-  {
-    name: 'tanner',
-    cacNumber: 'MP/2323/2323',
-    email: 'test@mail.com',
-    phoneNumber: '090283823823',
-    location: 'Lagos State',
-    date: '02/03/2025',
-  },
-]
-
-const AssignStudent = () => {
-  const [data, setData] = useState(() => defaultData)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+const AssignStudent = ({ companyId }) => {
+  const [loading, setLoading] = useState<boolean>(true)
+  const [students, setStudents] = useState<Student[]>([])
+  const [perPage, setPerPage] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
   const [total, setTotal] = useState(0)
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [hasNext, setHasNext] = useState(false)
+  const [hasPrevious, setHasPrevious] = useState(false)
+  const [rowSelection, setRowSelection] = useState({})
+
+  const fetchStudents = async (params?: any) => {
+    const res: any = await getAllStudents('students', params)
+    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    setStudents(docs)
+    setPerPage(page)
+    setPageSize(totalPages)
+    setHasNext(hasNextPage)
+    setHasPrevious(hasPrevPage)
+    setTotal(totalDocs)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchStudents()
+  }, [])
 
   const columns = useMemo(
     () => [
       {
-        id: 'name',
-        header: 'Company Name',
-        accessorKey: 'name',
+        id: 'select',
+        header: ({ table }) => (
+          <input
+            type="checkbox"
+            checked={table.getIsAllRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          />
+        ),
+        cell: ({ row }) => (
+          <input
+            type="checkbox"
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        ),
       },
       {
-        id: 'cacNumber',
-        header: 'CAC Number',
-        accessorKey: 'cacNumber',
+        id: 'firstName',
+        header: 'Student Name',
+        accessorKey: 'firstName',
+        cell: ({ getValue, row }) => {
+          const rowData = row.original
+          return `${getValue()} ${rowData.lastName}`
+        },
+      },
+      {
+        id: 'matricNo',
+        header: 'Matric Number',
+        accessorKey: 'matricNo',
+      },
+      {
+        id: 'course',
+        header: 'Course',
+        accessorKey: 'course',
       },
       {
         id: 'email',
@@ -67,19 +85,23 @@ const AssignStudent = () => {
         accessorKey: 'email',
       },
       {
-        id: 'phoneNumber',
-        header: 'Phone Number',
-        accessorKey: 'phoneNumber',
+        id: 'stateOfOrigin',
+        header: 'State',
+        accessorKey: 'stateOfOrigin',
       },
       {
-        id: 'location',
-        header: 'Location',
-        accessorKey: 'location',
+        id: 'status',
+        header: 'Status',
+        accessorKey: 'status',
       },
       {
-        id: 'date',
+        id: 'createdAt',
         header: 'Date',
-        accessorKey: 'date',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const rawDate = getValue()
+          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+        },
       },
     ],
     [],
@@ -87,31 +109,43 @@ const AssignStudent = () => {
 
   const table = useReactTable({
     columns,
-    data,
+    data: students,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
     state: {
-      pagination,
+      rowSelection,
     },
+    onRowSelectionChange: setRowSelection,
   })
 
-  const paginationProps = { page, pageSize, total }
+  const selectedStudents = table.getSelectedRowModel().rows.map((row) => row.original)
+  const paginationProps = { page: perPage, pageSize, total, hasNext, hasPrevious }
 
-  const nextPage = () => {
-    console.log('Next Page')
+  const nextPage = (page: number) => {
+    setLoading(true)
+    fetchStudents({ page })
   }
 
-  const previousPage = () => {
-    console.log('Previous Page')
+  const previousPage = (page: number) => {
+    setLoading(true)
+    fetchStudents({ page })
   }
+
+  const assignToStudent = () => {
+    console.log('Selected Students:', selectedStudents)
+    console.log('Company Id:', companyId)
+  }
+
 
   return (
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
         <p>All Students</p>
 
-        <Button>Assign to Student</Button>
+        <Button
+        disabled={selectedStudents.length === 0}
+        onClick={() => assignToStudent()}
+        >
+          Assign to Student</Button>
       </div>
 
       <Table>
@@ -134,37 +168,12 @@ const AssignStudent = () => {
 
         <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+            <TableRow key={row.id} selected={row.getIsSelected()}>
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
-              <TableCell className="float-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost">
-                      <EllipsisVertical className="w-5 h-5 text-primary" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 bg-white border-none">
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem>
-                        <span className="mr-2">
-                          <Edit2 className="w-4 h-4" />
-                        </span>
-                        <span>Edit</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <span className="mr-2">
-                          <Trash className="w-4 h-4" />
-                        </span>
-                        <span>Delete</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>

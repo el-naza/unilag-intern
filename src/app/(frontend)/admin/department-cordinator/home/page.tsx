@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import React, { useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
-import { Edit2, EllipsisVertical, ListFilter, Plus, Share, Trash } from 'lucide-react'
+import { Edit2, EllipsisVertical, ListFilter, Plus, Share } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -79,12 +79,17 @@ export default function HomePage() {
   }
 
   const chartData = [
-    { month: 'January', desktop: 186, mobile: 80 },
-    { month: 'February', desktop: 305, mobile: 200 },
-    { month: 'March', desktop: 237, mobile: 120 },
-    { month: 'April', desktop: 73, mobile: 190 },
-    { month: 'May', desktop: 209, mobile: 130 },
-    { month: 'June', desktop: 214, mobile: 140 },
+    { month: 'January', desktop: 186 },
+    { month: 'February', desktop: 305 },
+    { month: 'March', desktop: 237 },
+    { month: 'April', desktop: 73 },
+    { month: 'May', desktop: 209 },
+    { month: 'July', desktop: 214 },
+    { month: 'August', desktop: 394 },
+    { month: 'September', desktop: 120 },
+    { month: 'October', desktop: 201 },
+    { month: 'November', desktop: 112 },
+    { month: 'December', desktop: 200 },
   ]
 
   const chartConfig = {
@@ -186,7 +191,7 @@ export default function HomePage() {
   })
 
   return (
-    <div className='p-8'>
+    <div className="p-8">
       <FIlterStats config={config} />
 
       <div className="grid grid-cols-12 gap-4 mt-8">
@@ -204,15 +209,15 @@ export default function HomePage() {
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="month"
-                tickLine={false}
+                tickLine={true}
                 tickMargin={10}
-                axisLine={false}
+                axisLine={true}
                 tickFormatter={(value) => value.slice(0, 3)}
               />
               <ChartTooltip content={<ChartTooltipContent className="bg-white border-none" />} />
               <ChartLegend content={<ChartLegendContent />} />
               <Bar dataKey="desktop" fill="#195F7E" radius={2} />
-              <Bar dataKey="mobile" fill="#0B7077" radius={2} />
+              {/* <Bar dataKey="mobile" fill="#0B7077" radius={2} /> */}
             </BarChart>
           </ChartContainer>
         </div>
@@ -262,11 +267,12 @@ export default function HomePage() {
                       <DropdownMenuContent className="w-56 bg-white border-none">
                         <DropdownMenuGroup>
                           <DropdownMenuItem>
-                            <Edit2 />
+                            <span>View Company</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
                             <span>Edit</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            <Trash />
                             <span>Delete</span>
                           </DropdownMenuItem>
                         </DropdownMenuGroup>

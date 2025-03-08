@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { format } from 'date-fns'
 import { Textarea } from '@/components/ui/textarea'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { MessageSquareText } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -18,11 +18,25 @@ import {
 } from '@/components/ui/dialog'
 import AssignStudent from './assign-student'
 import { useParams } from 'next/navigation'
+import { getCompany } from '@/services/admin/companies'
 
 export default function CompanyDetailPage() {
   const { id }: { id: string } = useParams()
 
   const formattedDate = format(new Date(), 'EEEE do MMMM yyyy')
+  const [company, setCompany] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+
+  const fetchCompanyDetail = async () => {
+    const res: any = await getCompany('companies', id)
+    console.log('Company', res.data)
+    setCompany(res.data)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchCompanyDetail()
+  }, [])
 
   return (
     <div className="p-8">
@@ -36,8 +50,8 @@ export default function CompanyDetailPage() {
           </Avatar>
 
           <div>
-            <h3 className="font-semibold text-[1.2rem] text-white">Shopping Mall</h3>
-            <p className="text-sm text-white">I6364876736</p>
+            <h3 className="font-semibold text-[1.2rem] text-white">{company?.name}</h3>
+            <p className="text-sm text-white">{company?.cac}</p>
           </div>
         </div>
 
@@ -45,13 +59,13 @@ export default function CompanyDetailPage() {
           <DialogTrigger asChild>
             <Button className="bg-gray-light-2 text-black-2">Assigned Student</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-screen-lg overflow-auto bg-white">
+          <DialogContent className="max-w-screen-lg max-h-[90vh] overflow-auto bg-white">
             <DialogHeader>
               <DialogTitle>Assign Student</DialogTitle>
               <DialogDescription>Assign students to a company</DialogDescription>
             </DialogHeader>
 
-            <AssignStudent />
+            <AssignStudent companyId={company?.id} />
           </DialogContent>
         </Dialog>
       </div>
@@ -64,6 +78,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Company Name</Label>
             <Input
+             value={company?.name || ''}
+             readOnly
               placeholder="Enter Company Name"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -72,6 +88,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">CAC Number</Label>
             <Input
+             value={company?.cac || ''}
+             readOnly
               placeholder="Enter CAC Number"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -80,6 +98,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Location</Label>
             <Input
+             value={'Lng: '+ company?.location.longitude +' Lat: '+ company?.location.latitude}
+             readOnly
               placeholder="Enter Location"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -88,6 +108,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Email</Label>
             <Input
+            value={company?.email || ''}
+            readOnly
               placeholder="Enter Email"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -96,6 +118,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Phone</Label>
             <Input
+            value={company?.phone || ''}
+            readOnly
               placeholder="Enter Phone"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -104,6 +128,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Website</Label>
             <Input
+            value={company?.website || ''}
+            readOnly
               placeholder="Enter Website"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -112,6 +138,8 @@ export default function CompanyDetailPage() {
 
         <Label className="mt-3 block">Description</Label>
         <Textarea
+        value={company?.description || ''}
+        readOnly
           placeholder="Type your message here."
           className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
         />

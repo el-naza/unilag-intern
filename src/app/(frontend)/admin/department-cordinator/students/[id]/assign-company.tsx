@@ -12,7 +12,7 @@ import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-tabl
 import { format } from 'date-fns'
 import { useEffect, useMemo, useState } from 'react'
 import Pagination from '../../../_components/pagination'
-import { Company } from '../../companies/page'
+import { Company } from '../../../siwes-cordinator/companies/page'
 
 const AssignCompany = ({ studentId }) => {
   const [loading, setLoading] = useState<boolean>(true)
