@@ -288,7 +288,7 @@ export interface InternshipApplication {
   id: string;
   student: string | Student;
   company: string | Company;
-  internship: string | Internship;
+  internship?: (string | null) | Internship;
   letter: string;
   status?: ('pending' | 'cancelled' | 'approved' | 'student declined' | 'company declined') | null;
   interviewInvitation?: (string | null) | InterviewInvitation;

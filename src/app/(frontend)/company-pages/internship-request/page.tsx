@@ -23,7 +23,7 @@ import DownloadFileIcon from '../../assets/icons/downloadFile'
 export interface InvitationDetails {
   message: string
   id: string
-  student: { id: string }
+  student: { id: string; image: { url: string } }
 }
 export default function InternshipRequest() {
   const router = useRouter()
@@ -34,8 +34,7 @@ export default function InternshipRequest() {
   const [invitationDetails, setInvitationDetails] = useState<InvitationDetails | null>(null)
 
   const fetchInternReq = async () => {
-    const res: any = await fetchDocs('interview-invitations')
-    // console.log(res)
+    const res: any = await fetchDocs('internship-applications')
     setInternReq(res?.docs || [])
     setTableData(res)
     setLoading(false)
@@ -48,9 +47,9 @@ export default function InternshipRequest() {
   const [selectedStudent, setSelectedStudent] = useState(null)
 
   const handleOpenModal = async (student) => {
-    const res: any = await fetchDoc('interview-invitations', student)
+    const res: any = await fetchDoc('internship-applications', student)
+
     setSelectedStudent(student)
-    console.log(res)
     setInvitationDetails(res)
   }
 
@@ -92,7 +91,7 @@ export default function InternshipRequest() {
         className="flex items-center"
       >
         <img
-          src={item.student.imageUrl || '/default-avatar.png'}
+          src={item.student?.image?.url || '/default-avatar.png'}
           alt={item.student.firstName}
           className="w-8 h-8 rounded-full mr-2"
         />
@@ -102,7 +101,7 @@ export default function InternshipRequest() {
         key={`${item.id}-application`}
         className="text-[12px] font-[400] w-[100%] overflow-hidden whitespace-nowrap text-ellipsis"
       >
-        {item.message}
+        {item.message || item.letter}
       </p>,
       <p key={`${item.id}-date`} className="text-[12px] font-[400]">
         {new Date(item.createdAt).toLocaleDateString()}
@@ -126,7 +125,7 @@ export default function InternshipRequest() {
       </div>,
     ])
 
-  const totalPages = tableData?.length
+
   const totalItems = 1234
 
   const handlePageChange = (page: number) => {
@@ -164,14 +163,14 @@ export default function InternshipRequest() {
                     headers={headers}
                     rows={rows}
                     currentPage={currentPage}
-                    totalPages={totalPages}
+                    totalPages={tableData?.totalPages}
                     totalItems={totalItems}
                     onPageChange={handlePageChange}
                   />
                 </div>
               )}
             </BlurBackground>
-           </div>
+          </div>
         </div>
       </div>
 
@@ -203,7 +202,8 @@ export default function InternshipRequest() {
                   <div className="flex items-start flex-col gap-5 lg:flex-row">
                     <div className="max-w-[200px] md:max-w-full ">
                       <Image
-                        src={studentImage}
+                        src={invitationDetails?.tudent?.image?.url || sstudentImage}
+                        // src={studentImage}
                         alt="image"
                         width={0}
                         height={300}
@@ -217,7 +217,7 @@ export default function InternshipRequest() {
                         className="lg:h-[300px] overflow-y-scroll  text-[#606778] text-[14px]"
                         style={{ scrollbarWidth: 'none' }}
                       >
-                        {invitationDetails?.message}
+                        {invitationDetails?.letter as string}
                       </p>
                       <h4 className="font-[700] text-[14px] my-5">Attachment</h4>
                       <div className="flex items-center justify-between ">
@@ -242,11 +242,14 @@ export default function InternshipRequest() {
                     >
                       Accept
                     </button>
-                    <button className="rousnded-[6px] border border-[#0B7077] text-[#0B7077] py-[10px] px-[14px] text-[12px]">
+                    <button
+                      className="rousnded-[6px] border border-[#0B7077] text-[#0B7077] py-[10px] px-[14px] text-[12px]"
+                      onClick={() => handleRespond(invitationDetails.id, 'declined')}
+                    >
                       Reject
                     </button>
                     <button
-                      onClick={() => handleRespond(invitationDetails.id, 'declined')}
+                      onClick={handleCloseModal}
                       className="rounded-[6px]  text-[#0B7077] py-10px] px-[14px] text-[12px]"
                     >
                       Cancel
