@@ -3,6 +3,7 @@ import { companies } from '@/access/companies'
 import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
 import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 import { parse } from 'qs-esm'
+import { anyone } from '@/access/anyone'
 
 // Hook to create an employment record when status is updated to 'accepted'
 // const createEmploymentOnAcceptance: BeforeChangeHook = async ({ data, req, originalDoc }) => {
@@ -20,7 +21,7 @@ import { parse } from 'qs-esm'
 export const InterviewInvitations: CollectionConfig = {
   slug: 'interview-invitations',
   access: {
-    read: relatedStudentOrCompany,
+    read: anyone,
     create: companies,
     delete: relatedCompany,
     update: relatedStudentOrCompany,

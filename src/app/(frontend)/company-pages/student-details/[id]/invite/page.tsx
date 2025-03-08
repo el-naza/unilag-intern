@@ -153,7 +153,7 @@ export default function StudentInvitation() {
             form.handleSubmit()
           }}
         >
-          <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row">
+          <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row ">
             <div className="max-w-[250px]">
               <Image
                 src={student?.image?.url || studentImage}
@@ -163,21 +163,23 @@ export default function StudentInvitation() {
                 className="h-[300px] object-cover rounded  lg:w-[250px] w-[250px]"
               />
 
-              <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+              {/* <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                 {([canSubmit, isSubmitting]) => (
-                  <>
+                  <> */}
                     <Button
-                      type="submit"
-                      disabled={!canSubmit}
+                      type="button"
                       size="lg"
+                      onClick={() => router.push(`/company-pages/student-details/${studentId}`)}
                       className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px]"
                     >
-                      <MailIcon fill="#FFFFFF" /> Send Application {isSubmitting && <Spinner />}
+                       {/* <MailIcon fill="#FFFFFF" />  */}
+                      View Profile 
+                    
                     </Button>
                     <FormError form={form} />
-                  </>
+                  {/* </>
                 )}
-              </form.Subscribe>
+              </form.Subscribe> */}
 
               {/* <button
                 type="submit"
@@ -242,6 +244,9 @@ export default function StudentInvitation() {
                   </>
                 )}
               </form.Field>
+              <div>
+
+              </div>
 
               <p className="text-[#FF9500] font-[400] text-[12px] my-[12px]">
                 Confirm your invitation before sending. The recipient will be notified once you
@@ -255,7 +260,7 @@ export default function StudentInvitation() {
                       type="submit"
                       disabled={loading }
                       size="lg"
-                      className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px]"
+                      className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px] mb-[100px]"
                     >
                       Send Application {loading && <Spinner />}
                     </Button>
