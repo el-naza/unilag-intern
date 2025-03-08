@@ -43,10 +43,10 @@ export default function StudentDetails() {
   }
 
   const findStudent = async () => {
-    const res: any = await fetchDocs('interview-invitations')
-    const getStudent = res?.data?.docs.find((s) => s.student.id === studentId)
+    const res: any = await fetchDocs('internship-applications')
+    const getStudent = res?.docs.find((s) => s.student.id === studentId)
     if (getStudent) {
-      setStudentLater(getStudent.message)
+      setStudentLater(getStudent.letter)
     }
   }
   useEffect(() => {
@@ -75,16 +75,15 @@ export default function StudentDetails() {
           <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row">
             <div className="max-w-[250px] md:max-w-full ">
               <Image
-                src={studentImage}
+                src={studentDetails?.image?.url || studentImage}
                 alt="image"
                 width={0}
                 height={300}
                 // objectFit={'contain'}
-                className="h-[300px] w-full object-cover rounded"
+                className="h-[300px] object-cover rounded  lg:w-[250px] w-[250px]"
               />
               <button
                 className="mt-[24px] w-full py-[12px] rounded-[6px] bg-[#0B7077] flex items-center justify-center  gap-[8px] font-[500] text-[16px] text-[#FFFFFF] "
-                // onClick={() => router.push('/company-pages/invite')}
                 onClick={() => router.push(`/company-pages/student-details/${studentId}/invite`)}
               >
                 <MailIcon fill="#FFFFFF" /> Send Invitation
@@ -95,15 +94,22 @@ export default function StudentDetails() {
                 <h3 className="font-[400] text-[16px]">Basic Information</h3>
                 <p className="text-[#8E8E93] font-[400] text-[12px]">Students Basic Informations</p>
                 <div className="mt-[22px] grid md:grid-cols-2 gap-[14px] md:grid-cols-2">
-                  {fields.map((field, index) => (
-                    <InputField
-                      key={index}
-                      label={field.label}
-                      placeholder={studentDetails[field.key] || 'Loading...'}
-                      type={field.type}
-                      disabled={true}
-                    />
-                  ))}
+                  {fields.map((field, index) => {
+                    let value = studentDetails[field.key] || 'Loading...'
+                    if (field.key === 'dob' && value) {
+                      value = new Date(value).toLocaleString()
+                    }
+
+                    return (
+                      <InputField
+                        key={index}
+                        label={field.label}
+                        placeholder={value}
+                        type={field.type}
+                        disabled={true}
+                      />
+                    )
+                  })}
                 </div>
               </div>
 

@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 import { students } from '@/access/sutdents'
 import { relatedStudent } from '@/access/internship-applications/relatedStudent'
+import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
+import { anyone } from '@/access/anyone'
 
 export const InternshipApplications: CollectionConfig = {
   slug: 'internship-applications',
@@ -9,6 +11,7 @@ export const InternshipApplications: CollectionConfig = {
     create: students,
     delete: relatedStudent,
     update: relatedStudent,
+    read: anyone
   },
   fields: [
     {
@@ -27,7 +30,7 @@ export const InternshipApplications: CollectionConfig = {
       name: 'internship',
       type: 'relationship',
       relationTo: 'internships',
-      required: true,
+      // required: true,
     },
     {
       name: 'letter',
