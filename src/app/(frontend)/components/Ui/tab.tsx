@@ -8,9 +8,9 @@ export default function InvitationTabs() {
   const [active, setActive] = useState<string>('Internship Post')
 
   const careers = [
-    { title: 'Internship Post', path: '/company-pages/interviews' },
+    { title: 'Internship Post', path: '/company-pages/internship-post' },
     { title: 'Interviews', path: '/company-pages/awaiting-interview' },
-    { title: 'Internship Request', path: '/company-pages/internship-request', total: '2' },
+    { title: 'Internship Request', path: '/company-pages/internship-request', total: '' },
     { title: 'Rejected Request', path: '/company-pages/rejected-requests' },
   ]
 
@@ -33,7 +33,7 @@ export default function InvitationTabs() {
 
         <button
           className="bg-[#0B7077] py-[6px] px-[12px] text-white font-[400] text-[12px] flex items-center gap-2"
-          onClick={() => router.push('/company-pages/internship-post')}
+          onClick={() => router.push('/company-pages/post-internship')}
         >
           <PlusIcon /> Internship post
         </button>

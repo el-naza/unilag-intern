@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/select'
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 import { password } from 'node_modules/payload/dist/fields/validations'
-import signInUser from '@/services/signinUser'
+import  { signInUserClient } from '@/services/signinUser'
 import { authStore } from '@/store/authStore'
 
 function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -62,7 +62,6 @@ export default function Page() {
         // randomly generate password for students on creation for now
 
         const res = await saveDoc('students', student)
-        console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
 
         return res
@@ -105,7 +104,7 @@ export default function Page() {
           }
         }
 
-        const signInRes = await signInUser({
+        const signInRes = await signInUserClient({
           username: userCreationObj.matricNo || userCreationObj.username,
           password: userCreationObj.password,
           col: 'students',

@@ -24,16 +24,6 @@ import { Link } from 'lucide-react'
 import useSendCompanyOtpMtn from '../forgot-password/useSendCompanyOtpMtn'
 
 export default function Login() {
-  const [companyName, setCompanyName] = useState('')
-  const [companyEmail, setCompanyEmail] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [address, setAddress] = useState('')
-  const [longitude, setLongitude] = useState('')
-  const [latitude, setLatitude] = useState('')
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  const [otp, setOtp] = useState('')
-  const [area, setArea] = useState('')
   const [step, setStep] = useState<
     'company' | 'showEmail' | 'showOTP' | 'showSignUp' | 'showUpload'
   >('showEmail')
@@ -63,65 +53,7 @@ export default function Login() {
   )
   const router = useRouter()
 
-  // const companyPreLoginMtn = useMutation({
-  //   mutationFn: async (email: string) => {
-  //     try {
-  //       const res = await companyPreLogin({ email })
-  //       console.log('res', res)
-  //       if (!res) {
-  //         const message = 'Network err; pls try again later'
-  //         toast.error(message)
-  //         return { message }
-  //       }
-  //       return res
-  //     } catch {
-  //       const message = 'An error occured; pls try again later'
-  //       toast.error(message)
-  //       return { message }
-  //     }
-  //   },
-  // })
 
-  // const handleLogin = () => {
-  //   const newErrors: { [key: string]: string } = {}
-  //   if (!companyName) newErrors.companyName = 'Company name is required.'
-  //   setErrors(newErrors)
-
-  //   if (Object.keys(newErrors).length === 0) {
-  //     // Submit form
-  //     switch (step) {
-  //       case 'company':
-  //         if (!companyName) {
-  //           setErrors({ companyName: 'Company name is required.' })
-  //         } else {
-  //           setErrors({})
-  //           setStep('showEmail') // Proceed to the next step
-  //         }
-  //         break
-
-  //       case 'showEmail':
-  //         if (!email) {
-  //           setErrors({ email: 'Email is required.' })
-  //         } else {
-  //           setErrors({})
-  //           setStep('showOTP') // Proceed to the next step
-  //         }
-  //         break
-
-  //       case 'showOTP':
-  //         if (!otp) {
-  //           setErrors({ otp: 'OTP is required.' })
-  //         } else {
-  //           setErrors({})
-  //           setStep('showSignUp') // Proceed to the next step
-  //         }
-  //         break
-
-  //       default:
-  //         console.log('Final step reached!')
-  //     }
-  //   }
-  // }
   const companyPreLoginMtn = useMutation({
     mutationFn: async (email: string) => {
       try {
@@ -256,7 +188,7 @@ export default function Login() {
   return (
     <div className="">
       <button
-        // onClick={goBack}
+        onClick={()=>router.back()}
         className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
       >
         <ArrowIcon /> Back
@@ -274,7 +206,7 @@ export default function Login() {
         {/* {success
           ? 'Complete this email address ex…………56@gmail.com and we’ll send you an OTP for confirmation.' */}
         {/* : ' */}
-        Enter your company name to proceed with the login process
+        Enter your company email to proceed with the login process
         {/* '} */}
       </p>
       <form
@@ -348,10 +280,11 @@ export default function Login() {
       </form>
 
       <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
-        Not registered yet? Sign up now to connect withcc top talent effortlessly!{' '}
-        <Link href="/company-auth/sign-up" className="text-[#007AFF] cursor-pointer">
+        Not registered yet? 
+          <span onClick={()=>router.push("/company-auth/sign-up")} className="text-[#007AFF] cursor-pointer mx-1">
           Sign up as a company
-        </Link>
+         </span>
+           now to connect with top talent effortlessly!
       </p>
       {/* )} */}
     </div>

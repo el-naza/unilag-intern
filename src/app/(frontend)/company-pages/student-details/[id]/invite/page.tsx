@@ -24,12 +24,19 @@ import FieldError from '@/components/FieldError'
 import { Button } from '@/components/ui/button'
 import Spinner from '@/components/spinner'
 
+interface StudentDetail {
+  id: string
+  image: {
+    url: string
+  }
+}
+
 export default function StudentInvitation() {
   const router = useRouter()
   const { id: studentId }: { id: string } = useParams()
   const { data: session } = useSession()
 
-  const [student, setStudent] = useState<any>({})
+  const [student, setStudent] = useState<StudentDetail>()
   const [loading, setLoading] = useState<boolean>(true)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
@@ -39,15 +46,19 @@ export default function StudentInvitation() {
   const dates = ['07:00 am', '08:00 am', '09:00 am']
 
   const fetchStudent = async () => {
+    setLoading(true)
     const res: any = await fetchDoc('students', studentId)
     setStudent(res)
+    console.log('student', res)
     setLoading(false)
   }
 
   const sendInvitationMtn = useMutation({
     mutationFn: async (invitation: InterviewInvitation) => {
       try {
+        console.log('payload ' + invitation)
         const res = await saveDoc('interview-invitations', invitation)
+        console.log('res ' + res)
         if (!res) return toast.error('Network error; please try again later')
         return res
       } catch {
@@ -92,7 +103,10 @@ export default function StudentInvitation() {
           }
         }
 
+        console.log(value)
+
         const res = await sendInvitationMtn.mutateAsync(value)
+        console.log('res', res)
         if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
           return {
             form: (res as ValidationErrors).errors[0].message,
@@ -142,11 +156,11 @@ export default function StudentInvitation() {
           <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row">
             <div className="max-w-[250px]">
               <Image
-                src={studentImage}
+                src={student?.image?.url || studentImage}
                 alt="image"
                 width={0}
                 height={300}
-                className="h-[300px] w-full object-cover rounded"
+                className="h-[300px] object-cover rounded  lg:w-[250px] w-[250px]"
               />
 
               <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
@@ -158,7 +172,7 @@ export default function StudentInvitation() {
                       size="lg"
                       className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px]"
                     >
-                      Send Application {isSubmitting && <Spinner />}
+                      <MailIcon fill="#FFFFFF" /> Send Application {isSubmitting && <Spinner />}
                     </Button>
                     <FormError form={form} />
                   </>
@@ -234,21 +248,21 @@ export default function StudentInvitation() {
                 proceed.
               </p>
 
-              <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-                {([canSubmit, isSubmitting]) => (
+              {/* <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                {([canSubmit, isSubmitting]) => ( */}
                   <>
                     <Button
                       type="submit"
-                      disabled={!canSubmit}
+                      disabled={loading }
                       size="lg"
                       className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px]"
                     >
-                      Send Application {isSubmitting && <Spinner />}
+                      Send Application {loading && <Spinner />}
                     </Button>
                     <FormError form={form} />
                   </>
-                )}
-              </form.Subscribe>
+                {/* )}
+              </form.Subscribe> */}
             </div>
           </div>
         </form>

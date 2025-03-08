@@ -2,10 +2,11 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 type InvitationCard = {
-  image: string
-  title: string
-  description: string
-  date: string
+  id: string
+  image?: string
+  title?: string
+  description?: string
+  date?: string
 }
 
 type InvitationCardProps = {
@@ -13,15 +14,15 @@ type InvitationCardProps = {
 }
 
 export default function InvitationCard({ invitation }: InvitationCardProps) {
-  const { image, title, description, date } = invitation
+  const { image, title, description, date, id } = invitation
   const router = useRouter()
   return (
     <div>
       <div
-        className="border border-[#F1F1F1] rounded-[8px] flex items-start gap-[5px] overflow-hidden w-full mb-4"
-        onClick={() => router.push('/company-pages/invitation-details')}
+        className="border border-[#F1F1F1] rounded-[8px] flex items-start justify-between gap-[5px] overflow-hidden w-full mb-4"
+        onClick={() => router.push(`/company-pages/internship-post-details/${id}`)}
       >
-        <div className="overflow-hidden">
+        <div className="overflow-hidden w-[100px]">
           <Image
             src={image}
             alt="invitation"
@@ -30,10 +31,12 @@ export default function InvitationCard({ invitation }: InvitationCardProps) {
             className="overflow-hidden rounded-tl-[8px] rounded-tr-[8px]"
           />
         </div>
-        <div className="px-[6px]">
+        <div className="px-[6px] w-[calc(100%-100px)]">
           <h3 className="font-[700] text-[#48484A] text-[14px]">{title}</h3>
-          <p className="font-[400] text-[14px] text-[#8E8E93] py-[2px]">{description}</p>
-          <p className="text-end text-[#007AFF] font-[400] text-[12px]">{date}</p>
+          <p className="font-[400] text-[14px] text-black py-[2px] h-[50px] overflow-hidden text-ellipsis line-clamp-2">
+            {description}
+          </p>
+          <p className="text-end text-[#007AFF] font-[400] text-[12px] float-right">{date}</p>
         </div>
       </div>
     </div>

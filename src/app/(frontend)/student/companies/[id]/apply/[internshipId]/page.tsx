@@ -34,6 +34,7 @@ import { toast } from 'sonner'
 const Page = () => {
   const { data: session } = useSession()
   const { id: companyId }: { id: string } = useParams()
+  const { internshipId }: { internshipId: string } = useParams()
   const router = useRouter()
   const [company, setCompany] = useState<any>({})
   const [open, setOpen] = useState(false)
@@ -61,6 +62,7 @@ const Page = () => {
           letter: internshipApplication.letter,
           student: internshipApplication.student,
           company: internshipApplication.company,
+          internship: internshipApplication.internship,
         })
         console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
@@ -75,6 +77,7 @@ const Page = () => {
     validators: {
       onSubmitAsync: async ({ value }) => {
         value.company = companyId
+        value.internship = internshipId
         value.student = user?.id
 
         const emptyRequiredFields = InternshipApplications.fields.reduce<object>(
@@ -115,9 +118,9 @@ const Page = () => {
     },
   })
 
-  const viewApplications = () => {
+  const goHome = () => {
     setOpen(false)
-    router.push('/student/applications/pending')
+    router.push('/student')
   }
 
   useEffect(() => {
@@ -317,7 +320,7 @@ const Page = () => {
                             </div>
                             <DialogFooter>
                               <button
-                                onClick={viewApplications}
+                                onClick={goHome}
                                 className="w-full rounded p-2 text-xs bg-[#0B7077] text-white text-center"
                               >
                                 Continue

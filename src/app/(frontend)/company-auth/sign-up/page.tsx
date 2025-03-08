@@ -29,6 +29,8 @@ import { FieldApi, FormApi, useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Companies } from '@/collections/Companies'
+import signInUser, { signInUserClient } from '@/services/signinUser'
+import { authStore } from '@/store/authStore'
 
 function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
@@ -53,16 +55,13 @@ function FormError({ form }: { form: FormApi<any, any> }) {
   )
 }
 
-export default function OTPConfirmation() {
-  const goBack = () => {}
-
+export default function SignUp() {
   const router = useRouter()
 
   const signUpCompanytMtn = useMutation({
     mutationFn: async (company: Company) => {
       try {
-        console.log(company)
-        const res = await saveDoc('companies', { ...company, password: randomString(10) })
+        const res = await saveDoc('companies', company)
         console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
         return res
@@ -90,7 +89,12 @@ export default function OTPConfirmation() {
           }
         }
 
-        const res = await signUpCompanytMtn.mutateAsync(value)
+        const userCreationObj = { ...value, password: randomString(10) }
+        // console.log('user created obj ' + JSON.stringify(userCreationObj, null, 2))
+        console.log('email: ', userCreationObj.email)
+        console.log('Generated Password: ', userCreationObj.password)
+
+        const res = await signUpCompanytMtn.mutateAsync(userCreationObj)
         if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
           return {
             form: (res as ValidationErrors).errors[0].message,
@@ -104,11 +108,52 @@ export default function OTPConfirmation() {
           }
         }
 
+        if (!(res as any)?.success) {
+          toast.error('An error occured while signing up; pls try again later')
+          return {
+            form: 'An error occured while signing up; pls try again later',
+          }
+        }
+
+        console.log('sign up res', res)
+
+        console.log('user created obj  ' + userCreationObj.email)
+
+        const signInRes = await signInUserClient({
+          email: userCreationObj.email,
+          password: userCreationObj.password,
+          col: 'companies',
+        })
+
+        // .then((res) => {
+        //   const data = JSON.stringify(res)
+        //   console.log('data ' + data)
+        //   console.log('response ' + res)
+        //   return res
+        // })
+        // .catch((e) => {
+        //   console.log('err', e)
+        //   return e
+        // })
+
+        console.log('signInRes ' + signInRes)
         // success here so naviagate or toast to success
         form.reset()
-        toast.success('Sign up successful')
-        // router.push('/auth/sign-up/siwes-applicant/update-profile-image')
-        router.push('/company-auth/login')
+
+        if (signInRes?.token) {
+          authStore.setState((state) => {
+            return {
+              ...state,
+              signUpAuthToken: signInRes?.token!,
+              signedUpUserId: signInRes?.user?.id!,
+            }
+          })
+          router.push('/company-auth/sign-up/update-profile-image')
+        } else {
+          toast.success('Sign up successful')
+
+          // router.push('/company-auth/login')
+        }
 
         return null
       },
@@ -118,18 +163,14 @@ export default function OTPConfirmation() {
   return (
     <div className="">
       <button
-        onClick={goBack}
+        onClick={() => router.back()}
         className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
       >
         <ArrowIcon /> Back
       </button>
       <h2 className="font-[500] text-[24px] text-center mt-[40px]">Sign up as a Siwes Company'</h2>
       <p className="text-center text-gray-dark-2 font-[400] text-[14px] mt-8 mb-[40px]">
-        {/* {success
-          ? 'Complete this email address ex…………56@gmail.com and we’ll send you an OTP for confirmation.' */}
-        {/* : ' */}
-        Enter your company name to proceed with the login process
-        {/* '} */}
+        Enter your company information to proceed
       </p>
 
       <form
@@ -314,9 +355,14 @@ export default function OTPConfirmation() {
 
       <p className="font-[400] text-[12px] text-gray-dark-2 leading-[16px] mt-[12px] text-cente r">
         Already have an account ?
-        <span className="text-[#007AFF] cursor-pointer"> login as a company</span>
+        <span
+          className="text-[#007AFF] cursor-pointer"
+          onClick={() => router.push('/company-auth/login')}
+        >
+          {' '}
+          login as a company
+        </span>
       </p>
-      {/* )} */}
     </div>
   )
 }
