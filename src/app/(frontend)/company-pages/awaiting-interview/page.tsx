@@ -99,8 +99,8 @@ export default function AwaitingInterview() {
                             lastName: invitation.student.lastName,
                             dateTime: invitation.dateTime,
                             status: invitation.dateTime,
-                            clickAccept: () => handleRespond(invitation.id, 'accepted'), // Corrected function reference
-                            clickDecline: () => handleRespond(invitation.id, 'declined'), // Corrected function reference
+                            clickAccept: () => handleRespond(invitation.id, 'accepted'),
+                            clickDecline: () => handleRespond(invitation.id, 'declined'), 
                             viewClick: () =>
                               router.push(
                                 `/company-pages/student-details/${invitation.student.id}`,

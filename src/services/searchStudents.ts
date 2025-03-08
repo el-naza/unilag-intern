@@ -19,12 +19,16 @@ export default async function searchStudents<T>(
   search: StudentSearch,
 ): Promise<{ data: T } | ValidationErrors> {
   const query: Where = {
-    ...(search.internshipType && { internshipType: { like: search.internshipType } }),
+    ...(search.internshipType && {
+      internshipType: {
+        in: search.internshipType.split(','), 
+      },
+    }),
     ...(search.gender && { gender: { equals: search.gender } }),
     ...(search.matricNo && { matricNo: { equals: search.matricNo } }),
     ...(search.nationality && { nationality: { like: search.nationality } }),
-  }
-
+  };
+  
   const stringifiedQuery = stringify(
     {
       where: query,

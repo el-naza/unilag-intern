@@ -30,11 +30,7 @@ export default function CompanyHomePage() {
   const [searchParams, setSearchParams] = useState({ internshipType: '', gender: '', matricNo: '' })
   const [error, setError] = useState<string | null>(null)
 
-  const careers = [
-    { title: 'All Career Area' },
-    { title: 'SIWES' },
-    { title: 'Teaching Practice' },
-  ]
+  const careers = [{ title: 'All Career Area' }, { title: 'SIWES' }, { title: 'Teaching Practice' }]
 
   const fetchStudents = async () => {
     const res: any = await fetchDocs('students')
@@ -48,8 +44,7 @@ export default function CompanyHomePage() {
 
   const internCategoryOptions = [
     { value: 'SIWES', label: 'SIWES' },
-    { value: 'tTEACHING PRACTICE', label: 'Teaching Practice' },
-    // { value: 'housemanship', label: 'Housemanship' },
+    { value: 'TEACHING PRACTICE', label: 'Teaching Practice' },
   ]
 
   const internFacultyOptions = [
@@ -140,8 +135,7 @@ export default function CompanyHomePage() {
       if ('errors' in response) {
         setError('An error occurred while fetching students.')
       } else {
-        console.log(response)
-        setStudents(response.docs)
+        setStudents(response?.docs)
       }
     } catch (err) {
       setError('Failed to fetch students.')
@@ -160,7 +154,7 @@ export default function CompanyHomePage() {
     try {
       await fetchStudents()
     } finally {
-      setSearchLoading(false)
+      setclearSearchLoading(false)
     }
   }
 
@@ -178,7 +172,6 @@ export default function CompanyHomePage() {
         await fetchStudents() // Fetch all students when "All Career Area" is selected
       } else {
         const response = await searchStudents<Student[]>(formattedSearchParams as {})
-        console.log(response)
         setStudents(response.docs)
       }
     } finally {
@@ -410,13 +403,13 @@ export default function CompanyHomePage() {
                     </div>
 
                     <div className="lg:flex items-center justify-between ">
-                      <Button
-                        className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-transparent text-[#0B7077] border "
+                      <button
+                        className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-transparent text-[#0B7077]  "
                         onClick={clearFilters}
                         disabled={cleaerSearchLoading}
                       >
-                        {cleaerSearchLoading ? <Spinner /> : 'Clear'}
-                      </Button>
+                        {cleaerSearchLoading ? 'clearing...' : 'Clear'}
+                      </button>
                       <Button
                         className="h-[32px] w-[132px] rounded-[4px] text-[14px] font-[400] bg-[#0B7077] text-white"
                         onClick={handleSearch}
