@@ -59,21 +59,21 @@ export const InterviewInvitations: CollectionConfig = {
       type: 'text',
     },
   ],
-  hooks: {
-    beforeChange: [
-      ({ data, req, originalDoc }) => {
-        if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
-          req.payload.create({
-            collection: 'employments',
-            data: {
-              student: originalDoc.student,
-              company: originalDoc.company,
-            },
-          })
-        }
-      },
-    ],
-  },
+  // hooks: {
+  //   beforeChange: [
+  //     ({ data, req, originalDoc }) => {
+  //       if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
+  //         req.payload.create({
+  //           collection: 'employments',
+  //           data: {
+  //             student: originalDoc.student,
+  //             company: originalDoc.company,
+  //           },
+  //         })
+  //       }
+  //     },
+  //   ],
+  // },
   endpoints: [
     {
       method: 'get',

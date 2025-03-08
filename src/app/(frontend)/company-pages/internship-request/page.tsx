@@ -19,6 +19,8 @@ import FileIcon from '../../assets/icons/file'
 import fetchDoc from '@/services/fetchDoc'
 import DownloadIcon from '../../assets/icons/download'
 import DownloadFileIcon from '../../assets/icons/downloadFile'
+import { Button } from '@mui/material'
+import Spinner from '@/components/spinner'
 
 export interface InvitationDetails {
   message: string
@@ -35,7 +37,9 @@ export default function InternshipRequest() {
 
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('internship-applications')
-    setInternReq(res?.docs || [])
+    console.log(res)
+    const getApplication = res?.docs.filter((s) => s.status !== 'accepted')
+    setInternReq(getApplication || [])
     setTableData(res)
     setLoading(false)
   }
@@ -120,7 +124,7 @@ export default function InternshipRequest() {
           onClick={() => handleRespond(item.id, 'declined')}
           disabled={respondToInterviewMtn.isPending}
         >
-          ✘ Declne
+          {respondToInterviewMtn.isPending ?'processing...' : '✘ Decline'} 
         </button>
       </div>,
     ])
