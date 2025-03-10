@@ -288,9 +288,29 @@ export interface InternshipApplication {
   id: string;
   student: string | Student;
   company: string | Company;
+  internship?: (string | null) | Internship;
   letter: string;
   status?: ('pending' | 'cancelled' | 'approved' | 'student declined' | 'company declined') | null;
   interviewInvitation?: (string | null) | InterviewInvitation;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internships".
+ */
+export interface Internship {
+  id: string;
+  company: string | Company;
+  postDescription: string;
+  jobDescription: string;
+  location?: 'Lagos' | null;
+  applicants?: (string | Student)[] | null;
+  deadline?: string | null;
+  startDate: string;
+  endDate: string;
+  picture?: (string | null) | Media;
+  status?: ('open' | 'closed') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -315,25 +335,6 @@ export interface Report {
   student: string | Student;
   title: string;
   details: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "internships".
- */
-export interface Internship {
-  id: string;
-  company: string | Company;
-  postDescription: string;
-  jobDescription: string;
-  location?: 'Lagos' | null;
-  applicants?: (string | Student)[] | null;
-  deadline?: string | null;
-  startDate: string;
-  endDate: string;
-  picture?: (string | null) | Media;
-  status?: ('open' | 'closed') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -592,6 +593,7 @@ export interface InterviewInvitationsSelect<T extends boolean = true> {
 export interface InternshipApplicationsSelect<T extends boolean = true> {
   student?: T;
   company?: T;
+  internship?: T;
   letter?: T;
   status?: T;
   interviewInvitation?: T;

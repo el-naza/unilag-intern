@@ -2,7 +2,7 @@
 import hero from '../../assets/images/company-hero-bg.png'
 import studentImage from '../../assets/images/student-img.png'
 import profileLogo from '../../assets/images/compay-profile-logo.png'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import NavBar from '../../common/nav-bar'
 import StudentProfileCard from '../../components/Cards/studentProfileCard'
 import Image from 'next/image'
@@ -11,20 +11,27 @@ import PhoneIcon from '../../assets/icons/phone'
 import MailIcon from '../../assets/icons/mail'
 import LocationIcon from '../../assets/icons/location'
 import LinkIcon from '../../assets/icons/link'
+import { useSession } from 'next-auth/react'
+
 export default function CompanyProfile() {
+  const { data: session } = useSession()
+
+  const user = useMemo<any>(() => session?.user, [session])
+  console.log('user', user)
+
   const fields = [
-    { label: 'Company Name', placeholder: 'CMR SHOPPING MALL', type: 'text' },
-    { label: 'CAC Number', placeholder: '163889584994', type: 'text' },
+    { label: 'Company Name', placeholder: user?.name || 'Company Name', type: 'text' },
+    { label: 'CAC Number', placeholder: user?.cacNumber || 'CAC Number', type: 'text' },
     {
       label: 'Location',
-      placeholder: 'Ikeja, Lagos ',
+      placeholder: user?.address || 'Location',
       type: 'text',
       Icon: LocationIcon,
       fill: '#0B7077',
     },
-    { label: 'Email', placeholder: 'Example@gmail.com', Icon: MailIcon, type: 'email' },
-    { label: 'Phone', placeholder: '09072709030', Icon: PhoneIcon, type: 'text' },
-    { label: 'Website', placeholder: 'www.crmshoppingmall.com', Icon: LinkIcon, type: 'text' },
+    { label: 'Email', placeholder: user?.email || 'Email', Icon: MailIcon, type: 'email' },
+    { label: 'Phone', placeholder: user?.phone || 'Phone', Icon: PhoneIcon, type: 'text' },
+    { label: 'Website', placeholder: user?.website || 'Website', Icon: LinkIcon, type: 'text' },
   ]
 
   const students = [
@@ -104,22 +111,22 @@ export default function CompanyProfile() {
           <div className="max-w-full md:max-w-[866px] m-auto flex lg:flex-row flex-col items-center gap-[12px] px-4">
             <Image
               alt="image"
-              src={profileLogo.src}
+              src={user?.logo || profileLogo.src}
               height="150"
               width="150"
               objectFit="cover"
               className="rounded-full border-2 border-[#418A7E]"
             />
-            <h2 className="text-white font-[700] text-[30px]">CMR SHOPPING MALL</h2>
+            <h2 className="text-white font-[700] text-[30px]">{user?.name}</h2>
           </div>
         </div>
       </div>
 
       <div className="max-w-full md:max-w-[866px] m-auto px-4 pb-[100px]">
-        <p className="pt-[18px] font-[400] text-[16 px]">Student List</p>
+        {/* <p className="pt-[18px] font-[400] text-[16 px]">Student List</p>
         <p className="mt-[2px] text-[#8E8E93] font-[400] text-[12px]">
           Students Basic Informations
-        </p>
+        </p> */}
         <div className="mt-[22px] grid md:grid-cols-3 gap-[14px] md:grid-cols-2">
           {fields.map((field, index) => (
             <InputField

@@ -6,6 +6,7 @@ export type ValidationErrors = {
 
 export type ErrorResponse = {
   message: string
+  errors?: [ValidationError]
 }
 
 export type ServiceResponse<T> = {

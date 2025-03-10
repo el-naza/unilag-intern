@@ -12,6 +12,7 @@ import * as otpGenerator from 'otp-generator'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
+import courseAreas from '@/utilities/courseAreas'
 
 const PreLogin = z.object({
   email: z.string().email(),
@@ -37,6 +38,23 @@ export const Companies: CollectionConfig = {
       generateEmailHTML,
     },
   },
+  // hooks: {
+  //   afterRead: [
+  //     async ({ doc, req }) => {
+  //       const internships = await req.payload.find({
+  //         collection: 'internships',
+  //         where: {
+  //           company: {
+  //             equals: doc.id,
+  //           },
+  //         },
+  //       })
+
+  //       doc.internships = internships.docs
+  //       return doc
+  //     },
+  //   ],
+  // },
   endpoints: [
     {
       method: 'post',
@@ -254,7 +272,7 @@ export const Companies: CollectionConfig = {
     {
       name: 'courseAreas',
       type: 'select',
-      options: ['Mathematics', 'Science', 'History', 'Engineering', 'Arts'],
+      options: courseAreas,
       hasMany: true,
       required: true,
     },

@@ -33,6 +33,17 @@ export const Students: CollectionConfig = {
         return args
       },
     ],
+    afterRead: [
+      async ({ req, doc }) => {
+        const employmentRecords = await req.payload.find({
+          collection: 'employments',
+          where: { student: { equals: doc.id } },
+        })
+
+        doc.employments = employmentRecords.docs // Attach employment records to student
+        return doc
+      },
+    ],
   },
   auth: {
     loginWithUsername: {

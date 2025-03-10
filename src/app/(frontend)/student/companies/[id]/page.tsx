@@ -8,15 +8,22 @@ import advertText from '../../../assets/images/adverts.png'
 import { useParams } from 'next/navigation'
 import fetchDoc from '@/services/fetchDoc'
 import Loader from '@/app/(frontend)/components/Layouts/Loader'
+import fetchCompanyInternships from '@/services/fetchCompanyInternships'
+import { Dialog, DialogTrigger, DialogContent, DialogDescription } from '@/components/ui/dialog'
+import truncateText from '@/utilities/truncateText'
 
 const Page = () => {
   const { id }: { id: string } = useParams()
+  const [open, setOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
   const [company, setCompany] = useState<any>({})
+  const [internships, setInternships] = useState<any>([])
 
   const fetchCompany = async () => {
-    const res: any = await fetchDoc('companies', id)
-    setCompany(res)
+    const companyRes: any = await fetchDoc('companies', id)
+    setCompany(companyRes)
+    const internshipsRes: any = await fetchCompanyInternships({ company: id })
+    setInternships(internshipsRes.docs)
     setLoading(false)
   }
 
@@ -153,14 +160,45 @@ const Page = () => {
                     </div>
                     <div className="grid grid-cols-3 mb-3">
                       <div className="flex items-center text-center text-[#FF9500] font-bold">
-                        2 vacancies
+                        {internships.length} vacancies
                       </div>
                       <div className="col-span-2">
-                        <Link href={`/student/companies/${id}/apply`}>
-                          <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
-                            Apply Now
-                          </button>
-                        </Link>
+                        <Dialog open={open} onOpenChange={setOpen}>
+                          <DialogTrigger asChild>
+                            <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
+                              Apply Now
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent className="bg-white rounded-lg gap-2">
+                            <DialogDescription className="grid gap-4 p-2 text-[#8E8E93]">
+                              {internships.map((internship: any) => (
+                                <div key={internship.id} className="justify-between flex">
+                                  <div>
+                                    <div className="text-black font-bold text-sm">
+                                      {internship?.postDescription
+                                        ? truncateText(internship?.postDescription, 40)
+                                        : ''}
+                                    </div>
+                                    <div className="text-xs text-[#878787]">
+                                      {internship?.jobDescription
+                                        ? truncateText(internship?.jobDescription, 20)
+                                        : ''}
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <Link
+                                      href={`/student/companies/${company.id}/apply/${internship.id}`}
+                                    >
+                                      <button className="w-full min-w-20 p-2 rounded-full bg-[#0B7077] text-white text-center">
+                                        Apply
+                                      </button>
+                                    </Link>
+                                  </div>
+                                </div>
+                              ))}
+                            </DialogDescription>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </div>
                     <div className="mb-3">

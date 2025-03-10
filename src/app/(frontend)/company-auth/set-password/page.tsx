@@ -101,7 +101,7 @@ export default function OTPConfirmation() {
   })
 
   return (
-    <div className="">
+    <div className=" lg:w-[343px] mx-auto p-6 rounded-[10px] mt-[40px]">
       <button
         onClick={()=>router.back()}
         className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"

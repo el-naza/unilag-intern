@@ -7,7 +7,7 @@ interface TableProps {
   currentPage: number
   totalPages: number
   totalItems: number
-  onPageChange: (page: number) => void
+  onPageChange?: (page: number) => void
   onRowClick?: (row: React.ReactNode[]) => void
   headerStyle?: string
   bodyStyle?: string

@@ -14,7 +14,7 @@ type Response = {
 
 export default async function uploadMedia(
   file: File,
-  authToken: string | undefined,
+  authToken?: string | undefined,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const formData = new FormData()
   formData.append('file', file)

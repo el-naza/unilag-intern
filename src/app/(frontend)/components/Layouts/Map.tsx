@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useEffect, useMemo } from 'react'
 import { Company } from '@/payload-types'
+import CompanyRecommendedCard from '../Cards/CompanyRecommendedCard'
 
 interface MapProps {
   companies: Company[]
@@ -56,7 +57,7 @@ const Map = ({ zoom = defaults.zoom, companies }: MapProps) => {
       center={center}
       zoom={zoom}
       scrollWheelZoom={false}
-      className="rounded-xl w-full min-h-[400px] lg:h-full"
+      className="w-full min-h-[400px] lg:h-full"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -71,16 +72,17 @@ const Map = ({ zoom = defaults.zoom, companies }: MapProps) => {
           position={[company.location.latitude, company.location.longitude]}
           draggable={false}
         >
-          <Popup>
-            <div className="grid gap-2">
+          <Popup minWidth={300}>
+            <CompanyRecommendedCard company={company} />
+            {/* <div className="grid gap-2">
               <div className="font-medium">{company.name}</div>
               <div>{company.description}</div>
               <div className="text-right">
-                <Link href={`/student/companies/${company.id}/apply`}>
+                <Link href={`/student/companies/${company.id}`}>
                   <Button size="sm">Apply</Button>
                 </Link>
               </div>
-            </div>
+            </div> */}
           </Popup>
         </Marker>
       ))}

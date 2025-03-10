@@ -15,7 +15,7 @@ export default async function updateDoc(
   col: CollectionSlug,
   id: string,
   update: object,
-  authToken: string | undefined,
+  authToken?: string | undefined,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   console.log(
     '***Token',
