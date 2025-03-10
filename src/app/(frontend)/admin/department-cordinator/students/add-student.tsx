@@ -1,15 +1,19 @@
 'use client'
-import { useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+import { useState } from 'react'
+import { useDropzone } from 'react-dropzone'
 
-const AddStudent = () => {
-  const [files, setFiles] = useState<File[]>([]);
+interface IStudentProp {
+  onCloseEmit: () => void
+}
+
+const AddStudent = ({ onCloseEmit }: IStudentProp) => {
+  const [files, setFiles] = useState<File[]>([])
 
   const onDrop = (acceptedFiles: File[]) => {
-    setFiles(acceptedFiles);
-  };
+    setFiles(acceptedFiles)
+  }
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -18,7 +22,12 @@ const AddStudent = () => {
       'application/vnd.ms-excel': ['.xls', '.xlsx'],
     },
     maxSize: 2 * 1024 * 1024, // 2MB limit
-  });
+  })
+
+  const closeDialog = () => {
+    setFiles([])
+    onCloseEmit()
+  }
 
   return (
     <div>
@@ -32,7 +41,13 @@ const AddStudent = () => {
         className="border-[1px] border-dashed border-primary rounded-lg py-8 grid place-content-center text-center gap-4 cursor-pointer"
       >
         <input {...getInputProps()} />
-        <Image src="/icons/upload.svg" width={50} height={40} alt="Upload Icon" className="mx-auto" />
+        <Image
+          src="/icons/upload.svg"
+          width={50}
+          height={40}
+          alt="Upload Icon"
+          className="mx-auto"
+        />
         <p>Drag & drop your file(s) here</p>
         <p className="text-neutral-500">OR</p>
         <Button variant="outline">Browse Files</Button>
@@ -55,12 +70,12 @@ const AddStudent = () => {
 
       <div className="flex gap-4 mt-8">
         <Button>Update Student List</Button>
-        <Button variant="outline" onClick={() => setFiles([])}>
+        <Button variant="outline" onClick={() => closeDialog()}>
           Cancel
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AddStudent;
+export default AddStudent

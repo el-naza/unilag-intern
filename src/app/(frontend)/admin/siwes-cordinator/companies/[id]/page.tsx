@@ -38,6 +38,7 @@ export default function CompanyDetailPage() {
     fetchCompanyDetail()
   }, [])
 
+
   return (
     <div className="p-8">
       <h1 className="font-semibold text-[1.5rem]">Company Profile</h1>

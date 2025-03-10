@@ -148,7 +148,9 @@ export default function DepartmentalAdminsPage() {
   }
 
   const [query, setQuery] = useState('')
-  const [searchFilter, setSearchFilter] = React.useState<'name' | 'department' | 'email' | 'phone'>()
+  const [searchFilter, setSearchFilter] = React.useState<
+    'name' | 'department' | 'email' | 'phone'
+  >()
   const debouncedQuery = useDebounce(query)
 
   useEffect(() => {
@@ -168,9 +170,13 @@ export default function DepartmentalAdminsPage() {
     }
   }, [debouncedQuery])
 
+  const filterStats = (date: Date) => {
+    console.log('Filtered: ', date)
+  }
+
   return (
     <div className="p-8">
-      <FIlterStats config={config} />
+      <FIlterStats {...config} onEmitFilter={filterStats} />
 
       <div className="flex justify-between items-center mt-8">
         <div></div>

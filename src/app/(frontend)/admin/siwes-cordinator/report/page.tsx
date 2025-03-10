@@ -151,15 +151,13 @@ export default function ReportPage() {
 
   return (
     <div className="p-8">
-      <FIlterStats config={config} />
+      <FIlterStats {...config} />
 
       <div className="flex justify-between items-center mt-8">
         <div></div>
 
         <div className="flex gap-4 items-center">
-          <Select
-            onValueChange={(value) => setSearchFilter(value as 'company' | 'report-number')}
-          >
+          <Select onValueChange={(value) => setSearchFilter(value as 'company' | 'report-number')}>
             <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">
               <SelectValue placeholder="Filter" />
             </SelectTrigger>

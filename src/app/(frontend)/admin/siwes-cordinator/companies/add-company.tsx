@@ -3,7 +3,11 @@ import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
-const AddCompany = () => {
+interface ICompanyProp {
+  onCloseEmit: () => void 
+}
+
+const AddCompany = ({ onCloseEmit }: ICompanyProp) => {
   const [files, setFiles] = useState<File[]>([]);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -18,6 +22,11 @@ const AddCompany = () => {
     },
     maxSize: 2 * 1024 * 1024, // 2MB limit
   });
+
+  const closeDialog = () => {
+    setFiles([])
+    onCloseEmit()
+  }
 
   return (
     <div>
@@ -57,7 +66,7 @@ const AddCompany = () => {
       {/* Action Buttons */}
       <div className="flex gap-4 mt-8">
         <Button>Update Company List</Button>
-        <Button variant="outline" onClick={() => setFiles([])}>
+        <Button variant="outline" onClick={() => closeDialog()}>
           Cancel
         </Button>
       </div>

@@ -22,7 +22,7 @@ export async function getAllReports(
   })
 
   return await axiosInstance
-    .get<Response | ErrorResponse>(`/api/${col}/?${params}`, {
+    .get<Response | ErrorResponse>(`/api/${col}/${params}`, {
       headers: {
         Authorization: `Bearer ${authResult?.token}`,
       },
