@@ -100,7 +100,7 @@ export default function WaitlistForm() {
                 <FormControl>
                   <Input placeholder="Company Name" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -113,7 +113,7 @@ export default function WaitlistForm() {
                 <FormControl>
                   <Input placeholder="Company Email" type="email" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -126,7 +126,7 @@ export default function WaitlistForm() {
                 <FormControl>
                   <Input placeholder="Company RC Number" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -139,7 +139,7 @@ export default function WaitlistForm() {
                 <FormControl>
                   <Input placeholder="Company Course Area" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -152,7 +152,7 @@ export default function WaitlistForm() {
                 <FormControl>
                   <Input placeholder="Company Address" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
