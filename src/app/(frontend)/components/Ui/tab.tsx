@@ -10,7 +10,7 @@ export default function InvitationTabs() {
   const careers = [
     { title: 'Internship Post', path: '/company-pages/internship-post' },
     { title: 'Interviews', path: '/company-pages/awaiting-interview' },
-    { title: 'Internship Request', path: '/company-pages/internship-request', total: '2' },
+    { title: 'Internship Request', path: '/company-pages/internship-request', total: '' },
     { title: 'Rejected Request', path: '/company-pages/rejected-requests' },
   ]
 

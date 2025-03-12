@@ -38,7 +38,7 @@ export default buildConfig({
     InternshipApplications,
     Employments,
     Reports,
-    Internships
+    Internships,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   // email: nodemailerAdapter({

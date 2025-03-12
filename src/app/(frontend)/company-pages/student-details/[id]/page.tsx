@@ -12,7 +12,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import fetchDoc from '@/services/fetchDoc'
 import Loader from '@/app/(frontend)/components/Layouts/Loader'
-
+import fetchDocs from '@/services/fetchDocs'
 
 export default function StudentDetails() {
   const router = useRouter()
@@ -31,14 +31,10 @@ export default function StudentDetails() {
     { label: 'Email', key: 'email', type: 'email' },
   ]
 
-  const academicFields = [
-    { label: 'CGPA', placeholder: '3.5', type: 'text' },
-    { label: 'Department', placeholder: 'Mathematics', type: 'text' },
-  ]
-
   const { id: studentId }: { id: string } = useParams()
   const [studentDetails, setStudentDetails] = useState<any>({})
   const [loading, setLoading] = useState<boolean>(true)
+  const [studentLater, setStudentLater] = useState('')
 
   const fetchStudentDetails = async () => {
     const res: any = await fetchDoc('students', studentId)
@@ -46,10 +42,18 @@ export default function StudentDetails() {
     setLoading(false)
   }
 
+  const findStudent = async () => {
+    const res: any = await fetchDocs('internship-applications')
+    const getStudent = res?.docs.find((s) => s.student.id === studentId)
+    if (getStudent) {
+      setStudentLater(getStudent.letter)
+    }
+  }
   useEffect(() => {
     if (studentId) {
       fetchStudentDetails()
     }
+    findStudent()
   }, [studentId])
 
   return (
@@ -66,28 +70,23 @@ export default function StudentDetails() {
           Back
         </button>
         {loading ? (
-          <Loader />
+          <Loader height="auto" background="transparent" />
         ) : (
           <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row">
             <div className="max-w-[250px] md:max-w-full ">
               <Image
-                src={studentImage}
+                src={studentDetails?.image?.url || studentImage}
                 alt="image"
                 width={0}
                 height={300}
                 // objectFit={'contain'}
-                className="h-[300px] w-full object-cover rounde"
+                className="h-[300px] object-cover rounded  lg:w-[250px] w-[250px]"
               />
               <button
                 className="mt-[24px] w-full py-[12px] rounded-[6px] bg-[#0B7077] flex items-center justify-center  gap-[8px] font-[500] text-[16px] text-[#FFFFFF] "
-                // onClick={() => router.push('/company-pages/invite')}
-                  onClick={() => router.push(`/company-pages/student-details/${studentId}/invite`)}
-
+                onClick={() => router.push(`/company-pages/student-details/${studentId}/invite`)}
               >
-                <MailIcon
-                  fill="#FFFFFF"
-                />{' '}
-                Send Invitation
+                <MailIcon fill="#FFFFFF" /> Send Invitation
               </button>
             </div>
             <div className="lg:w-[568px] w-full">
@@ -95,35 +94,33 @@ export default function StudentDetails() {
                 <h3 className="font-[400] text-[16px]">Basic Information</h3>
                 <p className="text-[#8E8E93] font-[400] text-[12px]">Students Basic Informations</p>
                 <div className="mt-[22px] grid md:grid-cols-2 gap-[14px] md:grid-cols-2">
-                  {fields.map((field, index) => (
-                    <InputField
-                      key={index}
-                      label={field.label}
-                      placeholder={studentDetails[field.key] || 'Loading...'}
-                      type={field.type}
-                      disabled={true}
-                    />
-                  ))}
+                  {fields.map((field, index) => {
+                    let value = studentDetails[field.key] || 'Loading...'
+                    if (field.key === 'dob' && value) {
+                      value = new Date(value).toLocaleString()
+                    }
+
+                    return (
+                      <InputField
+                        key={index}
+                        label={field.label}
+                        placeholder={value}
+                        type={field.type}
+                        disabled={true}
+                      />
+                    )
+                  })}
                 </div>
               </div>
-              {/* <div className="mt-[38px] ">
-                <h3 className="font-[400] text-[16px]">Academic Information</h3>
-                <p className="text-[#8E8E93] font-[400] text-[12px]">
-                  Students Academic Informations
-                </p>
-                <div className="mt-[22px] grid grid-cols-2 gap-[14px] ">
-                  {academicFields.map((field, index) => (
-                    <InputField
-                      key={index}
-                      label={field.label}
-                      placeholder={field.placeholder}
-                      type={field.type}
-                      disabled={true}
-                    />
-                  ))}
+
+              {studentLater ? (
+                <div className="mt-[38px]">
+                  <h3 className="font-[400] text-[16px]">Student Later </h3>
+                  <p className="text-[#8E8E93] font-[400] text-[12px]">{studentLater}</p>
                 </div>
-              </div> */}
-              <div className="mt-[38px] ">
+              ) : null}
+
+              <div className="mt-[38px]">
                 <h3 className="font-[400] text-[16px]">Siwes Form</h3>
                 <p className="text-[#8E8E93] font-[400] text-[12px]">Uploaded Student Siwes Form</p>
                 <div className="mt-[22px] grid grid-cols-2 gap-[14px] ">
@@ -152,7 +149,7 @@ export default function StudentDetails() {
                         </button>
 
                         <button className="bg-[#DCF4FF] flex items-center justify-center text-[#DCF4FF] hover:bg-[#DCF4FF] hover:text-white transition h-[24px] w-[24px]">
-                          <DownloadIcon />
+                          {/* <DownloadIcon /> */}
                         </button>
                       </div>
                     </div>
