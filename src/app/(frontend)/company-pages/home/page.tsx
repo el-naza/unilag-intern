@@ -34,6 +34,7 @@ export default function CompanyHomePage() {
 
   const fetchStudents = async () => {
     const res: any = await fetchDocs('students')
+    console.log(res)
     setStudents(res.docs)
     setLoading(false)
   }
@@ -41,7 +42,7 @@ export default function CompanyHomePage() {
   useEffect(() => {
     fetchStudents()
   }, [])
-
+ 
   const internCategoryOptions = [
     { value: 'SIWES', label: 'SIWES' },
     { value: 'TEACHING PRACTICE', label: 'Teaching Practice' },
@@ -428,7 +429,7 @@ export default function CompanyHomePage() {
           <Loader height="auto" background="transparent" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[14px] p-[12px]">
-            {students.length > 0 ? (
+            {students?.length > 0 ? (
               students.map((student) => <StudentProfileCard key={student.id} student={student} />)
             ) : (
               <p>No students found</p>

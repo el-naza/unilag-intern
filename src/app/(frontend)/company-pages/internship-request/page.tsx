@@ -30,6 +30,7 @@ export interface InvitationDetails {
 export default function InternshipRequest() {
   const router = useRouter()
   const [loading, setLoading] = useState<boolean>(true)
+  const [loadUpdateReq, setLoadUpdateReq] = useState<boolean>(false)
 
   const [internReq, setInternReq] = useState<any>([])
   const [tableData, setTableData] = useState<any>([])
@@ -38,7 +39,8 @@ export default function InternshipRequest() {
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('internship-applications')
     console.log(res)
-    const getApplication = res?.docs.filter((s) => s.status !== 'approved')
+    const getApplication = res?.docs.filter((s) => s.status === 'pending')
+    console.log('applications',getApplication)
     setInternReq(getApplication || [])
     setTableData(res)
     setLoading(false)
@@ -64,6 +66,7 @@ export default function InternshipRequest() {
   const respondToInterviewMtn = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       try {
+        // setLoadUpdateReq(true)
         console.log('Updating interview invitation:', { id, status })
 
         const res = await updateDoc('internship-applications', id, { status })
@@ -74,6 +77,8 @@ export default function InternshipRequest() {
         return res
       } catch {
         toast.error('An error occurred while updating; please try again later')
+      }finally{
+        // setLoadUpdateReq(false)
       }
     },
   })

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { companies } from '@/access/companies'
 import { relatedCompany } from '@/access/relatedCompany'
+import { anyone } from '@/access/anyone'
 
 export const Employments: CollectionConfig = {
   slug: 'employments',
@@ -9,6 +10,7 @@ export const Employments: CollectionConfig = {
     create: companies,
     delete: relatedCompany,
     update: relatedCompany,
+    read: anyone
   },
   fields: [
     {

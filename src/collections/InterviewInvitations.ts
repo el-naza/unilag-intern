@@ -4,14 +4,15 @@ import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedS
 import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 import { parse } from 'qs-esm'
 import { anyone } from '@/access/anyone'
+import { stat } from 'fs'
 
 export const InterviewInvitations: CollectionConfig = {
   slug: 'interview-invitations',
   access: {
     read: anyone,
-    create: companies,
-    delete: relatedCompany,
-    update: relatedStudentOrCompany,
+    create: anyone,
+    delete: anyone,
+    update: anyone,
   },
   fields: [
     {
@@ -39,7 +40,7 @@ export const InterviewInvitations: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      options: ['pending', 'accepted', 'declined'],
+      options: ['pending', 'accepted', 'declined', 'company accected', 'company declined'],
       defaultValue: 'pending',
     },
     {

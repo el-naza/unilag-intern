@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import Image from 'next/image'
-
+import { parse, formatISO } from 'date-fns'
 import ArrowIcon from '../../../../assets/icons/arrow'
 import NavBar from '../../../../common/nav-bar'
 import studentImage from '../../../../assets/images/student-image.png'
@@ -23,6 +23,7 @@ import FormError from '@/components/FormError'
 import FieldError from '@/components/FieldError'
 import { Button } from '@/components/ui/button'
 import Spinner from '@/components/spinner'
+import updateDoc from '@/services/updateDoc'
 
 interface StudentDetail {
   id: string
@@ -37,7 +38,7 @@ export default function StudentInvitation() {
   const { data: session } = useSession()
 
   const [student, setStudent] = useState<StudentDetail>()
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
 
@@ -46,23 +47,24 @@ export default function StudentInvitation() {
   const dates = ['07:00 am', '08:00 am', '09:00 am']
 
   const fetchStudent = async () => {
-    setLoading(true)
     const res: any = await fetchDoc('students', studentId)
-    setStudent(res)
     console.log('student', res)
-    setLoading(false)
+    setStudent(res)
   }
 
   const sendInvitationMtn = useMutation({
     mutationFn: async (invitation: InterviewInvitation) => {
       try {
-        console.log('payload ' + invitation)
+        setLoading(true)
+        // const updateApplication = await updateDoc('internship-applications', id, { status })
+
         const res = await saveDoc('interview-invitations', invitation)
-        console.log('res ' + res)
         if (!res) return toast.error('Network error; please try again later')
         return res
       } catch {
         toast.error('An error occurred while saving the message; please try again later')
+      } finally {
+        setLoading(false)
       }
     },
   })
@@ -79,7 +81,7 @@ export default function StudentInvitation() {
         value.message = value.message
         value.dateTime =
           selectedDate && selectedTime
-            ? format(selectedDate, 'yyyy-MM-dd') + ' ' + selectedTime
+            ? formatISO(parse(selectedTime, 'hh:mm a', selectedDate))
             : ''
 
         //  if (!value.dateTime) {
@@ -103,10 +105,7 @@ export default function StudentInvitation() {
           }
         }
 
-        console.log(value)
-
         const res = await sendInvitationMtn.mutateAsync(value)
-        console.log('res', res)
         if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
           return {
             form: (res as ValidationErrors).errors[0].message,
@@ -166,18 +165,16 @@ export default function StudentInvitation() {
               {/* <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                 {([canSubmit, isSubmitting]) => (
                   <> */}
-                    <Button
-                      type="button"
-                      size="lg"
-                      onClick={() => router.push(`/company-pages/student-details/${studentId}`)}
-                      className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px]"
-                    >
-                       {/* <MailIcon fill="#FFFFFF" />  */}
-                      View Profile 
-                    
-                    </Button>
-                    <FormError form={form} />
-                  {/* </>
+              <Button
+                type="button"
+                size="lg"
+                onClick={() => router.push(`/company-pages/student-details/${studentId}`)}
+                className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px]"
+              >
+                {/* <MailIcon fill="#FFFFFF" />  */}
+                View Profile
+              </Button>
+              {/* </>
                 )}
               </form.Subscribe> */}
 
@@ -244,9 +241,8 @@ export default function StudentInvitation() {
                   </>
                 )}
               </form.Field>
-              <div>
 
-              </div>
+              <div></div>
 
               <p className="text-[#FF9500] font-[400] text-[12px] my-[12px]">
                 Confirm your invitation before sending. The recipient will be notified once you
@@ -255,18 +251,18 @@ export default function StudentInvitation() {
 
               {/* <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                 {([canSubmit, isSubmitting]) => ( */}
-                  <>
-                    <Button
-                      type="submit"
-                      disabled={loading }
-                      size="lg"
-                      className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px] mb-[100px]"
-                    >
-                      Send Application {loading && <Spinner />}
-                    </Button>
-                    <FormError form={form} />
-                  </>
-                {/* )}
+              <div className='mb-[100px]'>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  size="lg"
+                  className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px] "
+                >
+                  Send Application {loading && <Spinner />}
+                </Button>
+                <FormError form={form} />
+              </div>
+              {/* )}
               </form.Subscribe> */}
             </div>
           </div>
