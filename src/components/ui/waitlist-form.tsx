@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 // Form validation schema
 const waitlistFormSchema = z.object({
@@ -23,6 +24,7 @@ type WaitlistFormValues = z.infer<typeof waitlistFormSchema>
 
 export default function WaitlistForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
 
   // Initialize form
   const form = useForm<WaitlistFormValues>({
@@ -45,8 +47,8 @@ export default function WaitlistForm() {
       console.log('Form data:', data)
       // Here you would typically send the data to your API
       await new Promise((resolve) => setTimeout(resolve, 1500))
-      alert('Successfully joined the waitlist!')
-      form.reset()
+      router.push('/wait-list-signup-success')
+      // form.reset()
     } catch (error) {
       console.error('Error submitting form:', error)
       alert('There was an error joining the waitlist. Please try again.')
@@ -56,11 +58,11 @@ export default function WaitlistForm() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="text-center">
         <h2 className="text-2xl font-semibold mb-4">Join the Waitlist</h2>
 
-        <div className="flex items-center justify-center mx-10 py-1 gap-1 mb-4 bg-gray-200 border border-gray-50 rounded-full">
+        <div className="flex items-center justify-center mx-14 px-2 py-1 gap-1 mb-4 bg-gray-200 border border-gray-50 rounded-full">
           <div className="flex -space-x-2">
             <Avatar className="h-7 w-7 transition-transform duration-50 hover:h-8 hover:w-8">
               <AvatarImage src="/icons/waiting-icon1.png" alt="User1" />
@@ -81,7 +83,7 @@ export default function WaitlistForm() {
               </AvatarFallback>
             </Avatar>
           </div>
-          <span className="text-sm text-gray-600">Only 100 Spots Available</span>
+          <span className="text-xs text-gray-600">Only 100 Spots Available</span>
         </div>
 
         <p className="text-gray-600 text-sm mb-6">

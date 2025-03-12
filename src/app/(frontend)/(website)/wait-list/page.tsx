@@ -31,8 +31,8 @@ export default function Home() {
         </div>
 
         {/* Waitlist form card */}
-        <div className="bg-gray-100 flex justify-center p-6 md:p-10 rounded-t-3xl w-full ">
-          <div className="bg-gray-100 rounded-xl p-6 md:p-10 w-full max-w-md">
+        <div className="bg-gradient-to-b from-gray-100 from-50% flex justify-center pt-5 md:pt-10 pb-10 md:pb-32 rounded-t-3xl w-full ">
+          <div className="bg-gradient-to-b from-gray-100 from-50% rounded-xl p-6 md:p-10 w-full max-w-md">
             <WaitlistForm />
           </div>
         </div>
