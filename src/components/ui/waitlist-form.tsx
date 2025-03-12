@@ -47,7 +47,7 @@ export default function WaitlistForm() {
       console.log('Form data:', data)
       // Here you would typically send the data to your API
       await new Promise((resolve) => setTimeout(resolve, 1500))
-      router.push('/wait-list-signup-success')
+      router.push('/waitlist-signup-success')
       // form.reset()
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -158,6 +158,8 @@ export default function WaitlistForm() {
               </FormItem>
             )}
           />
+
+          <div className="mt-10" />
 
           <Button
             type="submit"

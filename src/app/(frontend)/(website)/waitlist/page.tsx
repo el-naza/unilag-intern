@@ -1,7 +1,7 @@
 import WaitlistForm from '@/components/ui/waitlist-form'
 import Image from 'next/image'
 
-export default function Home() {
+export default function WaitList() {
   return (
     <main className="min-h-screen relative">
       {/* Background image with overlay */}
