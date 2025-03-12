@@ -3,11 +3,12 @@ import { companies } from '@/access/companies'
 import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
 import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 import { parse } from 'qs-esm'
+import { anyone } from '@/access/anyone'
 
 export const InterviewInvitations: CollectionConfig = {
   slug: 'interview-invitations',
   access: {
-    read: relatedStudentOrCompany,
+    read: anyone,
     create: companies,
     delete: relatedCompany,
     update: relatedStudentOrCompany,

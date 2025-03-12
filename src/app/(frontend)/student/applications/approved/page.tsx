@@ -21,7 +21,7 @@ const Page = () => {
 
   const fetchInterviewInvitations = async () => {
     const res: any = await fetchDocs('interview-invitations')
-
+    console.log(res)
     setInterviewInvitations(res.docs)
     setLoading(false)
   }
