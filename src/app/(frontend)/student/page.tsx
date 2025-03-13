@@ -44,6 +44,7 @@ const Page = () => {
   const [distance, setDistance] = useState<number[]>([20])
   const [filter, setFilter] = useState<{ careerArea: string }>({ careerArea: '' })
   const [page, setPage] = useState<number>(1)
+  const [loadingMap, setLoadingMap] = useState<boolean>(false)
 
   const user = useMemo<any>(() => session?.user, [session])
 
@@ -77,6 +78,7 @@ const Page = () => {
 
   const searchJobsMtn = useMutation({
     mutationFn: async (company: Company) => {
+      setLoadingMap(true)
       try {
         const res = await searchJobs({
           name: company.name,
@@ -85,9 +87,11 @@ const Page = () => {
         console.log('res', res)
         setPage(1)
         setFilter({ careerArea: '' })
+        setLoadingMap(false)
         return res
       } catch {
         toast.error('An error occured while fetching jobs; pls try again later')
+        setLoadingMap(false)
       }
     },
   })
@@ -500,11 +504,11 @@ const Page = () => {
                       </div>
                       <div className="col-span-2">
                         <form
-                        // onSubmit={(e) => {
-                        //   e.preventDefault()
-                        //   e.stopPropagation()
-                        //   form.handleSubmit()
-                        // }}
+                          onSubmit={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            form.handleSubmit()
+                          }}
                         >
                           <div className="grid grid-cols-3 gap-2">
                             <div className="relative border rounded">
@@ -520,7 +524,6 @@ const Page = () => {
                                           onBlur={field.handleBlur}
                                           onChange={(e) => {
                                             field.handleChange(e.target.value)
-                                            form.handleSubmit()
                                           }}
                                           placeholder="Search Job"
                                           className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
@@ -549,7 +552,6 @@ const Page = () => {
                                         onBlur={field.handleBlur}
                                         onChange={(e) => {
                                           field.handleChange(e.target.value)
-                                          form.handleSubmit()
                                         }}
                                         placeholder="Location"
                                         className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
@@ -559,6 +561,14 @@ const Page = () => {
                                   )
                                 }}
                               </form.Field>
+                              <Button
+                                type="submit"
+                                disabled={loadingMap}
+                                size="lg"
+                                className="bg-[#195F7E] rounded-xl p-4 rounded-none absolute right-0"
+                              >
+                                {loadingMap ? <Spinner /> : <SearchIcon stroke="white" />}
+                              </Button>
                             </div>
                             <div className="bg-white rounded-xl grid grid-cols-12">
                               <Slider
@@ -585,7 +595,7 @@ const Page = () => {
                             <div className="flex justify-between self-center mb-4">
                               <h3 className="text-lg">Search Results</h3>
                             </div>
-                            <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide">
+                            <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide pb-4">
                               <div
                                 onClick={() => handleCourseAreaChange('')}
                                 className={`${filter.careerArea === '' ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
@@ -604,7 +614,7 @@ const Page = () => {
                             </div>
                           </div>
                           <div
-                            className={`h-[660px] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
+                            className={`max-h-[660px] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
                           >
                             {filteredCompanies.map((company, companyIndex) => (
                               <CompanyCard key={`company-${companyIndex}`} company={company} />

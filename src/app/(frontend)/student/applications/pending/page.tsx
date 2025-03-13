@@ -11,6 +11,7 @@ import CompanyLargePendingApplicationCard from '@/app/(frontend)/components/Card
 import { InternshipApplication } from '@/payload-types'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '@/app/(frontend)/components/Layouts/Loader'
+import StudentApplicationHeader from '@/app/(frontend)/components/Layouts/Student/StudentApplicationHeader'
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(true)
@@ -18,6 +19,7 @@ export default function Page() {
 
   const fetchPendingApplications = async () => {
     const res: any = await fetchDocs('internship-applications')
+    console.log(res)
 
     setPendingApplications(res.docs)
     setLoading(false)
@@ -56,28 +58,31 @@ export default function Page() {
           </div>
           <div className="lg:block hidden h-full">
             <div className="container">
-              <Link href={'/student'}>
-                <div className="text-white flex gap-1 mb-4">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M16.6668 9.16634H6.52516L11.1835 4.50801L10.0002 3.33301L3.3335 9.99967L10.0002 16.6663L11.1752 15.4913L6.52516 10.833H16.6668V9.16634Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <span>Back</span>
-                </div>
-              </Link>
+              <div className="flex mb-2 items-baseline">
+                <Link href={'/student'}>
+                  <div className="text-white flex gap-1 mb-4">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M16.6668 9.16634H6.52516L11.1835 4.50801L10.0002 3.33301L3.3335 9.99967L10.0002 16.6663L11.1752 15.4913L6.52516 10.833H16.6668V9.16634Z"
+                        fill="white"
+                      />
+                    </svg>
+                    <span>Back</span>
+                  </div>
+                </Link>
+                <div className="text-white text-3xl font-bold ms-4">My Applications</div>
+              </div>
               <div className="text-black bg-white rounded-lg">
                 <div className="grid grid-cols-5 gap-4">
                   <div className="col-span-4">
                     <div className="p-5">
-                      <h5 className="text-2xl font-medium mb-5">Pending Companies</h5>
+                      <StudentApplicationHeader />
                       <div className="grid gap-4">
                         {pendingApplications.map((pendingApplication) => (
                           <CompanyLargePendingApplicationCard
