@@ -1,5 +1,3 @@
-
-
 'use client'
 import React, { useState } from 'react'
 import {
@@ -25,8 +23,11 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date())
 
   const handleDateClick = (date: Date) => {
-    if (!isBefore(date, new Date())) {
-      onDateSelect(date) // Update selected date in parent component
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    if (!isBefore(date, today)) {
+      onDateSelect(new Date(date)) 
     }
   }
 
@@ -35,7 +36,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect }) => {
       <button
         onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
         className="text-gray-500 hover:text-black border rounded h-7 w-7 bg-white"
-        type='button'
+        type="button"
       >
         &#8249;
       </button>
@@ -43,7 +44,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect }) => {
       <button
         onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
         className="text-gray-500 hover:text-black border rounded h-7 w-7 bg-white"
-        type='button'
+        type="button"
       >
         &#8250;
       </button>
@@ -78,33 +79,35 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect }) => {
     const rows: React.ReactNode[] = []
     let days: React.ReactNode[] = []
     let day = startDate
+    const today = new Date()
+    today.setHours(0, 0, 0, 0) // Reset time
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
-        const isToday = isSameDay(day, new Date()) // Today's date
-        const isSelected = isSameDay(day, selectedDate) // Selected date
-        const isCurrentMonth = isSameMonth(day, monthStart)
-        const isPastDate = isBefore(day, new Date())
+        const currentDate = new Date(day)
+        const isToday = isSameDay(currentDate, today)
+        const isSelected = isSameDay(currentDate, selectedDate)
+        const isCurrentMonth = isSameMonth(currentDate, monthStart)
+        const isPastDate = isBefore(currentDate, today)
 
         days.push(
-          <div key={day.getTime()} className="h-12 flex items-center justify-center">
+          <div key={currentDate.getTime()} className="h-12 flex items-center justify-center">
             <div
-              onClick={() => handleDateClick(day)}
-              className={`h-8 w-8 text-sm text-center cursor-pointer rounded-full flex items-center justify-center transition-all 
+              onClick={() => !isPastDate && handleDateClick(currentDate)}
+              className={`h-8 w-8 text-sm text-center rounded-full flex items-center justify-center transition-all 
                 ${
                   isSelected
-                    ? 'bg-[#0B7077] text-white' // Green color for selected date
-                    : isToday
-                      ? 'bg-[#0B7077] text-white' // Default highlight for today
-                      : isPastDate
-                        ? 'text-gray-300 cursor-not-allowed' // Grey out past dates
-                        : isCurrentMonth
-                          ? 'text-black hover:bg-gray-200' // Regular days
-                          : 'text-gray-400'
+                    ? 'bg-[#0B7077] text-white'
+                    : isPastDate
+                      ? 'text-gray-300 cursor-not-allowed'
+                      : isCurrentMonth
+                        ? 'text-black hover:bg-gray-200'
+                        : 'text-gray-400'
                 }
+                ${isPastDate ? 'pointer-events-none' : 'cursor-pointer'} 
               `}
             >
-              {format(day, 'd')}
+              {format(currentDate, 'd')}
             </div>
           </div>,
         )

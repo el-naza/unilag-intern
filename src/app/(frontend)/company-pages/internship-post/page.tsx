@@ -18,6 +18,7 @@ export default function Interviews() {
   const fetchInternshipPosts = async () => {
     try {
       const res: any = await fetchDocs('internships')
+      console.log('res', res)
 
       if (res?.docs) {
         setInternshipPosts(res.docs)
@@ -69,6 +70,7 @@ export default function Interviews() {
                         key={post.id}
                         invitation={{
                           id: post.id,
+                          image: post.company.image,
                           title: post.company.name,
                           description: post.postDescription || post.description,
                           date: new Date(post.startDate).toLocaleDateString(),

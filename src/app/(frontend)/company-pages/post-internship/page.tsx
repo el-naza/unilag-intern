@@ -10,7 +10,7 @@ import FileUploader from '../../components/Form/fileUploader'
 import MainButton from '../../components/Ui/button'
 import TextArea from '../../components/Form/textArea'
 import SelectTag from '../../components/Form/select'
-import { FieldApi, FormApi, useForm } from '@tanstack/react-form'
+import { FieldApi, FormApi, useForm, useStore } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
 import Spinner from '@/components/spinner'
 import { ValidationErrors } from '@/utilities/types'
@@ -30,22 +30,41 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useSession } from 'next-auth/react'
 import { join } from 'path'
+import { DropEvent, FileRejection, useDropzone } from 'react-dropzone'
+import Image from 'next/image'
+import { Input } from '@/components/ui/input'
+import { authStore } from '@/store/authStore'
+import updateUserImage from '@/services/updateUserImage'
 
 export default function InternshipPost() {
   const router = useRouter()
   const { data: session } = useSession()
   const user = useMemo<any>(() => session?.user, [session])
+  const [showInstructions, setShowInstruction] = useState(false)
+  // const signUpAuthToken = useStore(authStore, (state) => state.signUpAuthToken)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [postId, setPostId] = useState<string | null>(null)
 
   const handleFileChange = (files: File[]) => {
-    console.log('Selected files:', files)
+    if (files.length > 0) {
+      setSelectedFile(files[0])
+    }
   }
 
-  const areas = [
-    { value: 'north', label: 'North Area' },
-    { value: 'south', label: 'South Area' },
-    { value: 'east', label: 'East Area' },
-    { value: 'west', label: 'West Area' },
-  ]
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+    onDropRejected(fileRejections: FileRejection[], event: DropEvent) {
+      // console.log('Some files rejected', fileRejections, 'ev', event)
+      toast.error('File(s) rejected: Follow the instructions to upload acceptable file(s)')
+    },
+    onError(err: Error) {
+      // console.log('An error occured', err)
+      toast.error('An error occured with your file; try again')
+    },
+    noClick: true,
+    accept: { 'image/*': ['.png', '.svg', '.jpg', '.jpeg'] },
+    maxFiles: 1,
+    maxSize: 5 * 1024 * 1024,
+  })
 
   function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
     return (
@@ -70,28 +89,100 @@ export default function InternshipPost() {
     )
   }
 
+  // const createInternshipPostMtn = useMutation({
+  //   mutationFn: async (Internship: Internship) => {
+  //     console.log(Internship)
+  //     try {
+  //       const res = await saveDoc('internships', {
+  //         // ...Internship,
+  //         company: user?.id,
+  //         jobDescription: Internship.jobDescription,
+  //         location: Internship.location,
+  //         // image: Internship.image,
+  //         startDate: Internship.startDate,
+  //         endDate: Internship.endDate,
+  //         postDescription: Internship.postDescription,
+  //       })
+  //       console.log('res', res)
+
+  //       if (res?.status == 201) {
+  //         setPostId(res.data.doc.id)
+  //         updatePostImgMtn()
+  //       } else {
+  //         return toast.error('Network err; pls try again later')
+  //       }
+
+  //       return res
+  //     } catch {
+  //       toast.error('An error occured while saving message; pls try again later')
+  //     }
+  //   },
+  // })
+
   const createInternshipPostMtn = useMutation({
     mutationFn: async (Internship: Internship) => {
-      console.log(Internship)
+      console.log('intership', Internship)
+      console.log('selected image', selectedFile)
       try {
         const res = await saveDoc('internships', {
-          // ...Internship,
           company: user?.id,
           jobDescription: Internship.jobDescription,
           location: Internship.location,
-          picture: Internship.picture,
           startDate: Internship.startDate,
           endDate: Internship.endDate,
           postDescription: Internship.postDescription,
         })
         console.log('res', res)
-        if (!res) return toast.error('Network err; pls try again later')
-        return res
+
+        if (res?.status == 201) {
+          const newPostId = res?.data?.doc?.id as any
+          setPostId(newPostId)
+          console.log('new post ', newPostId)
+
+
+          // Ensure the post ID is set before uploading the image
+          if (selectedFile) {
+            await updatePostImgMtn.mutateAsync({ postId: newPostId, file: selectedFile })
+          }
+
+          return res
+        } else {
+          toast.error('Network error; please try again later')
+        }
       } catch {
-        toast.error('An error occured while saving message; pls try again later')
+        toast.error('An error occurred while saving the message; please try again later')
       }
     },
   })
+
+  const updatePostImgMtn = useMutation({
+    mutationFn: async ({ postId, file }: { postId: string; file: File }) => {
+      try {
+        const res = await updateUserImage('internships', postId, file)
+        console.log('image upload ', res)
+        if (!res) {
+          return toast.error('Network error; please try again later')
+        }
+        return res
+      } catch {
+        toast.error('An error occurred while uploading the image; please try again later')
+      }
+    },
+  })
+
+  // const updatePostImgMtn = useMutation({
+  //   mutationFn: async (file: File) => {
+  //     try {
+  //       // randomly generate password for students on creation for now
+  //       const res = await updateUserImage('internships', postId, file, signUpAuthToken)
+  //       console.log('res', res)
+  //       if (!res) return toast.error('Network err; pls try again later')
+  //       return res
+  //     } catch {
+  //       toast.error('An error occured while saving message; pls try again later')
+  //     }
+  //   },
+  // })
 
   const form = useForm<Internship>({
     validators: {
@@ -167,8 +258,8 @@ export default function InternshipPost() {
             }}
           >
             <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-6 w-full">
-              <div className="h-[217px] lg:w-[376px] w-full  relative overflow-hidden ">
-                <form.Field
+              <div className="h-[] lg:w-[376px] w-full  relative overflow-hidden ">
+                {/* <form.Field
                   name="picture"
                   children={(field) => {
                     return (
@@ -184,7 +275,80 @@ export default function InternshipPost() {
                       </>
                     )
                   }}
-                />
+                /> */}
+                <form.Field name="image">
+                  {(field) => {
+                    return (
+                      <>
+                        {!!field.state.value && (
+                          <Image
+                            src={URL.createObjectURL(field.state.value)}
+                            className="mx-auto rounded-full w-[64px] aspect-square"
+                            width={64}
+                            height={64}
+                            alt="Uploaded Image Will Show Here"
+                          />
+                        )}
+                        <Button
+                          variant={'ghost'}
+                          className="p-[1.5px] h-auto self-end"
+                          onClick={() => setShowInstruction(true)}
+                          type="button"
+                        >
+                          <Image
+                            src="/static-icons/info-icon.svg"
+                            width={16}
+                            height={16}
+                            alt="icon"
+                          />
+                        </Button>
+
+                        <div {...getRootProps()}>
+                          <div
+                            className={`border-dashed ${isDragActive ? 'border-green-400 bg-gray-100' : ''} border-secondary/50 border-[2px] rounded-lg flex flex-col items-center py-6 mt-3`}
+                          >
+                            <Image
+                              src="/static-icons/upload-icon.svg"
+                              width={42}
+                              height={42}
+                              alt="icon"
+                            />
+                            <div className="mt-3 mb-2 text-black-2 text-[12px]">
+                              Drag your file(s) to start uploading
+                            </div>
+                            <div className="text-[12px] text-gray-dark leading-[18px] mb-2 flex items-center w-[200px] gap-2">
+                              <div className="h-[1px] w-full bg-gray-light-2" />
+                              OR
+                              <div className="h-[1px] w-full bg-gray-light-2" />
+                            </div>
+
+                            <Input
+                              // {...getInputProps({
+                              //   onChange(e) {
+
+                              //     field.handleChange(e.target.files?.[0])
+                              //   },
+                              // })}
+                              {...getInputProps()}
+                              onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
+                              hidden
+                              type="file"
+                              multiple={false}
+                              name={field.name}
+                              onBlur={field.handleBlur}
+                              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1"
+                            />
+                            <FieldError field={field} />
+
+                            <Button variant="outline" size="sm" type="button" onClick={open}>
+                              Browse files
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    )
+                  }}
+                </form.Field>
               </div>
               <div className="lg:w-[446px]  w-[100%]">
                 <form.Field
@@ -234,7 +398,7 @@ export default function InternshipPost() {
                                   f.name === field.name,
                               ) as { options: string[] }
                             )?.options?.map((option, i) => (
-                              <SelectItem value={option} key={i}         className="bg-white">
+                              <SelectItem value={option} key={i} className="bg-white">
                                 {option}
                               </SelectItem>
                             ))}
@@ -302,7 +466,7 @@ export default function InternshipPost() {
                           value={field.state.value || ''}
                           onBlur={field.handleBlur}
                           onChange={(e) => field.handleChange(e.target.value)}
-                          className="w-full h-[120px] py-[8px] px-[12px] outline-none mb-[12px]"
+                          className="w-full h-[120px] py-[8px] px-[12px] outline-none mb-[12px]  bg-white"
                           rows={5}
                           placeholder="Enter job requirements"
                         ></textarea>

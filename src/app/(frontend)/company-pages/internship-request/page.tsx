@@ -30,6 +30,7 @@ export interface InvitationDetails {
 export default function InternshipRequest() {
   const router = useRouter()
   const [loading, setLoading] = useState<boolean>(true)
+  const [loadUpdateReq, setLoadUpdateReq] = useState<boolean>(false)
 
   const [internReq, setInternReq] = useState<any>([])
   const [tableData, setTableData] = useState<any>([])
@@ -38,7 +39,8 @@ export default function InternshipRequest() {
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('internship-applications')
     console.log(res)
-    const getApplication = res?.docs.filter((s) => s.status !== 'accepted')
+    const getApplication = res?.docs.filter((s) => s.status === 'pending')
+    console.log('applications',getApplication)
     setInternReq(getApplication || [])
     setTableData(res)
     setLoading(false)
@@ -64,9 +66,10 @@ export default function InternshipRequest() {
   const respondToInterviewMtn = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       try {
+        // setLoadUpdateReq(true)
         console.log('Updating interview invitation:', { id, status })
 
-        const res = await updateDoc('interview-invitations', id, { status })
+        const res = await updateDoc('internship-applications', id, { status })
 
         console.log('Response:', res)
         if (!res) return toast.error('Network error; please try again later')
@@ -74,6 +77,8 @@ export default function InternshipRequest() {
         return res
       } catch {
         toast.error('An error occurred while updating; please try again later')
+      }finally{
+        // setLoadUpdateReq(false)
       }
     },
   })
@@ -121,7 +126,7 @@ export default function InternshipRequest() {
         </button>
         <button
           className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
-          onClick={() => handleRespond(item.id, 'declined')}
+          onClick={() => handleRespond(item.id, 'company declined')}
           disabled={respondToInterviewMtn.isPending}
         >
           {respondToInterviewMtn.isPending ?'processing...' : '✘ Decline'} 
@@ -206,7 +211,7 @@ export default function InternshipRequest() {
                   <div className="flex items-start flex-col gap-5 lg:flex-row">
                     <div className="max-w-[200px] md:max-w-full ">
                       <Image
-                        src={invitationDetails?.tudent?.image?.url || sstudentImage}
+                        src={invitationDetails?.student?.image?.url}
                         // src={studentImage}
                         alt="image"
                         width={0}
