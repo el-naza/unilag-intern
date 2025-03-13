@@ -1,11 +1,12 @@
 'use client'
+import ArrowIcon from '@/app/(frontend)/assets/icons/arrow'
 import FieldError from '@/components/FieldError'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import resetPassword from '@/services/resetPassword'
+import resetPassword from '@/services/admin/admins'
 import { authStore } from '@/store/authStore'
 import { passwordRegex } from '@/utilities'
 import { useForm, useStore } from '@tanstack/react-form'
@@ -13,7 +14,6 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import ArrowIcon from '../../assets/icons/arrow'
 
 export default function OTPConfirmation() {
   const router = useRouter()
@@ -24,7 +24,7 @@ export default function OTPConfirmation() {
   const resetPasswordMtn = useMutation({
     mutationFn: async (password: string) => {
       try {
-        const res = await resetPassword('companies', password, passwordResetToken)
+        const res = await resetPassword('admins', password, passwordResetToken)
         console.log('res', res)
         if (!res) {
           const errMsg = 'Network err; pls try again later'
@@ -100,77 +100,78 @@ export default function OTPConfirmation() {
   })
 
   return (
-    <div className=" lg:w-[343px] mx-auto p-6 rounded-[10px] mt-[40px]">
-      <button
-        onClick={()=>router.back()}
-        className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
-      >
-        <ArrowIcon /> Back
-      </button>
-      <h2 className="font-[500] text-[24px] text-center mt-[40px]">Set Password</h2>
-      <p className="text-center text-[#8E8E93] font-[400] text-[14px] mt-8 mb-[40px]">
-        Set a new password to proceed.
-      </p>
+    <div className="place-content-center h-[100vh] p-6 rounded-[10px] mt-[40px]">
+      <div className='w-[40%] mx-auto'>
+        <button
+          onClick={() => router.back()}
+          className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
+        >
+          <ArrowIcon /> Back
+        </button>
+        <h2 className="font-[500] text-[24px] text-center mt-[40px]">Change Password</h2>
+        <p className="text-center text-[#8E8E93] font-[400] text-[14px] mt-8 mb-[40px]">
+          Set a new password to proceed.
+        </p>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          form.handleSubmit()
-        }}
-      >
-        <Label>New Password</Label>
-        <form.Field name="password">
-          {(field) => {
-            return (
-              <>
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  name={field.name}
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Enter Password"
-                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border"
-                />
-                <FieldError field={field} />
-              </>
-            )
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
           }}
-        </form.Field>
+        >
+          <Label>New Password</Label>
+          <form.Field name="password">
+            {(field) => {
+              return (
+                <>
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    name={field.name}
+                    value={field.state.value || ''}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Enter Password"
+                    className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border"
+                  />
+                  <FieldError field={field} />
+                </>
+              )
+            }}
+          </form.Field>
 
-        <Label className="mt-3 block">Re-enter New Password</Label>
-        <form.Field name="confirmPassword">
-          {(field) => {
-            return (
+          <Label className="mt-3 block">Re-enter New Password</Label>
+          <form.Field name="confirmPassword">
+            {(field) => {
+              return (
+                <>
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    name={field.name}
+                    value={field.state.value || ''}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Enter Password"
+                    className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border"
+                  />
+                  <FieldError field={field} />
+                </>
+              )
+            }}
+          </form.Field>
+
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+            {([canSubmit, isSubmitting]) => (
               <>
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  name={field.name}
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Enter Password"
-                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border"
-                />
-                <FieldError field={field} />
+                <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8">
+                  Confirm {isSubmitting && <Spinner />}
+                </Button>
+                <FormError form={form} />
               </>
-            )
-          }}
-        </form.Field>
-
-        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-          {([canSubmit, isSubmitting]) => (
-            <>
-              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8 text-gr">
-                Confirm {isSubmitting && <Spinner />}
-              </Button>
-              <FormError form={form} />
-            </>
-          )}
-        </form.Subscribe>
-      </form>
-     
+            )}
+          </form.Subscribe>
+        </form>
+      </div>
     </div>
   )
 }

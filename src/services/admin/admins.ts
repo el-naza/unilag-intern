@@ -68,3 +68,27 @@ export async function createAdmin(
       data: res?.data,
     }))
 }
+
+export default async function resetPassword(
+  col: CollectionSlug,
+  password: string,
+  token: string,
+): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  return await axiosInstance
+    .post<Response | ErrorResponse>(`/api/${col}/reset-password`, {
+      password,
+      token,
+    })
+    .catch((error: AxiosError) => {
+      if (error.response)
+        return {
+          status: error.response.status,
+          data: error.response.data as ErrorResponse,
+        }
+    })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
+}

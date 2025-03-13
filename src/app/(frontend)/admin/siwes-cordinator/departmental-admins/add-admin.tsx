@@ -51,8 +51,7 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
       try {
         const res = await createAdmin('admins', payload)
 
-        console.log('Result: ', res);
-        
+        console.log('Result: ', res)
 
         if (!res) {
           const errMsg = 'Network err; pls try again later'
@@ -121,7 +120,7 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
           }
         }
 
-        const { name, email, phone, department } = value
+        // const { name, email, phone, department } = value
 
         // const formData = new FormData()
         // profilePictureFile && formData.append('Profile_Picture', profilePictureFile)
@@ -156,7 +155,7 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
         form.handleSubmit()
       }}
     >
-      <div
+      {/* <div
         className="w-[7rem] h-[7rem] rounded-full bg-gray-light-2 grid place-content-center mx-auto cursor-pointer"
         onClick={() => fileInputRef.current?.click()}
       >
@@ -173,7 +172,7 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
           className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF] w-fit hidden"
         />
       </div>
-      <p className="text-center mb-8 mt-3">Upload admin profile image</p>
+      <p className="text-center mb-8 mt-3">Upload admin profile image</p> */}
 
       <div>
         <Label className="mt-3 block">Name</Label>
@@ -247,6 +246,28 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
           {(field) => {
             return (
               <>
+                <Input
+                  name={field.name}
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  type="text"
+                  placeholder="Enter Department"
+                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        </form.Field>
+      </div>
+
+      {/* <div>
+        <Label className="mt-3 block">Department</Label>
+        <form.Field name="department">
+          {(field) => {
+            return (
+              <>
                 <Select
                   value={field.state.value || ''}
                   onValueChange={field.handleChange}
@@ -268,19 +289,19 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
             )
           }}
         </form.Field>
-      </div>
+      </div> */}
 
       <div>
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <>
               <div className="flex items-center justify-center gap-8 mt-8">
-                <Button type="submit" disabled={!canSubmit}>
-                  Save {isSubmitting && <Spinner />}
-                </Button>
-
                 <Button variant="outline" type="button" onClick={() => closeDialog()}>
                   Cancel
+                </Button>
+
+                <Button type="submit" disabled={!canSubmit}>
+                  Save {isSubmitting && <Spinner />}
                 </Button>
               </div>
               <FormError form={form} />

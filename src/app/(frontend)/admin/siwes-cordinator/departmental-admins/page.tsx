@@ -211,12 +211,12 @@ export default function DepartmentalAdminsPage() {
           <Dialog open={adminOpenDialog} onOpenChange={setAdminOpenDialog}>
             <DialogTrigger asChild>
               <Button>
-                <Plus /> Add Admin
+                <Plus /> Add Departmental Admin
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-screen-md bg-white">
               <DialogHeader>
-                <DialogTitle>Departmental Admins</DialogTitle>
+                <DialogTitle>Add Departmental Admin</DialogTitle>
               </DialogHeader>
 
               <AddAdmin onCloseEmit={closeDialog} />

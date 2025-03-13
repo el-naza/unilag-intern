@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getAllReports } from '@/services/admin/reports'
+import { getAllReports, getEmployments } from '@/services/admin/reports'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Edit2, EllipsisVertical, ListFilter, Plus, Share } from 'lucide-react'
@@ -33,6 +33,8 @@ import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from '../students/add-student'
+import { getAllStudents } from '@/services/admin/students'
+import { getAllCompanies } from '@/services/admin/companies'
 
 type Report = {
   companyName: string
@@ -48,16 +50,16 @@ type EmployedStudent = {
 }
 
 export default function HomePage() {
-  const config: IFIlterConfig = {
+  const [config, setConfig] = useState<IFIlterConfig>({
     page: 'Home',
     showFilters: true,
     stats: [
-      { label: 'Total No of Siwes Students', iconName: 'GraduationCap', count: 100 },
-      { label: 'Employed Siwes Student', iconName: 'CircleCheck', count: 20 },
-      { label: 'Unemployed Siwes Student', iconName: 'CircleX', count: 10 },
-      { label: 'Number of companies', iconName: 'Building2', count: 10 },
+      { label: 'Total No of Siwes Students', iconName: 'GraduationCap', count: 0 },
+      { label: 'Employed Siwes Student', iconName: 'CircleCheck', count: 0 },
+      { label: 'Unemployed Siwes Student', iconName: 'CircleX', count: 0 },
+      { label: 'Number of companies', iconName: 'Building2', count: 0 },
     ],
-  }
+  })
 
   const chartData = [
     { month: 'January', desktop: 186 },
@@ -94,20 +96,62 @@ export default function HomePage() {
   const [reportHasPrevious, setReportHasPrevious] = useState(false)
 
   const fetchReports = async (params?: string) => {
-    const res: any = await getAllReports('reports', params)
-    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
-    setReportData(docs)
-    setReportPage(page)
-    setReportPageSize(totalPages)
-    setReportHasNext(hasNextPage)
-    setReportHasPrevious(hasPrevPage)
-    setReportTotal(totalDocs)
+    await getAllReports('reports', params).then((res: any) => {
+      const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+      setReportData(docs)
+      setReportPage(page)
+      setReportPageSize(totalPages)
+      setReportHasNext(hasNextPage)
+      setReportHasPrevious(hasPrevPage)
+      setReportTotal(totalDocs)
+    })
+  }
 
-    setReportLoading(false)
+  const fetchEmployedStudent = async () => {
+    // const recentParams = new URLSearchParams({ sort: new Date().toISOString() }).toString()
+    await getEmployments('employments',).then((res: any) => {
+      const { docs } = res.data
+      console.log('Employments: ', res.data);
+      
+      setEmployedData(docs)
+    })
+   
+  }
+
+  const fetchTotalStudents = async () => {
+    const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+    await getAllStudents('students', query).then((res: any) => {
+      const { totalDocs } = res.data
+
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        stats: prevConfig.stats.map((stat, index) =>
+          index === 0 ? { ...stat, count: totalDocs } : stat,
+        ),
+      }))
+    })
+  }
+
+  const fetchTotalCompanies = async () => {
+    const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+    await getAllCompanies('companies', query).then((res: any) => {
+      const { totalDocs } = res.data
+
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        stats: prevConfig.stats.map((stat, index) =>
+          index === 3 ? { ...stat, count: totalDocs } : stat,
+        ),
+      }))
+    })
   }
 
   useEffect(() => {
-    fetchReports()
+    Promise.allSettled([fetchReports(), fetchEmployedStudent()])
+    // Analytics
+    Promise.allSettled([fetchTotalStudents(), fetchTotalCompanies()])
+
+     // Table Records
   }, [])
 
   const reportColumns = useMemo(
@@ -167,18 +211,6 @@ export default function HomePage() {
 
   // Employed  Table Configurations
   const [employedData, setEmployedData] = useState<EmployedStudent[]>([])
-
-  const fetchEmployedStudent = async () => {
-    const recentParams = new URLSearchParams({ sort: new Date().toISOString() }).toString()
-    const res: any = await getAllReports('employments', recentParams)
-    const { docs } = res.data
-    setEmployedData(docs)
-  }
-
-  useEffect(() => {
-    fetchEmployedStudent()
-  }, [])
-
   const employedColumns = useMemo(
     () => [
       {
