@@ -373,11 +373,11 @@ export default function InternshipPost() {
                 />
 
                 <form.Field
-                  name="location"
+                  name="courseArea"
                   children={(field) => {
                     return (
                       <>
-                        <Label>Location</Label>
+                        <Label clasName="text-[#48484A]">Course Area</Label>
                         <Select
                           value={field.state.value || ''}
                           onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
@@ -388,7 +388,7 @@ export default function InternshipPost() {
                           >
                             <SelectValue
                               placeholder="Select Course Area"
-                              className="text-[#969a9b] bg-white"
+                              className="text-[#8E8E93] bg-white text-[12px]"
                             />
                           </SelectTrigger>
                           <SelectContent className="bg-white">
@@ -492,12 +492,7 @@ export default function InternshipPost() {
                     </>
                   )}
                 </form.Subscribe>
-                {/* <MainButton
-                  title="Send Post"
-                  borderRadius="rounded"
-                  fontWeight="font-[400]"
-                  fontSize="text-[14px]"
-                /> */}
+               
               </div>
             </div>
           </form>

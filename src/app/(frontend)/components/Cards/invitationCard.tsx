@@ -28,7 +28,7 @@ export default function InvitationCard({ invitation }: InvitationCardProps) {
             alt="invitation"
             width={100}
             height={100}
-            className="overflow-hidden rounded-tl-[8px] rounded-tr-[8px]"
+            className="overflow-hidden rounded"
           />
         </div>
         <div className="px-[6px] w-[calc(100%-100px)]">

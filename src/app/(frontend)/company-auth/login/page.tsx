@@ -229,7 +229,7 @@ export default function Login() {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Email"
-                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-black border"
+                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-[#8E8E93] border"
                 />
                 <FieldError field={field} />
               </>
@@ -270,7 +270,8 @@ export default function Login() {
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <>
-              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8 text-gr">
+              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8"  variant="secondary"
+                                      color="white">
                 {hasPassword ? 'Login' : 'Continue'} {isSubmitting && <Spinner />}
               </Button>
               <FormError form={form} />
