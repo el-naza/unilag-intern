@@ -10,25 +10,24 @@ const self = ({ req }) => {
   }
 }
 
-const companyOrStudent = async ({ req: { user, payload } }) => {
-  if (!user) return false; 
+export const companyOrStudent = async ({ req: { user, payload } }) => {
+  if (!user) return false
 
-  const isCompany = user.collection === 'companies';
-  const isStudent = user.collection === 'students';
+  const isCompany = user.collection === 'companies'
+  const isStudent = user.collection === 'students'
 
   if (isCompany) {
     return {
       company: { equals: user.id },
-    };
+    }
   }
 
   if (isStudent) {
-    return true;
+    return true
   }
 
-  return false; 
-};
-
+  return false
+}
 
 const anyone = () => true // Allows public read access
 
