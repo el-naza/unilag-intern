@@ -347,7 +347,7 @@ const Page = () => {
                             </div>
                             <div className="flex justify-between">
                               <div>
-                                <span className="">unilag {user?.level}</span>
+                                <span className="">UNILAG {user?.level}</span>
                               </div>
                               <div>
                                 <span className="">{user?.course}</span>
@@ -371,14 +371,14 @@ const Page = () => {
                   </div>
                   <div className="grid sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-0">
                     <div className="col-span-4 self-center">
-                      <div className="grid grid-cols-4 gap-4">
+                      <div className="grid grid-cols-3 gap-4">
                         <div>
                           <Link href="#" className="relative group block text-center">
                             <span className="text-xl">Map Search</span>
                             <NavUnderlineLarge />
                           </Link>
                         </div>
-                        <div>
+                        {/* <div>
                           <Link
                             href="/student/applications/pending"
                             className="relative group block text-center"
@@ -386,13 +386,13 @@ const Page = () => {
                             <span className="text-xl">Pending</span>
                             <NavUnderlineLarge />
                           </Link>
-                        </div>
+                        </div> */}
                         <div>
                           <Link
-                            href="/student/applications/approved"
+                            href="/student/applications/pending"
                             className="relative group block text-center"
                           >
-                            <span className="text-xl">Approved</span>
+                            <span className="text-xl">Applications</span>
                             <NavUnderlineLarge />
                           </Link>
                         </div>
@@ -632,7 +632,7 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="container my-10 lg:my-24">
+          {/* <div className="container my-10 lg:my-24">
             <div className="grid gap-4 lg:gap-10">
               <div className="text-center">
                 <h4 className="text-xl lg:text-4xl text-[#FD661F] font-medium relative">
@@ -665,7 +665,7 @@ const Page = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </>
