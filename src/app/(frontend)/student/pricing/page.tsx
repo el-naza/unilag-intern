@@ -160,23 +160,6 @@ const Page = () => {
                   <SearchAltIcon className='className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"' />
                 </div>
               </div>
-              <div className="grid grid-cols-3">
-                <div className="flex items-center">
-                  <div className="cursor-pointer hover:bg-black p-2 rounded">
-                    <FilterAltIcon />
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="cursor-pointer hover:bg-black p-2 rounded">
-                    <NotificationBellIcon />
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="cursor-pointer hover:bg-black p-2 rounded">
-                    <MenuIcon />
-                  </div>
-                </div>
-              </div>
             </nav>
           </div>
           <main>
