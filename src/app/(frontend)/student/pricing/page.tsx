@@ -199,9 +199,12 @@ const Page = () => {
                           <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                             <span>0 Duration</span>
                           </div>
-                          <div className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl">
+                          <Link
+                            href={'/student/pricing'}
+                            className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl"
+                          >
                             <span>Upgrade</span>
-                          </div>
+                          </Link>
                         </div>
                       </div>
                     </div>
