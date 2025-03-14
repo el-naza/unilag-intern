@@ -39,7 +39,7 @@ const Page = () => {
   const { data: session } = useSession()
 
   const [loading, setLoading] = useState<boolean>(true)
-  const [companies, setCompanies] = useState<any[]>([])
+  const [employments, setEmployments] = useState<any[]>([])
   const [searchedCompanies, setSearchedCompanies] = useState<any[]>([])
   const [distance, setDistance] = useState<number[]>([20])
   const [filter, setFilter] = useState<{ careerArea: string }>({ careerArea: '' })
@@ -70,9 +70,10 @@ const Page = () => {
     setFilter({ careerArea: courseArea })
   }
 
-  const fetchCompanies = async () => {
-    const res: any = await fetchDocs('companies')
-    setCompanies(res.docs)
+  const fetchEmployments = async () => {
+    // const res: any = await fetchDocs('employments')
+    // console.log(res)
+    // setEmployments(res.docs)
     setLoading(false)
   }
 
@@ -142,7 +143,7 @@ const Page = () => {
   })
 
   useEffect(() => {
-    fetchCompanies()
+    fetchEmployments()
   }, [user])
   return (
     <>
