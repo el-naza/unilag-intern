@@ -18,11 +18,11 @@ export default function DepartmentCordinatorLayout({ children }: { children: Rea
       route: '/admin/department-cordinator/report',
        iconName: 'FileText'
     },
-    {
-      label: 'Departmental Admins',
-      route: '/admin/department-cordinator/departmental-admins',
-       iconName: 'Users'
-    },
+    // {
+    //   label: 'Departmental Admins',
+    //   route: '/admin/department-cordinator/departmental-admins',
+    //    iconName: 'Users'
+    // },
   ]
 
 

@@ -1,21 +1,21 @@
 'use client'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { format } from 'date-fns'
-import { MessageSquareText } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useParams } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { getStudent } from '@/services/admin/students'
+import { format } from 'date-fns'
+import { MessageSquareText } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 import AssignCompany from './assign-company'
 
 export default function StudentDetailPage() {

@@ -4,22 +4,22 @@ import { Button } from '@/components/ui/button'
 
 const courses = [
   {
-    title: 'Beauty',
+    title: 'SIWES',
     description: 'One powerful online software suite that combines',
     imgSrc: '/icons/beauty.png',
   },
   {
-    title: 'Medical',
+    title: 'Teaching Practice',
     description: 'One powerful online software suite that combines',
     imgSrc: '/icons/medical.png',
   },
   {
-    title: 'Sports',
+    title: 'Housemanship',
     description: 'One powerful online software suite that combines',
     imgSrc: '/icons/sport.png',
   },
   {
-    title: 'Nutrition',
+    title: 'Others',
     description: 'One powerful online software suite that combines',
     imgSrc: '/icons/nutrition.png',
   },

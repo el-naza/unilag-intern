@@ -48,15 +48,12 @@ export default function AdminPage() {
   const signInAdmin = useMutation({
     mutationFn: async ({ email, password }: AdminAuthOperations['login']) => {
       try {
-        console.log('Payload', email, password)
         const result = await signIn('credentials', {
           email,
           password,
           col: 'admins',
           redirect: false,
         })
-
-        console.log('Admin Login', result)
 
         if (!result?.url) {
           return 'Invalid credentials, please try again'

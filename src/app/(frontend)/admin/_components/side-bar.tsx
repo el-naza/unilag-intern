@@ -2,7 +2,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { LogOut, Settings, icons } from 'lucide-react'
 
 export interface INavMenu {
@@ -13,6 +13,11 @@ export interface INavMenu {
 
 const SideBar = ({ menuLinks }: { menuLinks: INavMenu[] }) => {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const signAdminOut = async () => {
+    router.push('/admin/auth')
+  }
 
   return (
     <div className="w-[270px] h-[100vh] bg-secondary fixed flex justify-between flex-col">
@@ -48,7 +53,7 @@ const SideBar = ({ menuLinks }: { menuLinks: INavMenu[] }) => {
             Settings
           </Link>
         </li>
-        <li className="px-4 transition-all cursor-pointer font-bold">
+        <li className="px-4 transition-all cursor-pointer font-bold" onClick={() => signAdminOut()}>
           <Link href="" className="w-full flex items-center gap-[.5rem]">
             <LogOut />
             Log Out

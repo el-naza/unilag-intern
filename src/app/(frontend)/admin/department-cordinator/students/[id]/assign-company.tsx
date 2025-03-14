@@ -133,10 +133,7 @@ const AssignCompany = ({ studentId }) => {
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
         <p>All Companies</p>
-        <Button
-          disabled={selectedCompanies.length === 0}
-          onClick={() => assignToCompany()}
-        >
+        <Button disabled={selectedCompanies.length === 0} onClick={() => assignToCompany()}>
           Assign to Company
         </Button>
       </div>

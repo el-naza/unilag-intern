@@ -148,7 +148,9 @@ export default function DepartmentalAdminsPage() {
   }
 
   const [query, setQuery] = useState('')
-  const [searchFilter, setSearchFilter] = React.useState<'name' | 'department' | 'email' | 'phone'>()
+  const [searchFilter, setSearchFilter] = React.useState<
+    'name' | 'department' | 'email' | 'phone'
+  >()
   const debouncedQuery = useDebounce(query)
 
   useEffect(() => {
@@ -168,9 +170,14 @@ export default function DepartmentalAdminsPage() {
     }
   }, [debouncedQuery])
 
+    const [adminOpenDialog, setAdminOpenDialog] = useState(false)
+    const closeDialog = () => {
+      setAdminOpenDialog(false)
+    }
+
   return (
     <div className="p-8">
-      <FIlterStats config={config} />
+      <FIlterStats {...config} />
 
       <div className="flex justify-between items-center mt-8">
         <div></div>
@@ -201,18 +208,18 @@ export default function DepartmentalAdminsPage() {
             onChange={(e) => setQuery(e.target.value)}
           />
 
-          <Dialog>
+          <Dialog open={adminOpenDialog} onOpenChange={setAdminOpenDialog}>
             <DialogTrigger asChild>
               <Button>
-                <Plus /> Add Admin
+                <Plus /> Add Departmental Admin
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-screen-md bg-white">
               <DialogHeader>
-                <DialogTitle>Departmental Admins</DialogTitle>
+                <DialogTitle>Add Departmental Admin</DialogTitle>
               </DialogHeader>
 
-              <AddAdmin />
+              <AddAdmin onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>
         </div>
