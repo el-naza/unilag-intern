@@ -15,10 +15,12 @@ interface naveBarProps {
 export default function NavBar({ fill }: naveBarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { data: session } = useSession()
+  const router = useRouter()
+  const pathname = usePathname();
   const user = useMemo<any>(() => session?.user, [session])
 
   const navLinks = [
-    { label: 'All Interns', path: '/company-pages/all-interns' },
+    { label: 'All Interns', paths: '/company-pages/all-interns' },
     {
       label: 'Invitations',
       paths: [
@@ -28,15 +30,14 @@ export default function NavBar({ fill }: naveBarProps) {
         '/company-pages/rejected-requests',
       ],
     },
-    { label: 'Reports', path: '/company-pages/reports' },
+    { label: 'Reports', paths: '/company-pages/reports' },
   ]
 
   const toggleMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
-  const router = useRouter()
-  const pathname = usePathname();
+
 
   return (
     <div className="flex items-center justify-between lg:px-[100px] px-4 py-[24px] w-full ">
@@ -46,20 +47,19 @@ export default function NavBar({ fill }: naveBarProps) {
 
       <div className="hidden md:block">
         <ul className="flex items-center gap-[44px] font-[400] text-[14px]  absolute left-0 right-0 flex items-center justify-center m-auto w-full ">
-          {navLinks.map((link, index) => {
-            const isActive = Array.isArray(link.paths)
-              ? link.paths.includes(router.pathname)
-              : router.pathname === link.path
+        
+           {navLinks.map((link, index) => {
+            const isActive = link.paths.includes(pathname); 
 
             return (
               <li key={index}>
-                <Link href={Array.isArray(link.paths) ? link.paths[0] : link.path}>
-                  <span className={`pb-2 ${isActive ? 'border-b-2 border-white' : ''}`}>
+                <Link href={link.paths[0]} passHref>
+                  <span className={`pb-2 ${isActive ? "border-b-2 border-white" : ""}`}>
                     {link.label}
                   </span>
                 </Link>
               </li>
-            )
+            );
           })}
         </ul>
       </div>

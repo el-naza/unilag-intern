@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { companies } from '@/access/companies'
 import { any } from 'zod'
+import courseAreas from '@/utilities/courseAreas'
 
 // Define the access control functions
 const self = ({ req }) => {
@@ -16,7 +17,7 @@ export const Internships: CollectionConfig = {
   access: {
     create: companies,
     delete: self,
-    read: anyone,
+    read: self,
     update: self,
   },
   fields: [
@@ -37,10 +38,11 @@ export const Internships: CollectionConfig = {
       required: true,
     },
     {
-      name: 'location',
+      name: 'courseArea',
       type: 'select',
-      options: ['Lagos'],
-      defaultValue: 'Lagos',
+      options: courseAreas,
+      hasMany: true,
+      required: true,
     },
     {
       name: 'applicants',
@@ -51,7 +53,7 @@ export const Internships: CollectionConfig = {
     {
       name: 'deadline',
       type: 'date',
-    //   required: true,
+      //   required: true,
     },
     { name: 'startDate', type: 'date', required: true },
     {
