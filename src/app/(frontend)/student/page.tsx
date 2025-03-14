@@ -347,7 +347,7 @@ const Page = () => {
                             </div>
                             <div className="flex justify-between">
                               <div>
-                                <span className="">unilag {user?.level}</span>
+                                <span className="">UNILAG {user?.level}</span>
                               </div>
                               <div>
                                 <span className="">{user?.course}</span>
@@ -632,7 +632,7 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="container my-10 lg:my-24">
+          {/* <div className="container my-10 lg:my-24">
             <div className="grid gap-4 lg:gap-10">
               <div className="text-center">
                 <h4 className="text-xl lg:text-4xl text-[#FD661F] font-medium relative">
@@ -665,7 +665,7 @@ const Page = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </>
