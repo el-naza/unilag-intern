@@ -10,6 +10,26 @@ const self = ({ req }) => {
   }
 }
 
+const companyOrStudent = async ({ req: { user, payload } }) => {
+  if (!user) return false; 
+
+  const isCompany = user.collection === 'companies';
+  const isStudent = user.collection === 'students';
+
+  if (isCompany) {
+    return {
+      company: { equals: user.id },
+    };
+  }
+
+  if (isStudent) {
+    return true;
+  }
+
+  return false; 
+};
+
+
 const anyone = () => true // Allows public read access
 
 export const Internships: CollectionConfig = {
@@ -17,7 +37,7 @@ export const Internships: CollectionConfig = {
   access: {
     create: companies,
     delete: self,
-    read: self,
+    read: companyOrStudent,
     update: self,
   },
   fields: [

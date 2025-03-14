@@ -11,7 +11,7 @@ export const InternshipApplications: CollectionConfig = {
     create: students,
     delete: relatedStudentOrCompany,
     update: relatedStudentOrCompany,
-    read: anyone
+    read: relatedStudentOrCompany
   },
   fields: [
     {

@@ -9,10 +9,10 @@ import { stat } from 'fs'
 export const InterviewInvitations: CollectionConfig = {
   slug: 'interview-invitations',
   access: {
-    read: anyone,
-    create: anyone,
-    delete: anyone,
-    update: anyone,
+    read: relatedStudentOrCompany,
+    create: companies,
+    delete: relatedStudentOrCompany,
+    update: relatedStudentOrCompany,
   },
   fields: [
     {

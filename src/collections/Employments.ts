@@ -10,7 +10,7 @@ export const Employments: CollectionConfig = {
     create: companies,
     delete: relatedCompany,
     update: relatedCompany,
-    read: anyone
+    read: relatedCompany
   },
   fields: [
     {
