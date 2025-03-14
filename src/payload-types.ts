@@ -359,7 +359,7 @@ export interface Internship {
   company: string | Company;
   postDescription: string;
   jobDescription: string;
-  location?: 'Lagos' | null;
+  courseArea: ('Mathematics' | 'Science' | 'History' | 'Engineering' | 'Arts')[];
   applicants?: (string | Student)[] | null;
   deadline?: string | null;
   startDate: string;
@@ -685,7 +685,7 @@ export interface InternshipsSelect<T extends boolean = true> {
   company?: T;
   postDescription?: T;
   jobDescription?: T;
-  location?: T;
+  courseArea?: T;
   applicants?: T;
   deadline?: T;
   startDate?: T;
