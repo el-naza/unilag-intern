@@ -39,7 +39,7 @@ const Page = () => {
   const { data: session } = useSession()
 
   const [loading, setLoading] = useState<boolean>(true)
-  const [companies, setCompanies] = useState<any[]>([])
+  const [employments, setEmployments] = useState<any[]>([])
   const [searchedCompanies, setSearchedCompanies] = useState<any[]>([])
   const [distance, setDistance] = useState<number[]>([20])
   const [filter, setFilter] = useState<{ careerArea: string }>({ careerArea: '' })
@@ -70,9 +70,10 @@ const Page = () => {
     setFilter({ careerArea: courseArea })
   }
 
-  const fetchCompanies = async () => {
-    const res: any = await fetchDocs('companies')
-    setCompanies(res.docs)
+  const fetchEmployments = async () => {
+    // const res: any = await fetchDocs('employments')
+    // console.log(res)
+    // setEmployments(res.docs)
     setLoading(false)
   }
 
@@ -142,7 +143,7 @@ const Page = () => {
   })
 
   useEffect(() => {
-    fetchCompanies()
+    fetchEmployments()
   }, [user])
   return (
     <>
@@ -304,23 +305,6 @@ const Page = () => {
                       <SearchAltIcon className='className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"' />
                     </div>
                   </div>
-                  <div className="grid grid-cols-3">
-                    <div className="flex items-center">
-                      <div className="cursor-pointer hover:bg-black p-2 rounded">
-                        <FilterAltIcon />
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="cursor-pointer hover:bg-black p-2 rounded">
-                        <NotificationBellIcon />
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="cursor-pointer hover:bg-black p-2 rounded">
-                        <MenuIcon />
-                      </div>
-                    </div>
-                  </div>
                 </nav>
               </div>
               <main>
@@ -360,9 +344,12 @@ const Page = () => {
                               <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                                 <span>0 Duration</span>
                               </div>
-                              <div className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl">
+                              <Link
+                                href={'/student/pricing'}
+                                className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl"
+                              >
                                 <span>Upgrade</span>
-                              </div>
+                              </Link>
                             </div>
                           </div>
                         </div>
