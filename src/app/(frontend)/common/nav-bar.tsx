@@ -1,20 +1,33 @@
 'use client'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Image from 'next/image'
 import BellIcon from '../assets/icons/bell'
 import schoolLogo from '../assets/images/school-logo.png'
-import companyLogo from '../assets/images/company-logo.png'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { usePathname } from "next/navigation";
+import { useSession } from 'next-auth/react'
+import comapnyDefaultImage from '../assets/images/company-default-image.avif'
 
 interface naveBarProps {
   fill?: string
 }
 export default function NavBar({ fill }: naveBarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { data: session } = useSession()
+  const user = useMemo<any>(() => session?.user, [session])
+
   const navLinks = [
     { label: 'All Interns', path: '/company-pages/all-interns' },
-    { label: 'Invitations', path: '/company-pages/internship-post' },
+    {
+      label: 'Invitations',
+      paths: [
+        '/company-pages/internship-post',
+        '/company-pages/awaiting-interview',
+        '/company-pages/internship-request',
+        '/company-pages/rejected-requests',
+      ],
+    },
     { label: 'Reports', path: '/company-pages/reports' },
   ]
 
@@ -23,6 +36,7 @@ export default function NavBar({ fill }: naveBarProps) {
   }
 
   const router = useRouter()
+  const pathname = usePathname();
 
   return (
     <div className="flex items-center justify-between lg:px-[100px] px-4 py-[24px] w-full ">
@@ -32,11 +46,21 @@ export default function NavBar({ fill }: naveBarProps) {
 
       <div className="hidden md:block">
         <ul className="flex items-center gap-[44px] font-[400] text-[14px]  absolute left-0 right-0 flex items-center justify-center m-auto w-full ">
-          {navLinks.map((link, index) => (
-            <li key={index}>
-              <Link href={link.path}>{link.label}</Link>
-            </li>
-          ))}
+          {navLinks.map((link, index) => {
+            const isActive = Array.isArray(link.paths)
+              ? link.paths.includes(router.pathname)
+              : router.pathname === link.path
+
+            return (
+              <li key={index}>
+                <Link href={Array.isArray(link.paths) ? link.paths[0] : link.path}>
+                  <span className={`pb-2 ${isActive ? 'border-b-2 border-white' : ''}`}>
+                    {link.label}
+                  </span>
+                </Link>
+              </li>
+            )
+          })}
         </ul>
       </div>
 
@@ -71,16 +95,16 @@ export default function NavBar({ fill }: naveBarProps) {
           onClick={() => router.push('/company-pages/company-profile')}
         >
           <Image
-            src={companyLogo}
+            src={user?.image?.url || comapnyDefaultImage}
             alt="image"
             width={44}
             height={44}
-            objectFit={'contain'}
+            style={{ objectFit: 'cover' }}
             className="rounded-full"
           />
           <div>
-            <p className="font-[700] text-[14px] mb-[4px]">CRM SHOPPING MALL</p>
-            <p className="font-[400] text-[12px]">CRMSHOPPING@gmail.com</p>
+            <p className="font-[700] text-[14px] mb-[4px]">{user?.name}</p>
+            <p className="font-[400] text-[12px]">{user?.email}</p>
           </div>
         </div>
       </div>

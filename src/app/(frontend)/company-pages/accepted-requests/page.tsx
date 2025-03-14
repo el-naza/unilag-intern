@@ -38,8 +38,8 @@ export default function InternshipRequest() {
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('internship-applications')
     console.log(res)
-    const getApplication = res?.docs.filter((s) => s.status === 'pending')
-    console.log('applications', getApplication)
+    const getApplication = res?.docs.filter((s) => s.status === 'approved')
+    console.log('applications',getApplication)
     setInternReq(getApplication || [])
     setTableData(res)
     setLoading(false)
@@ -76,7 +76,7 @@ export default function InternshipRequest() {
         return res
       } catch {
         toast.error('An error occurred while updating; please try again later')
-      } finally {
+      }finally{
         // setLoadUpdateReq(false)
       }
     },
@@ -118,7 +118,7 @@ export default function InternshipRequest() {
         <button
           className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
           onClick={() => router.push(`/company-pages/student-details/${item.student.id}`)}
-          // onClick={() => handleRespond(item.id, 'approved')}
+          // onClick={() => handleRespond(item.id, 'accepted')}
           // disabled={respondToInterviewMtn.isPending}
         >
           Accept
@@ -128,10 +128,11 @@ export default function InternshipRequest() {
           onClick={() => handleRespond(item.id, 'company declined')}
           disabled={respondToInterviewMtn.isPending}
         >
-          {respondToInterviewMtn.isPending ? 'processing...' : '✘ Decline'}
+          {respondToInterviewMtn.isPending ?'processing...' : '✘ Decline'} 
         </button>
       </div>,
     ])
+
 
   const totalItems = 1234
 
