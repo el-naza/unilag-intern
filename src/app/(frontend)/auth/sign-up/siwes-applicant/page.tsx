@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/select'
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 import { password } from 'node_modules/payload/dist/fields/validations'
-import  { signInUserClient } from '@/services/signinUser'
+import { signInUserClient } from '@/services/signinUser'
 import { authStore } from '@/store/authStore'
 
 function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -150,12 +150,13 @@ export default function Page() {
           e.stopPropagation()
           form.handleSubmit()
         }}
+        className="grid grid-cols-2 gap-2"
       >
         <form.Field
           name="firstName"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>First Name</Label>
                 <Input
                   value={field.state.value || ''}
@@ -165,7 +166,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -173,7 +174,7 @@ export default function Page() {
           name="lastName"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Last Name</Label>
                 <Input
                   value={field.state.value || ''}
@@ -183,7 +184,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -191,7 +192,7 @@ export default function Page() {
           name="middleName"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Middle Name</Label>
                 <Input
                   value={field.state.value || ''}
@@ -201,7 +202,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -209,7 +210,7 @@ export default function Page() {
           name="matricNo"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Matriculation Number </Label>
                 <Input
                   value={field.state.value || ''}
@@ -219,7 +220,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -227,7 +228,7 @@ export default function Page() {
           name="email"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Email</Label>
                 <Input
                   value={field.state.value || ''}
@@ -237,7 +238,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -245,7 +246,7 @@ export default function Page() {
           name="dob"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Date of Birth</Label>
                 <br />
                 <Popover>
@@ -276,7 +277,7 @@ export default function Page() {
                 </Popover>
                 <br />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -284,7 +285,7 @@ export default function Page() {
           name="nationality"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Nationality</Label>
                 <Input
                   value={field.state.value || ''}
@@ -294,7 +295,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -302,7 +303,7 @@ export default function Page() {
           name="stateOfOrigin"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>State of Origin</Label>
                 <Input
                   value={field.state.value || ''}
@@ -312,7 +313,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -320,7 +321,7 @@ export default function Page() {
           name="homeAddress"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Home Address</Label>
                 <Input
                   value={field.state.value || ''}
@@ -330,7 +331,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -338,7 +339,7 @@ export default function Page() {
           name="gender"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Gender</Label>
                 <Select
                   value={(field.state.value as string) || ''}
@@ -363,7 +364,7 @@ export default function Page() {
                   </SelectContent>
                 </Select>
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -371,7 +372,7 @@ export default function Page() {
           name="course"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Course of Study</Label>
                 <Input
                   value={field.state.value || ''}
@@ -381,7 +382,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -389,7 +390,7 @@ export default function Page() {
           name="level"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Level</Label>
                 <Input
                   value={field.state.value || ''}
@@ -399,7 +400,7 @@ export default function Page() {
                   className={`bg-white/40 backdrop-blur-[70px] border-gray-light-5 border-[1px] mb-3 ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                 />
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
@@ -407,7 +408,7 @@ export default function Page() {
           name="internshipType"
           children={(field) => {
             return (
-              <>
+              <div className="col-span-2 md:col-span-1">
                 <Label>Internship Type</Label>
                 <Select
                   value={(field.state.value as string) || ''}
@@ -432,13 +433,13 @@ export default function Page() {
                   </SelectContent>
                 </Select>
                 <FieldError field={field} />
-              </>
+              </div>
             )
           }}
         />
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
-            <>
+            <div className="col-span-2">
               <Button
                 type="submit"
                 disabled={!canSubmit}
@@ -449,7 +450,7 @@ export default function Page() {
                 Continue {isSubmitting && <Spinner />}
               </Button>
               <FormError form={form} />
-            </>
+            </div>
           )}
         </form.Subscribe>
       </form>
