@@ -9,8 +9,8 @@ export const InternshipApplications: CollectionConfig = {
   slug: 'internship-applications',
   access: {
     create: students,
-    delete: relatedStudent,
-    update: relatedStudent,
+    delete: relatedStudentOrCompany,
+    update: relatedStudentOrCompany,
     read: anyone
   },
   fields: [

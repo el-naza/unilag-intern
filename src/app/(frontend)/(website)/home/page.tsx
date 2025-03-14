@@ -71,7 +71,7 @@ export default function HomePage() {
 
       <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32">
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
-          Courses Category
+          Intern Category
 
           <Image src="/images/underline.png" alt="Gift Card" width={200} height={100} className='absolute right-[35%]' />
         </h2>
@@ -92,7 +92,7 @@ export default function HomePage() {
             Benefit
           </span>
           <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-primary mb-[45px]">
-            Get Student <br /> ID Card
+            Get Intern ID Card
           </h2>
 
           <div className="flex items-center gap-6 mb-4">
@@ -106,14 +106,15 @@ export default function HomePage() {
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/group.png" alt="Group Icon" width={20} height={5} />
             </span>
-            <p>Teachers don’t get lost in the grid view and have a dedicated Podium space.</p>
+            <p>TA’s and presenters can be moved to the front of the class.
+            </p>
           </div>
 
           <div className="flex items-center gap-6">
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/people.png" alt="People Icon" width={20} height={5} />
             </span>
-            <p>Teachers don’t get lost in the grid view and have a dedicated Podium space.</p>
+            <p>Teachers can easily see all students and class data at one time.</p>
           </div>
         </div>
         <div className="grid place-content-center bg-[#D2E6E4] rounded-[20px] py-10">
@@ -128,10 +129,10 @@ export default function HomePage() {
         </div>
         <div>
           <span className="rounded-[10px] bg-[#f5f5f5] text-primary px-4 py-2 font-medium">
-            Training
+            Certificate
           </span>
           <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary mb-[45px]">
-            Staff Training
+            Certificate of Completion
           </h2>
 
           <div className="flex items-center gap-6 mb-4">
@@ -145,14 +146,15 @@ export default function HomePage() {
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/group.png" alt="Group Icon" width={20} height={5} />
             </span>
-            <p>Teachers don’t get lost in the grid view and have a dedicated Podium space.</p>
+            <p>TA’s and presenters can be moved to the front of the class.
+            </p>
           </div>
 
           <div className="flex items-center gap-6">
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/people.png" alt="People Icon" width={20} height={5} />
             </span>
-            <p>Teachers don’t get lost in the grid view and have a dedicated Podium space.</p>
+            <p>Teachers can easily see all students and class data at one time.</p>
           </div>
         </div>
       </div>

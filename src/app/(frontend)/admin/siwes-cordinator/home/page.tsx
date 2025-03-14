@@ -33,8 +33,11 @@ import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from '../students/add-student'
-import { getAllStudents } from '@/services/admin/students'
+import { deleteStudent, getAllStudents } from '@/services/admin/students'
 import { getAllCompanies } from '@/services/admin/companies'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 type Report = {
   companyName: string
@@ -94,9 +97,11 @@ export default function HomePage() {
   const [reportTotal, setReportTotal] = useState(0)
   const [reportHasNext, setReportHasNext] = useState(false)
   const [reportHasPrevious, setReportHasPrevious] = useState(false)
+  const router = useRouter()
+  const [openPopover, setOpenPopover] = useState(false)
 
   const fetchReports = async (params?: string) => {
-    await getAllReports('reports', params).then((res: any) => {
+    return getAllReports('reports', params).then((res: any) => {
       const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
       setReportData(docs)
       setReportPage(page)
@@ -107,20 +112,16 @@ export default function HomePage() {
     })
   }
 
-  const fetchEmployedStudent = async () => {
-    // const recentParams = new URLSearchParams({ sort: new Date().toISOString() }).toString()
-    await getEmployments('employments',).then((res: any) => {
+  const fetchEmployments = async () => {
+    return getEmployments('employments').then((res: any) => {
       const { docs } = res.data
-      console.log('Employments: ', res.data);
-      
       setEmployedData(docs)
     })
-   
   }
 
-  const fetchTotalStudents = async () => {
+  const fetchTotalStudents = () => {
     const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
-    await getAllStudents('students', query).then((res: any) => {
+    return getAllStudents('students', query).then((res: any) => {
       const { totalDocs } = res.data
 
       setConfig((prevConfig) => ({
@@ -132,9 +133,9 @@ export default function HomePage() {
     })
   }
 
-  const fetchTotalCompanies = async () => {
+  const fetchTotalCompanies = () => {
     const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
-    await getAllCompanies('companies', query).then((res: any) => {
+    return getAllCompanies('companies', query).then((res: any) => {
       const { totalDocs } = res.data
 
       setConfig((prevConfig) => ({
@@ -147,11 +148,13 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    Promise.allSettled([fetchReports(), fetchEmployedStudent()])
-    // Analytics
-    Promise.allSettled([fetchTotalStudents(), fetchTotalCompanies()])
+    Promise.allSettled([fetchTotalStudents(), fetchTotalCompanies()]).then(() =>
+      console.log('Analytics data fetched'),
+    )
 
-     // Table Records
+    Promise.allSettled([fetchReports(), fetchEmployments()]).then(() =>
+      console.log('Reports and employment data fetched'),
+    )
   }, [])
 
   const reportColumns = useMemo(
@@ -217,11 +220,19 @@ export default function HomePage() {
         id: 'name',
         header: 'Name',
         accessorKey: 'name',
+        cell: ({ _, row }) => {
+          const rowData = row.original
+          return `${rowData.student.firstName} ${rowData.student.lastName}`
+        },
       },
       {
-        id: 'role',
-        header: 'Role',
-        accessorKey: 'role',
+        id: 'department',
+        header: 'Department',
+        accessorKey: 'department',
+        cell: ({ _, row }) => {
+          const rowData = row.original
+          return `${rowData.student.course}`
+        },
       },
     ],
     [],
@@ -259,6 +270,23 @@ export default function HomePage() {
   const [studentOpenDialog, setStudentOpenDialog] = useState(false)
   const closeDialog = () => {
     setStudentOpenDialog(false)
+  }
+
+  const viewCompany = (row: any) => {
+    const companyId = row.original.company.id
+    router.push(`/admin/siwes-cordinator/companies/${companyId}`)
+  }
+
+  const editStudent = (row: any) => {
+    const studentId = row.original.student.id
+    router.push(`/admin/department-cordinator/students/${studentId}`)
+  }
+
+  const deleteAStudent = async (row: any) => {
+    const studentId = row.original.student.id
+    const res = await deleteStudent('students', studentId)
+    fetchEmployments()
+    toast.success('Student deleted successfully')
   }
 
   return (
@@ -344,15 +372,40 @@ export default function HomePage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56 bg-white border-none">
                         <DropdownMenuGroup>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => viewCompany(row)}>
                             <span>View Company</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => editStudent(row)}>
                             <span>Edit</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <span>Delete</span>
-                          </DropdownMenuItem>
+                          <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                                <span>Delete</span>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                              <div className="flex gap-4 items-center w-full">
+                                <Button
+                                  variant="ghost"
+                                  className="w-full"
+                                  onClick={() => setOpenPopover(false)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="w-full"
+                                  onClick={() => {
+                                    deleteAStudent(row)
+                                    setOpenPopover(false)
+                                  }}
+                                >
+                                  Continue
+                                </Button>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>

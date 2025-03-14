@@ -15,22 +15,39 @@ export default async function updateUserImage(
   col: CollectionSlug,
   userId: string,
   file: File,
-  authToken: string | undefined,
+  authToken?: string | undefined,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  if (!authToken)
+  // if (!authToken)
+  //   return {
+  //     status: 401,
+  //     data: { message: 'No auth token supplied' },
+  //   }
+
+  // const mediaUploadRes = await uploadMedia(
+  //   file,
+  //   authToken ||
+  //     ((await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
+  //       ?.token! as string),
+  // )
+  const token =
+    authToken ||
+    ((
+      await getToken({
+        req: { headers: await headers() },
+        secret: process.env.NEXTAUTH_SECRET,
+      })
+    )?.token as string)
+
+  if (!token)
     return {
       status: 401,
-      data: { message: 'No auth token supplied' },
+      data: { message: 'No auth token available' },
     }
 
-  const mediaUploadRes = await uploadMedia(
-    file,
-    authToken ||
-      ((await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
-        ?.token! as string),
-  )
+  const mediaUploadRes = await uploadMedia(file, token)
 
   console.log('media upload res', mediaUploadRes)
+
   if (!mediaUploadRes?.data?.doc?.id) return mediaUploadRes
 
   return await updateDoc(

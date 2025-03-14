@@ -13,8 +13,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useRouter } from 'next/navigation'
 
 const ToolBar = () => {
+
+    const router = useRouter()
+
+  const signAdminOut = async () => {
+    router.push('/admin/auth')
+  }
+
   return (
     <div className="toolbar-width h-[72px] ml-[270px] p-[20px] bg-gray-light-5 fixed flex justify-between z-20">
       <div className="flex gap-3">
@@ -60,7 +68,7 @@ const ToolBar = () => {
                   <span>Settings</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
-              <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
+              <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer" onClick={() => signAdminOut()}>
                 <LogOut />
                 <span>Log out</span>
               </DropdownMenuItem>

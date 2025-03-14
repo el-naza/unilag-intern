@@ -275,7 +275,7 @@ export interface InterviewInvitation {
   company: string | Company;
   message: string;
   dateTime: string;
-  status?: ('pending' | 'accepted' | 'declined') | null;
+  status?: ('pending' | 'accepted' | 'declined' | 'company accected' | 'company declined') | null;
   declineReason?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -309,7 +309,7 @@ export interface Internship {
   deadline?: string | null;
   startDate: string;
   endDate: string;
-  picture?: (string | null) | Media;
+  image?: (string | null) | Media;
   status?: ('open' | 'closed') | null;
   updatedAt: string;
   createdAt: string;
@@ -635,7 +635,7 @@ export interface InternshipsSelect<T extends boolean = true> {
   deadline?: T;
   startDate?: T;
   endDate?: T;
-  picture?: T;
+  image?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;

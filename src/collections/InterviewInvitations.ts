@@ -3,27 +3,16 @@ import { companies } from '@/access/companies'
 import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
 import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 import { parse } from 'qs-esm'
-
-// Hook to create an employment record when status is updated to 'accepted'
-// const createEmploymentOnAcceptance: BeforeChangeHook = async ({ data, req, originalDoc }) => {
-//   if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
-//     await req.payload.create({
-//       collection: 'employments',
-//       data: {
-//         student: originalDoc.student,
-//         company: originalDoc.company,
-//       },
-//     })
-//   }
-// }
+import { anyone } from '@/access/anyone'
+import { stat } from 'fs'
 
 export const InterviewInvitations: CollectionConfig = {
   slug: 'interview-invitations',
   access: {
-    read: relatedStudentOrCompany,
-    create: companies,
-    delete: relatedCompany,
-    update: relatedStudentOrCompany,
+    read: anyone,
+    create: anyone,
+    delete: anyone,
+    update: anyone,
   },
   fields: [
     {
@@ -51,7 +40,7 @@ export const InterviewInvitations: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      options: ['pending', 'accepted', 'declined'],
+      options: ['pending', 'accepted', 'declined', 'company accected', 'company declined'],
       defaultValue: 'pending',
     },
     {
@@ -59,21 +48,21 @@ export const InterviewInvitations: CollectionConfig = {
       type: 'text',
     },
   ],
-  hooks: {
-    beforeChange: [
-      ({ data, req, originalDoc }) => {
-        if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
-          req.payload.create({
-            collection: 'employments',
-            data: {
-              student: originalDoc.student,
-              company: originalDoc.company,
-            },
-          })
-        }
-      },
-    ],
-  },
+  // hooks: {
+  //   beforeChange: [
+  //     ({ data, req, originalDoc }) => {
+  //       if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
+  //         req.payload.create({
+  //           collection: 'employments',
+  //           data: {
+  //             student: originalDoc.student,
+  //             company: originalDoc.company,
+  //           },
+  //         })
+  //       }
+  //     },
+  //   ],
+  // },
   endpoints: [
     {
       method: 'get',

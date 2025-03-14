@@ -60,7 +60,7 @@ export const Internships: CollectionConfig = {
       required: true,
     },
     {
-      name: 'picture',
+      name: 'image',
       type: 'upload',
       relationTo: 'media',
       // required: true,

@@ -21,9 +21,9 @@ export default function RejectedRequest() {
   const [tableData, setTableData] = useState<any>([])
 
   const fetchInternReq = async () => {
-    const res: any = await fetchDocs('interview-invitations')
+    const res: any = await fetchDocs('internship-applications')
     // console.log(res)
-    const getRejected = res?.docs.filter((s: any) => s.status === 'declined')
+    const getRejected = res?.docs.filter((s: any) => s.status === 'company declined')
     console.log(getRejected)
     setInternReq(getRejected)
     setTableData(res)

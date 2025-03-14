@@ -64,7 +64,7 @@ const FilterStats = ({ page, showFilters, stats, onEmitFilter, onEmitDateFilter 
       <p>{formattedDate}</p>
 
       {showFilters && (
-        <div className="flex items-center gap-4 mt-8">
+        <div className="flex flex-wrap items-center gap-4 mt-8">
           <ToggleGroup
             type="single"
             value={filterValue}
@@ -123,7 +123,7 @@ const FilterStats = ({ page, showFilters, stats, onEmitFilter, onEmitDateFilter 
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-4 mt-8">
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 gap-4 mt-8">
         {stats.map((stat, index) => {
           const Icon = icons[stat.iconName]
 

@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useDebounce } from '@/custom-hooks/useDebounce'
-import { getAllStudents } from '@/services/admin/students'
+import { deleteStudent, getAllStudents } from '@/services/admin/students'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Edit2, EllipsisVertical, Plus, Trash } from 'lucide-react'
@@ -37,6 +37,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from './add-student'
+import { toast } from 'sonner'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+
 
 export type Student = {
   id: string
@@ -68,6 +71,7 @@ export default function StudentPage() {
   const [total, setTotal] = useState(0)
   const [hasNext, setHasNext] = useState(false)
   const [hasPrevious, setHasPrevious] = useState(false)
+  const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
 
   const fetchStudents = async (params?: string) => {
@@ -167,6 +171,13 @@ export default function StudentPage() {
     const studentId = rowRecord.original.id
     router.push(`/admin/siwes-cordinator/students/${studentId}`)
   }
+
+    const deleteAStudent = async (rowRecord: any) => {
+      const studentId = rowRecord.original.id
+      const res = await deleteStudent('students', studentId)
+      fetchStudents()
+      toast.success('Student deleted successfully')
+    }
 
   const [query, setQuery] = useState('')
   const [searchFilter, setSearchFilter] = React.useState<
@@ -335,10 +346,34 @@ export default function StudentPage() {
                           <Edit2 />
                           <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Trash />
-                          <span>Delete</span>
-                        </DropdownMenuItem>
+                        <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                                <Trash /><span>Delete</span>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                              <div className="flex gap-4 items-center w-full">
+                                <Button
+                                  variant="ghost"
+                                  className="w-full"
+                                  onClick={() => setOpenPopover(false)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="w-full"
+                                  onClick={() => {
+                                    deleteAStudent(row)
+                                    setOpenPopover(false)
+                                  }}
+                                >
+                                  Continue
+                                </Button>
+                              </div>
+                            </PopoverContent>
+                        </Popover>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>
