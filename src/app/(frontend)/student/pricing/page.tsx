@@ -7,10 +7,9 @@ import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHe
 import Image from 'next/image'
 import NavUnderlineLarge from '../../assets/icons/navUnderlineLg'
 import studentAbstractVector from '../../assets/images/student-abstract-vector.svg'
+import coinVector from '../../assets/images/coin.svg'
+import stackedCoinsVector from '../../assets/images/pile-of-eight-golden-coins.svg'
 import SearchAltIcon from '../../assets/icons/searchAltIcon'
-import MenuIcon from '../../assets/icons/menu'
-import NotificationBellIcon from '../../assets/icons/notificationBell'
-import FilterAltIcon from '../../assets/icons/filterAltIcon'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import getAge from '@/utilities/getAge'
@@ -52,7 +51,10 @@ const Page = () => {
                     </div>
                     <div className="bg-[#EFEFEF] pb-8">
                       <div className="p-8">
-                        <div className="mb-4">1 Coin = ₦100 </div>
+                        <div className="mb-4 flex">
+                          <Image src={stackedCoinsVector} alt="stacked-coins" className="me-2" />1
+                          Coin = ₦100{' '}
+                        </div>
                         <div className="flex justify-between">
                           <div>Pricing estimate</div>
                           <div>₦{coinsCount * 100}</div>
@@ -60,11 +62,16 @@ const Page = () => {
                       </div>
                       <div className="bg-[#FAFAFA] py-8 px-2">
                         <div className="grid grid-cols-12 gap-2 mb-5">
-                          <div className="col-span-2">0</div>
-                          <div className="col-span-8">
+                          <div className="col-span-2 flex">
+                            <Image src={coinVector} alt="coin" height={20} className="me-1" />0
+                          </div>
+                          <div className="col-span-8 flex">
                             <Slider value={coins} onValueChange={setCoins} max={100} step={1} />
                           </div>
-                          <div className="col-span-2 text-right">100</div>
+                          <div className="col-span-2 ms-auto flex">
+                            <Image src={coinVector} alt="coin" height={20} className="me-1" />
+                            100
+                          </div>
                         </div>
                         <div className="mx-0 mb-6">
                           <div className="grid grid-cols-3 gap-2">
@@ -265,7 +272,10 @@ const Page = () => {
                     </div>
                     <div className="bg-[#EFEFEF] pb-8">
                       <div className="p-8">
-                        <div className="mb-4">1 Coin = ₦100 </div>
+                        <div className="mb-4 flex">
+                          <Image src={stackedCoinsVector} alt="stacked-coins" className="me-2" />1
+                          Coin = ₦100{' '}
+                        </div>
                         <div className="flex justify-between">
                           <div>Pricing estimate</div>
                           <div>₦{coinsCount * 100}</div>
@@ -273,11 +283,16 @@ const Page = () => {
                       </div>
                       <div className="bg-[#FAFAFA] p-8">
                         <div className="grid grid-cols-12 gap-2 mb-5">
-                          <div>0</div>
-                          <div className="col-span-10">
+                          <div className="flex">
+                            <Image src={coinVector} alt="coin" className="me-2" /> 0
+                          </div>
+                          <div className="col-span-10 flex">
                             <Slider value={coins} onValueChange={setCoins} max={100} step={1} />
                           </div>
-                          <div className="text-right">100</div>
+                          <div className="ms-auto flex">
+                            <Image src={coinVector} alt="coin" className="me-2" />
+                            100
+                          </div>
                         </div>
                         <div className="mx-4 mb-6">
                           <div className="grid grid-cols-7 gap-2">
