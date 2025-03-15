@@ -11,6 +11,11 @@ export default async function fetchDoc<T>(
   col: CollectionSlug,
   id: string,
 ): Promise<{ data: T } | ValidationErrors> {
+  console.log(
+    '*******token getting',
+    (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
+      ?.token!,
+  )
   return (
     await axiosInstance
       .get(`/api/${col}/${id}`, {
