@@ -71,9 +71,9 @@ const Page = () => {
   }
 
   const fetchEmployments = async () => {
-    // const res: any = await fetchDocs('employments')
-    // console.log(res)
-    // setEmployments(res.docs)
+    const res: any = await fetchDocs('employments')
+    console.log(res)
+    setEmployments(res.docs)
     setLoading(false)
   }
 
