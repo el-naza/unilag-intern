@@ -13,10 +13,10 @@ type Response = {
 
 export async function getAllCompanies(
   col: CollectionSlug,
-  params?: string
+  params?: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -43,10 +43,10 @@ export async function getAllCompanies(
 
 export async function getCompany(
   col: CollectionSlug,
-  companyId: string
+  companyId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -73,10 +73,10 @@ export async function getCompany(
 
 export async function deleteCompany(
   col: CollectionSlug,
-  companyId: string
+  companyId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })

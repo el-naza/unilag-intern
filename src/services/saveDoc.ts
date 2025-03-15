@@ -15,7 +15,7 @@ export default async function saveDoc<T>(
   return await axiosInstance
     .post(`/api/${col}`, data, {
       headers: {
-        Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+        Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },
     })
     .then((res) => ({

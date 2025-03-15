@@ -22,7 +22,7 @@ export default async function uploadMedia(
   return await axiosInstance
     .post<Response | ErrorResponse>(`/api/media`, formData, {
       headers: {
-        Authorization: `Bearer ${authToken || (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+        Authorization: `Bearer ${authToken || (await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },
     })
     .catch((error: AxiosError) => {

@@ -18,7 +18,7 @@ export default async function saveFormDataDoc(
   return await axiosInstance
     .post<Response | ErrorResponse>(`/api/${col}`, formData, {
       headers: {
-        Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+        Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },
     })
     .catch((error: AxiosError) => {

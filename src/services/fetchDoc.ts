@@ -13,14 +13,19 @@ export default async function fetchDoc<T>(
 ): Promise<{ data: T } | ValidationErrors> {
   console.log(
     '*******token getting',
-    (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
-      ?.token!,
+    (
+      await getToken({
+        secureCookie: process.env.NODE_ENV === 'production',
+        req: { headers: await headers() },
+        secret: process.env.NEXTAUTH_SECRET,
+      })
+    )?.token!,
   )
   return (
     await axiosInstance
       .get(`/api/${col}/${id}`, {
         headers: {
-          Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+          Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
         },
       })
       .catch((error: AxiosError) => {

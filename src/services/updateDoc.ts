@@ -19,13 +19,18 @@ export default async function updateDoc(
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   console.log(
     '***Token',
-    (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
-      ?.token!,
+    (
+      await getToken({
+        secureCookie: process.env.NODE_ENV === 'production',
+        req: { headers: await headers() },
+        secret: process.env.NEXTAUTH_SECRET,
+      })
+    )?.token!,
   )
   return await axiosInstance
     .patch<Response | ErrorResponse>(`/api/${col}/${id}`, update, {
       headers: {
-        Authorization: `Bearer ${authToken || (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+        Authorization: `Bearer ${authToken || (await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },
     })
     .catch((error: AxiosError) => {

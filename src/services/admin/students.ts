@@ -13,10 +13,10 @@ type Response = {
 
 export async function getAllStudents(
   col: CollectionSlug,
-  params?: string
+  params?: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -43,10 +43,10 @@ export async function getAllStudents(
 
 export async function getStudent(
   col: CollectionSlug,
-  studentId: string
+  studentId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -73,10 +73,10 @@ export async function getStudent(
 
 export async function deleteStudent(
   col: CollectionSlug,
-  studentId: string
+  studentId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -100,4 +100,3 @@ export async function deleteStudent(
       data: res?.data,
     }))
 }
-

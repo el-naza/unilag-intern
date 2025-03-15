@@ -16,6 +16,7 @@ export async function getAllAdmins(
   params?: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -45,6 +46,7 @@ export async function createAdmin(
   payload: any,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
