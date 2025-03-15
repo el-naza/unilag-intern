@@ -22,7 +22,13 @@ export default async function fetchDocs<T>(
   console.log('headers', h)
   console.log(
     '*******token getting',
-    (await getToken({ req: { headers: h }, secret: process.env.NEXTAUTH_SECRET }))?.token!,
+    (
+      await getToken({
+        secureCookie: process.env.NODE_ENV === 'production',
+        req: { headers: h },
+        secret: process.env.NEXTAUTH_SECRET,
+      })
+    )?.token!,
   )
   return (
     await axiosInstance
