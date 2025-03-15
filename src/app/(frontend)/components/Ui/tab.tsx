@@ -11,6 +11,7 @@ export default function InvitationTabs() {
     { title: 'Internship Post', path: '/company-pages/internship-post' },
     { title: 'Interviews', path: '/company-pages/awaiting-interview' },
     { title: 'Internship Request', path: '/company-pages/internship-request', total: '' },
+    { title: 'Accepted Request', path: '/company-pages/accepted-requests' },
     { title: 'Rejected Request', path: '/company-pages/rejected-requests' },
   ]
 

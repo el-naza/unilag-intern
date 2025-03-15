@@ -115,14 +115,14 @@ export default function InternshipRequest() {
         {new Date(item.createdAt).toLocaleDateString()}
       </p>,
       <div key={`${item.id}-actions`}>
-        <button
+        {/* <button
           className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
           onClick={() => router.push(`/company-pages/student-details/${item.student.id}`)}
           // onClick={() => handleRespond(item.id, 'accepted')}
           // disabled={respondToInterviewMtn.isPending}
         >
           Accept
-        </button>
+        </button> */}
         <button
           className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
           onClick={() => handleRespond(item.id, 'company declined')}

@@ -1,87 +1,86 @@
-import type { Access } from 'payload'
+// import type { Access } from 'payload'
 
-export const relatedStudentOrCompany: Access = async ({ req: { user, payload }, id }) => {
-  if (Boolean(user?.collection === 'students') || Boolean(user?.collection === 'companies')) {
-    if (id) {
-      const result = await payload.findByID({
-        collection: 'interview-invitations',
-        id,
-        depth: 0,
-      })
+// export const relatedStudentOrCompany: Access = async ({ req: { user, payload }, id }) => {
+//   if (Boolean(user?.collection === 'students') || Boolean(user?.collection === 'companies')) {
+//     if (id) {
+//       const result = await payload.findByID({
+//         collection: 'interview-invitations',
+//         id,
+//         depth: 0,
+//       })
 
-      // Validate ownership
-      if (result) {
-        return (
-          (user?.collection === 'students' && result.student === user.id) ||
-          (user?.collection === 'companies' && result.company === user.id)
-        )
-      }
+//       // Validate ownership
+//       if (result) {
+//         return (
+//           (user?.collection === 'students' && result.student === user.id) ||
+//           (user?.collection === 'companies' && result.company === user.id)
+//         )
+//       }
 
-      return false
-    }
+//       return false
+//     }
 
-    const results = await payload.find({
-      collection: 'interview-invitations',
-      limit: 0,
-      depth: 0,
-      where: {
-        ...(Boolean(user?.collection === 'students')
-          ? { student: { equals: user?.id } }
-          : { company: { equals: user?.id } }),
-      },
-    })
+//     const results = await payload.find({
+//       collection: 'interview-invitations',
+//       limit: 0,
+//       depth: 0,
+//       where: {
+//         ...(Boolean(user?.collection === 'students')
+//           ? { student: { equals: user?.id } }
+//           : { company: { equals: user?.id } }),
+//       },
+//     })
 
-    return results.totalDocs !== 0
-  }
+//     return results.totalDocs !== 0
+//   }
 
-  return false
-}
+//   return false
+// }
+
 
 
 // HERE I WAS TRYING TO ENABLE THE STUDENT OR COMPANY TO VIEW THE INTERVIEW INVITATION  OR Internship Applications THAT WAS SENT TO THEM
 
 
-// import type { Access } from 'payload';
+import type { Access } from 'payload';
 
-// export const relatedStudentOrCompany: Access = async ({ req: { user, payload }, id }) => {
-//   // Ensure the user is either a student or a company
-//   if (user?.collection === 'students' || user?.collection === 'companies') {
-//     if (id) {
-//       // Fetch the document (either internship-application or interview-invitation)
-//       const result = await payload.findByID({
-//         collection: 'internship-applications' || 'interview-invitations', // Adjust based on the collection
-//         id,
-//         depth: 0,
-//       });
+export const relatedStudentOrCompany: Access = async ({ req: { user, payload }, id }, collection) => {
+  if (!user) return false; 
+  const isStudent = user.collection === 'students';
+  const isCompany = user.collection === 'companies';
 
-//       // Validate ownership
-//       if (result) {
-//         if (user?.collection === 'students') {
-//           // Check if the student owns the document
-//           return result.student === user.id;
-//         } else if (user?.collection === 'companies') {
-//           // Check if the company owns the document
-//           return result.company === user.id;
-//         }
-//       }
+  if (!isStudent && !isCompany) return false; 
+  if (id) {
+  
+    const collectionsToCheck = ['interview-invitations', 'internship-applications'];
+    let result = null;
 
-//       return false; // Document not found or ownership not validated
-//     }
+    for (const coll of collectionsToCheck) {
+      result = await payload.findByID({
+        collection: coll,
+        id,
+        depth: 0,
+      });
 
-//     // If no ID is provided, fetch all documents related to the user
-//     const results = await payload.find({
-//       collection: 'internship-applications' || 'interview-invitations', // Adjust based on the collection
-//       limit: 0,
-//       depth: 0,
-//       where: {
-//         ...(user?.collection === 'students'
-//           ? { student: { equals: user.id } } // Filter by student
-//           : { company: { equals: user.id } }), // Filter by company
-//       },
-//     });
+      if (result) break; 
+    }
 
-//     return results.totalDocs !== 0; // Return true if documents exist for the user
-//   }
+    if (!result) return false; 
 
-//   return false; // User is not a student or company
-// };
+    
+    return (
+      (isStudent && result.student === user.id) ||
+      (isCompany && result.company === user.id)
+    );
+  }
+
+  // For read access, filter documents based on student or company ownership
+  return {
+    or: [
+      isStudent ? { student: { equals: user.id } } : null,
+      isCompany ? { company: { equals: user.id } } : null,
+    ].filter(Boolean),
+  };
+};
+
+

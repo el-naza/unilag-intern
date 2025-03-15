@@ -81,7 +81,7 @@ export default function NavBar({ fill }: naveBarProps) {
           <ul className="flex flex-col lg:items-center gap-4 font-[400] text-[14px]">
             {navLinks.map((link, index) => (
               <li key={index}>
-                <Link href={link.path}>{link.label}</Link>
+                <Link href={link.paths[0]} passHref>{link.label}</Link>
               </li>
             ))}
           </ul>

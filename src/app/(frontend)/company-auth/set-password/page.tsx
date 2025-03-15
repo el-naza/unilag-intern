@@ -162,7 +162,7 @@ export default function OTPConfirmation() {
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <>
-              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8 text-gr">
+              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8 text-gr"  color='white'>
                 Confirm {isSubmitting && <Spinner />}
               </Button>
               <FormError form={form} />

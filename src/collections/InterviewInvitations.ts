@@ -24,7 +24,7 @@ export const InterviewInvitations: CollectionConfig = {
   access: {
     read: relatedStudentOrCompany,
     create: companies,
-    delete: relatedCompany,
+    delete: relatedStudentOrCompany,
     update: relatedStudentOrCompany,
   },
   fields: [

@@ -259,30 +259,14 @@ export default function InternshipPost() {
           >
             <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-6 w-full">
               <div className="h-[] lg:w-[376px] w-full  relative overflow-hidden ">
-                {/* <form.Field
-                  name="picture"
-                  children={(field) => {
-                    return (
-                      <>
-                        <FileUploader
-                          id="file-upload"
-                          name="fileUpload"
-                          accept=".jpg,.png,.svg,.zip"
-                          multiple={true}
-                          maxFileSize={2} // 2MB
-                          onFileChange={handleFileChange}
-                        />
-                      </>
-                    )
-                  }}
-                /> */}
+               
                 <form.Field name="image">
                   {(field) => {
                     return (
                       <>
-                        {!!field.state.value && (
+                        {!!selectedFile && (
                           <Image
-                            src={URL.createObjectURL(field.state.value)}
+                            src={URL.createObjectURL(selectedFile)}
                             className="mx-auto rounded-full w-[64px] aspect-square"
                             width={64}
                             height={64}
@@ -305,7 +289,7 @@ export default function InternshipPost() {
 
                         <div {...getRootProps()}>
                           <div
-                            className={`border-dashed ${isDragActive ? 'border-green-400 bg-gray-100' : ''} border-secondary/50 border-[2px] rounded-lg flex flex-col items-center py-6 mt-3`}
+                            className={`border-dashed bg-white ${isDragActive ? 'border-green-400 bg-gray-100' : ''} border-secondary/50 border-[2px] rounded-lg flex flex-col items-center py-6 mt-3`}
                           >
                             <Image
                               src="/static-icons/upload-icon.svg"
