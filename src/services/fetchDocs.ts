@@ -14,7 +14,7 @@ export default async function fetchDocs<T>(
   const h = new Headers()
   const headerList = await headers()
   for (const [key, value] of headerList.entries()) {
-    if (['cookie', 'authorization'].includes(key)) {
+    if (['cookie', 'authorization', 'host'].includes(key)) {
       h.append(key, value)
       console.log(`${key}: ${value}`)
     }
