@@ -390,6 +390,9 @@ export interface Report {
   student: string | Student;
   title: string;
   details: string;
+  status?: ('approved' | 'reasign' | 'pending') | null;
+  remark?: ('Excellent' | 'Fair' | 'Good' | 'Need Improvement' | 'Poor') | null;
+  image?: (string | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -674,6 +677,9 @@ export interface ReportsSelect<T extends boolean = true> {
   student?: T;
   title?: T;
   details?: T;
+  status?: T;
+  remark?: T;
+  image?: T;
   updatedAt?: T;
   createdAt?: T;
 }
