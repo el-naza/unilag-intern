@@ -10,6 +10,8 @@ import { CollectionSlug } from 'payload'
 export default async function fetchDocs<T>(
   col: CollectionSlug,
 ): Promise<{ data: T } | ValidationErrors> {
+  console.log('headers', await headers())
+  console.log('secret', process.env.NEXTAUTH_SECRET)
   console.log(
     '*******token getting',
     (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
