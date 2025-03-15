@@ -15,7 +15,7 @@ export const authConfig = {
       return true
     },
     jwt: async ({ token, user, session, trigger }) => {
-      console.log('token aspect user', user)
+      // console.log('token aspect user', user)
       if (user) {
         token.user = { ...token.user, ...user } as any
       }
@@ -34,7 +34,7 @@ export const authConfig = {
     session: async ({ session, token }) => {
       session.user = token.user as any
       // delete session.user.token
-      console.log('session aspect token', token)
+      // console.log('session aspect token', token)
       // console.log('session aspect', session)
       return session
     },

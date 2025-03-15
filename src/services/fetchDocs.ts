@@ -10,12 +10,19 @@ import { CollectionSlug } from 'payload'
 export default async function fetchDocs<T>(
   col: CollectionSlug,
 ): Promise<{ data: T } | ValidationErrors> {
-  console.log('headers', await headers())
   console.log('secret', process.env.NEXTAUTH_SECRET)
+  const h = new Headers()
+  const headerList = await headers()
+  for (const [key, value] of headerList.entries()) {
+    if (['cookie', 'authorization'].includes(key)) {
+      h.append(key, value)
+      console.log(`${key}: ${value}`)
+    }
+  }
+  console.log('headers', h)
   console.log(
     '*******token getting',
-    (await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
-      ?.token!,
+    (await getToken({ req: { headers: h }, secret: process.env.NEXTAUTH_SECRET }))?.token!,
   )
   return (
     await axiosInstance
