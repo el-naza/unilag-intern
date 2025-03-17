@@ -20,7 +20,7 @@ export default function NavBar({ fill }: naveBarProps) {
   const user = useMemo<any>(() => session?.user, [session])
 
   const navLinks = [
-    { label: 'All Interns', paths: '/company-pages/all-interns' },
+    { label: 'All Interns', paths: ['/company-pages/all-interns'] },
     {
       label: 'Applications',
       paths: [
@@ -30,7 +30,7 @@ export default function NavBar({ fill }: naveBarProps) {
         '/company-pages/rejected-requests',
       ],
     },
-    { label: 'Reports', paths: '/company-pages/reports' },
+    { label: 'Reports', paths: ['/company-pages/reports'] },
   ]
 
   const toggleMenu = () => {
