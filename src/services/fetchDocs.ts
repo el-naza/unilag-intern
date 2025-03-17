@@ -9,10 +9,11 @@ import { CollectionSlug } from 'payload'
 
 export default async function fetchDocs<T>(
   col: CollectionSlug,
+  where: string = '',
 ): Promise<{ data: T } | ValidationErrors> {
   return (
     await axiosInstance
-      .get(`/api/${col}`, {
+      .get(`/api/${col}${where}`, {
         headers: {
           Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
         },

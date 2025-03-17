@@ -23,7 +23,7 @@ const Page = () => {
   const [interviewInvitations, setInterviewInvitations] = useState<InterviewInvitation[]>([])
 
   const fetchInterviewInvitations = async () => {
-    const query: Where = { status: { equals: 'accepted' } }
+    const query: Where = { status: { equals: 'pending' } }
 
     const stringifiedQuery = stringify(
       {
@@ -113,7 +113,7 @@ const Page = () => {
                     <span>Back</span>
                   </div>
                 </Link>
-                <div className="text-white text-3xl font-bold ms-4">Accepted Interviews</div>
+                <div className="text-white text-3xl font-bold ms-4">My Interviews</div>
               </div>
               <div className="text-black bg-white rounded-lg">
                 <div className="grid grid-cols-5 gap-4">
