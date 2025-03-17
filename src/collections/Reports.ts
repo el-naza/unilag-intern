@@ -30,21 +30,33 @@ export const Reports: CollectionConfig = {
       required: true,
     },
     {
-      name: 'status',
-      type: 'select',
-      options: ['approved', 'reasign','pending'],
-      defaultValue: 'pending',
+      name: 'supervisor',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'memo',
+      type: 'text',
     },
     {
       name: 'remark',
+      type: 'text',
+    },
+    {
+      name: 'status',
       type: 'select',
-      options: ['excellent', 'fair', 'good', 'need improvement', 'poor', 'pending'],
+      options: ['pending', 'approved', 'reassigned'],
       defaultValue: 'pending',
     },
     {
-      name: 'image',
+      name: 'media',
       type: 'upload',
       relationTo: 'media',
+    },
+    {
+      name: 'week',
+      type: 'number',
+      required: true,
     },
   ],
 }

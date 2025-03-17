@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import companyBanner from '../../assets/images/company-banner.png'
 import enrolledStudent1 from '../../assets/images/enrolled-student-1.svg'
 import enrolledStudent2 from '../../assets/images/enrolled-student-2.svg'
@@ -7,8 +7,22 @@ import enrolledStudent3 from '../../assets/images/enrolled-student-3.svg'
 import enrolledStudent4 from '../../assets/images/enrolled-student-4.svg'
 import enrolledStudent5 from '../../assets/images/enrolled-student-5.svg'
 import Link from 'next/link'
+import fetchCompanyInternships from '@/services/fetchCompanyInternships'
 
 export default function CompanyRecommendedCard({ company }) {
+  const [internshipCount, setInternshipCount] = useState<number>(0)
+  const [loadingInternshipCount, setLoadingInternshipCount] = useState<boolean>(false)
+
+  const fetchInternshipCount = async () => {
+    setLoadingInternshipCount(true)
+    const internshipsRes: any = await fetchCompanyInternships({ company: company.id })
+    setInternshipCount(internshipsRes.docs.length)
+    setLoadingInternshipCount(false)
+  }
+
+  useEffect(() => {
+    fetchInternshipCount()
+  }, [])
   return (
     <div className="shadow rounded-lg">
       <div className="rounded-t-lg relative flex flex-col">
@@ -67,7 +81,11 @@ export default function CompanyRecommendedCard({ company }) {
         </div>
         <div className="grid grid-cols-2">
           <div className="flex">
-            <span className="my-auto text-[#FD661F] text-md">2 vacancies</span>
+            <span className="my-auto text-[#FD661F] text-md">
+              {loadingInternshipCount
+                ? '...'
+                : `${internshipCount} ${internshipCount === 1 ? 'vacancy' : 'vacancies'}`}
+            </span>
           </div>
           <div>
             <Link href={`/student/companies/${company.id}`}>

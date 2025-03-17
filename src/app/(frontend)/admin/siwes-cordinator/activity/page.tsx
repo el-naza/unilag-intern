@@ -1,17 +1,5 @@
 'use client'
-import React, { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from '@/components/ui/table'
-import { EllipsisVertical, Edit2, Trash } from 'lucide-react'
-import { Input } from '@/components/ui/input'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,14 +7,32 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  PaginationState,
-  useReactTable,
-} from '@tanstack/react-table'
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { useDebounce } from '@/custom-hooks/useDebounce'
+import { getAllActivities } from '@/services/admin/activities'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { Edit2, EllipsisVertical, Trash } from 'lucide-react'
+import React, { useEffect, useMemo, useState } from 'react'
+import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
+import { format } from 'date-fns'
 
 type Activity = {
   users: string
@@ -36,31 +42,47 @@ type Activity = {
   timeDate: string
 }
 
-const defaultData: Activity[] = [
-  {
-    users: 'Lucas Ray',
-    activities: 'Request Accepted',
-    message: 'Dear [Applicant], we are pleased to inform you',
-    status: 'Successful',
-    timeDate: '11:24 am - 02/03/2025',
-  },
-]
-
 export default function ReportPage() {
-  const config: IFIlterConfig = {
+  const [config, setConfig] = useState<IFIlterConfig>({
     page: 'Activity',
     showFilters: false,
-    stats: [{ label: 'Total No of Activities', iconName: 'MessageCircleQuestion', count: 100 }],
+    stats: [{ label: 'Total No of Activities', iconName: 'MessageCircleQuestion', count: 0 }],
+  })
+
+  const [loading, setLoading] = useState<boolean>(true)
+  const [activities, setActivities] = useState<Activity[]>([])
+  const [perPage, setPerPage] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [hasNext, setHasNext] = useState(false)
+  const [hasPrevious, setHasPrevious] = useState(false)
+
+  const fetchActivities = async (params?: string) => {
+    const res: any = await getAllActivities('reports', params)
+    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    setActivities(docs)
+    setPerPage(page)
+    setPageSize(totalPages)
+    setHasNext(hasNextPage)
+    setHasPrevious(hasPrevPage)
+    setTotal(totalDocs)
+
+    setConfig((prevConfig) => {
+      if (prevConfig.stats[0].count === totalDocs) return prevConfig // Prevent unnecessary re-renders
+      return {
+        ...prevConfig,
+        stats: prevConfig.stats.map((stat, index) =>
+          index === 0 ? { ...stat, count: totalDocs } : stat,
+        ),
+      }
+    })
+
+    setLoading(false)
   }
 
-  const [data, setData] = useState(() => defaultData)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const [total, setTotal] = useState(0)
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  useEffect(() => {
+    fetchActivities()
+  }, [])
 
   const columns = useMemo(
     () => [
@@ -88,6 +110,10 @@ export default function ReportPage() {
         id: 'timeDate',
         header: 'Time & Date',
         accessorKey: 'timeDate',
+        cell: ({ getValue, row }) => {
+          const rowData = row.original
+          return `${rowData.startDate ? format(new Date(getValue()), 'MMM dd, yyyy') : 'N/A'}`
+        },
       },
     ],
     [],
@@ -95,32 +121,65 @@ export default function ReportPage() {
 
   const table = useReactTable({
     columns,
-    data,
+    data: activities,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    state: {
-      pagination,
-    },
   })
 
-  const paginationProps = { page, pageSize, total }
+  const paginationProps = { page: perPage, pageSize, total, hasNext, hasPrevious }
 
-  const nextPage = () => {
-    console.log('Next Page')
+  const nextPage = (page: number) => {
+    setLoading(true)
+    fetchActivities(`page=${page}`)
   }
 
-  const previousPage = () => {
-    console.log('Previous Page')
+  const previousPage = (page: number) => {
+    setLoading(true)
+    fetchActivities(`page=${page}`)
   }
+
+  const [query, setQuery] = useState('')
+  const [searchFilter, setSearchFilter] = React.useState<'user' | 'activity'>()
+  const debouncedQuery = useDebounce(query)
+
+  useEffect(() => {
+    switch (searchFilter) {
+      case 'user':
+        fetchActivities(new URLSearchParams({ 'where[user][like]': debouncedQuery }).toString())
+        break
+      case 'activity':
+        fetchActivities(new URLSearchParams({ 'where[activity][like]': debouncedQuery }).toString())
+        break
+    }
+  }, [debouncedQuery, searchFilter])
+
 
   return (
-    <div className='p-8'>
-      <FIlterStats config={config} />
+    <div className="p-8">
+      <FIlterStats {...config} />
 
       <div className="flex justify-between items-center mt-8">
         <div></div>
-        <Input placeholder="Search..." className="w-[20%] border-[1px]" />
+        <div className="flex gap-4 items-center">
+          <Select onValueChange={(value) => setSearchFilter(value as 'user' | 'activity')}>
+            <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Filter By</SelectLabel>
+                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="activity">Activity</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Input
+            className="border-[1px] border-gray-light-2 w-[full]"
+            placeholder="Search by user, activity..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="mt-4 p-4 bg-white rounded-lg shadow-md">

@@ -18,26 +18,26 @@ const Footer = () => {
             <ul className='space-y-2'>
                 <li><strong>Address:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora necessitatibus praesentium</li>
                 <li>Tel: <a href="tel:+23498720938">+23498720938</a></li>
-                <li>Tesponse Hours: 8am to 5pm</li>
-                <li>Email: info@unilaglearn.com</li>
+                <li>Response Hours: 8am to 5pm</li>
+                <li>Email: info@onlearn.com</li>
             </ul>
         </div>
 
         <div className='lg:col-span-2 sm:col-span-4'>
-            <p className='text-black font-semibold'>Categories</p>
+            <p className='text-black font-semibold'>Intern Categories</p>
             <ul className='space-y-2'>
-                <li>Councelling</li>
-                <li>Health & Fitness</li>
-                <li>Individual Development</li>
-                <li>more</li>
+                <li>SIWES</li>
+                <li>Teaching Practice</li>
+                <li>Housemanship</li>
+                <li>Others</li>
             </ul>
         </div>
 
         <div className='lg:col-span-2 sm:col-span-3'>
             <p className='text-black font-semibold'>Links</p>
             <ul className='space-y-2'>
-                <li><Link href="/">About US</Link></li>
-                <li><Link href="/blog">Blog</Link></li>
+                <li><Link href="/">Log in to Students Dashboard</Link></li>
+                <li><Link href="/blog">Log in to Company Dashboard</Link></li>
             </ul>
         </div>
 

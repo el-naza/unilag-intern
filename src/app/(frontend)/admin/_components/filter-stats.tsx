@@ -1,37 +1,74 @@
 'use client'
-import React from 'react'
-import { CalendarDays, ListFilter, icons } from 'lucide-react'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
-import { format } from 'date-fns'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { format, subMonths, subWeeks, subYears } from 'date-fns'
+import { CalendarDays, ListFilter, icons } from 'lucide-react'
+import React from 'react'
 
 export interface IFIlterConfig {
   page: string
   showFilters: boolean
   stats: { label: string; iconName: string; count: number }[]
+  onEmitFilter?: (date: Date) => void
+  onEmitDateFilter?: (date: Date) => void
 }
 
-const FilterStats = ({ config }: { config: IFIlterConfig }) => {
+const FilterStats = ({ page, showFilters, stats, onEmitFilter, onEmitDateFilter }: IFIlterConfig) => {
   const formattedDate = format(new Date(), 'EEEE do MMMM yyyy')
 
   const [date, setDate] = React.useState<Date>(new Date())
   const [filterValue, setFilterValue] = React.useState<string>('today')
 
+  const [openPopover, setOpenPopover] = React.useState(false)
+  const closePopover = () => {
+    setOpenPopover(false)
+  }
+
+  const selectDate = (date: Date) => {
+    setDate(date)
+    onEmitDateFilter(date)
+    closePopover()
+  }
+
+  const emitFilterTrigger = (value: string) => {    
+    setFilterValue(value)
+
+    switch (value) {
+      case 'today': {
+        onEmitFilter(new Date())
+        break
+      }
+      case 'week': {
+        const lastWeek = subWeeks(new Date(), 1);
+        onEmitFilter(lastWeek)
+        break
+      }
+      case 'month': {
+        const lastMonth = subMonths(new Date(), 1);
+        onEmitFilter(lastMonth)
+        break
+      }
+      case 'year': {
+        const lastYear = subYears(new Date(), 1);
+        onEmitFilter(lastYear)
+        break
+      }
+    }
+  }
+
   return (
     <>
-      <h1 className="font-semibold text-[1.5rem]">{config.page}</h1>
+      <h1 className="font-semibold text-[1.5rem]">{page}</h1>
       <p>{formattedDate}</p>
 
-      {config.showFilters && (
-        <div className="flex items-center gap-4 mt-8">
+      {showFilters && (
+        <div className="flex flex-wrap items-center gap-4 mt-8">
           <ToggleGroup
             type="single"
             value={filterValue}
-            onValueChange={(value) => {
-              value && setFilterValue(value)
-            }}
+            onValueChange={(value) => emitFilterTrigger(value)}
           >
             <ToggleGroupItem
               value="today"
@@ -64,7 +101,7 @@ const FilterStats = ({ config }: { config: IFIlterConfig }) => {
           </ToggleGroup>
 
           <div className="flex gap-2">
-            <Popover>
+            <Popover open={openPopover} onOpenChange={setOpenPopover}>
               <PopoverTrigger asChild>
                 <Button variant="ghost" className="bg-gray-light-5">
                   <CalendarDays /> Filter by Date
@@ -74,8 +111,7 @@ const FilterStats = ({ config }: { config: IFIlterConfig }) => {
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={(day) => day && setDate(day)}
-                  disabled={(date) => date < new Date()}
+                  onSelect={(day) => day && selectDate(day)}
                 />
               </PopoverContent>
             </Popover>
@@ -87,8 +123,8 @@ const FilterStats = ({ config }: { config: IFIlterConfig }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-4 mt-8">
-        {config.stats.map((stat, index) => {
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 gap-4 mt-8">
+        {stats.map((stat, index) => {
           const Icon = icons[stat.iconName]
 
           return (

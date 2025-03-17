@@ -27,6 +27,7 @@ export default function Page() {
       try {
         const res = await resetPassword('students', password, passwordResetToken)
         console.log('res', res)
+        
         if (!res) {
           const errMsg = 'Network err; pls try again later'
           toast.error(errMsg)

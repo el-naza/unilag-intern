@@ -28,7 +28,7 @@ const poppins = Poppins({
 
 const queryClient = new QueryClient()
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       className={cn(poppins.variable, poppins.className, 'tracking-[0.37px]')}

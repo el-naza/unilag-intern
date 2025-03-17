@@ -1,24 +1,5 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import React, { useMemo, useState } from 'react'
-import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
-import { Edit2, EllipsisVertical, ListFilter, Plus, Share } from 'lucide-react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 import {
   type ChartConfig,
   ChartContainer,
@@ -27,14 +8,36 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  PaginationState,
-  useReactTable,
-} from '@tanstack/react-table'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { getAllReports, getEmployments } from '@/services/admin/reports'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { format } from 'date-fns'
+import { Edit2, EllipsisVertical, ListFilter, Plus, Share } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
+import AddStudent from '../students/add-student'
+import { deleteStudent, getAllStudents } from '@/services/admin/students'
+import { getAllCompanies } from '@/services/admin/companies'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 type Report = {
   companyName: string
@@ -44,39 +47,22 @@ type Report = {
   reportDate: string
 }
 
-const defaultReportData: Report[] = [
-  {
-    companyName: 'Facebook',
-    reportNumber: '0012',
-    studentName: 'Mark',
-    reportMessage: 'Doing well',
-    reportDate: '02/03/2025',
-  },
-]
-
 type EmployedStudent = {
   name: string
   role: string
 }
 
-const defaultEmployedStudentData: EmployedStudent[] = [
-  {
-    name: 'Maxwell',
-    role: 'Management',
-  },
-]
-
 export default function HomePage() {
-  const config: IFIlterConfig = {
+  const [config, setConfig] = useState<IFIlterConfig>({
     page: 'Home',
     showFilters: true,
     stats: [
-      { label: 'Total No of Siwes Students', iconName: 'GraduationCap', count: 100 },
-      { label: 'Employed Siwes Student', iconName: 'CircleCheck', count: 20 },
-      { label: 'Unemployed Siwes Student', iconName: 'CircleX', count: 10 },
-      { label: 'Number of companies', iconName: 'Building2', count: 10 },
+      { label: 'Total No of Siwes Students', iconName: 'GraduationCap', count: 0 },
+      { label: 'Employed Siwes Student', iconName: 'CircleCheck', count: 0 },
+      { label: 'Unemployed Siwes Student', iconName: 'CircleX', count: 0 },
+      { label: 'Number of companies', iconName: 'Building2', count: 0 },
     ],
-  }
+  })
 
   const chartData = [
     { month: 'January', desktop: 186 },
@@ -89,7 +75,7 @@ export default function HomePage() {
     { month: 'September', desktop: 120 },
     { month: 'October', desktop: 201 },
     { month: 'November', desktop: 112 },
-    { month: 'December', desktop: 200 }
+    { month: 'December', desktop: 200 },
   ]
 
   const chartConfig = {
@@ -104,14 +90,72 @@ export default function HomePage() {
   } satisfies ChartConfig
 
   // Report Table Configurations
-  const [reportData, setReportData] = useState(() => defaultReportData)
-  const [reportPage, setReportPage] = useState(1)
-  const [reportPageSize, setReportPageSize] = useState(10)
+  const [reportLoading, setReportLoading] = useState<boolean>(true)
+  const [reportData, setReportData] = useState<Report[]>([])
+  const [reportPage, setReportPage] = useState(0)
+  const [reportPageSize, setReportPageSize] = useState(0)
   const [reportTotal, setReportTotal] = useState(0)
-  const [reportPagination, setReportPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [reportHasNext, setReportHasNext] = useState(false)
+  const [reportHasPrevious, setReportHasPrevious] = useState(false)
+  const router = useRouter()
+  const [openPopover, setOpenPopover] = useState(false)
+
+  const fetchReports = async (params?: string) => {
+    return getAllReports('reports', params).then((res: any) => {
+      const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+      setReportData(docs)
+      setReportPage(page)
+      setReportPageSize(totalPages)
+      setReportHasNext(hasNextPage)
+      setReportHasPrevious(hasPrevPage)
+      setReportTotal(totalDocs)
+    })
+  }
+
+  const fetchEmployments = async () => {
+    return getEmployments('employments').then((res: any) => {
+      const { docs } = res.data
+      setEmployedData(docs)
+    })
+  }
+
+  const fetchTotalStudents = () => {
+    const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+    return getAllStudents('students', query).then((res: any) => {
+      const { totalDocs } = res.data
+
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        stats: prevConfig.stats.map((stat, index) =>
+          index === 0 ? { ...stat, count: totalDocs } : stat,
+        ),
+      }))
+    })
+  }
+
+  const fetchTotalCompanies = () => {
+    const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+    return getAllCompanies('companies', query).then((res: any) => {
+      const { totalDocs } = res.data
+
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        stats: prevConfig.stats.map((stat, index) =>
+          index === 3 ? { ...stat, count: totalDocs } : stat,
+        ),
+      }))
+    })
+  }
+
+  useEffect(() => {
+    Promise.allSettled([fetchTotalStudents(), fetchTotalCompanies()]).then(() =>
+      console.log('Analytics data fetched'),
+    )
+
+    Promise.allSettled([fetchReports(), fetchEmployments()]).then(() =>
+      console.log('Reports and employment data fetched'),
+    )
+  }, [])
 
   const reportColumns = useMemo(
     () => [
@@ -148,37 +192,47 @@ export default function HomePage() {
     columns: reportColumns,
     data: reportData,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setReportPagination,
-    state: {
-      pagination: reportPagination,
-    },
   })
 
-  const reportPaginationProps = { reportPage, reportPageSize, reportTotal }
-
-  const reportNextPage = () => {
-    console.log('Next Page')
+  const reportPaginationProps = {
+    page: reportPage,
+    pageSize: reportPageSize,
+    total: reportTotal,
+    hasNext: reportHasNext,
+    hasPrevious: reportHasPrevious,
   }
 
-  const reportPreviousPage = () => {
-    console.log('Previous Page')
+  const reportNextPage = (page: number) => {
+    setReportLoading(true)
+    fetchReports(`page=${page}`)
+  }
+
+  const reportPreviousPage = (page: number) => {
+    setReportLoading(true)
+    fetchReports(`page=${page}`)
   }
 
   // Employed  Table Configurations
-  const [employedData, setEmployedData] = useState(() => defaultEmployedStudentData)
-
+  const [employedData, setEmployedData] = useState<EmployedStudent[]>([])
   const employedColumns = useMemo(
     () => [
       {
         id: 'name',
         header: 'Name',
         accessorKey: 'name',
+        cell: ({ _, row }) => {
+          const rowData = row.original
+          return `${rowData.student.firstName} ${rowData.student.lastName}`
+        },
       },
       {
-        id: 'role',
-        header: 'Role',
-        accessorKey: 'role',
+        id: 'department',
+        header: 'Department',
+        accessorKey: 'department',
+        cell: ({ _, row }) => {
+          const rowData = row.original
+          return `${rowData.student.course}`
+        },
       },
     ],
     [],
@@ -190,9 +244,54 @@ export default function HomePage() {
     getCoreRowModel: getCoreRowModel(),
   })
 
+  const filterStats = (date: Date) => {
+    const today = format(new Date(), 'yyyy-MM-dd')
+    const endDate = format(date, 'yyyy-MM-dd')
+
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than]': endDate,
+      'where[createdAt][less_than]': today,
+    }).toString()
+
+    fetchReports(query)
+  }
+
+  const filterStatsbyDate = (date: Date) => {
+    const selectedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than_equal]': `${selectedDate}T00:00:00.000Z`,
+      'where[createdAt][less_than]': `${selectedDate}T23:59:59.999Z`,
+    }).toString()
+
+    fetchReports(query)
+  }
+
+  const [studentOpenDialog, setStudentOpenDialog] = useState(false)
+  const closeDialog = () => {
+    setStudentOpenDialog(false)
+  }
+
+  const viewCompany = (row: any) => {
+    const companyId = row.original.company.id
+    router.push(`/admin/siwes-cordinator/companies/${companyId}`)
+  }
+
+  const editStudent = (row: any) => {
+    const studentId = row.original.student.id
+    router.push(`/admin/department-cordinator/students/${studentId}`)
+  }
+
+  const deleteAStudent = async (row: any) => {
+    const studentId = row.original.student.id
+    const res = await deleteStudent('students', studentId)
+    fetchEmployments()
+    toast.success('Student deleted successfully')
+  }
+
   return (
-    <div className='p-8'>
-      <FIlterStats config={config} />
+    <div className="p-8">
+      <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
       <div className="grid grid-cols-12 gap-4 mt-8">
         <div className="col-span-7 p-4 bg-white rounded-lg shadow-md">
@@ -226,14 +325,21 @@ export default function HomePage() {
           <div className="flex justify-between items-center">
             <p>Recently Employed Student</p>
 
-            <Button variant="ghost" className="bg-gray-light-2">
-              <Plus /> Add Student
-            </Button>
+            <Dialog open={studentOpenDialog} onOpenChange={setStudentOpenDialog}>
+              <DialogTrigger asChild>
+                <Button variant="ghost" className="bg-gray-light-2">
+                  <Plus /> Add Student
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-screen-md overflow-auto bg-white">
+                <AddStudent onCloseEmit={closeDialog} />
+              </DialogContent>
+            </Dialog>
           </div>
 
           <Table>
             <TableHeader>
-              {employedTable.getHeaderGroups().map((headerGroup) => (
+              {employedTable?.getHeaderGroups()?.map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
@@ -250,7 +356,7 @@ export default function HomePage() {
             </TableHeader>
 
             <TableBody>
-              {employedTable.getRowModel().rows.map((row) => (
+              {employedTable?.getRowModel()?.rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -266,15 +372,40 @@ export default function HomePage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56 bg-white border-none">
                         <DropdownMenuGroup>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => viewCompany(row)}>
                             <span>View Company</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => editStudent(row)}>
                             <span>Edit</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <span>Delete</span>
-                          </DropdownMenuItem>
+                          <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                                <span>Delete</span>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                              <div className="flex gap-4 items-center w-full">
+                                <Button
+                                  variant="ghost"
+                                  className="w-full"
+                                  onClick={() => setOpenPopover(false)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="w-full"
+                                  onClick={() => {
+                                    deleteAStudent(row)
+                                    setOpenPopover(false)
+                                  }}
+                                >
+                                  Continue
+                                </Button>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -295,7 +426,7 @@ export default function HomePage() {
 
         <Table>
           <TableHeader>
-            {reportTable.getHeaderGroups().map((headerGroup) => (
+            {reportTable?.getHeaderGroups()?.map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
@@ -312,7 +443,7 @@ export default function HomePage() {
           </TableHeader>
 
           <TableBody>
-            {reportTable.getRowModel().rows.map((row) => (
+            {reportTable?.getRowModel().rows?.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
@@ -334,9 +465,7 @@ export default function HomePage() {
         </Table>
 
         <Pagination
-          page={reportPaginationProps.reportPage}
-          pageSize={reportPaginationProps.reportPageSize}
-          total={reportPaginationProps.reportTotal}
+          {...reportPaginationProps}
           onEmitNextPage={reportNextPage}
           onEmitPreviousPage={reportPreviousPage}
         />

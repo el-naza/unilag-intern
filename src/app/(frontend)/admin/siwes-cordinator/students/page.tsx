@@ -1,18 +1,6 @@
 'use client'
-import React, { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from '@/components/ui/table'
-import { EllipsisVertical, Plus, Edit2, Trash, ListFilter } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,75 +8,113 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 import {
-  PaginationState,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { useDebounce } from '@/custom-hooks/useDebounce'
+import { deleteStudent, getAllStudents } from '@/services/admin/students'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { format } from 'date-fns'
+import { Edit2, EllipsisVertical, Plus, Trash } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useMemo, useState } from 'react'
+import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import AddStudent from './add-student'
+import { toast } from 'sonner'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
-type Student = {
-  name: string
-  matNumber: string
+
+export type Student = {
+  id: string
+  firstName: string
+  matricNo: string
   course: string
-  phoneNumber: string
-  state: string
+  email: string
+  stateOfOrigin: string
   status: string
   date: string
 }
 
-const defaultData: Student[] = [
-  {
-    name: 'tanner',
-    matNumber: 'MP/2323/2323',
-    course: 'Maths',
-    phoneNumber: '090283823823',
-    state: 'Lagos State',
-    status: 'Scheduled',
-    date: '02/03/2025',
-  },
-]
-
 export default function StudentPage() {
-  const config: IFIlterConfig = {
+  const [config, setConfig] = useState<IFIlterConfig>({
     page: 'Students',
     showFilters: true,
     stats: [
-      { label: 'Total No of Siwes Students', iconName: 'GraduationCap', count: 100 },
-      { label: 'Employed Siwes Student', iconName: 'CircleCheck', count: 20 },
-      { label: 'Unemployed Siwes Student', iconName: 'CircleX', count: 10 },
+      { label: 'Total No of Siwes Students', iconName: 'GraduationCap', count: 0 },
+      { label: 'Employed Siwes Student', iconName: 'CircleCheck', count: 0 },
+      { label: 'Unemployed Siwes Student', iconName: 'CircleX', count: 0 },
     ],
+  })
+
+  const [loading, setLoading] = useState<boolean>(true)
+  const [students, setStudents] = useState<Student[]>([])
+  const [filter, setFilter] = React.useState<string>('all')
+  const [perPage, setPerPage] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [hasNext, setHasNext] = useState(false)
+  const [hasPrevious, setHasPrevious] = useState(false)
+  const [openPopover, setOpenPopover] = useState(false)
+  const router = useRouter()
+
+  const fetchStudents = async (params?: string) => {
+    const res: any = await getAllStudents('students', params)
+    const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    console.log('Data: ', docs)
+
+    setStudents(docs)
+    setPerPage(page)
+    setPageSize(totalPages)
+    setHasNext(hasNextPage)
+    setHasPrevious(hasPrevPage)
+    setTotal(totalDocs)
+
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      stats: prevConfig.stats.map((stat, index) =>
+        index === 0 ? { ...stat, count: totalDocs } : stat,
+      ),
+    }))
+
+    setLoading(false)
   }
 
-  const [filter, setFilter] = useState<string>('all')
-  const [data, setData] = useState(() => defaultData)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const [total, setTotal] = useState(0)
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  useEffect(() => {
+    fetchStudents()
+  }, [])
 
   const columns = useMemo(
     () => [
       {
-        id: 'name',
+        id: 'firstName',
         header: 'Student Name',
-        accessorKey: 'name',
+        accessorKey: 'firstName',
+        cell: ({ getValue, row }) => {
+          const rowData = row.original
+          return `${getValue()} ${rowData.lastName}`
+        },
       },
       {
-        id: 'matNumber',
+        id: 'matricNo',
         header: 'Matric Number',
-        accessorKey: 'matNumber',
+        accessorKey: 'matricNo',
       },
       {
         id: 'course',
@@ -96,14 +122,14 @@ export default function StudentPage() {
         accessorKey: 'course',
       },
       {
-        id: 'phoneNumber',
-        header: 'Phone Number',
-        accessorKey: 'phoneNumber',
+        id: 'email',
+        header: 'Email',
+        accessorKey: 'email',
       },
       {
-        id: 'state',
+        id: 'stateOfOrigin',
         header: 'State',
-        accessorKey: 'state',
+        accessorKey: 'stateOfOrigin',
       },
       {
         id: 'status',
@@ -111,9 +137,13 @@ export default function StudentPage() {
         accessorKey: 'status',
       },
       {
-        id: 'date',
+        id: 'createdAt',
         header: 'Date',
-        accessorKey: 'date',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const rawDate = getValue()
+          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+        },
       },
     ],
     [],
@@ -121,36 +151,92 @@ export default function StudentPage() {
 
   const table = useReactTable({
     columns,
-    data,
+    data: students,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    state: {
-      pagination,
-    },
   })
 
-  const paginationProps = { page, pageSize, total }
+  const paginationProps = { page: perPage, pageSize, total, hasNext, hasPrevious }
 
-  const nextPage = () => {
-    console.log('Next Page')
+  const nextPage = (page: number) => {
+    setLoading(true)
+    fetchStudents(`page=${page}`)
   }
 
-  const previousPage = () => {
-    console.log('Previous Page')
+  const previousPage = (page: number) => {
+    setLoading(true)
+    fetchStudents(`page=${page}`)
+  }
+
+  const editStudent = (rowRecord: any) => {
+    const studentId = rowRecord.original.id
+    router.push(`/admin/siwes-cordinator/students/${studentId}`)
+  }
+
+    const deleteAStudent = async (rowRecord: any) => {
+      const studentId = rowRecord.original.id
+      const res = await deleteStudent('students', studentId)
+      fetchStudents()
+      toast.success('Student deleted successfully')
+    }
+
+  const [query, setQuery] = useState('')
+  const [searchFilter, setSearchFilter] = React.useState<
+    'student-name' | 'course' | 'matric-number'
+  >()
+  const debouncedQuery = useDebounce(query)
+
+  useEffect(() => {
+    switch (searchFilter) {
+      case 'student-name':
+        fetchStudents(new URLSearchParams({ 'where[firstName][like]': debouncedQuery }).toString())
+        break
+      case 'course':
+        fetchStudents(new URLSearchParams({ 'where[course][like]': debouncedQuery }).toString())
+        break
+      case 'matric-number':
+        fetchStudents(new URLSearchParams({ 'where[matricNo][like]': debouncedQuery }).toString())
+        break
+    }
+  }, [debouncedQuery])
+
+  const filterStats = (date: Date) => {
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const endDate = format(date, 'yyyy-MM-dd');
+
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than]': endDate,
+      'where[createdAt][less_than]': today,
+    }).toString();
+
+    fetchStudents(query)
+  }
+
+  const filterStatsbyDate = (date: Date) => {
+    const selectedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than_equal]': `${selectedDate}T00:00:00.000Z`,
+      'where[createdAt][less_than]': `${selectedDate}T23:59:59.999Z`,
+    }).toString();
+  
+    fetchStudents(query);
+  };
+  
+
+  const [studentOpenDialog, setStudentOpenDialog] = useState(false)
+  const closeDialog = () => {
+    setStudentOpenDialog(false)
   }
 
   return (
     <div className="p-8">
-      <FIlterStats config={config} />
+      <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
-      <div className="flex justify-between items-center mt-8">
+      <div className="flex flex-wrap gap-4 justify-between items-center mt-8 w-full">
         <ToggleGroup
           type="single"
           value={filter}
-          onValueChange={(value) => {
-            value && setFilter(value)
-          }}
+          onValueChange={(value) => setFilter(value)}
         >
           <ToggleGroupItem
             value="all"
@@ -176,38 +262,41 @@ export default function StudentPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <div className="flex gap-2 items-center bg-white border-[1px] pr-3 rounded-md">
-            <Input placeholder="Search by name, matric no..." />
+          <Select
+            onValueChange={(value) =>
+              setSearchFilter(value as 'student-name' | 'course' | 'matric-number')
+            }
+          >
+            <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Filter By</SelectLabel>
+                <SelectItem value="student-name">Student Name</SelectItem>
+                <SelectItem value="course">Course</SelectItem>
+                <SelectItem value="matric-number">Matric Number</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <ListFilter />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white border-none">
-                <DropdownMenuGroup>
-                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
-                    <span>Student Name</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
-                    <span>Course</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-[#B3FAFF] hover:rounded-md hover:px-2 transition-all cursor-pointer">
-                    <span>Matric Number</span>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus /> Add Student
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-screen-md overflow-auto bg-white">
-            <AddStudent />
-          </DialogContent>
-        </Dialog>
+          <Input
+            className="border-[1px] border-gray-light-2 w-[full]"
+            placeholder="Search by name, matric no..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+
+          <Dialog open={studentOpenDialog} onOpenChange={setStudentOpenDialog}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus /> Add Student
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-screen-md overflow-auto bg-white">
+              <AddStudent onCloseEmit={closeDialog} />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -253,14 +342,38 @@ export default function StudentPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 bg-white border-none">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editStudent(row)}>
                           <Edit2 />
                           <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Trash />
-                          <span>Delete</span>
-                        </DropdownMenuItem>
+                        <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                                <Trash /><span>Delete</span>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                              <div className="flex gap-4 items-center w-full">
+                                <Button
+                                  variant="ghost"
+                                  className="w-full"
+                                  onClick={() => setOpenPopover(false)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="w-full"
+                                  onClick={() => {
+                                    deleteAStudent(row)
+                                    setOpenPopover(false)
+                                  }}
+                                >
+                                  Continue
+                                </Button>
+                              </div>
+                            </PopoverContent>
+                        </Popover>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>
