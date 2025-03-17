@@ -28,7 +28,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
 
         const user = res?.data?.user
 
-        // console.log('res token', res?.data?.token)
+        console.log('res token', res?.data?.token)
         if (user) {
           return { ...user, token: res.data.token }
         }
