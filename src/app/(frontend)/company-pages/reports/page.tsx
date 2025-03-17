@@ -7,17 +7,19 @@ import NavBar from '../../common/nav-bar'
 import BlurBackground from '../../components/Layout/blurBackground'
 import Image from 'next/image'
 import MessageList from '../../components/Message/messageList'
-import MessageCard from '../../components/Message/messageCard'
-import SendIcon from '../../assets/icons/send'
 import fetchDocs from '@/services/fetchDocs'
 import Select from 'react-select'
 import updateDoc from '@/services/updateDoc'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import Spinner from '@/components/spinner'
 
 export default function Reports() {
   const [active, setActive] = useState<string>('All Report')
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null)
+  const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({})
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const careers = [{ title: 'All Report' }, { title: 'Reassigned' }, { title: 'Approved' }]
 
   type Student = {
@@ -27,12 +29,12 @@ export default function Reports() {
     middleName?: string
     matricNo: string
     hasSetPassword: boolean
-    image?: { url: string } 
+    image?: { url: string }
   }
 
   type Report = {
     id: string
-    student: Student 
+    student: Student
     status: string
     remark: string
     details: string
@@ -51,14 +53,14 @@ export default function Reports() {
     console.log('reports', res)
 
     if (res?.docs) {
-      setReportDocs(res.docs) // ✅ Now correctly typed
+      setReportDocs(res.docs)
 
       const uniqueStudentsMap = new Map<string, Report>()
       res.docs.forEach((report: Report) => {
         uniqueStudentsMap.set(report.student.id, report)
       })
 
-      setUniqueStudents(Array.from(uniqueStudentsMap.values())) // ✅ Now correctly typed
+      setUniqueStudents(Array.from(uniqueStudentsMap.values())) 
       console.log(uniqueStudents)
     }
   }
@@ -77,7 +79,6 @@ export default function Reports() {
     ? reportDocs && reportDocs.filter((s) => s?.student?.id === selectedStudent)
     : []
 
-  // console.log(filteredReports)
 
   const [reports, setReports] = useState<Report[]>(filteredReports || [])
 
@@ -202,20 +203,11 @@ export default function Reports() {
     }))
   }
 
-  // Send selected values to API
-  // const handleRespond = async (id: string) => {
-  //   const { status, remark } = selectedValues[id] || {}
-  //   if (!status) {
-  //     toast.error('Please select a status')
-  //     return
-  //   }
-  //   await updtaeReportMtn.mutateAsync({ id, status, remark })
-  // }
-
   const updtaeReportMtn = useMutation({
     mutationFn: async ({ id, status, remark }: { id: string; status: string; remark?: string }) => {
       try {
-        console.log('Sending update request:',  id, {status, remark })
+        setLoadingStates((prev) => ({ ...prev, [id]: true }))
+        console.log('Sending update request:', id, { status, remark })
 
         const res = await updateDoc('reports', id, { status, remark })
 
@@ -230,22 +222,31 @@ export default function Reports() {
       } catch (error) {
         console.error('Error updating application:', error)
         toast.error('An error occurred while updating; please try again later')
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, [id]: false }))
       }
     },
   })
 
   const handleRespond = async (id: string) => {
     const { status, remark } = selectedValues[id] || {}
+  
     if (!status) {
-      toast.error('Please select a status')
+      setErrors((prev) => ({ ...prev, [id]: 'Approval status is required' }))
+      toast.error('Please select an approval status')
       return
     }
+
+    if (!remark) {
+      setErrors((prev) => ({ ...prev, [id]: 'Remark is required' }))
+      toast.error('Please select a remark')
+      return
+    }
+
+    setErrors((prev) => ({ ...prev, [id]: '' }))
     await updtaeReportMtn.mutateAsync({ id, status, remark })
   }
 
-  // const handleRespond = async (id: string, status: string, remark?: string) => {
-  //   await updtaeReportMtn.mutateAsync({ id, status, remark });
-  // };
 
   return (
     <div className="pb-[600px]">
@@ -367,8 +368,12 @@ export default function Reports() {
                                   styles={getCustomStyles()}
                                   components={{ Option: CustomOption }}
                                 />
+                                {errors[card.id] && errors[card.id].includes('Approval status') && (
+                                  <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
+                                )}
 
                                 {/* Remark Select */}
+
                                 <Select
                                   options={remarkOptions}
                                   value={remarkOptions.find(
@@ -381,15 +386,18 @@ export default function Reports() {
                                   styles={getCustomStyles()}
                                   components={{ Option: CustomOption }}
                                 />
+                                {errors[card.id] && errors[card.id].includes('Remark') && (
+                                  <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
+                                )}
 
                                 {/* Submit Button */}
-                                <button
+                                <Button
                                   className="p-[10px] bg-[#0B7077] text-white rounded w-full mt-3"
                                   onClick={() => handleRespond(card.id)}
+                                  disabled={loadingStates[card.id] || false}
                                 >
-                                  Send
-                                </button>
-                              
+                                  {loadingStates[card.id] ? <Spinner /> : 'Send'}
+                                </Button>
                               </div>
                             </div>
                           </div>
