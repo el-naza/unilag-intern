@@ -54,10 +54,10 @@ export default function Page() {
     queryFn: () => fetchStudentReports(),
   })
 
-  if (status === 'unauthenticated' || (status === 'authenticated' && !session.user)) {
-    signOut()
-    router.replace('/auth/login')
-  }
+  // if (status === 'authenticated' && !session.user) {
+  //   // signOut()
+  //   router.replace('/auth/login')
+  // }
 
   return (
     <div className="min-h-screen relative text-sm text-black py-0 lg:py-20">
