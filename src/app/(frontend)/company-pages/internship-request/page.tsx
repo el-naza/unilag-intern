@@ -249,7 +249,7 @@ export default function InternshipRequest() {
                   <div className="flex items-start flex-col gap-5 lg:flex-row">
                     <div className="max-w-[200px] md:max-w-full ">
                       <Image
-                        src={invitationDetails?.student?.image?.url}
+                        src={invitationDetails?.student?.image?.url || studentImage}
                         // src={studentImage}
                         alt="image"
                         width={0}
@@ -280,13 +280,8 @@ export default function InternshipRequest() {
                   </div>
                   <div className="flex items-center gap-2 mt-10">
                     <button
-                      // onClick={() =>
-                      //   router.push(
-                      //     `/company-pages/student-details/${invitationDetails.student.id}`,
-                      //   )
-                      // }
+                  
                       disabled={loadingId === invitationDetails.id}
-                      // disabled={respondToInterviewMtn.isPending}
                       onClick={() =>
                         handleRespond(
                           invitationDetails.id,
