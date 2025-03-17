@@ -388,6 +388,7 @@ export interface Employment {
 export interface Report {
   id: string;
   student: string | Student;
+  employment: string | Employment;
   title: string;
   details: string;
   supervisor: string;
@@ -678,6 +679,7 @@ export interface EmploymentsSelect<T extends boolean = true> {
  */
 export interface ReportsSelect<T extends boolean = true> {
   student?: T;
+  employment?: T;
   title?: T;
   details?: T;
   supervisor?: T;

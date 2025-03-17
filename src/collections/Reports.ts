@@ -19,6 +19,12 @@ export const Reports: CollectionConfig = {
       required: true,
     },
     {
+      name: 'employment',
+      type: 'relationship',
+      relationTo: 'employments',
+      required: true,
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,
