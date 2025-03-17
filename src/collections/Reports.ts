@@ -6,11 +6,11 @@ import { relatedStudentOrCompany } from '@/access/relatedStudentOrCompany'
 
 export const Reports: CollectionConfig = {
   slug: 'reports',
-  access: {
-    create: students,
-    delete: relatedStudent,
-    update: relatedStudentOrCompany,
-  },
+  // access: {
+  //   create: students,
+  //   delete: relatedStudent,
+  //   update: relatedStudentOrCompany,
+  // },
   fields: [
     {
       name: 'student',
