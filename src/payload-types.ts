@@ -391,7 +391,7 @@ export interface Report {
   title: string;
   details: string;
   status?: ('approved' | 'reasign' | 'pending') | null;
-  remark?: ('Excellent' | 'Fair' | 'Good' | 'Need Improvement' | 'Poor') | null;
+  remark?: ('excellent' | 'fair' | 'good' | 'need improvement' | 'poor' | 'pending') | null;
   image?: (string | null) | Media;
   updatedAt: string;
   createdAt: string;

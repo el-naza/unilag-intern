@@ -3,13 +3,14 @@ import type { CollectionConfig } from 'payload'
 import { students } from '@/access/sutdents'
 import { relatedStudent } from '@/access/reports/relatedStudent'
 import { companyOrStudent } from './Companies/Internships'
+import { anyone } from '@/access/anyone'
 
 export const Reports: CollectionConfig = {
   slug: 'reports',
   access: {
     create: students,
     delete: relatedStudent,
-    update: companyOrStudent,
+    update: anyone,
   },
   fields: [
     {
@@ -31,14 +32,14 @@ export const Reports: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      options: ['approved', 'reasign', 'pending'],
-      // defaultValue: 'pending',
+      options: ['approved', 'reasign','pending'],
+      defaultValue: 'pending',
     },
     {
       name: 'remark',
       type: 'select',
-      options: ['Excellent', 'Fair', 'Good', 'Need Improvement', 'Poor'],
-      // defaultValue: 'pending',
+      options: ['excellent', 'fair', 'good', 'need improvement', 'poor', 'pending'],
+      defaultValue: 'pending',
     },
     {
       name: 'image',

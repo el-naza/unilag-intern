@@ -36,12 +36,12 @@ const MessageCard: React.FC<CardProps> = ({
         <p className="mt-[6px] text-[#667085] font-[400] text-[12px]">{timestamp}</p>
       </div>
 
-      <button
+      {/* <button
         className="p-[1px] rounded-full border outline-none h-[15px] w-[15px] flex items-center justify-center"
         onClick={onButtonClick}
       >
         <div className="bg-[#FF9500] rounded-full h-[9px] w-[9px]"></div>
-      </button>
+      </button> */}
     </div>
   )
 }
