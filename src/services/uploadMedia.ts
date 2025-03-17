@@ -25,6 +25,11 @@ export default async function uploadMedia(
         Authorization: `Bearer ${authToken || (await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },
     })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
     .catch((error: AxiosError) => {
       if (error.response)
         return {
@@ -32,9 +37,4 @@ export default async function uploadMedia(
           data: error.response.data as ErrorResponse,
         }
     })
-    .then((res) => ({
-      success: true,
-      status: res?.status,
-      data: res?.data,
-    }))
 }

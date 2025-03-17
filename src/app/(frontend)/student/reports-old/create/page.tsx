@@ -28,7 +28,7 @@ export default async function Page() {
           <div>
             <div className="flex justify-between mt-3 mb-6">
               <div>
-                <h5 className="text-black font-bold lg:font-medium lg:text-2xl">Reports</h5>
+                <h5 className="text-black font-bold lg:font-medium lg:text-2xl">Daily Report</h5>
               </div>
               <div className="flex">
                 <Link className="lg:hidden" href="/student/reports">

@@ -390,6 +390,12 @@ export interface Report {
   student: string | Student;
   title: string;
   details: string;
+  supervisor: string;
+  memo?: string | null;
+  remark?: string | null;
+  status?: ('pending' | 'approved' | 'reassigned') | null;
+  media?: (string | null) | Media;
+  week: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -674,6 +680,12 @@ export interface ReportsSelect<T extends boolean = true> {
   student?: T;
   title?: T;
   details?: T;
+  supervisor?: T;
+  memo?: T;
+  remark?: T;
+  status?: T;
+  media?: T;
+  week?: T;
   updatedAt?: T;
   createdAt?: T;
 }

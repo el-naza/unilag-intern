@@ -34,9 +34,11 @@ import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import courseAreas from '@/utilities/courseAreas'
 import CompanyCard from '../components/Cards/CompanyCard'
+import { useRouter } from 'next/navigation'
 
 const Page = () => {
-  const { data: session } = useSession()
+  const router = useRouter()
+  const { data: session, status } = useSession()
 
   const [loading, setLoading] = useState<boolean>(true)
   const [employments, setEmployments] = useState<any[]>([])
@@ -64,6 +66,8 @@ const Page = () => {
       }),
     [],
   )
+
+  if (status === 'unauthenticated') signOut()
 
   const handleCourseAreaChange = (courseArea: string) => {
     setPage(1)
@@ -291,9 +295,13 @@ const Page = () => {
                     />
                   </div>
                   <div className="flex items-center">
-                    <span onClick={() => signOut()} className="font-oleo text-white text-3xl">
-                      Welcome {user?.firstName}
-                    </span>
+                    {status === 'authenticated' ? (
+                      <span className="font-oleo text-white text-3xl">
+                        Welcome {user?.firstName}
+                      </span>
+                    ) : (
+                      <Loader />
+                    )}
                   </div>
                   <div className="col-span-2 flex items-center">
                     <div className="relative w-3/4">
@@ -321,37 +329,41 @@ const Page = () => {
                           />
                         </div>
                         <div className="col-span-2 flex items-center">
-                          <div className="grid grid-rows-4 gap-1">
-                            <div>
-                              <span className="text-3xl font-bold">
-                                {user?.firstName}{' '}
-                                <span className="text-[#FFE75C]">{user?.lastName}</span>
-                              </span>
-                              <span className="ms-4 text-[#FFE75C]">{getAge(user?.dob)}</span>
-                            </div>
-                            <div className="flex justify-between">
+                          {status === 'authenticated' ? (
+                            <div className="grid grid-rows-4 gap-1">
                               <div>
-                                <span className="">UNILAG {user?.level}</span>
+                                <span className="text-3xl font-bold">
+                                  {user?.firstName}{' '}
+                                  <span className="text-[#FFE75C]">{user?.lastName}</span>
+                                </span>
+                                <span className="ms-4 text-[#FFE75C]">{getAge(user?.dob)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <div>
+                                  <span className="">UNILAG {user?.level}</span>
+                                </div>
+                                <div>
+                                  <span className="">{user?.course}</span>
+                                </div>
                               </div>
                               <div>
-                                <span className="">{user?.course}</span>
+                                <span>{user?.homeAddress}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
+                                  <span>0 Duration</span>
+                                </div>
+                                <Link
+                                  href={'/student/pricing'}
+                                  className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl"
+                                >
+                                  <span>Upgrade</span>
+                                </Link>
                               </div>
                             </div>
-                            <div>
-                              <span>{user?.homeAddress}</span>
-                            </div>
-                            <div className="flex gap-2">
-                              <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
-                                <span>0 Duration</span>
-                              </div>
-                              <Link
-                                href={'/student/pricing'}
-                                className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl"
-                              >
-                                <span>Upgrade</span>
-                              </Link>
-                            </div>
-                          </div>
+                          ) : (
+                            <Loader />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -392,9 +404,9 @@ const Page = () => {
                       </div>
                     </div>
                     <div className="z-10">
-                      <Link href="/student/reports/create">
+                      <Link href="/student/reports">
                         <button className="text-[#0B7077] bg-white rounded px-4 py-2">
-                          Report Page
+                          Reports Page
                         </button>
                       </Link>
                     </div>
