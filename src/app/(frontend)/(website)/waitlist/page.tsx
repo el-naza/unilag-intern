@@ -25,9 +25,10 @@ export default function WaitList() {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
         {/* Hero text */}
         <div className="text-center text-white mb-8 max-w-2xl">
-          <h1 className="text-3xl md:text-4xl font-medium leading-tight">
-            Empowering students to discover opportunities, gain mentorship, and shape their future.
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight">GET ACCESS TO INTERNS</h1>
+          <h2 className="text-sm md:text-base font-normal mt-3">
+            Simplifying Internship Hiring for Growing Businesses
+          </h2>
         </div>
 
         {/* Waitlist form card */}
