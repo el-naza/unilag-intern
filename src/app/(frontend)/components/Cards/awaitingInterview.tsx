@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import MainButton from '../Ui/button'
@@ -7,7 +5,7 @@ import MainButton from '../Ui/button'
 type AwaitingInterviewCardProps = {
   awaitingInterview: {
     image?: string
-    dateTime?: string 
+    dateTime?: string
     status?: string
     firstName?: string
     lastName?: string
@@ -31,6 +29,17 @@ export default function AwaitingInterviewCard({ awaitingInterview }: AwaitingInt
     rescheduleClick,
   } = awaitingInterview
   const [isPast, setIsPast] = useState<boolean>(false)
+  const [loading, setLoading] = useState<string | null>(null)
+
+  const handleAction = async (action: 'company accepted' | 'company declined') => {
+    setLoading(action) // Set loading state
+    try {
+      if (action === 'company accepted' && clickAccept) await clickAccept()
+      if (action === 'company declined' && clickDecline) await clickDecline()
+    } finally {
+      setLoading(null) // Reset loading state
+    }
+  }
 
   useEffect(() => {
     if (dateTime) {
@@ -42,8 +51,6 @@ export default function AwaitingInterviewCard({ awaitingInterview }: AwaitingInt
 
   return (
     <div>
-     
-
       <div className="border border-[#F1F1F1] rounded-[8px] overflow-hidden lg:max-w-[414px] mb-4 px-[14px] py-[9px]">
         <div className="flex items-center gap-3 mb-[12px]">
           <Image
@@ -66,21 +73,29 @@ export default function AwaitingInterviewCard({ awaitingInterview }: AwaitingInt
 
         <div className="flex items-center gap-[10px]">
           <MainButton
-            title={isPast ? 'Accept as Intern' : 'View Details'}
+            // title={isPast ? 'Accept as Intern' : 'View Details'}
             // {status == 'accept' ? 'View Details' : 'Accept as Intern'}
+            title={
+              loading === 'company accepted' ? 'Loading...' : isPast ? 'Accept as Intern' : 'View Details'
+            }
             width="w-[fit-content]"
             borderRadius="rounded"
             fontWeight="font-[400]"
             padding="px-[10px]"
-            handleClick={isPast ? clickAccept : viewClick}
+            handleClick={isPast ? () => handleAction('company accepted') : viewClick}
+            disabled={loading !== null} // Disable while loading
+            // handleClick={isPast ? clickAccept : viewClick}
           />
           <MainButton
-            title={isPast ? 'Decline' : 'Reshedule'}
+            title={loading === 'company declined' ? 'Loading...' : isPast ? 'Decline' : 'Reschedule'}
+            // title={isPast ? 'Decline' : 'Reshedule'}
             width="w-[fit-content]"
             backgroundColor="bg-transparent"
             fontWeight="font-[400]"
             color={isPast ? 'text-[red]' : 'text-[#0B7077]'}
-            handleClick={isPast ? clickDecline : rescheduleClick} // Disable if past
+            handleClick={isPast ? () => handleAction('company declined') : rescheduleClick}
+            disabled={loading !== null} // Disable while loading
+            // handleClick={isPast ? clickDecline : rescheduleClick}
             // disabled={isPast} // Disable button if interview is in the past
           />
         </div>

@@ -5,6 +5,7 @@ import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 import { parse } from 'qs-esm'
 import { anyone } from '@/access/anyone'
 import { relatedStudentOrCompany } from '@/access/relatedStudentOrCompany'
+import { companyOrStudent } from './Companies/Internships'
 
 // Hook to create an employment record when status is updated to 'accepted'
 // const createEmploymentOnAcceptance: BeforeChangeHook = async ({ data, req, originalDoc }) => {
@@ -25,7 +26,7 @@ export const InterviewInvitations: CollectionConfig = {
     read: relatedStudentOrCompany,
     create: companies,
     delete: relatedStudentOrCompany,
-    update: relatedStudentOrCompany,
+    update: companyOrStudent,
   },
   fields: [
     {
