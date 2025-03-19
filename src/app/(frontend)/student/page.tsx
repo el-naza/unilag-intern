@@ -34,16 +34,19 @@ import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import courseAreas from '@/utilities/courseAreas'
 import CompanyCard from '../components/Cards/CompanyCard'
+import { useRouter } from 'next/navigation'
 
 const Page = () => {
-  const { data: session } = useSession()
+  const router = useRouter()
+  const { data: session, status } = useSession()
 
   const [loading, setLoading] = useState<boolean>(true)
-  const [companies, setCompanies] = useState<any[]>([])
+  const [employments, setEmployments] = useState<any[]>([])
   const [searchedCompanies, setSearchedCompanies] = useState<any[]>([])
   const [distance, setDistance] = useState<number[]>([20])
   const [filter, setFilter] = useState<{ careerArea: string }>({ careerArea: '' })
   const [page, setPage] = useState<number>(1)
+  const [loadingMap, setLoadingMap] = useState<boolean>(false)
 
   const user = useMemo<any>(() => session?.user, [session])
 
@@ -64,19 +67,23 @@ const Page = () => {
     [],
   )
 
+  if (status === 'unauthenticated') signOut()
+
   const handleCourseAreaChange = (courseArea: string) => {
     setPage(1)
     setFilter({ careerArea: courseArea })
   }
 
-  const fetchCompanies = async () => {
-    const res: any = await fetchDocs('companies')
-    setCompanies(res.docs)
+  const fetchEmployments = async () => {
+    const res: any = await fetchDocs('employments')
+    console.log(res)
+    setEmployments(res.docs)
     setLoading(false)
   }
 
   const searchJobsMtn = useMutation({
     mutationFn: async (company: Company) => {
+      setLoadingMap(true)
       try {
         const res = await searchJobs({
           name: company.name,
@@ -85,9 +92,11 @@ const Page = () => {
         console.log('res', res)
         setPage(1)
         setFilter({ careerArea: '' })
+        setLoadingMap(false)
         return res
       } catch {
         toast.error('An error occured while fetching jobs; pls try again later')
+        setLoadingMap(false)
       }
     },
   })
@@ -138,7 +147,7 @@ const Page = () => {
   })
 
   useEffect(() => {
-    fetchCompanies()
+    fetchEmployments()
   }, [user])
   return (
     <>
@@ -286,9 +295,13 @@ const Page = () => {
                     />
                   </div>
                   <div className="flex items-center">
-                    <span onClick={() => signOut()} className="font-oleo text-white text-3xl">
-                      Welcome {user?.firstName}
-                    </span>
+                    {status === 'authenticated' ? (
+                      <span className="font-oleo text-white text-3xl">
+                        Welcome {user?.firstName}
+                      </span>
+                    ) : (
+                      <Loader />
+                    )}
                   </div>
                   <div className="col-span-2 flex items-center">
                     <div className="relative w-3/4">
@@ -298,23 +311,6 @@ const Page = () => {
                         className="w-full outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-black text-sm"
                       />
                       <SearchAltIcon className='className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"' />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3">
-                    <div className="flex items-center">
-                      <div className="cursor-pointer hover:bg-black p-2 rounded">
-                        <FilterAltIcon />
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="cursor-pointer hover:bg-black p-2 rounded">
-                        <NotificationBellIcon />
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="cursor-pointer hover:bg-black p-2 rounded">
-                        <MenuIcon />
-                      </div>
                     </div>
                   </div>
                 </nav>
@@ -333,48 +329,55 @@ const Page = () => {
                           />
                         </div>
                         <div className="col-span-2 flex items-center">
-                          <div className="grid grid-rows-4 gap-1">
-                            <div>
-                              <span className="text-3xl font-bold">
-                                {user?.firstName}{' '}
-                                <span className="text-[#FFE75C]">{user?.lastName}</span>
-                              </span>
-                              <span className="ms-4 text-[#FFE75C]">{getAge(user?.dob)}</span>
-                            </div>
-                            <div className="flex justify-between">
+                          {status === 'authenticated' ? (
+                            <div className="grid grid-rows-4 gap-1">
                               <div>
-                                <span className="">unilag {user?.level}</span>
+                                <span className="text-3xl font-bold">
+                                  {user?.firstName}{' '}
+                                  <span className="text-[#FFE75C]">{user?.lastName}</span>
+                                </span>
+                                <span className="ms-4 text-[#FFE75C]">{getAge(user?.dob)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <div>
+                                  <span className="">UNILAG {user?.level}</span>
+                                </div>
+                                <div>
+                                  <span className="">{user?.course}</span>
+                                </div>
                               </div>
                               <div>
-                                <span className="">{user?.course}</span>
+                                <span>{user?.homeAddress}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
+                                  <span>0 Duration</span>
+                                </div>
+                                <Link
+                                  href={'/student/pricing'}
+                                  className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl"
+                                >
+                                  <span>Upgrade</span>
+                                </Link>
                               </div>
                             </div>
-                            <div>
-                              <span>{user?.homeAddress}</span>
-                            </div>
-                            <div className="flex gap-2">
-                              <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
-                                <span>0 Duration</span>
-                              </div>
-                              <div className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl">
-                                <span>Upgrade</span>
-                              </div>
-                            </div>
-                          </div>
+                          ) : (
+                            <Loader />
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="grid sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-0">
                     <div className="col-span-4 self-center">
-                      <div className="grid grid-cols-4 gap-4">
+                      <div className="grid grid-cols-3 gap-4">
                         <div>
                           <Link href="#" className="relative group block text-center">
                             <span className="text-xl">Map Search</span>
                             <NavUnderlineLarge />
                           </Link>
                         </div>
-                        <div>
+                        {/* <div>
                           <Link
                             href="/student/applications/pending"
                             className="relative group block text-center"
@@ -382,13 +385,13 @@ const Page = () => {
                             <span className="text-xl">Pending</span>
                             <NavUnderlineLarge />
                           </Link>
-                        </div>
+                        </div> */}
                         <div>
                           <Link
-                            href="/student/applications/approved"
+                            href="/student/applications/pending"
                             className="relative group block text-center"
                           >
-                            <span className="text-xl">Approved</span>
+                            <span className="text-xl">Applications</span>
                             <NavUnderlineLarge />
                           </Link>
                         </div>
@@ -401,9 +404,9 @@ const Page = () => {
                       </div>
                     </div>
                     <div className="z-10">
-                      <Link href="/student/reports/create">
+                      <Link href="/student/reports">
                         <button className="text-[#0B7077] bg-white rounded px-4 py-2">
-                          Report Page
+                          Reports Page
                         </button>
                       </Link>
                     </div>
@@ -500,11 +503,11 @@ const Page = () => {
                       </div>
                       <div className="col-span-2">
                         <form
-                        // onSubmit={(e) => {
-                        //   e.preventDefault()
-                        //   e.stopPropagation()
-                        //   form.handleSubmit()
-                        // }}
+                          onSubmit={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            form.handleSubmit()
+                          }}
                         >
                           <div className="grid grid-cols-3 gap-2">
                             <div className="relative border rounded">
@@ -520,7 +523,6 @@ const Page = () => {
                                           onBlur={field.handleBlur}
                                           onChange={(e) => {
                                             field.handleChange(e.target.value)
-                                            form.handleSubmit()
                                           }}
                                           placeholder="Search Job"
                                           className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
@@ -549,7 +551,6 @@ const Page = () => {
                                         onBlur={field.handleBlur}
                                         onChange={(e) => {
                                           field.handleChange(e.target.value)
-                                          form.handleSubmit()
                                         }}
                                         placeholder="Location"
                                         className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
@@ -559,6 +560,14 @@ const Page = () => {
                                   )
                                 }}
                               </form.Field>
+                              <Button
+                                type="submit"
+                                disabled={loadingMap}
+                                size="lg"
+                                className="bg-[#195F7E] rounded-xl p-4 rounded-none absolute right-0"
+                              >
+                                {loadingMap ? <Spinner /> : <SearchIcon stroke="white" />}
+                              </Button>
                             </div>
                             <div className="bg-white rounded-xl grid grid-cols-12">
                               <Slider
@@ -585,7 +594,7 @@ const Page = () => {
                             <div className="flex justify-between self-center mb-4">
                               <h3 className="text-lg">Search Results</h3>
                             </div>
-                            <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide">
+                            <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide pb-4">
                               <div
                                 onClick={() => handleCourseAreaChange('')}
                                 className={`${filter.careerArea === '' ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
@@ -604,7 +613,7 @@ const Page = () => {
                             </div>
                           </div>
                           <div
-                            className={`h-[660px] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
+                            className={`max-h-[660px] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
                           >
                             {filteredCompanies.map((company, companyIndex) => (
                               <CompanyCard key={`company-${companyIndex}`} company={company} />
@@ -622,7 +631,7 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="container my-10 lg:my-24">
+          {/* <div className="container my-10 lg:my-24">
             <div className="grid gap-4 lg:gap-10">
               <div className="text-center">
                 <h4 className="text-xl lg:text-4xl text-[#FD661F] font-medium relative">
@@ -655,7 +664,7 @@ const Page = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </>

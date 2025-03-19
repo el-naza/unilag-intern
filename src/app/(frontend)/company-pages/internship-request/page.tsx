@@ -1,7 +1,6 @@
 'use client'
 import NavBar from '../../common/nav-bar'
 import hero from '../../assets/images/company-hero-bg.png'
-import invitationImage from '../../assets/images/initation-image.png'
 import { useEffect, useState } from 'react'
 import PlusIcon from '../../assets/icons/plus'
 import Table from '../../components/table'
@@ -19,6 +18,8 @@ import FileIcon from '../../assets/icons/file'
 import fetchDoc from '@/services/fetchDoc'
 import DownloadIcon from '../../assets/icons/download'
 import DownloadFileIcon from '../../assets/icons/downloadFile'
+import { Button } from '@mui/material'
+import Spinner from '@/components/spinner'
 
 export interface InvitationDetails {
   message: string
@@ -28,14 +29,18 @@ export interface InvitationDetails {
 export default function InternshipRequest() {
   const router = useRouter()
   const [loading, setLoading] = useState<boolean>(true)
-
+  const [loadUpdateReq, setLoadUpdateReq] = useState<boolean>(false)
+  const [loadingId, setLoadingId] = useState<string | null>(null)
   const [internReq, setInternReq] = useState<any>([])
   const [tableData, setTableData] = useState<any>([])
   const [invitationDetails, setInvitationDetails] = useState<InvitationDetails | null>(null)
 
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('internship-applications')
-    setInternReq(res?.docs || [])
+    console.log(res)
+    const getApplication = res?.docs.filter((s) => s.status === 'pending')
+    console.log('applications', getApplication)
+    setInternReq(getApplication || [])
     setTableData(res)
     setLoading(false)
   }
@@ -58,24 +63,52 @@ export default function InternshipRequest() {
   }
 
   const respondToInterviewMtn = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({
+      id,
+      status,
+      studentId,
+    }: {
+      id: string
+      status: string
+      studentId?: string
+    }) => {
       try {
         console.log('Updating interview invitation:', { id, status })
 
-        const res = await updateDoc('interview-invitations', id, { status })
+        const res = await updateDoc('internship-applications', id, { status })
+
+        if (!res) {
+          toast.error('Network error; please try again later')
+          return
+        }
+
+        if (status === 'approved' && studentId) {
+          toast.success('Internship application approved')
+          router.push(`/company-pages/student-details/${studentId}`)
+        } else if (status === 'company declined') {
+          toast.success('Internship application declined')
+        }
 
         console.log('Response:', res)
-        if (!res) return toast.error('Network error; please try again later')
-
         return res
-      } catch {
+      } catch (error) {
+        console.error('Error updating application:', error)
         toast.error('An error occurred while updating; please try again later')
       }
     },
   })
 
-  const handleRespond = async (id: string, status: string) => {
-    await respondToInterviewMtn.mutateAsync({ id, status })
+  // const handleRespond = async (id: string, status: string, studentId?: string) => {
+  //   await respondToInterviewMtn.mutateAsync({ id, status, studentId })
+  // }
+
+  const handleRespond = async (id: string, status: string, studentId?: string) => {
+    setLoadingId(id)
+    try {
+      await respondToInterviewMtn.mutateAsync({ id, status, studentId })
+    } finally {
+      setLoadingId(null)
+    }
   }
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -91,7 +124,7 @@ export default function InternshipRequest() {
         className="flex items-center"
       >
         <img
-          src={item.student?.image?.url || '/default-avatar.png'}
+          src={item.student?.image?.url || studentImage}
           alt={item.student.firstName}
           className="w-8 h-8 rounded-full mr-2"
         />
@@ -107,24 +140,38 @@ export default function InternshipRequest() {
         {new Date(item.createdAt).toLocaleDateString()}
       </p>,
       <div key={`${item.id}-actions`}>
-        <button
+        {/* <button
           className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
-          onClick={() => router.push(`/company-pages/student-details/${item.student.id}`)}
-          // onClick={() => handleRespond(item.id, 'accepted')}
-          // disabled={respondToInterviewMtn.isPending}
-        >
-          Accept
-        </button>
-        <button
-          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
-          onClick={() => handleRespond(item.id, 'declined')}
+          onClick={() => handleRespond(item.id, 'approved', item.student.id)}
           disabled={respondToInterviewMtn.isPending}
         >
-          ✘ Declne
+          {respondToInterviewMtn.isPending ? 'Processing...' : 'Accept'}
+        </button>
+
+        <button
+          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
+          onClick={() => handleRespond(item.id, 'company declined')}
+          disabled={respondToInterviewMtn.isPending}
+        >
+          {respondToInterviewMtn.isPending ? 'Processing...' : '✘ Decline'}
+        </button> */}
+        <button
+          className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
+          onClick={() => handleRespond(item.id, 'approved', item.student.id)}
+          disabled={loadingId === item.id} // Disable only the clicked button
+        >
+          {loadingId === item.id ? 'Processing...' : 'Accept'}
+        </button>
+
+        <button
+          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
+          onClick={() => handleRespond(item.id, 'company declined')}
+          disabled={loadingId === item.id} // Disable only the clicked button
+        >
+          {loadingId === item.id ? 'Processing...' : '✘ Decline'}
         </button>
       </div>,
     ])
-
 
   const totalItems = 1234
 
@@ -202,7 +249,7 @@ export default function InternshipRequest() {
                   <div className="flex items-start flex-col gap-5 lg:flex-row">
                     <div className="max-w-[200px] md:max-w-full ">
                       <Image
-                        src={invitationDetails?.tudent?.image?.url || sstudentImage}
+                        src={invitationDetails?.student?.image?.url}
                         // src={studentImage}
                         alt="image"
                         width={0}
@@ -233,20 +280,30 @@ export default function InternshipRequest() {
                   </div>
                   <div className="flex items-center gap-2 mt-10">
                     <button
+                      // onClick={() =>
+                      //   router.push(
+                      //     `/company-pages/student-details/${invitationDetails.student.id}`,
+                      //   )
+                      // }
+                      disabled={loadingId === invitationDetails.id}
+                      // disabled={respondToInterviewMtn.isPending}
                       onClick={() =>
-                        router.push(
-                          `/company-pages/student-details/${invitationDetails.student.id}`,
+                        handleRespond(
+                          invitationDetails.id,
+                          'approved',
+                          invitationDetails.student.id,
                         )
                       }
                       className="rounded-[6px] bg-[#0B7077] py-[10px] px-[14px] text-[12px] text-white"
                     >
-                      Accept
+                      {loadingId === invitationDetails.id ? 'Processing...' : 'Accept'}
                     </button>
                     <button
                       className="rousnded-[6px] border border-[#0B7077] text-[#0B7077] py-[10px] px-[14px] text-[12px]"
-                      onClick={() => handleRespond(invitationDetails.id, 'declined')}
+                      onClick={() => handleRespond(invitationDetails.id, 'company declined')}
+                      disabled={loadingId === invitationDetails.id}
                     >
-                      Reject
+                      {loadingId === invitationDetails.id ? 'Processing...' : 'Reject'}
                     </button>
                     <button
                       onClick={handleCloseModal}

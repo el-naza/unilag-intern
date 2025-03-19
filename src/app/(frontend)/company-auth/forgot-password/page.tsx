@@ -48,7 +48,7 @@ export default function OTPConfirmation() {
   return (
     <div className="">
       <button
-        onClick={()=>router.back()}
+        onClick={() => router.back()}
         className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
       >
         <ArrowIcon /> Back
@@ -88,7 +88,13 @@ export default function OTPConfirmation() {
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <>
-              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8 text-gr">
+              <Button
+                type="submit"
+                disabled={!canSubmit}
+                size="lg"
+                className="w-full mt-8 text-gr"
+                color="white"
+              >
                 Send OTP {isSubmitting && <Spinner />}
               </Button>
               <FormError form={form} />
@@ -96,7 +102,6 @@ export default function OTPConfirmation() {
           )}
         </form.Subscribe>
       </form>
-
     </div>
   )
 }

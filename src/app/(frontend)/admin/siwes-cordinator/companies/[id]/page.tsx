@@ -1,41 +1,64 @@
 'use client'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { format } from 'date-fns'
-import { Textarea } from '@/components/ui/textarea'
-import React, { useEffect, useState } from 'react'
-import { MessageSquareText } from 'lucide-react'
-import Image from 'next/image'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import AssignStudent from './assign-student'
-import { useParams } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { getCompany } from '@/services/admin/companies'
+import { getAllReports, getEmployments } from '@/services/admin/reports'
+import { format } from 'date-fns'
+import { MessageSquareText } from 'lucide-react'
+import Image from 'next/image'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import AssignStudent from './assign-student'
 
 export default function CompanyDetailPage() {
   const { id }: { id: string } = useParams()
 
   const formattedDate = format(new Date(), 'EEEE do MMMM yyyy')
   const [company, setCompany] = useState<any>(null)
+  const [siwesStudents, setSiwesStudents] = useState<any>(null)
+  const [siwesReports, setSiwesReports] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
   const fetchCompanyDetail = async () => {
-    const res: any = await getCompany('companies', id)
-    console.log('Company', res.data)
-    setCompany(res.data)
-    setLoading(false)
+    return getCompany('companies', id).then((res: any) => {
+      console.log('Company', res.data)
+      setCompany(res.data)
+      setLoading(false)
+    })
+
   }
 
+  const fetchEmployments = async () => {
+    const query = new URLSearchParams({ 'where[company]': id }).toString()
+    return getEmployments('employments', query).then((res: any) => {
+      console.log('Employments: ', res);
+      const { docs } = res.data
+      setSiwesStudents(docs)
+    })
+  }
+
+   const fetchReports = async (params?: string) => {
+      return getAllReports('reports', params).then((res: any) => {
+        console.log('Reports: ', res);
+        const { docs } = res.data
+        setSiwesReports(docs)
+      })
+      
+   }
+
   useEffect(() => {
-    fetchCompanyDetail()
+    Promise.allSettled([fetchCompanyDetail(), fetchEmployments(), fetchReports()])
   }, [])
 
   return (
@@ -78,8 +101,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Company Name</Label>
             <Input
-             value={company?.name || ''}
-             readOnly
+              value={company?.name || ''}
+              readOnly
               placeholder="Enter Company Name"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -88,8 +111,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">CAC Number</Label>
             <Input
-             value={company?.cac || ''}
-             readOnly
+              value={company?.cac || ''}
+              readOnly
               placeholder="Enter CAC Number"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -98,8 +121,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Location</Label>
             <Input
-             value={'Lng: '+ company?.location.longitude +' Lat: '+ company?.location.latitude}
-             readOnly
+              value={'Lng: ' + company?.location.longitude + ' Lat: ' + company?.location.latitude}
+              readOnly
               placeholder="Enter Location"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -108,8 +131,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Email</Label>
             <Input
-            value={company?.email || ''}
-            readOnly
+              value={company?.email || ''}
+              readOnly
               placeholder="Enter Email"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -118,8 +141,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Phone</Label>
             <Input
-            value={company?.phone || ''}
-            readOnly
+              value={company?.phone || ''}
+              readOnly
               placeholder="Enter Phone"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -128,8 +151,8 @@ export default function CompanyDetailPage() {
           <div>
             <Label className="mt-3 block">Website</Label>
             <Input
-            value={company?.website || ''}
-            readOnly
+              value={company?.website || ''}
+              readOnly
               placeholder="Enter Website"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
             />
@@ -138,8 +161,8 @@ export default function CompanyDetailPage() {
 
         <Label className="mt-3 block">Description</Label>
         <Textarea
-        value={company?.description || ''}
-        readOnly
+          value={company?.description || ''}
+          readOnly
           placeholder="Type your message here."
           className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
         />
@@ -160,75 +183,7 @@ export default function CompanyDetailPage() {
 
               <div className="absolute bottom-0 text-white w-full px-3 pb-1 bg-gradient-to-t from-[#00000069] to-[transparent]">
                 <h4>Kota Faruq</h4>
-                <p className="flex justify-between items-center text-sm">
-                  <span>Mathematics</span> <span>2 weeks</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="relative inline-block overflow-hidden rounded-md">
-              <Image
-                src="/images/student-image.jpeg"
-                width={500}
-                height={700}
-                alt="Picture"
-                className="w-full h-full object-cover"
-              />
-
-              <div className="absolute bottom-0 text-white w-full px-3 pb-1 bg-gradient-to-t from-[#00000069] to-[transparent]">
-                <h4>Kota Faruq</h4>
-                <p className="flex justify-between items-center text-sm">
-                  <span>Mathematics</span> <span>2 weeks</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="relative inline-block overflow-hidden rounded-md">
-              <Image
-                src="/images/student-image.jpeg"
-                width={500}
-                height={700}
-                alt="Picture"
-                className="w-full h-full object-cover"
-              />
-
-              <div className="absolute bottom-0 text-white w-full px-3 pb-1 bg-gradient-to-t from-[#00000069] to-[transparent]">
-                <h4>Kota Faruq</h4>
-                <p className="flex justify-between items-center text-sm">
-                  <span>Mathematics</span> <span>2 weeks</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="relative inline-block overflow-hidden rounded-md">
-              <Image
-                src="/images/student-image.jpeg"
-                width={500}
-                height={700}
-                alt="Picture"
-                className="w-full h-full object-cover"
-              />
-
-              <div className="absolute bottom-0 text-white w-full px-3 pb-1 bg-gradient-to-t from-[#00000069] to-[transparent]">
-                <h4>Kota Faruq</h4>
-                <p className="flex justify-between items-center text-sm">
-                  <span>Mathematics</span> <span>2 weeks</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="relative inline-block overflow-hidden rounded-md">
-              <Image
-                src="/images/student-image.jpeg"
-                width={500}
-                height={700}
-                alt="Picture"
-                className="w-full h-full object-cover"
-              />
-
-              <div className="absolute bottom-0 text-white w-full px-3 pb-1 bg-gradient-to-t from-[#00000069] to-[transparent]">
-                <h4>Kota Faruq</h4>
-                <p className="flex justify-between items-center text-sm">
+                <p className="flex flex-wrap justify-between items-center text-sm">
                   <span>Mathematics</span> <span>2 weeks</span>
                 </p>
               </div>

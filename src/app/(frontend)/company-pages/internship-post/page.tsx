@@ -9,6 +9,8 @@ import InvitationTabs from '../../components/Ui/tab'
 import { useEffect, useState } from 'react'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '../../components/Layouts/Loader'
+import comapnyDefaultImage from '../../assets/images/company-default-image.avif'
+
 export default function Interviews() {
 
 
@@ -18,6 +20,7 @@ export default function Interviews() {
   const fetchInternshipPosts = async () => {
     try {
       const res: any = await fetchDocs('internships')
+      console.log('res', res)
 
       if (res?.docs) {
         setInternshipPosts(res.docs)
@@ -69,6 +72,7 @@ export default function Interviews() {
                         key={post.id}
                         invitation={{
                           id: post.id,
+                          image: post?.company?.image || comapnyDefaultImage,
                           title: post.company.name,
                           description: post.postDescription || post.description,
                           date: new Date(post.startDate).toLocaleDateString(),

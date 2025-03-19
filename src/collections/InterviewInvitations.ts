@@ -1,8 +1,10 @@
 import type { CollectionConfig, Where } from 'payload'
 import { companies } from '@/access/companies'
-import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
+// import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
 import { relatedCompany } from '@/access/interview-invitations/relatedCompany'
 import { parse } from 'qs-esm'
+import { anyone } from '@/access/anyone'
+import { relatedStudentOrCompany } from '@/access/relatedStudentOrCompany'
 
 // Hook to create an employment record when status is updated to 'accepted'
 // const createEmploymentOnAcceptance: BeforeChangeHook = async ({ data, req, originalDoc }) => {
@@ -22,7 +24,7 @@ export const InterviewInvitations: CollectionConfig = {
   access: {
     read: relatedStudentOrCompany,
     create: companies,
-    delete: relatedCompany,
+    delete: relatedStudentOrCompany,
     update: relatedStudentOrCompany,
   },
   fields: [
@@ -51,7 +53,7 @@ export const InterviewInvitations: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      options: ['pending', 'accepted', 'declined'],
+      options: ['pending', 'accepted', 'declined', 'company accected', 'company declined'],
       defaultValue: 'pending',
     },
     {
@@ -59,21 +61,21 @@ export const InterviewInvitations: CollectionConfig = {
       type: 'text',
     },
   ],
-  hooks: {
-    beforeChange: [
-      ({ data, req, originalDoc }) => {
-        if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
-          req.payload.create({
-            collection: 'employments',
-            data: {
-              student: originalDoc.student,
-              company: originalDoc.company,
-            },
-          })
-        }
-      },
-    ],
-  },
+  // hooks: {
+  //   beforeChange: [
+  //     ({ data, req, originalDoc }) => {
+  //       if (data.status === 'accepted' && originalDoc?.status !== 'accepted') {
+  //         req.payload.create({
+  //           collection: 'employments',
+  //           data: {
+  //             student: originalDoc.student,
+  //             company: originalDoc.company,
+  //           },
+  //         })
+  //       }
+  //     },
+  //   ],
+  // },
   endpoints: [
     {
       method: 'get',

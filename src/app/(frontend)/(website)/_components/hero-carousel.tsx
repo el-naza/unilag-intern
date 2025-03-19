@@ -36,13 +36,20 @@ const HeroCarousel = () => {
         </h1>
 
         <div className="flex gap-12 mt-12">
-        <Link href="/auth/login"> <Button className="bg-primary text-white">I&apos;m a student</Button></Link>
-        <Link href="/company-auth/login"> <Button className="bg-secondary text-white">I&apos;m a company</Button></Link>
-         
-        </div> 
+          <Link href="/auth/login">
+            {' '}
+            <Button className="bg-primary text-white">I&apos;m a student</Button>
+          </Link>
+          <Link href="/company-auth/login">
+            {' '}
+            <Button className="bg-secondary text-white">I&apos;m a company</Button>
+          </Link>
+        </div>
       </div>
 
-      <div className={`absolute z-10 bottom-[16rem] w-[8rem] right-[45%] rounded-full aspect-square grid place-content-center border-[15px] border-[ #D2E6E4] ${playBgColors[currentSlide]} `}>
+      <div
+        className={`absolute z-10 bottom-[16rem] w-[8rem] right-[45%] rounded-full aspect-square grid place-content-center border-[15px] border-[ #D2E6E4] ${playBgColors[currentSlide]} `}
+      >
         {/* <svg
             viewBox="0 0 100 100"
             xmlns="http://www.w3.org/2000/svg"
@@ -62,12 +69,18 @@ const HeroCarousel = () => {
                 </textPath>
             </text>
         </svg> */}
-        <Image src="/icons/play-icon.svg" alt="Play" width={50} height={50} className="w-[3rem] mx-auto" />
+        <Image
+          src="/icons/play-icon.svg"
+          alt="Play"
+          width={50}
+          height={50}
+          className="w-[3rem] mx-auto"
+        />
       </div>
 
-      
-
-      <div className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[9rem] ${bg2Colors[currentSlide]}`}>
+      <div
+        className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[9rem] ${bg2Colors[currentSlide]}`}
+      >
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
           <CarouselContent>
             <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
@@ -76,10 +89,10 @@ const HeroCarousel = () => {
                 alt="Hero 1"
                 width={1200}
                 height={500}
-                className="w-[30rem]"
+                className="w-[40rem]"
               />
 
-              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -93,7 +106,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[33rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3s_ease-in-out_infinite]">
+              <div className="absolute top-[33rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -107,7 +120,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[22rem] right-[10rem] animate-[bounce_2.5s_ease-in-out_infinite]">
+              <div className="absolute top-[22rem] right-[10rem] animate-[bounce_9.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/statistics-icon.svg"
                   alt="Icon"
@@ -126,7 +139,7 @@ const HeroCarousel = () => {
                 className="w-[30rem]"
               />
 
-              <div className="absolute top-[33rem] right-[12rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3.5s_ease-in-out_infinite]">
+              <div className="absolute top-[33rem] right-[12rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -140,13 +153,13 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3s_ease-in-out_infinite]">
+              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
                   width={40}
                   height={40}
-                  className="w-[2rem]"
+                  className="w-[2rem] scale-[2]"
                 />
                 <div>
                   <p className="text-sm">Tutors</p>
@@ -154,7 +167,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[27rem] left-[10rem] animate-[bounce_2.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[10rem] animate-[bounce_9.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/statistics-icon.svg"
                   alt="Icon"
@@ -170,10 +183,10 @@ const HeroCarousel = () => {
                 alt="Hero 3"
                 width={1200}
                 height={500}
-                className="w-[40rem]"
+                className="w-[40rem] scale-[2]"
               />
 
-              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3.5s_ease-in-out_infinite]">
+              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -187,7 +200,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -201,7 +214,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[33rem] right-[15rem] animate-[bounce_2.5s_ease-in-out_infinite]">
+              <div className="absolute top-[33rem] right-[15rem] animate-[bounce_9.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/statistics-icon.svg"
                   alt="Icon"
@@ -217,10 +230,10 @@ const HeroCarousel = () => {
                 alt="Hero 4"
                 width={1200}
                 height={500}
-                className="w-[30rem]"
+                className="w-[40rem] scale-110"
               />
 
-              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[10rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -234,7 +247,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[33rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_3s_ease-in-out_infinite]">
+              <div className="absolute top-[33rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -248,7 +261,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[22rem] right-[10rem] animate-[bounce_2.5s_ease-in-out_infinite]">
+              <div className="absolute top-[22rem] right-[10rem] animate-[bounce_9.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/statistics-icon.svg"
                   alt="Icon"

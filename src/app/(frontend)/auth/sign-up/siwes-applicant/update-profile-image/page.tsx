@@ -44,10 +44,14 @@ export default function Page() {
         // randomly generate password for students on creation for now
         const res = await updateUserImage('students', signedUpUserId, file, signUpAuthToken)
         console.log('res', res)
-        if (!res) return toast.error('Network err; pls try again later')
+        if (!res) {
+          toast.error('Network err; pls try again later')
+          return 'Network err; pls try again later'
+        }
         return res
       } catch {
         toast.error('An error occured while saving message; pls try again later')
+        return 'An error occured while saving message; pls try again later'
       }
     },
   })
@@ -70,7 +74,7 @@ export default function Page() {
           }
         }
         // success here so naviagate or toast to success !!
-        form.reset()
+        // form.reset()
         toast.success('Profile image updated successfully')
         router.push('/auth/login')
         return null

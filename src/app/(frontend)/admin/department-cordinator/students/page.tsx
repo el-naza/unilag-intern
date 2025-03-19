@@ -71,8 +71,10 @@ export default function StudentPage() {
   const router = useRouter()
 
   const fetchStudents = async (params?: string) => {
-    const res: any = await getAllStudents('departmental-coordinators', params)
+    const res: any = await getAllStudents('students', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    console.log('Data: ', docs)
+
     setStudents(docs)
     setPerPage(page)
     setPageSize(totalPages)
@@ -163,7 +165,7 @@ export default function StudentPage() {
 
   const editStudent = (rowRecord: any) => {
     const studentId = rowRecord.original.id
-    router.push(`/admin/siwes-cordinator/students/${studentId}`)
+    router.push(`/admin/department-cordinator/students/${studentId}`)
   }
 
   const [query, setQuery] = useState('')
@@ -186,19 +188,40 @@ export default function StudentPage() {
     }
   }, [debouncedQuery])
 
+  const filterStats = (date: Date) => {
+    const today = format(new Date(), 'yyyy-MM-dd')
+    const endDate = format(date, 'yyyy-MM-dd')
+
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than]': endDate,
+      'where[createdAt][less_than]': today,
+    }).toString()
+
+    fetchStudents(query)
+  }
+
+  const filterStatsbyDate = (date: Date) => {
+    const selectedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than_equal]': `${selectedDate}T00:00:00.000Z`,
+      'where[createdAt][less_than]': `${selectedDate}T23:59:59.999Z`,
+    }).toString()
+
+    fetchStudents(query)
+  }
+
+  const [studentOpenDialog, setStudentOpenDialog] = useState(false)
+  const closeDialog = () => {
+    setStudentOpenDialog(false)
+  }
 
   return (
     <div className="p-8">
-      <FIlterStats config={config} />
+      <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
-      <div className="flex justify-between items-center mt-8 w-full">
-        <ToggleGroup
-          type="single"
-          value={filter}
-          onValueChange={(value) => {
-            value && setFilter(value)
-          }}
-        >
+      <div className="flex flex-wrap gap-4 justify-between items-center mt-8 w-full">
+        <ToggleGroup type="single" value={filter} onValueChange={(value) => setFilter(value)}>
           <ToggleGroupItem
             value="all"
             aria-label="Toggle all"
@@ -223,8 +246,12 @@ export default function StudentPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <Select onValueChange={(value) => setSearchFilter(value as 'student-name' | 'course' | 'matric-number')}>
-            <SelectTrigger className='border-[1px] border-gray-light-2 bg-white w-[180px]'>
+          <Select
+            onValueChange={(value) =>
+              setSearchFilter(value as 'student-name' | 'course' | 'matric-number')
+            }
+          >
+            <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">
               <SelectValue placeholder="Filter" />
             </SelectTrigger>
             <SelectContent>
@@ -238,20 +265,20 @@ export default function StudentPage() {
           </Select>
 
           <Input
-            className='border-[1px] border-gray-light-2 w-[full]'
+            className="border-[1px] border-gray-light-2 w-[full]"
             placeholder="Search by name, matric no..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
 
-          <Dialog>
+          <Dialog open={studentOpenDialog} onOpenChange={setStudentOpenDialog}>
             <DialogTrigger asChild>
               <Button>
                 <Plus /> Add Student
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-screen-md overflow-auto bg-white">
-              <AddStudent />
+              <AddStudent onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>
         </div>

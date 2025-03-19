@@ -18,7 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { getAllCompanies } from '@/services/admin/companies'
+import { deleteCompany, getAllCompanies } from '@/services/admin/companies'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Edit2, EllipsisVertical, Plus, Trash } from 'lucide-react'
@@ -37,6 +37,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { toast } from 'sonner'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 export type Company = {
   name: string
@@ -65,6 +67,7 @@ export default function CompaniesPage() {
   const [total, setTotal] = useState(0)
   const [hasNext, setHasNext] = useState(false)
   const [hasPrevious, setHasPrevious] = useState(false)
+  const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
 
   const fetchCompanies = async (params?: string) => {
@@ -158,6 +161,13 @@ export default function CompaniesPage() {
     router.push(`/admin/siwes-cordinator/companies/${companyId}`)
   }
 
+  const deleteACompany = async (rowRecord: any) => {
+    const companyId = rowRecord.original.id
+    const res = await deleteCompany('companies', companyId)
+    fetchCompanies()
+    toast.success('Company deleted successfully')
+  }
+
   const [query, setQuery] = useState('')
   const [searchFilter, setSearchFilter] = React.useState<'name' | 'cac' | 'email' | 'phone'>()
   const debouncedQuery = useDebounce(query)
@@ -179,18 +189,40 @@ export default function CompaniesPage() {
     }
   }, [debouncedQuery])
 
+  const filterStats = (date: Date) => {
+    const today = format(new Date(), 'yyyy-MM-dd')
+    const endDate = format(date, 'yyyy-MM-dd')
+
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than]': endDate,
+      'where[createdAt][less_than]': today,
+    }).toString()
+
+    fetchCompanies(query)
+  }
+
+  const filterStatsbyDate = (date: Date) => {
+    const selectedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than_equal]': `${selectedDate}T00:00:00.000Z`,
+      'where[createdAt][less_than]': `${selectedDate}T23:59:59.999Z`,
+    }).toString()
+
+    fetchCompanies(query)
+  }
+
+  const [companyOpenDialog, setCompanyOpenDialog] = useState(false)
+  const closeDialog = () => {
+    setCompanyOpenDialog(false)
+  }
+
   return (
     <div className="p-8">
-      <FIlterStats config={config} />
+      <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
-      <div className="flex justify-between items-center mt-8">
-        <ToggleGroup
-          type="single"
-          value={filter}
-          onValueChange={(value) => {
-            value && setFilter(value)
-          }}
-        >
+      <div className="flex flex-wrap gap-4 justify-between items-center mt-8">
+        <ToggleGroup type="single" value={filter} onValueChange={(value) => setFilter(value)}>
           <ToggleGroupItem
             value="all"
             aria-label="Toggle all"
@@ -231,20 +263,20 @@ export default function CompaniesPage() {
           </Select>
 
           <Input
-            className='border-[1px] border-gray-light-2 w-[full]'
+            className="border-[1px] border-gray-light-2 w-[full]"
             placeholder="Search by name, cac, email..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
 
-          <Dialog>
+          <Dialog open={companyOpenDialog} onOpenChange={setCompanyOpenDialog}>
             <DialogTrigger asChild>
               <Button>
                 <Plus /> Add Company
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-screen-md overflow-auto bg-white">
-              <AddCompany />
+              <AddCompany onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>
         </div>
@@ -296,10 +328,35 @@ export default function CompaniesPage() {
                           <Edit2 />
                           <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Trash />
-                          <span>Delete</span>
-                        </DropdownMenuItem>
+                        <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                              <Trash />
+                              <span>Delete</span>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                            <div className="flex gap-4 items-center w-full">
+                              <Button
+                                variant="ghost"
+                                className="w-full"
+                                onClick={() => setOpenPopover(false)}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                className="w-full"
+                                onClick={() => {
+                                  deleteACompany(row)
+                                  setOpenPopover(false)
+                                }}
+                              >
+                                Continue
+                              </Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>

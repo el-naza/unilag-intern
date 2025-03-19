@@ -11,6 +11,7 @@ import Loader from '@/app/(frontend)/components/Layouts/Loader'
 import fetchCompanyInternships from '@/services/fetchCompanyInternships'
 import { Dialog, DialogTrigger, DialogContent, DialogDescription } from '@/components/ui/dialog'
 import truncateText from '@/utilities/truncateText'
+import fetchCompanySuggestions from '@/services/fetchCompanySuggestions'
 
 const Page = () => {
   const { id }: { id: string } = useParams()
@@ -18,12 +19,16 @@ const Page = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [company, setCompany] = useState<any>({})
   const [internships, setInternships] = useState<any>([])
+  const [suggestedCompanies, setSuggestedCompanies] = useState<any[]>([])
 
   const fetchCompany = async () => {
     const companyRes: any = await fetchDoc('companies', id)
     setCompany(companyRes)
     const internshipsRes: any = await fetchCompanyInternships({ company: id })
     setInternships(internshipsRes.docs)
+    const suggestedCompaniesRes: any = await fetchCompanySuggestions({ companyId: id })
+    console.log(suggestedCompaniesRes)
+    setSuggestedCompanies(suggestedCompaniesRes.docs)
     setLoading(false)
   }
 
@@ -226,10 +231,12 @@ const Page = () => {
                     <div className="mb-3">
                       <h5 className="text-black mb-3 font-bold text-xs">More Suggestions</h5>
                       <div className="grid grid-cols-2 gap-4">
-                        <CompanySuggestionCard />
-                        <CompanySuggestionCard />
-                        <CompanySuggestionCard />
-                        <CompanySuggestionCard />
+                        {suggestedCompanies.map((suggestedCompany) => (
+                          <CompanySuggestionCard
+                            key={suggestedCompany.id}
+                            company={suggestedCompany}
+                          />
+                        ))}
                       </div>
                     </div>
                   </div>

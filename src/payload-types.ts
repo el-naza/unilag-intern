@@ -6,6 +6,60 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * Supported timezones in IANA format.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supportedTimezones".
+ */
+export type SupportedTimezones =
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
+
 export interface Config {
   auth: {
     admins: AdminAuthOperations;
@@ -13,6 +67,7 @@ export interface Config {
     'departmental-coordinators': DepartmentalCoordinatorAuthOperations;
     students: StudentAuthOperations;
   };
+  blocks: {};
   collections: {
     media: Media;
     admins: Admin;
@@ -275,7 +330,7 @@ export interface InterviewInvitation {
   company: string | Company;
   message: string;
   dateTime: string;
-  status?: ('pending' | 'accepted' | 'declined') | null;
+  status?: ('pending' | 'accepted' | 'declined' | 'company accected' | 'company declined') | null;
   declineReason?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -304,12 +359,12 @@ export interface Internship {
   company: string | Company;
   postDescription: string;
   jobDescription: string;
-  location?: 'Lagos' | null;
+  courseArea: ('Mathematics' | 'Science' | 'History' | 'Engineering' | 'Arts')[];
   applicants?: (string | Student)[] | null;
   deadline?: string | null;
   startDate: string;
   endDate: string;
-  picture?: (string | null) | Media;
+  image?: (string | null) | Media;
   status?: ('open' | 'closed') | null;
   updatedAt: string;
   createdAt: string;
@@ -335,6 +390,12 @@ export interface Report {
   student: string | Student;
   title: string;
   details: string;
+  supervisor: string;
+  memo?: string | null;
+  remark?: string | null;
+  status?: ('pending' | 'approved' | 'reassigned') | null;
+  media?: (string | null) | Media;
+  week: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -619,6 +680,12 @@ export interface ReportsSelect<T extends boolean = true> {
   student?: T;
   title?: T;
   details?: T;
+  supervisor?: T;
+  memo?: T;
+  remark?: T;
+  status?: T;
+  media?: T;
+  week?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -630,12 +697,12 @@ export interface InternshipsSelect<T extends boolean = true> {
   company?: T;
   postDescription?: T;
   jobDescription?: T;
-  location?: T;
+  courseArea?: T;
   applicants?: T;
   deadline?: T;
   startDate?: T;
   endDate?: T;
-  picture?: T;
+  image?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;

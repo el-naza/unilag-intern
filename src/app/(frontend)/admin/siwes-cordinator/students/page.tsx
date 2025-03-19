@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useDebounce } from '@/custom-hooks/useDebounce'
-import { getAllStudents } from '@/services/admin/students'
+import { deleteStudent, getAllStudents } from '@/services/admin/students'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Edit2, EllipsisVertical, Plus, Trash } from 'lucide-react'
@@ -37,6 +37,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from './add-student'
+import { toast } from 'sonner'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+
 
 export type Student = {
   id: string
@@ -68,11 +71,14 @@ export default function StudentPage() {
   const [total, setTotal] = useState(0)
   const [hasNext, setHasNext] = useState(false)
   const [hasPrevious, setHasPrevious] = useState(false)
+  const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
 
   const fetchStudents = async (params?: string) => {
     const res: any = await getAllStudents('students', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    console.log('Data: ', docs)
+
     setStudents(docs)
     setPerPage(page)
     setPageSize(totalPages)
@@ -166,6 +172,13 @@ export default function StudentPage() {
     router.push(`/admin/siwes-cordinator/students/${studentId}`)
   }
 
+    const deleteAStudent = async (rowRecord: any) => {
+      const studentId = rowRecord.original.id
+      const res = await deleteStudent('students', studentId)
+      fetchStudents()
+      toast.success('Student deleted successfully')
+    }
+
   const [query, setQuery] = useState('')
   const [searchFilter, setSearchFilter] = React.useState<
     'student-name' | 'course' | 'matric-number'
@@ -186,18 +199,44 @@ export default function StudentPage() {
     }
   }, [debouncedQuery])
 
+  const filterStats = (date: Date) => {
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const endDate = format(date, 'yyyy-MM-dd');
+
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than]': endDate,
+      'where[createdAt][less_than]': today,
+    }).toString();
+
+    fetchStudents(query)
+  }
+
+  const filterStatsbyDate = (date: Date) => {
+    const selectedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  
+    const query = new URLSearchParams({
+      'where[createdAt][greater_than_equal]': `${selectedDate}T00:00:00.000Z`,
+      'where[createdAt][less_than]': `${selectedDate}T23:59:59.999Z`,
+    }).toString();
+  
+    fetchStudents(query);
+  };
+  
+
+  const [studentOpenDialog, setStudentOpenDialog] = useState(false)
+  const closeDialog = () => {
+    setStudentOpenDialog(false)
+  }
 
   return (
     <div className="p-8">
-      <FIlterStats config={config} />
+      <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
-      <div className="flex justify-between items-center mt-8 w-full">
+      <div className="flex flex-wrap gap-4 justify-between items-center mt-8 w-full">
         <ToggleGroup
           type="single"
           value={filter}
-          onValueChange={(value) => {
-            value && setFilter(value)
-          }}
+          onValueChange={(value) => setFilter(value)}
         >
           <ToggleGroupItem
             value="all"
@@ -223,8 +262,12 @@ export default function StudentPage() {
         </ToggleGroup>
 
         <div className="flex gap-4 items-center">
-          <Select onValueChange={(value) => setSearchFilter(value as 'student-name' | 'course' | 'matric-number')}>
-            <SelectTrigger className='border-[1px] border-gray-light-2 bg-white w-[180px]'>
+          <Select
+            onValueChange={(value) =>
+              setSearchFilter(value as 'student-name' | 'course' | 'matric-number')
+            }
+          >
+            <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-[180px]">
               <SelectValue placeholder="Filter" />
             </SelectTrigger>
             <SelectContent>
@@ -238,20 +281,20 @@ export default function StudentPage() {
           </Select>
 
           <Input
-            className='border-[1px] border-gray-light-2 w-[full]'
+            className="border-[1px] border-gray-light-2 w-[full]"
             placeholder="Search by name, matric no..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
 
-          <Dialog>
+          <Dialog open={studentOpenDialog} onOpenChange={setStudentOpenDialog}>
             <DialogTrigger asChild>
               <Button>
                 <Plus /> Add Student
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-screen-md overflow-auto bg-white">
-              <AddStudent />
+              <AddStudent onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>
         </div>
@@ -303,10 +346,34 @@ export default function StudentPage() {
                           <Edit2 />
                           <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Trash />
-                          <span>Delete</span>
-                        </DropdownMenuItem>
+                        <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                                <Trash /><span>Delete</span>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                              <div className="flex gap-4 items-center w-full">
+                                <Button
+                                  variant="ghost"
+                                  className="w-full"
+                                  onClick={() => setOpenPopover(false)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="w-full"
+                                  onClick={() => {
+                                    deleteAStudent(row)
+                                    setOpenPopover(false)
+                                  }}
+                                >
+                                  Continue
+                                </Button>
+                              </div>
+                            </PopoverContent>
+                        </Popover>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>

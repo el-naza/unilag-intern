@@ -1,20 +1,19 @@
 'use client'
-import MailIcon from '../../assets/icons/mail'
-import ArrowIcon from '../../assets/icons/arrow'
-import { useMutation } from '@tanstack/react-query'
-import { toast } from 'sonner'
 import FieldError from '@/components/FieldError'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import resetPassword from '@/services/resetPassword'
 import { authStore } from '@/store/authStore'
 import { passwordRegex } from '@/utilities'
 import { useForm, useStore } from '@tanstack/react-form'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import resetPassword from '@/services/resetPassword'
+import { toast } from 'sonner'
+import ArrowIcon from '../../assets/icons/arrow'
 
 export default function OTPConfirmation() {
   const router = useRouter()
@@ -163,7 +162,7 @@ export default function OTPConfirmation() {
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <>
-              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8 text-gr">
+              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8 text-gr"  color='white'>
                 Confirm {isSubmitting && <Spinner />}
               </Button>
               <FormError form={form} />

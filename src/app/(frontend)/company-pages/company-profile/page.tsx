@@ -17,7 +17,6 @@ export default function CompanyProfile() {
   const { data: session } = useSession()
 
   const user = useMemo<any>(() => session?.user, [session])
-  console.log('user', user)
 
   const fields = [
     { label: 'Company Name', placeholder: user?.name || 'Company Name', type: 'text' },

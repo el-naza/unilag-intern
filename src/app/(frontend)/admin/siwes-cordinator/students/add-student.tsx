@@ -4,7 +4,11 @@ import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
-const AddStudent = () => {
+interface IStudentProp {
+  onCloseEmit: () => void 
+}
+
+const AddStudent = ({ onCloseEmit }: IStudentProp) => {
   const [files, setFiles] = useState<File[]>([]);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -19,6 +23,11 @@ const AddStudent = () => {
     },
     maxSize: 2 * 1024 * 1024, // 2MB limit
   });
+
+  const closeDialog = () => {
+    setFiles([])
+    onCloseEmit()
+  }
 
   return (
     <div>
@@ -55,7 +64,7 @@ const AddStudent = () => {
 
       <div className="flex gap-4 mt-8">
         <Button>Update Student List</Button>
-        <Button variant="outline" onClick={() => setFiles([])}>
+        <Button variant="outline" onClick={() => closeDialog()}>
           Cancel
         </Button>
       </div>

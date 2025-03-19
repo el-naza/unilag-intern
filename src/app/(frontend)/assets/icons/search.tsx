@@ -1,4 +1,10 @@
-export default function SearchIcon({ className }: { className?: string }) {
+export default function SearchIcon({
+  className,
+  stroke = '#7F879E',
+}: {
+  className?: string
+  stroke?: string
+}) {
   return (
     <svg
       className={className}
@@ -10,14 +16,14 @@ export default function SearchIcon({ className }: { className?: string }) {
     >
       <path
         d="M11.5 19C15.9183 19 19.5 15.4183 19.5 11C19.5 6.58172 15.9183 3 11.5 3C7.08172 3 3.5 6.58172 3.5 11C3.5 15.4183 7.08172 19 11.5 19Z"
-        stroke="#7F879E"
+        stroke={stroke}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M21.4999 21.0004L17.1499 16.6504"
-        stroke="#7F879E"
+        stroke={stroke}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

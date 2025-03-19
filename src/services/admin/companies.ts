@@ -13,10 +13,10 @@ type Response = {
 
 export async function getAllCompanies(
   col: CollectionSlug,
-  params?: string
+  params?: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -43,16 +43,46 @@ export async function getAllCompanies(
 
 export async function getCompany(
   col: CollectionSlug,
-  companyId: string
+  companyId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  
   const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
 
   return await axiosInstance
     .get<Response | ErrorResponse>(`/api/${col}/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${authResult?.token}`,
+      },
+    })
+    .catch((error: AxiosError) => {
+      if (error.response)
+        return {
+          status: error.response.status,
+          data: error.response.data as ErrorResponse,
+        }
+    })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
+}
+
+export async function deleteCompany(
+  col: CollectionSlug,
+  companyId: string,
+): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
+    req: { headers: await headers() },
+    secret: process.env.NEXTAUTH_SECRET,
+  })
+
+  return await axiosInstance
+    .delete<Response | ErrorResponse>(`/api/${col}/${companyId}`, {
       headers: {
         Authorization: `Bearer ${authResult?.token}`,
       },

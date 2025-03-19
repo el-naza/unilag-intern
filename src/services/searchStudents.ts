@@ -19,7 +19,11 @@ export default async function searchStudents<T>(
   search: StudentSearch,
 ): Promise<{ data: T } | ValidationErrors> {
   const query: Where = {
-    ...(search.internshipType && { internshipType: { like: search.internshipType } }),
+    ...(search.internshipType && {
+      internshipType: {
+        in: search.internshipType.split(','),
+      },
+    }),
     ...(search.gender && { gender: { equals: search.gender } }),
     ...(search.matricNo && { matricNo: { equals: search.matricNo } }),
     ...(search.nationality && { nationality: { like: search.nationality } }),
@@ -38,7 +42,7 @@ export default async function searchStudents<T>(
     await axiosInstance
       .get(`/api/${col}${stringifiedQuery}`, {
         headers: {
-          Authorization: `Bearer ${(await getToken({ req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+          Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
         },
       })
       .catch((error: AxiosError) => {

@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react'
 import ProfilePicture from '../../../assets/icons/profilepicture'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
+import { Loader } from 'lucide-react'
 
 export default function StudentHeader() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
 
   const user = useMemo<any>(() => session?.user, [session])
+
+  if (status === 'unauthenticated') signOut()
 
   return (
     <div className="grid grid-cols-5 mb-4">
@@ -17,10 +20,14 @@ export default function StudentHeader() {
               <ProfilePicture />
             </Link>
           </div>
-          <div className="col-span-4">
-            <div className="text-[#FFCC00] font-bold">{`${user?.firstName} ${user?.lastName}`}</div>
-            <div className="text-xs">{`UNILAG ${user?.level} ${user?.course}`}</div>
-          </div>
+          {status === 'authenticated' ? (
+            <div className="col-span-4">
+              <div className="text-[#FFCC00] font-bold">{`${user?.firstName} ${user?.lastName}`}</div>
+              <div className="text-xs">{`UNILAG ${user?.level} ${user?.course}`}</div>
+            </div>
+          ) : (
+            <Loader></Loader>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-2">
