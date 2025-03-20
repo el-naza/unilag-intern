@@ -6,55 +6,99 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { useMutation } from '@tanstack/react-query'
+import { ValidationErrors } from '@/utilities/types'
+import { ValidationFieldError } from 'payload'
+import saveDoc from '@/services/saveDoc'
+import { Loader2 } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
+// Available course areas
+const COURSE_AREAS = ['Mathematics', 'Science', 'Engineering', 'History', 'Arts']
 
 // Form validation schema
 const waitlistFormSchema = z.object({
-  companyName: z.string().min(2, { message: 'Company name is required' }),
-  companyEmail: z.string().email({ message: 'Invalid email address' }),
-  companyRcNumber: z.string().min(1, { message: 'RC Number is required' }),
-  companyCourseArea: z.string().min(1, { message: 'Course area is required' }),
-  companyAddress: z.string().min(1, { message: 'Address is required' }),
+  name: z.string().min(2, { message: 'Company name is required' }),
+  email: z.string().email({ message: 'Invalid email address' }),
+  rcNumber: z.string().min(1, { message: 'RC Number is required' }),
+  courseAreas: z.array(z.string()).min(1, { message: 'At least one course area is required' }),
+  address: z.string().min(1, { message: 'Address is required' }),
+  phone: z.string().min(1, { message: 'Phone number is required' }),
+  location: z
+    .object({
+      longitude: z.coerce.number().optional(),
+      latitude: z.coerce.number().optional(),
+    })
+    .optional(),
 })
 
 type WaitlistFormValues = z.infer<typeof waitlistFormSchema>
 
 export default function WaitlistForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
   // Initialize form
   const form = useForm<WaitlistFormValues>({
     resolver: zodResolver(waitlistFormSchema),
     defaultValues: {
-      companyName: '',
-      companyEmail: '',
-      companyRcNumber: '',
-      companyCourseArea: '',
-      companyAddress: '',
+      name: '',
+      email: '',
+      rcNumber: '',
+      courseAreas: [],
+      address: '',
+      phone: '',
+      location: {
+        longitude: undefined,
+        latitude: undefined,
+      },
+    },
+  })
+
+  // Use mutation for API call
+  const saveCompanyMutation = useMutation({
+    mutationFn: async (data: WaitlistFormValues) => {
+      try {
+        const response = await saveDoc('companies', data)
+        if (!response) throw new Error('Network error')
+        return response
+      } catch (error) {
+        console.error('Error saving company:', error)
+        throw error
+      }
+    },
+    onSuccess: () => {
+      toast.success('Successfully joined the waitlist!')
+      form.reset()
+      router.push('/waitlist-signup-success')
+    },
+    onError: (error) => {
+      console.error('Error submitting form:', error)
+      toast.error('There was an error joining the waitlist. Please try again.')
     },
   })
 
   // Form submission handler
-  async function onSubmit(data: WaitlistFormValues) {
-    setIsSubmitting(true)
-
-    // Simulate API call
-    try {
-      console.log('Form data:', data)
-      // Here you would typically send the data to your API
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      router.push('/waitlist-signup-success')
-      // form.reset()
-    } catch (error) {
-      console.error('Error submitting form:', error)
-      alert('There was an error joining the waitlist. Please try again.')
-    } finally {
-      setIsSubmitting(false)
-    }
+  function onSubmit(data: WaitlistFormValues) {
+    console.log('Form data:', data)
+    saveCompanyMutation.mutate(data)
   }
 
   return (
@@ -96,78 +140,192 @@ export default function WaitlistForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="companyName"
+            name="name"
             render={({ field }) => (
               <FormItem>
+                <FormLabel className="text-sm text-gray-700">Company Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company Name" {...field} />
+                  <Input
+                    placeholder="Enter company name"
+                    {...field}
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                  />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-xs text-error" />
               </FormItem>
             )}
           />
 
           <FormField
             control={form.control}
-            name="companyEmail"
+            name="email"
             render={({ field }) => (
               <FormItem>
+                <FormLabel className="text-sm text-gray-700">Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company Email" type="email" {...field} />
+                  <Input
+                    placeholder="company@example.com"
+                    type="email"
+                    {...field}
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                  />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-xs text-error" />
               </FormItem>
             )}
           />
 
           <FormField
             control={form.control}
-            name="companyRcNumber"
+            name="phone"
             render={({ field }) => (
               <FormItem>
+                <FormLabel className="text-sm text-gray-700">Phone Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company RC Number" {...field} />
+                  <Input
+                    placeholder="Enter phone number"
+                    type="tel"
+                    {...field}
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                  />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-xs text-error" />
               </FormItem>
             )}
           />
 
           <FormField
             control={form.control}
-            name="companyCourseArea"
+            name="rcNumber"
             render={({ field }) => (
               <FormItem>
+                <FormLabel className="text-sm text-gray-700">RC Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company Course Area" {...field} />
+                  <Input
+                    placeholder="Enter RC number"
+                    {...field}
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                  />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-xs text-error" />
               </FormItem>
             )}
           />
 
           <FormField
             control={form.control}
-            name="companyAddress"
+            name="courseAreas"
             render={({ field }) => (
               <FormItem>
-                <FormControl>
-                  <Input placeholder="Company Address" {...field} />
-                </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormLabel className="text-sm text-gray-700">Course Area</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange([value])}
+                  defaultValue={field.value?.[0]}
+                >
+                  <FormControl>
+                    <SelectTrigger className="bg-white/40 backdrop-blur-[70px] border-[1px]">
+                      <SelectValue placeholder="Select a course area" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {COURSE_AREAS.map((area) => (
+                      <SelectItem key={area} value={area}>
+                        {area}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs text-error" />
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm text-gray-700">Company Address</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter full address"
+                    {...field}
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                  />
+                </FormControl>
+                <FormMessage className="text-xs text-error" />
+              </FormItem>
+            )}
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="location.longitude"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm text-gray-700">Longitude</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g. 3.3792"
+                      type="number"
+                      step="any"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value === '' ? undefined : Number(e.target.value))
+                      }
+                      className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs text-error" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="location.latitude"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm text-gray-700">Latitude</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g. 6.5244"
+                      type="number"
+                      step="any"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value === '' ? undefined : Number(e.target.value))
+                      }
+                      className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs text-error" />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <div className="mt-10" />
 
           <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={isSubmitting}
+            disabled={saveCompanyMutation.isPending}
           >
-            {isSubmitting ? 'Processing...' : 'Join the Waitlist'}
+            {saveCompanyMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'Join the Waitlist'
+            )}
           </Button>
+
+          {form.formState.errors.root?.message && (
+            <p className="text-xs text-error mt-2">{form.formState.errors.root.message}</p>
+          )}
         </form>
       </Form>
     </div>
