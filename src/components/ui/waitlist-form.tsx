@@ -15,14 +15,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { User } from 'lucide-react'
+import { User, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useMutation } from '@tanstack/react-query'
 import { ValidationErrors } from '@/utilities/types'
 import { ValidationFieldError } from 'payload'
 import saveDoc from '@/services/saveDoc'
-import { Loader2 } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -30,8 +29,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { randomString } from '@/utilities'
 
-// Available course areas
+// Course area options
 const COURSE_AREAS = ['Mathematics', 'Science', 'Engineering', 'History', 'Arts']
 
 // Form validation schema
@@ -42,12 +42,10 @@ const waitlistFormSchema = z.object({
   courseAreas: z.array(z.string()).min(1, { message: 'At least one course area is required' }),
   address: z.string().min(1, { message: 'Address is required' }),
   phone: z.string().min(1, { message: 'Phone number is required' }),
-  location: z
-    .object({
-      longitude: z.coerce.number().optional(),
-      latitude: z.coerce.number().optional(),
-    })
-    .optional(),
+  location: z.object({
+    longitude: z.number().or(z.string().transform((val) => Number(val) || 0)),
+    latitude: z.number().or(z.string().transform((val) => Number(val) || 0)),
+  }),
 })
 
 type WaitlistFormValues = z.infer<typeof waitlistFormSchema>
@@ -66,8 +64,8 @@ export default function WaitlistForm() {
       address: '',
       phone: '',
       location: {
-        longitude: undefined,
-        latitude: undefined,
+        longitude: 0,
+        latitude: 0,
       },
     },
   })
@@ -76,7 +74,15 @@ export default function WaitlistForm() {
   const saveCompanyMutation = useMutation({
     mutationFn: async (data: WaitlistFormValues) => {
       try {
-        const response = await saveDoc('companies', data)
+        // Add password field to the data
+        const dataWithPassword = {
+          ...data,
+          password: randomString(10), // Generate random password with 10 characters
+        }
+
+        console.log('Submitting data with password:', dataWithPassword)
+
+        const response = await saveDoc('companies', dataWithPassword)
         if (!response) throw new Error('Network error')
         return response
       } catch (error) {
@@ -258,53 +264,49 @@ export default function WaitlistForm() {
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="location.longitude"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm text-gray-700">Longitude</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g. 3.3792"
-                      type="number"
-                      step="any"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(e.target.value === '' ? undefined : Number(e.target.value))
-                      }
-                      className="bg-white/40 backdrop-blur-[70px] border-[1px]"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs text-error" />
-                </FormItem>
-              )}
-            />
+          {/* Longitude Field */}
+          <FormField
+            control={form.control}
+            name="location.longitude"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm text-gray-700">Longitude</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter longitude (e.g. 4.533)"
+                    type="number"
+                    step="0.000001"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                  />
+                </FormControl>
+                <FormMessage className="text-xs text-error" />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="location.latitude"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm text-gray-700">Latitude</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g. 6.5244"
-                      type="number"
-                      step="any"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(e.target.value === '' ? undefined : Number(e.target.value))
-                      }
-                      className="bg-white/40 backdrop-blur-[70px] border-[1px]"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs text-error" />
-                </FormItem>
-              )}
-            />
-          </div>
+          {/* Latitude Field */}
+          <FormField
+            control={form.control}
+            name="location.latitude"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm text-gray-700">Latitude</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter latitude (e.g. 9.083)"
+                    type="number"
+                    step="0.000001"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                  />
+                </FormControl>
+                <FormMessage className="text-xs text-error" />
+              </FormItem>
+            )}
+          />
 
           <div className="mt-10" />
 
