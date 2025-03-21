@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -15,12 +14,10 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { User, Loader2 } from 'lucide-react'
+import { User, Loader2, MapPin } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useMutation } from '@tanstack/react-query'
-import { ValidationErrors } from '@/utilities/types'
-import { ValidationFieldError } from 'payload'
 import saveDoc from '@/services/saveDoc'
 import {
   Select,
@@ -30,6 +27,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { randomString } from '@/utilities'
+import { useEffect } from 'react'
 
 // Course area options
 const COURSE_AREAS = ['Mathematics', 'Science', 'Engineering', 'History', 'Arts']
@@ -50,6 +48,35 @@ const waitlistFormSchema = z.object({
 
 type WaitlistFormValues = z.infer<typeof waitlistFormSchema>
 
+// Geocoding function to convert address to coordinates
+async function geocodeAddress(address: string): Promise<{ latitude: number; longitude: number }> {
+  try {
+    // Using Nominatim OpenStreetMap API (free, no API key required)
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`,
+    )
+
+    if (!response.ok) {
+      throw new Error('Geocoding request failed')
+    }
+
+    const data = await response.json()
+
+    if (data && data.length > 0) {
+      return {
+        latitude: parseFloat(data[0].lat),
+        longitude: parseFloat(data[0].lon),
+      }
+    } else {
+      console.warn('No geocoding results found for address:', address)
+      return { latitude: 0, longitude: 0 }
+    }
+  } catch (error) {
+    console.error('Geocoding error:', error)
+    return { latitude: 0, longitude: 0 }
+  }
+}
+
 export default function WaitlistForm() {
   const router = useRouter()
 
@@ -69,6 +96,34 @@ export default function WaitlistForm() {
       },
     },
   })
+
+  // Watch the address field to update coordinates when it changes
+  const address = form.watch('address')
+
+  // Update coordinates when address changes
+  useEffect(() => {
+    // Don't make API call with empty or very short addresses
+    if (address && address.length > 5) {
+      const debounceTimeout = setTimeout(async () => {
+        try {
+          const coordinates = await geocodeAddress(address)
+
+          // Update the form with the new coordinates
+          form.setValue('location.latitude', coordinates.latitude)
+          form.setValue('location.longitude', coordinates.longitude)
+
+          // If coordinates were found, show a success message
+          if (coordinates.latitude !== 0 && coordinates.longitude !== 0) {
+            toast.success('Location coordinates updated', { id: 'geocode-success', duration: 2000 })
+          }
+        } catch (error) {
+          console.error('Error updating coordinates:', error)
+        }
+      }, 1000) // Debounce for 1 second to avoid too many API calls while typing
+
+      return () => clearTimeout(debounceTimeout)
+    }
+  }, [address, form])
 
   // Use mutation for API call
   const saveCompanyMutation = useMutation({
@@ -149,7 +204,7 @@ export default function WaitlistForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm text-gray-700">Company Name</FormLabel>
+                {/* <FormLabel className="text-sm text-gray-700">Company Name</FormLabel> */}
                 <FormControl>
                   <Input
                     placeholder="Enter company name"
@@ -167,7 +222,7 @@ export default function WaitlistForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm text-gray-700">Email</FormLabel>
+                {/* <FormLabel className="text-sm text-gray-700">Email</FormLabel> */}
                 <FormControl>
                   <Input
                     placeholder="company@example.com"
@@ -186,7 +241,7 @@ export default function WaitlistForm() {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm text-gray-700">Phone Number</FormLabel>
+                {/* <FormLabel className="text-sm text-gray-700">Phone Number</FormLabel> */}
                 <FormControl>
                   <Input
                     placeholder="Enter phone number"
@@ -205,7 +260,7 @@ export default function WaitlistForm() {
             name="rcNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm text-gray-700">RC Number</FormLabel>
+                {/* <FormLabel className="text-sm text-gray-700">RC Number</FormLabel> */}
                 <FormControl>
                   <Input
                     placeholder="Enter RC number"
@@ -223,7 +278,7 @@ export default function WaitlistForm() {
             name="courseAreas"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm text-gray-700">Course Area</FormLabel>
+                {/* <FormLabel className="text-sm text-gray-700">Course Area</FormLabel> */}
                 <Select
                   onValueChange={(value) => field.onChange([value])}
                   defaultValue={field.value?.[0]}
@@ -251,62 +306,70 @@ export default function WaitlistForm() {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm text-gray-700">Company Address</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter full address"
-                    {...field}
-                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
-                  />
+                  <div className="relative">
+                    <Input
+                      placeholder="Enter full address"
+                      {...field}
+                      className="bg-white/40 backdrop-blur-[70px] border-[1px] pr-10"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <MapPin className="h-4 w-4 text-gray-500" />
+                    </div>
+                  </div>
                 </FormControl>
+                {/* <p className="text-xs text-gray-500 mt-1">
+                  Location coordinates will be automatically generated
+                </p> */}
                 <FormMessage className="text-xs text-error" />
               </FormItem>
             )}
           />
 
-          {/* Longitude Field */}
-          <FormField
-            control={form.control}
-            name="location.longitude"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm text-gray-700">Longitude</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter longitude (e.g. 4.533)"
-                    type="number"
-                    step="0.000001"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
-                  />
-                </FormControl>
-                <FormMessage className="text-xs text-error" />
-              </FormItem>
-            )}
-          />
+          {/* Longitude and Latitude Fields (readonly) */}
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="location.longitude"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm text-gray-700">Longitude</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Auto-generated"
+                      type="number"
+                      step="any"
+                      {...field}
+                      readOnly
+                      className="bg-gray-100 backdrop-blur-[70px] border-[1px] cursor-not-allowed"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs text-error" />
+                </FormItem>
+              )}
+            />
 
-          {/* Latitude Field */}
-          <FormField
-            control={form.control}
-            name="location.latitude"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm text-gray-700">Latitude</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter latitude (e.g. 9.083)"
-                    type="number"
-                    step="0.000001"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
-                  />
-                </FormControl>
-                <FormMessage className="text-xs text-error" />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="location.latitude"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm text-gray-700">Latitude</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Auto-generated"
+                      type="number"
+                      step="any"
+                      {...field}
+                      readOnly
+                      className="bg-gray-100 backdrop-blur-[70px] border-[1px] cursor-not-allowed"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs text-error" />
+                </FormItem>
+              )}
+            />
+          </div> */}
 
           <div className="mt-10" />
 
