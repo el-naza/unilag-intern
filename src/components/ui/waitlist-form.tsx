@@ -148,7 +148,7 @@ export default function WaitlistForm() {
     onSuccess: () => {
       toast.success('Successfully joined the waitlist!')
       form.reset()
-      router.push('/waitlist-signup-success')
+      router.push('/waitinglist-signup-success')
     },
     onError: (error) => {
       console.error('Error submitting form:', error)
