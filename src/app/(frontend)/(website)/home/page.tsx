@@ -96,7 +96,7 @@ export default function HomePage() {
 
       <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32">
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
-          Intern Category
+          Intern Categories
           <Image
             src="/images/underline.png"
             alt="Gift Card"
