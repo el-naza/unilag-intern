@@ -188,7 +188,9 @@ export default function WaitlistForm() {
               </AvatarFallback>
             </Avatar>
           </div>
-          <span className="text-xs text-gray-600">Only 100 Spots Available</span>
+          <span className="text-xs text-gray-600 box-shadow: 0px 1px 3px 0px rgba(99, 99, 99, 0.10), 0px 1px 2px 0px rgba(99, 99, 99, 0.06)">
+            Only 100 Spots Available
+          </span>
         </div>
 
         <p className="text-gray-600 text-sm mb-6">
@@ -198,7 +200,7 @@ export default function WaitlistForm() {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 font-inter">
           <FormField
             control={form.control}
             name="name"
@@ -207,9 +209,9 @@ export default function WaitlistForm() {
                 {/* <FormLabel className="text-sm text-gray-700">Company Name</FormLabel> */}
                 <FormControl>
                   <Input
-                    placeholder="Enter company name"
+                    placeholder="Company name"
                     {...field}
-                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px] placeholder:text-[#8E8E93]"
                   />
                 </FormControl>
                 <FormMessage className="text-xs text-error" />
@@ -225,10 +227,10 @@ export default function WaitlistForm() {
                 {/* <FormLabel className="text-sm text-gray-700">Email</FormLabel> */}
                 <FormControl>
                   <Input
-                    placeholder="company@example.com"
+                    placeholder="Company Email"
                     type="email"
                     {...field}
-                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px] placeholder:text-[#8E8E93]"
                   />
                 </FormControl>
                 <FormMessage className="text-xs text-error" />
@@ -244,10 +246,10 @@ export default function WaitlistForm() {
                 {/* <FormLabel className="text-sm text-gray-700">Phone Number</FormLabel> */}
                 <FormControl>
                   <Input
-                    placeholder="Enter phone number"
+                    placeholder="Company phone number"
                     type="tel"
                     {...field}
-                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px] placeholder:text-[#8E8E93]"
                   />
                 </FormControl>
                 <FormMessage className="text-xs text-error" />
@@ -263,9 +265,9 @@ export default function WaitlistForm() {
                 {/* <FormLabel className="text-sm text-gray-700">RC Number</FormLabel> */}
                 <FormControl>
                   <Input
-                    placeholder="Enter RC number"
+                    placeholder="Company RC number"
                     {...field}
-                    className="bg-white/40 backdrop-blur-[70px] border-[1px]"
+                    className="bg-white/40 backdrop-blur-[70px] border-[1px] placeholder:text-[#8E8E93]"
                   />
                 </FormControl>
                 <FormMessage className="text-xs text-error" />
@@ -287,7 +289,7 @@ export default function WaitlistForm() {
                     <SelectTrigger
                       className={`bg-white/40 backdrop-blur-[70px] border-[1px] ${field.value?.[0] ? '' : 'first:text-[#8E8E93]'}`}
                     >
-                      <SelectValue placeholder="Select a course area" />
+                      <SelectValue placeholder="Company Industry" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -313,7 +315,7 @@ export default function WaitlistForm() {
                     <Input
                       placeholder="Enter full address"
                       {...field}
-                      className="bg-white/40 backdrop-blur-[70px] border-[1px] pr-10"
+                      className="bg-white/40 backdrop-blur-[90px] border-[1px] pr-10 placeholder:text-[#8E8E93]"
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       <MapPin className="h-4 w-4 text-gray-500" />
@@ -338,7 +340,7 @@ export default function WaitlistForm() {
                   <FormLabel className="text-sm text-gray-700">Longitude</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Auto-generated"
+                      placeholder="Longitude"
                       type="number"
                       step="any"
                       {...field}
@@ -359,7 +361,7 @@ export default function WaitlistForm() {
                   <FormLabel className="text-sm text-gray-700">Latitude</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Auto-generated"
+                      placeholder="Latitude"
                       type="number"
                       step="any"
                       {...field}
