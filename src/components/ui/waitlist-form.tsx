@@ -289,7 +289,7 @@ export default function WaitlistForm() {
                     <SelectTrigger
                       className={`bg-white/40 backdrop-blur-[70px] border-[1px] ${field.value?.[0] ? '' : 'first:text-[#8E8E93]'}`}
                     >
-                      <SelectValue placeholder="Company Industry" />
+                      <SelectValue placeholder="Course Area" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
