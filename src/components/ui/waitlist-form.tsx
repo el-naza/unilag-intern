@@ -284,7 +284,9 @@ export default function WaitlistForm() {
                   defaultValue={field.value?.[0]}
                 >
                   <FormControl>
-                    <SelectTrigger className="bg-white/40 backdrop-blur-[70px] border-[1px]">
+                    <SelectTrigger
+                      className={`bg-white/40 backdrop-blur-[70px] border-[1px] ${field.value?.[0] ? '' : 'first:text-[#8E8E93]'}`}
+                    >
                       <SelectValue placeholder="Select a course area" />
                     </SelectTrigger>
                   </FormControl>
