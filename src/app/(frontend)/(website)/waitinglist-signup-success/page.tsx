@@ -35,7 +35,7 @@ export default function SignUpSuccess() {
         {/* Waitlist form card */}
         <div className="bg-gradient-to-b from-gray-100 from-50% lg:from-70% flex justify-center pb-10 md:pb-32 rounded-t-3xl w-full ">
           <div className="bg-gradient-to-b from-gray-100 from-50% lg:from-70% rounded-xl w-full max-w-3xl">
-            <div className="container max-w-2xl min-h-[80vh] flex items-center justify-center mb-10">
+            <div className="container max-w-2xl min-h-[80vh] flex items-center justify-center">
               <div className="text-center space-y-6">
                 {/* Success Icon */}
                 <Image
@@ -73,6 +73,9 @@ export default function SignUpSuccess() {
                   .
                 </p>
               </div>
+            </div>
+            <div className="flex justify-center text-blue-500 hover:text-blue-600 text-xs cursor-pointer">
+              <Link href="/waitinglist">Back to Waitlist page</Link>
             </div>
           </div>
         </div>
