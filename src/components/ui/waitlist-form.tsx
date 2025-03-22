@@ -30,14 +30,32 @@ import { randomString } from '@/utilities'
 import { useEffect } from 'react'
 
 // Course area options
-const COURSE_AREAS = ['Mathematics', 'Science', 'Engineering', 'History', 'Arts']
+const COURSE_AREAS = [
+  'Agriculture',
+  'Banking/Finance',
+  'Construction/Real Estate',
+  'Consumer services',
+  'Consumer goods',
+  'Conglomerates',
+  'Entertainment',
+  'Health Care',
+  'Hospitality',
+  'ICT',
+  'Natural Resources',
+  'Media',
+  'Oil & gas',
+  'Retail',
+  'Technology',
+  'Telecommunications',
+  'Utilities',
+]
 
 // Form validation schema
 const waitlistFormSchema = z.object({
   name: z.string().min(2, { message: 'Company name is required' }),
   email: z.string().email({ message: 'Invalid email address' }),
   rcNumber: z.string().min(1, { message: 'RC Number is required' }),
-  courseAreas: z.array(z.string()).min(1, { message: 'At least one course area is required' }),
+  courseAreas: z.array(z.string()).min(1, { message: 'At least one Industry is required' }),
   address: z.string().min(1, { message: 'Address is required' }),
   phone: z.string().min(1, { message: 'Phone number is required' }),
   location: z.object({
@@ -289,12 +307,12 @@ export default function WaitlistForm() {
                     <SelectTrigger
                       className={`bg-white/40 backdrop-blur-[70px] border-[1px] ${field.value?.[0] ? '' : 'first:text-[#8E8E93]'}`}
                     >
-                      <SelectValue placeholder="Course Area" />
+                      <SelectValue placeholder="Company Industry" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {COURSE_AREAS.map((area) => (
-                      <SelectItem key={area} value={area}>
+                      <SelectItem key={area} value={area} className="hover:text-blue-500">
                         {area}
                       </SelectItem>
                     ))}
