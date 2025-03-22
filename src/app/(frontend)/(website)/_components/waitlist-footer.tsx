@@ -12,7 +12,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
           {/* Logo */}
           <div className="flex justify-center xl:justify-start">
-            <Image src={'/images/unilag-logo.png'} alt="Logo" width={200} height={100} />
+            <Image
+              src={'/images/unilag-logo.png'}
+              alt="Logo"
+              width={100}
+              height={100}
+              className="w-[100px] xl:w-[200px]"
+            />
           </div>
 
           {/* Address */}
