@@ -1,12 +1,32 @@
 import type { CollectionConfig } from 'payload'
 import { companies } from '@/access/companies'
 import { any } from 'zod'
+import courseAreas from '@/utilities/courseAreas'
 
 // Define the access control functions
 const self = ({ req }) => {
   return {
     id: { equals: req.user?.id }, // Ensures only the user who created the internship can update/delete
   }
+}
+
+export const companyOrStudent = async ({ req: { user, payload } }) => {
+  if (!user) return false
+
+  const isCompany = user.collection === 'companies'
+  const isStudent = user.collection === 'students'
+
+  if (isCompany) {
+    return {
+      company: { equals: user.id },
+    }
+  }
+
+  if (isStudent) {
+    return true
+  }
+
+  return false
 }
 
 const anyone = () => true // Allows public read access
@@ -16,7 +36,7 @@ export const Internships: CollectionConfig = {
   access: {
     create: companies,
     delete: self,
-    read: anyone,
+    read: companyOrStudent,
     update: self,
   },
   fields: [
@@ -37,10 +57,11 @@ export const Internships: CollectionConfig = {
       required: true,
     },
     {
-      name: 'location',
+      name: 'courseArea',
       type: 'select',
-      options: ['Lagos'],
-      defaultValue: 'Lagos',
+      options: courseAreas,
+      hasMany: true,
+      required: true,
     },
     {
       name: 'applicants',
@@ -51,7 +72,7 @@ export const Internships: CollectionConfig = {
     {
       name: 'deadline',
       type: 'date',
-    //   required: true,
+      //   required: true,
     },
     { name: 'startDate', type: 'date', required: true },
     {

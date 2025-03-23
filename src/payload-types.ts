@@ -359,7 +359,7 @@ export interface Internship {
   company: string | Company;
   postDescription: string;
   jobDescription: string;
-  location?: 'Lagos' | null;
+  courseArea: ('Mathematics' | 'Science' | 'History' | 'Engineering' | 'Arts')[];
   applicants?: (string | Student)[] | null;
   deadline?: string | null;
   startDate: string;
@@ -390,6 +390,12 @@ export interface Report {
   student: string | Student;
   title: string;
   details: string;
+  supervisor: string;
+  memo?: string | null;
+  remark?: string | null;
+  status?: ('pending' | 'approved' | 'reassigned') | null;
+  media?: (string | null) | Media;
+  week: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -674,6 +680,12 @@ export interface ReportsSelect<T extends boolean = true> {
   student?: T;
   title?: T;
   details?: T;
+  supervisor?: T;
+  memo?: T;
+  remark?: T;
+  status?: T;
+  media?: T;
+  week?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -685,7 +697,7 @@ export interface InternshipsSelect<T extends boolean = true> {
   company?: T;
   postDescription?: T;
   jobDescription?: T;
-  location?: T;
+  courseArea?: T;
   applicants?: T;
   deadline?: T;
   startDate?: T;

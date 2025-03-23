@@ -4,14 +4,15 @@ import { students } from '@/access/sutdents'
 import { relatedStudent } from '@/access/internship-applications/relatedStudent'
 import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedStudentOrCompany'
 import { anyone } from '@/access/anyone'
+import { companyOrStudent } from './Companies/Internships'
 
 export const InternshipApplications: CollectionConfig = {
   slug: 'internship-applications',
   access: {
     create: students,
     delete: relatedStudentOrCompany,
-    update: relatedStudentOrCompany,
-    read: anyone
+    update: companyOrStudent,
+    read: companyOrStudent
   },
   fields: [
     {

@@ -259,30 +259,14 @@ export default function InternshipPost() {
           >
             <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-6 w-full">
               <div className="h-[] lg:w-[376px] w-full  relative overflow-hidden ">
-                {/* <form.Field
-                  name="picture"
-                  children={(field) => {
-                    return (
-                      <>
-                        <FileUploader
-                          id="file-upload"
-                          name="fileUpload"
-                          accept=".jpg,.png,.svg,.zip"
-                          multiple={true}
-                          maxFileSize={2} // 2MB
-                          onFileChange={handleFileChange}
-                        />
-                      </>
-                    )
-                  }}
-                /> */}
+               
                 <form.Field name="image">
                   {(field) => {
                     return (
                       <>
-                        {!!field.state.value && (
+                        {!!selectedFile && (
                           <Image
-                            src={URL.createObjectURL(field.state.value)}
+                            src={URL.createObjectURL(selectedFile)}
                             className="mx-auto rounded-full w-[64px] aspect-square"
                             width={64}
                             height={64}
@@ -305,7 +289,7 @@ export default function InternshipPost() {
 
                         <div {...getRootProps()}>
                           <div
-                            className={`border-dashed ${isDragActive ? 'border-green-400 bg-gray-100' : ''} border-secondary/50 border-[2px] rounded-lg flex flex-col items-center py-6 mt-3`}
+                            className={`border-dashed bg-white ${isDragActive ? 'border-green-400 bg-gray-100' : ''} border-secondary/50 border-[2px] rounded-lg flex flex-col items-center py-6 mt-3`}
                           >
                             <Image
                               src="/static-icons/upload-icon.svg"
@@ -373,11 +357,11 @@ export default function InternshipPost() {
                 />
 
                 <form.Field
-                  name="location"
+                  name="courseArea"
                   children={(field) => {
                     return (
                       <>
-                        <Label>Location</Label>
+                        <Label clasName="text-[#48484A]">Course Area</Label>
                         <Select
                           value={field.state.value || ''}
                           onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
@@ -388,7 +372,7 @@ export default function InternshipPost() {
                           >
                             <SelectValue
                               placeholder="Select Course Area"
-                              className="text-[#969a9b] bg-white"
+                              className="text-[#8E8E93] bg-white text-[12px]"
                             />
                           </SelectTrigger>
                           <SelectContent className="bg-white">
@@ -492,12 +476,7 @@ export default function InternshipPost() {
                     </>
                   )}
                 </form.Subscribe>
-                {/* <MainButton
-                  title="Send Post"
-                  borderRadius="rounded"
-                  fontWeight="font-[400]"
-                  fontSize="text-[14px]"
-                /> */}
+               
               </div>
             </div>
           </form>

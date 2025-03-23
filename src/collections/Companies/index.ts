@@ -38,23 +38,6 @@ export const Companies: CollectionConfig = {
       generateEmailHTML,
     },
   },
-  // hooks: {
-  //   afterRead: [
-  //     async ({ doc, req }) => {
-  //       const internships = await req.payload.find({
-  //         collection: 'internships',
-  //         where: {
-  //           company: {
-  //             equals: doc.id,
-  //           },
-  //         },
-  //       })
-
-  //       doc.internships = internships.docs
-  //       return doc
-  //     },
-  //   ],
-  // },
   endpoints: [
     {
       method: 'post',
@@ -255,6 +238,28 @@ export const Companies: CollectionConfig = {
         })
 
         return Response.json({ data: companyFindRes }, { status: 200 })
+      },
+    },
+    {
+      method: 'get',
+      path: '/suggestions',
+      handler: async (req) => {
+        const { companyId } = req.query
+
+        if (!companyId) {
+          return Response.json({ message: 'Please enter a valid job name' }, { status: 400 })
+        }
+
+        const companyFindRes = await req.payload.find({
+          collection: 'companies',
+          where: {
+            id: { not_equals: companyId },
+          },
+          showHiddenFields: true,
+          limit: 4,
+        })
+
+        return Response.json(companyFindRes, { status: 200 })
       },
     },
   ],

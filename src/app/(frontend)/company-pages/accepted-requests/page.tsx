@@ -30,7 +30,7 @@ export default function InternshipRequest() {
   const router = useRouter()
   const [loading, setLoading] = useState<boolean>(true)
   const [loadUpdateReq, setLoadUpdateReq] = useState<boolean>(false)
-  const [loadingId, setLoadingId] = useState<string | null>(null)
+
   const [internReq, setInternReq] = useState<any>([])
   const [tableData, setTableData] = useState<any>([])
   const [invitationDetails, setInvitationDetails] = useState<InvitationDetails | null>(null)
@@ -38,8 +38,8 @@ export default function InternshipRequest() {
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('internship-applications')
     console.log(res)
-    const getApplication = res?.docs.filter((s) => s.status === 'pending')
-    console.log('applications', getApplication)
+    const getApplication = res?.docs.filter((s) => s.status === 'approved')
+    console.log('applications',getApplication)
     setInternReq(getApplication || [])
     setTableData(res)
     setLoading(false)
@@ -63,52 +63,27 @@ export default function InternshipRequest() {
   }
 
   const respondToInterviewMtn = useMutation({
-    mutationFn: async ({
-      id,
-      status,
-      studentId,
-    }: {
-      id: string
-      status: string
-      studentId?: string
-    }) => {
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
       try {
+        // setLoadUpdateReq(true)
         console.log('Updating interview invitation:', { id, status })
 
         const res = await updateDoc('internship-applications', id, { status })
 
-        if (!res) {
-          toast.error('Network error; please try again later')
-          return
-        }
-
-        if (status === 'approved' && studentId) {
-          toast.success('Internship application approved')
-          router.push(`/company-pages/student-details/${studentId}`)
-        } else if (status === 'company declined') {
-          toast.success('Internship application declined')
-        }
-
         console.log('Response:', res)
+        if (!res) return toast.error('Network error; please try again later')
+
         return res
-      } catch (error) {
-        console.error('Error updating application:', error)
+      } catch {
         toast.error('An error occurred while updating; please try again later')
+      }finally{
+        // setLoadUpdateReq(false)
       }
     },
   })
 
-  // const handleRespond = async (id: string, status: string, studentId?: string) => {
-  //   await respondToInterviewMtn.mutateAsync({ id, status, studentId })
-  // }
-
-  const handleRespond = async (id: string, status: string, studentId?: string) => {
-    setLoadingId(id)
-    try {
-      await respondToInterviewMtn.mutateAsync({ id, status, studentId })
-    } finally {
-      setLoadingId(null)
-    }
+  const handleRespond = async (id: string, status: string) => {
+    await respondToInterviewMtn.mutateAsync({ id, status })
   }
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -142,36 +117,22 @@ export default function InternshipRequest() {
       <div key={`${item.id}-actions`}>
         {/* <button
           className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
-          onClick={() => handleRespond(item.id, 'approved', item.student.id)}
-          disabled={respondToInterviewMtn.isPending}
+          onClick={() => router.push(`/company-pages/student-details/${item.student.id}`)}
+          // onClick={() => handleRespond(item.id, 'accepted')}
+          // disabled={respondToInterviewMtn.isPending}
         >
-          {respondToInterviewMtn.isPending ? 'Processing...' : 'Accept'}
-        </button>
-
-        <button
-          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
-          onClick={() => handleRespond(item.id, 'company declined')}
-          disabled={respondToInterviewMtn.isPending}
-        >
-          {respondToInterviewMtn.isPending ? 'Processing...' : '✘ Decline'}
+          Accept
         </button> */}
         <button
-          className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
-          onClick={() => handleRespond(item.id, 'approved', item.student.id)}
-          disabled={loadingId === item.id} // Disable only the clicked button
-        >
-          {loadingId === item.id ? 'Processing...' : 'Accept'}
-        </button>
-
-        <button
           className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
           onClick={() => handleRespond(item.id, 'company declined')}
-          disabled={loadingId === item.id} // Disable only the clicked button
+          disabled={respondToInterviewMtn.isPending}
         >
-          {loadingId === item.id ? 'Processing...' : '✘ Decline'}
+          {respondToInterviewMtn.isPending ?'processing...' : '✘ Decline'} 
         </button>
       </div>,
     ])
+
 
   const totalItems = 1234
 
@@ -280,30 +241,20 @@ export default function InternshipRequest() {
                   </div>
                   <div className="flex items-center gap-2 mt-10">
                     <button
-                      // onClick={() =>
-                      //   router.push(
-                      //     `/company-pages/student-details/${invitationDetails.student.id}`,
-                      //   )
-                      // }
-                      disabled={loadingId === invitationDetails.id}
-                      // disabled={respondToInterviewMtn.isPending}
                       onClick={() =>
-                        handleRespond(
-                          invitationDetails.id,
-                          'approved',
-                          invitationDetails.student.id,
+                        router.push(
+                          `/company-pages/student-details/${invitationDetails.student.id}`,
                         )
                       }
                       className="rounded-[6px] bg-[#0B7077] py-[10px] px-[14px] text-[12px] text-white"
                     >
-                      {loadingId === invitationDetails.id ? 'Processing...' : 'Accept'}
+                      Accept
                     </button>
                     <button
                       className="rousnded-[6px] border border-[#0B7077] text-[#0B7077] py-[10px] px-[14px] text-[12px]"
-                      onClick={() => handleRespond(invitationDetails.id, 'company declined')}
-                      disabled={loadingId === invitationDetails.id}
+                      onClick={() => handleRespond(invitationDetails.id, 'declined')}
                     >
-                      {loadingId === invitationDetails.id ? 'Processing...' : 'Reject'}
+                      Reject
                     </button>
                     <button
                       onClick={handleCloseModal}

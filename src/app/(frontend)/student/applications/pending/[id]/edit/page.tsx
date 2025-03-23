@@ -153,7 +153,7 @@ const Page = () => {
                   <div className="mb-3">
                     <h5 className="text-black">Write Your Applications</h5>
                     <p className="text-[#8E8E93] mb-3">
-                      Lets us know why you would be a good fit for this our company
+                      Lets us know why you would be a good fit for our company
                     </p>
                     <form.Field
                       name="letter"
