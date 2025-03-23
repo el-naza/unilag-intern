@@ -1,4 +1,4 @@
-import type { CollectionConfig, Where } from 'payload'
+import type { CollectionConfig, Where, CollectionAfterChangeHook } from 'payload'
 
 import { authenticatedUsers } from '@/access/authenticated-users'
 import { self } from '@/access/self'
@@ -12,7 +12,9 @@ import * as otpGenerator from 'otp-generator'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
-import industry from '@/utilities/industries'
+import industries from '@/utilities/industries'
+import { Company } from '@/payload-types'
+import { error } from 'console'
 
 const PreLogin = z.object({
   email: z.string().email(),
@@ -263,6 +265,42 @@ export const Companies: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterChange: [
+      async ({ operation, doc, req }) => {
+        const company = doc as Company
+
+        if (operation === 'create') {
+          console.log(
+            `Sending company welcome email to "${company.name}" which registered through waiting list`,
+          )
+          req.payload
+            .sendEmail({
+              to: doc.email,
+              subject: 'Welcome',
+              text: `Dear ${company.name}
+
+We are glad to have you as part of our corporate community and we cannot wait to introduce you to the best and the brightest minds from our network of students. 
+
+You would be notified as soon as your company begins to receive applications from suitable applicants.
+
+Kindly contact us at help@intrns.com for any inquiries.
+
+Thank you.
+
+Best regards,
+INTRNS Team`,
+            })
+            .catch((error) => {
+              console.error(
+                `An error occured while attempting to send welcome email to ${company.name}`,
+                error,
+              )
+            })
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'name',
@@ -277,8 +315,8 @@ export const Companies: CollectionConfig = {
     {
       name: 'industry',
       type: 'select',
-      options: industry,
-      hasMany: true,
+      options: industries,
+      // hasMany: true,
       required: true,
     },
     {
@@ -342,6 +380,10 @@ export const Companies: CollectionConfig = {
     {
       name: 'createdAt',
       type: 'text',
+    },
+    {
+      name: 'isWaiting',
+      type: 'checkbox',
     },
   ],
 }

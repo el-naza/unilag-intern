@@ -68,7 +68,7 @@ export default function SignUpSuccess() {
                 <p className="text-left text-gray-600 text-[15px]">
                   Need help? Contact us at{' '}
                   <Link href="#" className="text-blue-500 hover:text-blue-600 hover:underline">
-                    Koonage@help.com
+                    help@intrns.com
                   </Link>
                   .
                 </p>

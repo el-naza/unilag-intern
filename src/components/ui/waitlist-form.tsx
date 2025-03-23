@@ -28,7 +28,7 @@ const waitlistFormSchema = z.object({
   name: z.string().min(2, { message: 'Company name is required' }),
   email: z.string().email({ message: 'Invalid email address' }),
   rcNumber: z.string().min(1, { message: 'RC Number is required' }),
-  industry: z.array(z.string()).min(1, { message: 'Industry is required' }),
+  industry: z.string({ message: 'Industry is required' }),
   address: z.string().min(1, { message: 'Address is required' }),
   phone: z.string().min(1, { message: 'Phone number is required' }),
   location: z.object({
@@ -104,7 +104,7 @@ export default function WaitlistForm() {
       name: '',
       email: '',
       rcNumber: '',
-      industry: [],
+      industry: '',
       address: '',
       phone: '',
       location: {
@@ -123,7 +123,7 @@ export default function WaitlistForm() {
 
   // Initialize industryQuery from form values if available
   useEffect(() => {
-    const currentIndustry = form.getValues('industry')[0]
+    const currentIndustry = form.getValues('industry')
     if (currentIndustry) {
       setIndustryQuery(currentIndustry)
     }
@@ -137,7 +137,7 @@ export default function WaitlistForm() {
     if (query.trim() === '') {
       setFilteredIndustries(industries)
       // Clear the form value when input is empty
-      form.setValue('industry', [], { shouldValidate: true })
+      form.setValue('industry', '', { shouldValidate: true })
     } else {
       const filtered = industries.filter((industry) =>
         industry.toLowerCase().includes(query.toLowerCase()),
@@ -149,7 +149,7 @@ export default function WaitlistForm() {
         (industry) => industry.toLowerCase() === query.toLowerCase(),
       )
       if (exactMatch) {
-        form.setValue('industry', [exactMatch], { shouldValidate: true })
+        form.setValue('industry', exactMatch, { shouldValidate: true })
       }
     }
 
@@ -160,7 +160,7 @@ export default function WaitlistForm() {
   // Handle industry selection
   const handleIndustrySelect = (industry: string) => {
     setIndustryQuery(industry)
-    form.setValue('industry', [industry], { shouldValidate: true })
+    form.setValue('industry', industry, { shouldValidate: true })
     setShowIndustryOptions(false)
   }
 
@@ -277,7 +277,7 @@ export default function WaitlistForm() {
       toast.success('Successfully joined the waitlist!')
       form.reset()
       setIndustryQuery('')
-      router.push('/waitinglist-signup-success')
+      router.push('/waitinglist/success')
     },
     onError: (error) => {
       console.error('Error submitting form:', error)
