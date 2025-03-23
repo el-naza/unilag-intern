@@ -23,7 +23,7 @@ const Navbar = () => {
 
       <div className="flex gap-4 items-center mr-5 md:mr-0">
         <Link href="/waitinglist">
-          <Button className="bg-primary text-white">Waiting List</Button>
+          <Button className="bg-primary text-white">Join now</Button>
         </Link>
       </div>
     </nav>

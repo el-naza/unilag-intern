@@ -9,20 +9,20 @@ const Footer = () => {
   return (
     <footer className="bg-[#D2E6E4] text-primary w-full curved-top px-4 sm:px-6 xl:px-8 lg:px-24 py-12 xl:pt-24 xl:pb-16">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-5 gap-2 xl:mx-5">
           {/* Logo */}
-          <div className="flex justify-center xl:justify-start">
+          <div className="flex justify-center xl:justify-start xl:ml-5">
             <Image
               src={'/images/unilag-logo.png'}
               alt="Logo"
               width={100}
               height={100}
-              className="w-[100px] xl:w-[200px]"
+              className="w-[60px] xl:w-[60px] xl:h-[60px]"
             />
           </div>
 
           {/* Address */}
-          <div className="text-center xl:text-left">
+          <div className="text-center xl:text-left xl:-ml-32">
             <ul className="space-y-2 text-sm lg:text-[14px]">
               <li>
                 <strong>Address:</strong> University of Lagos, University Road, Lagos Mainland,
@@ -40,8 +40,8 @@ const Footer = () => {
           </div>
 
           {/* Intern Categories */}
-          <div className="text-center xl:text-left">
-            <p className="text-black font-semibold mb-3">Intern Categories</p>
+          <div className="text-center xl:text-left mt-5 xl:mt-0 xl:ml-2">
+            <p className="text-black font-semibold mb-2">Intern Categories</p>
             <ul className="space-y-2 text-sm lg:text-[14px]">
               <li>SIWES</li>
               <li>Teaching Practice</li>
@@ -51,24 +51,24 @@ const Footer = () => {
           </div>
 
           {/* Links */}
-          <div className="text-center xl:text-left">
-            <p className="text-black font-semibold mb-3">Connect with us</p>
+          <div className="text-center xl:text-left mt-5 xl:mt-0 xl:-ml-10">
+            <p className="text-black font-semibold mb-2">Connect with us</p>
             <ul className="space-y-2 text-sm lg:text-[14px]">
               <li className="hover:underline">
-                <Link href="/">@koonageInfotech</Link>
+                <Link href="#">@koonageinfotec</Link>
               </li>
               <li className="hover:underline">
-                <Link href="/">koonage@X</Link>
+                <Link href="#">koonage@X</Link>
               </li>
               <li className="hover:underline">
-                <Link href="/">koonage@Instagram</Link>
+                <Link href="#">koonage@Instagram</Link>
               </li>
             </ul>
           </div>
 
           {/* Newsletter */}
-          <div className="flex flex-col items-center xl:items-start">
-            <p className="text-black font-semibold mb-3 text-center xl:text-left">
+          <div className="flex flex-col items-center xl:items-start xl:-ml-20">
+            <p className="text-primary font-normal mb-2 mt-5 xl:mt-0 text-center xl:text-left">
               Stay up to date with the latest information
             </p>
             <div className="flex w-full max-w-sm items-center space-x-2 mt-2 bg-white p-2 rounded-[14px]">

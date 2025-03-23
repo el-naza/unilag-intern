@@ -27,28 +27,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { randomString } from '@/utilities'
-import { useEffect } from 'react'
-
-// Course area options
-const COURSE_AREAS = [
-  'Agriculture',
-  'Banking/Finance',
-  'Construction/Real Estate',
-  'Consumer services',
-  'Consumer goods',
-  'Conglomerates',
-  'Entertainment',
-  'Health Care',
-  'Hospitality',
-  'ICT',
-  'Natural Resources',
-  'Media',
-  'Oil & gas',
-  'Retail',
-  'Technology',
-  'Telecommunications',
-  'Utilities',
-]
+import { useEffect, useState, useRef } from 'react'
+import industries from '@/utilities/industries'
 
 // Form validation schema
 const waitlistFormSchema = z.object({
@@ -66,37 +46,58 @@ const waitlistFormSchema = z.object({
 
 type WaitlistFormValues = z.infer<typeof waitlistFormSchema>
 
-// Geocoding function to convert address to coordinates
-async function geocodeAddress(address: string): Promise<{ latitude: number; longitude: number }> {
-  try {
-    // Using Nominatim OpenStreetMap API (free, no API key required)
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`,
-    )
+// Load Google Maps API script dynamically
+const loadGoogleMapsScript = () => {
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
 
-    if (!response.ok) {
-      throw new Error('Geocoding request failed')
-    }
-
-    const data = await response.json()
-
-    if (data && data.length > 0) {
-      return {
-        latitude: parseFloat(data[0].lat),
-        longitude: parseFloat(data[0].lon),
-      }
-    } else {
-      console.warn('No geocoding results found for address:', address)
-      return { latitude: 0, longitude: 0 }
-    }
-  } catch (error) {
-    console.error('Geocoding error:', error)
-    return { latitude: 0, longitude: 0 }
+  // Check if script is already loaded
+  if (document.querySelector(`script[src*="maps.googleapis.com/maps/api/js"]`)) {
+    return Promise.resolve()
   }
+
+  return new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
+    script.async = true
+    script.defer = true
+    script.onload = () => resolve()
+    script.onerror = (error) => reject(error)
+    document.head.appendChild(script)
+  })
+}
+
+// Geocoding function using Google Maps API
+async function geocodeAddress(address: string): Promise<{ latitude: number; longitude: number }> {
+  return new Promise((resolve, reject) => {
+    try {
+      // Ensure Google Maps is loaded
+      const geocoder = new google.maps.Geocoder()
+
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
+          const location = results[0].geometry.location
+          resolve({
+            latitude: location.lat(),
+            longitude: location.lng(),
+          })
+        } else {
+          console.warn(`Geocoding failed: ${status}`)
+          resolve({ latitude: 0, longitude: 0 }) // Fallback with default values
+        }
+      })
+    } catch (error) {
+      console.error('Geocoding error:', error)
+      reject(error)
+    }
+  })
 }
 
 export default function WaitlistForm() {
   const router = useRouter()
+  const mapRef = useRef<HTMLDivElement>(null)
+  const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null)
+  const [marker, setMarker] = useState<google.maps.Marker | null>(null)
+  const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false)
 
   // Initialize form
   const form = useForm<WaitlistFormValues>({
@@ -118,30 +119,75 @@ export default function WaitlistForm() {
   // Watch the address field to update coordinates when it changes
   const address = form.watch('address')
 
-  // Update coordinates when address changes
+  // Load Google Maps script on component mount
   useEffect(() => {
-    // Don't make API call with empty or very short addresses
-    if (address && address.length > 5) {
-      const debounceTimeout = setTimeout(async () => {
-        try {
-          const coordinates = await geocodeAddress(address)
+    loadGoogleMapsScript()
+      .then(() => {
+        setGoogleMapsLoaded(true)
+      })
+      .catch((error) => {
+        console.error('Failed to load Google Maps script:', error)
+        toast.error('Failed to load Google Maps. Please refresh the page.')
+      })
+  }, [])
 
-          // Update the form with the new coordinates
-          form.setValue('location.latitude', coordinates.latitude)
-          form.setValue('location.longitude', coordinates.longitude)
+  // Initialize map once Google Maps is loaded
+  useEffect(() => {
+    if (googleMapsLoaded && mapRef.current && !mapInstance) {
+      // Default to a central position (adjust as needed)
+      const defaultPosition = { lat: 6.5244, lng: 3.3792 } // Lagos, Nigeria (example)
 
-          // If coordinates were found, show a success message
-          if (coordinates.latitude !== 0 && coordinates.longitude !== 0) {
-            toast.success('Location coordinates updated', { id: 'geocode-success', duration: 2000 })
-          }
-        } catch (error) {
-          console.error('Error updating coordinates:', error)
-        }
-      }, 1000) // Debounce for 1 second to avoid too many API calls while typing
+      const map = new google.maps.Map(mapRef.current, {
+        center: defaultPosition,
+        zoom: 12,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+      })
 
-      return () => clearTimeout(debounceTimeout)
+      const newMarker = new google.maps.Marker({
+        position: defaultPosition,
+        map: map,
+        title: 'Company Location',
+      })
+
+      setMapInstance(map)
+      setMarker(newMarker)
     }
-  }, [address, form])
+  }, [googleMapsLoaded, mapInstance])
+
+  // Update coordinates and map when address changes
+  useEffect(() => {
+    if (!googleMapsLoaded || !address || address.length <= 5) return
+
+    const debounceTimeout = setTimeout(async () => {
+      try {
+        const coordinates = await geocodeAddress(address)
+
+        // Update the form with the new coordinates
+        form.setValue('location.latitude', coordinates.latitude)
+        form.setValue('location.longitude', coordinates.longitude)
+
+        // Update map and marker if coordinates were found
+        if (coordinates.latitude !== 0 && coordinates.longitude !== 0 && mapInstance && marker) {
+          const position = {
+            lat: coordinates.latitude,
+            lng: coordinates.longitude,
+          }
+
+          mapInstance.setCenter(position)
+          marker.setPosition(position)
+
+          toast.success('Location found!', { id: 'geocode-success', duration: 2000 })
+        }
+      } catch (error) {
+        console.error('Error updating coordinates:', error)
+        toast.error('Could not find this location. Please try a different address.')
+      }
+    }, 1000) // Debounce for 1 second
+
+    return () => clearTimeout(debounceTimeout)
+  }, [address, form, googleMapsLoaded, mapInstance, marker])
 
   // Use mutation for API call
   const saveCompanyMutation = useMutation({
@@ -179,6 +225,40 @@ export default function WaitlistForm() {
     console.log('Form data:', data)
     saveCompanyMutation.mutate(data)
   }
+
+  // Setup autofill for address input
+  useEffect(() => {
+    if (!googleMapsLoaded) return
+
+    const addressInput = document.getElementById('company-address') as HTMLInputElement
+    if (!addressInput) return
+
+    const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+      fields: ['formatted_address', 'geometry'],
+    })
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace()
+
+      if (place.geometry && place.geometry.location) {
+        const latitude = place.geometry.location.lat()
+        const longitude = place.geometry.location.lng()
+
+        // Update form values
+        form.setValue('address', place.formatted_address || '')
+        form.setValue('location.latitude', latitude)
+        form.setValue('location.longitude', longitude)
+
+        // Update map
+        if (mapInstance && marker) {
+          const position = { lat: latitude, lng: longitude }
+          mapInstance.setCenter(position)
+          mapInstance.setZoom(15)
+          marker.setPosition(position)
+        }
+      }
+    })
+  }, [googleMapsLoaded, form])
 
   return (
     <div className="space-y-5">
@@ -224,7 +304,6 @@ export default function WaitlistForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                {/* <FormLabel className="text-sm text-gray-700">Company Name</FormLabel> */}
                 <FormControl>
                   <Input
                     placeholder="Company name"
@@ -242,7 +321,6 @@ export default function WaitlistForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                {/* <FormLabel className="text-sm text-gray-700">Email</FormLabel> */}
                 <FormControl>
                   <Input
                     placeholder="Company Email"
@@ -261,7 +339,6 @@ export default function WaitlistForm() {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                {/* <FormLabel className="text-sm text-gray-700">Phone Number</FormLabel> */}
                 <FormControl>
                   <Input
                     placeholder="Company phone number"
@@ -280,7 +357,6 @@ export default function WaitlistForm() {
             name="rcNumber"
             render={({ field }) => (
               <FormItem>
-                {/* <FormLabel className="text-sm text-gray-700">RC Number</FormLabel> */}
                 <FormControl>
                   <Input
                     placeholder="Company RC number"
@@ -298,7 +374,6 @@ export default function WaitlistForm() {
             name="courseAreas"
             render={({ field }) => (
               <FormItem>
-                {/* <FormLabel className="text-sm text-gray-700">Course Area</FormLabel> */}
                 <Select
                   onValueChange={(value) => field.onChange([value])}
                   defaultValue={field.value?.[0]}
@@ -311,7 +386,7 @@ export default function WaitlistForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {COURSE_AREAS.map((area) => (
+                    {industries.map((area) => (
                       <SelectItem key={area} value={area} className="hover:text-blue-500">
                         {area}
                       </SelectItem>
@@ -331,6 +406,7 @@ export default function WaitlistForm() {
                 <FormControl>
                   <div className="relative">
                     <Input
+                      id="company-address"
                       placeholder="Enter full address"
                       {...field}
                       className="bg-white/40 backdrop-blur-[90px] border-[1px] pr-10 placeholder:text-[#8E8E93]"
@@ -340,12 +416,18 @@ export default function WaitlistForm() {
                     </div>
                   </div>
                 </FormControl>
-                {/* <p className="text-xs text-gray-500 mt-1">
-                  Location coordinates will be automatically generated
-                </p> */}
+                <p className="text-xs text-gray-500 mt-1">
+                  Start typing to see address suggestions
+                </p>
                 <FormMessage className="text-xs text-error" />
               </FormItem>
             )}
+          />
+
+          {/* Google Map */}
+          <div
+            ref={mapRef}
+            className="w-full h-48 rounded-md mt-2 mb-4 border border-gray-300 overflow-hidden"
           />
 
           {/* Longitude and Latitude Fields (readonly) */}
