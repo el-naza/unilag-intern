@@ -241,7 +241,7 @@ export interface Company {
   id: string;
   name: string;
   cac?: string | null;
-  industry: (
+  industry:
     | 'Agriculture'
     | 'Banking/Finance'
     | 'Construction/Real Estate'
@@ -258,8 +258,7 @@ export interface Company {
     | 'Retail'
     | 'Technology'
     | 'Telecommunications'
-    | 'Utilities'
-  )[];
+    | 'Utilities';
   location: {
     longitude: number;
     latitude: number;

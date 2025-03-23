@@ -1,4 +1,4 @@
-import type { CollectionConfig, Where } from 'payload'
+import type { CollectionConfig, Where, CollectionAfterChangeHook } from 'payload'
 
 import { authenticatedUsers } from '@/access/authenticated-users'
 import { self } from '@/access/self'
@@ -12,7 +12,9 @@ import * as otpGenerator from 'otp-generator'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
-import industry from '@/utilities/industries'
+import industries from '@/utilities/industries'
+import { Company } from '@/payload-types'
+import { error } from 'console'
 
 const PreLogin = z.object({
   email: z.string().email(),
@@ -313,8 +315,8 @@ INTRNS Team`,
     {
       name: 'industry',
       type: 'select',
-      options: industry,
-      hasMany: true,
+      options: industries,
+      // hasMany: true,
       required: true,
     },
     {
@@ -378,6 +380,10 @@ INTRNS Team`,
     {
       name: 'createdAt',
       type: 'text',
+    },
+    {
+      name: 'isWaiting',
+      type: 'checkbox',
     },
   ],
 }
