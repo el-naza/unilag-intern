@@ -272,7 +272,7 @@ export const Companies: CollectionConfig = {
 
         if (operation === 'create') {
           console.log(
-            `Sending company welcome email to ${company.name} which registered through waiting list`,
+            `Sending company welcome email to "${company.name}" which registered through waiting list`,
           )
           req.payload
             .sendEmail({
