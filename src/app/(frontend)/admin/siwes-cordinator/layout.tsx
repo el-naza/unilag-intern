@@ -25,11 +25,11 @@ export default function SiwesCordinatorLayout({ children }: { children: React.Re
       route: '/admin/siwes-cordinator/report',
        iconName: 'FileText'
     },
-    {
-      label: 'Activity',
-      route: '/admin/siwes-cordinator/activity',
-      iconName: 'MessageCircleQuestion'
-    },
+    // {
+    //   label: 'Activity',
+    //   route: '/admin/siwes-cordinator/activity',
+    //   iconName: 'MessageCircleQuestion'
+    // },
     {
       label: 'Departmental Admins',
       route: '/admin/siwes-cordinator/departmental-admins',

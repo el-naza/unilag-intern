@@ -1,22 +1,19 @@
 'use client'
 
-import { cn } from 'src/utilities/cn'
-import { Poppins } from 'next/font/google'
-import React from 'react'
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import {
+  QueryClient,
+  QueryClientProvider
+} from '@tanstack/react-query'
 import { SessionProvider } from 'next-auth/react'
+import { Poppins } from 'next/font/google'
+import React from 'react'
+import { cn } from 'src/utilities/cn'
 
-import './globals.css'
-import 'animate.css'
 import { Toaster } from '@/components/ui/sonner'
+import 'animate.css'
+import './globals.css'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
@@ -28,7 +25,7 @@ const poppins = Poppins({
 
 const queryClient = new QueryClient()
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       className={cn(poppins.variable, poppins.className, 'tracking-[0.37px]')}

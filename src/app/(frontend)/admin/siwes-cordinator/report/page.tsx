@@ -28,6 +28,7 @@ import {
 import { useDebounce } from '@/custom-hooks/useDebounce'
 import { getAllReports } from '@/services/admin/reports'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { format } from 'date-fns'
 import { Edit2, EllipsisVertical, Trash } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
@@ -92,23 +93,31 @@ export default function ReportPage() {
       },
       {
         id: 'reportNumber',
-        header: 'Report Number',
+        header: 'Report Week',
         accessorKey: 'reportNumber',
       },
       {
         id: 'studentName',
         header: 'Student Name',
         accessorKey: 'studentName',
+        cell: ({ _, row }) => {
+          const rowData = row.original
+          return `${rowData.student.firstName} ${rowData.student.lastName}`
+        },
       },
       {
-        id: 'reportMessage',
+        id: 'title',
         header: 'Report Message',
-        accessorKey: 'reportMessage',
+        accessorKey: 'title',
       },
       {
-        id: 'reportDate',
+        id: 'createdAt',
         header: 'Report Date',
-        accessorKey: 'reportDate',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const rawDate = getValue()
+          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+        },
       },
     ],
     [],
@@ -183,7 +192,7 @@ export default function ReportPage() {
         <div className="flex justify-between items-center mb-4">
           <p>All Reports</p>
 
-          <Button>Export Data</Button>
+          {/* <Button>Export Data</Button> */}
         </div>
 
         <Table>
