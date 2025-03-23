@@ -1,12 +1,7 @@
-'use client'
-
-import Footer from './_components/footer'
-import Navbar from './_components/nav-bar'
-import { usePathname } from 'next/navigation'
+import Footer from '../../(website)/_components/waitlist-footer'
+import Navbar from '../../(website)/_components/waitlist-navbar'
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
-
   return (
     <>
       <Navbar />
