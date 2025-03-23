@@ -134,9 +134,11 @@ const Footer = () => {
                 >
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                 </svg>
-                <Link href="#">@koonageinfotec</Link>
+                <Link href="#" className="hover:underline">
+                  @koonageinfotec
+                </Link>
               </li>
-              <li className="hover:underline flex items-center justify-center xl:justify-start">
+              <li className="flex items-center justify-center xl:justify-start">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -152,9 +154,11 @@ const Footer = () => {
                   <line x1="4" y1="4" x2="20" y2="20"></line>
                   <line x1="4" y1="20" x2="20" y2="4"></line>
                 </svg>
-                <Link href="#">@koonageinfotec</Link>
+                <Link href="#" className="hover:underline">
+                  @koonageinfotec
+                </Link>
               </li>
-              <li className="hover:underline flex items-center justify-center xl:justify-start">
+              <li className="flex items-center justify-center xl:justify-start">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -171,7 +175,9 @@ const Footer = () => {
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
-                <Link href="#">@koonageinfotec</Link>
+                <Link href="#" className="hover:underline">
+                  @koonageinfotec
+                </Link>
               </li>
             </ul>
           </div>
