@@ -131,6 +131,7 @@ export default function AwaitingInterview() {
                       <AwaitingInterviewCard
                         key={invitation.id}
                         awaitingInterview={{
+                          image: invitation.student?.image?.url || studentImage,
                           firstName: invitation.student.firstName,
                           lastName: invitation.student.lastName,
                           dateTime: invitation.dateTime,
@@ -161,6 +162,7 @@ export default function AwaitingInterview() {
                       <AwaitingInterviewCard
                         key={invitation.id}
                         awaitingInterview={{
+                          image: invitation.student?.image?.url || studentImage,
                           firstName: invitation.student.firstName,
                           lastName: invitation.student.lastName,
                           dateTime: invitation.dateTime,
