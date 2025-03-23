@@ -263,6 +263,42 @@ export const Companies: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterChange: [
+      async ({ operation, doc, req }) => {
+        const company = doc as Company
+
+        if (operation === 'create') {
+          console.log(
+            `Sending company welcome email to ${company.name} which registered through waiting list`,
+          )
+          req.payload
+            .sendEmail({
+              to: doc.email,
+              subject: 'Welcome',
+              text: `Dear ${company.name}
+
+We are glad to have you as part of our corporate community and we cannot wait to introduce you to the best and the brightest minds from our network of students. 
+
+You would be notified as soon as your company begins to receive applications from suitable applicants.
+
+Kindly contact us at help@intrns.com for any inquiries.
+
+Thank you.
+
+Best regards,
+INTRNS Team`,
+            })
+            .catch((error) => {
+              console.error(
+                `An error occured while attempting to send welcome email to ${company.name}`,
+                error,
+              )
+            })
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'name',
