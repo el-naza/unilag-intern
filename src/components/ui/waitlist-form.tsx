@@ -14,18 +14,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { User, Loader2, MapPin } from 'lucide-react'
+import { User, Loader2, MapPin, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useMutation } from '@tanstack/react-query'
 import saveDoc from '@/services/saveDoc'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { randomString } from '@/utilities'
 import { useEffect, useState, useRef } from 'react'
 import industries from '@/utilities/industries'
@@ -35,7 +28,7 @@ const waitlistFormSchema = z.object({
   name: z.string().min(2, { message: 'Company name is required' }),
   email: z.string().email({ message: 'Invalid email address' }),
   rcNumber: z.string().min(1, { message: 'RC Number is required' }),
-  courseAreas: z.array(z.string()).min(1, { message: 'At least one Industry is required' }),
+  industry: z.array(z.string()).min(1, { message: 'Industry is required' }),
   address: z.string().min(1, { message: 'Address is required' }),
   phone: z.string().min(1, { message: 'Phone number is required' }),
   location: z.object({
@@ -98,6 +91,11 @@ export default function WaitlistForm() {
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null)
   const [marker, setMarker] = useState<google.maps.Marker | null>(null)
   const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false)
+  const [industryQuery, setIndustryQuery] = useState('')
+  const [showIndustryOptions, setShowIndustryOptions] = useState(false)
+  const [filteredIndustries, setFilteredIndustries] = useState(industries)
+  const industryInputRef = useRef<HTMLInputElement>(null)
+  const industryOptionsRef = useRef<HTMLDivElement>(null)
 
   // Initialize form
   const form = useForm<WaitlistFormValues>({
@@ -106,7 +104,7 @@ export default function WaitlistForm() {
       name: '',
       email: '',
       rcNumber: '',
-      courseAreas: [],
+      industry: [],
       address: '',
       phone: '',
       location: {
@@ -114,10 +112,76 @@ export default function WaitlistForm() {
         latitude: 0,
       },
     },
+    mode: 'onChange', // Enable validation on change for isValid
   })
+
+  // Check if all fields are filled
+  const isFormComplete = form.formState.isValid && form.getValues('industry').length > 0
 
   // Watch the address field to update coordinates when it changes
   const address = form.watch('address')
+
+  // Initialize industryQuery from form values if available
+  useEffect(() => {
+    const currentIndustry = form.getValues('industry')[0]
+    if (currentIndustry) {
+      setIndustryQuery(currentIndustry)
+    }
+  }, [form])
+
+  // Handle industry input change
+  const handleIndustryInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value
+    setIndustryQuery(query)
+
+    if (query.trim() === '') {
+      setFilteredIndustries(industries)
+      // Clear the form value when input is empty
+      form.setValue('industry', [], { shouldValidate: true })
+    } else {
+      const filtered = industries.filter((industry) =>
+        industry.toLowerCase().includes(query.toLowerCase()),
+      )
+      setFilteredIndustries(filtered)
+
+      // If there's an exact match, update the form value
+      const exactMatch = industries.find(
+        (industry) => industry.toLowerCase() === query.toLowerCase(),
+      )
+      if (exactMatch) {
+        form.setValue('industry', [exactMatch], { shouldValidate: true })
+      }
+    }
+
+    // Always show options when typing
+    setShowIndustryOptions(true)
+  }
+
+  // Handle industry selection
+  const handleIndustrySelect = (industry: string) => {
+    setIndustryQuery(industry)
+    form.setValue('industry', [industry], { shouldValidate: true })
+    setShowIndustryOptions(false)
+  }
+
+  // Handle click outside of industry options
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        industryOptionsRef.current &&
+        industryInputRef.current &&
+        !industryOptionsRef.current.contains(event.target as Node) &&
+        !industryInputRef.current.contains(event.target as Node)
+      ) {
+        setShowIndustryOptions(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   // Load Google Maps script on component mount
   useEffect(() => {
@@ -212,6 +276,7 @@ export default function WaitlistForm() {
     onSuccess: () => {
       toast.success('Successfully joined the waitlist!')
       form.reset()
+      setIndustryQuery('')
       router.push('/waitinglist-signup-success')
     },
     onError: (error) => {
@@ -369,30 +434,49 @@ export default function WaitlistForm() {
             )}
           />
 
+          {/* Custom Industry Input with Autocomplete - Fixed version */}
           <FormField
             control={form.control}
-            name="courseAreas"
-            render={({ field }) => (
-              <FormItem>
-                <Select
-                  onValueChange={(value) => field.onChange([value])}
-                  defaultValue={field.value?.[0]}
-                >
-                  <FormControl>
-                    <SelectTrigger
-                      className={`bg-white/40 backdrop-blur-[70px] border-[1px] ${field.value?.[0] ? '' : 'first:text-[#8E8E93]'}`}
-                    >
-                      <SelectValue placeholder="Company Industry" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {industries.map((area) => (
-                      <SelectItem key={area} value={area} className="hover:text-blue-500">
-                        {area}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            name="industry"
+            render={() => (
+              // Removed the unused field parameter
+              <FormItem className="relative">
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      ref={industryInputRef}
+                      placeholder="Company Industry"
+                      value={industryQuery}
+                      onChange={handleIndustryInputChange}
+                      onFocus={() => setShowIndustryOptions(true)}
+                      className="bg-white/40 backdrop-blur-[70px] border-[1px] placeholder:text-[#8E8E93]"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <Search className="h-4 w-4 text-gray-500" />
+                    </div>
+                  </div>
+                </FormControl>
+
+                {showIndustryOptions && (
+                  <div
+                    ref={industryOptionsRef}
+                    className="absolute z-10 mt-1 w-full max-h-60 overflow-auto bg-white border border-gray-200 rounded-md shadow-lg"
+                  >
+                    {filteredIndustries.length > 0 ? (
+                      filteredIndustries.map((industry) => (
+                        <div
+                          key={industry}
+                          className="px-4 py-2 cursor-pointer hover:bg-blue-50"
+                          onClick={() => handleIndustrySelect(industry)}
+                        >
+                          {industry}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-gray-500">No matching industries</div>
+                    )}
+                  </div>
+                )}
                 <FormMessage className="text-xs text-error" />
               </FormItem>
             )}
@@ -430,57 +514,12 @@ export default function WaitlistForm() {
             className="w-full h-48 rounded-md mt-2 mb-4 border border-gray-300 overflow-hidden"
           />
 
-          {/* Longitude and Latitude Fields (readonly) */}
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="location.longitude"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm text-gray-700">Longitude</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Longitude"
-                      type="number"
-                      step="any"
-                      {...field}
-                      readOnly
-                      className="bg-gray-100 backdrop-blur-[70px] border-[1px] cursor-not-allowed"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs text-error" />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="location.latitude"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm text-gray-700">Latitude</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Latitude"
-                      type="number"
-                      step="any"
-                      {...field}
-                      readOnly
-                      className="bg-gray-100 backdrop-blur-[70px] border-[1px] cursor-not-allowed"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs text-error" />
-                </FormItem>
-              )}
-            />
-          </div> */}
-
           <div className="mt-10" />
 
           <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={saveCompanyMutation.isPending}
+            disabled={saveCompanyMutation.isPending || !isFormComplete}
           >
             {saveCompanyMutation.isPending ? (
               <>

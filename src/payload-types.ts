@@ -241,7 +241,25 @@ export interface Company {
   id: string;
   name: string;
   cac?: string | null;
-  courseAreas: ('Mathematics' | 'Science' | 'History' | 'Engineering' | 'Arts')[];
+  industry: (
+    | 'Agriculture'
+    | 'Banking/Finance'
+    | 'Construction/Real Estate'
+    | 'Consumer services'
+    | 'Consumer goods'
+    | 'Conglomerates'
+    | 'Entertainment'
+    | 'Health Care'
+    | 'Hospitality'
+    | 'ICT'
+    | 'Natural Resources'
+    | 'Media'
+    | 'Oil & gas'
+    | 'Retail'
+    | 'Technology'
+    | 'Telecommunications'
+    | 'Utilities'
+  )[];
   location: {
     longitude: number;
     latitude: number;
@@ -557,7 +575,7 @@ export interface AdminsSelect<T extends boolean = true> {
 export interface CompaniesSelect<T extends boolean = true> {
   name?: T;
   cac?: T;
-  courseAreas?: T;
+  industry?: T;
   location?:
     | T
     | {
