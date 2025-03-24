@@ -77,6 +77,7 @@ export interface Config {
     'interview-invitations': InterviewInvitation;
     'internship-applications': InternshipApplication;
     employments: Employment;
+    'email-subscribers': EmailSubscriber;
     reports: Report;
     internships: Internship;
     'payload-locked-documents': PayloadLockedDocument;
@@ -93,6 +94,7 @@ export interface Config {
     'interview-invitations': InterviewInvitationsSelect<false> | InterviewInvitationsSelect<true>;
     'internship-applications': InternshipApplicationsSelect<false> | InternshipApplicationsSelect<true>;
     employments: EmploymentsSelect<false> | EmploymentsSelect<true>;
+    'email-subscribers': EmailSubscribersSelect<false> | EmailSubscribersSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
     internships: InternshipsSelect<false> | InternshipsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -291,6 +293,7 @@ export interface DepartmentalCoordinator {
   name: string;
   phone?: string | null;
   picture?: (string | null) | Media;
+  department: string;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -326,6 +329,7 @@ export interface Student {
   bankName?: string | null;
   accountNo?: string | null;
   resetPasswordOtpHash?: string | null;
+  coins?: number | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -401,6 +405,16 @@ export interface Employment {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-subscribers".
+ */
+export interface EmailSubscriber {
+  id: string;
+  email: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reports".
  */
 export interface Report {
@@ -456,6 +470,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'employments';
         value: string | Employment;
+      } | null)
+    | ({
+        relationTo: 'email-subscribers';
+        value: string | EmailSubscriber;
       } | null)
     | ({
         relationTo: 'reports';
@@ -609,6 +627,7 @@ export interface DepartmentalCoordinatorsSelect<T extends boolean = true> {
   name?: T;
   phone?: T;
   picture?: T;
+  department?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -642,6 +661,7 @@ export interface StudentsSelect<T extends boolean = true> {
   bankName?: T;
   accountNo?: T;
   resetPasswordOtpHash?: T;
+  coins?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -689,6 +709,15 @@ export interface EmploymentsSelect<T extends boolean = true> {
   student?: T;
   company?: T;
   dateEnded?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-subscribers_select".
+ */
+export interface EmailSubscribersSelect<T extends boolean = true> {
+  email?: T;
   updatedAt?: T;
   createdAt?: T;
 }
