@@ -15,6 +15,7 @@ import { isBefore } from 'date-fns'
 import industries from '@/utilities/industries'
 import { Company } from '@/payload-types'
 import { error } from 'console'
+import { companySelfOrAdmin } from '@/access/companySelfOrAdmin'
 
 const PreLogin = z.object({
   email: z.string().email(),
@@ -31,9 +32,9 @@ export const Companies: CollectionConfig = {
   slug: 'companies',
   access: {
     create: anyone,
-    delete: self,
+    delete: companySelfOrAdmin,
     read: anyone,
-    update: anyone,
+    update: companySelfOrAdmin,
   },
   auth: {
     forgotPassword: {
