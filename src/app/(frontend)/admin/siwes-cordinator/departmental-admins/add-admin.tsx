@@ -2,22 +2,12 @@
 import FieldError from '@/components/FieldError'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { createAdmin } from '@/services/admin/admins'
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
-import { User } from 'lucide-react'
 import { Field, ValidationFieldError } from 'payload'
 import React, { useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -95,6 +85,11 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
       },
       {
         name: 'department',
+        type: 'text',
+        required: true,
+      },
+      {
+        name: 'password',
         type: 'text',
         required: true,
       },
@@ -253,6 +248,28 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
                   onChange={(e) => field.handleChange(e.target.value)}
                   type="text"
                   placeholder="Enter Department"
+                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        </form.Field>
+      </div>
+
+      <div>
+        <Label className="mt-3 block">Password</Label>
+        <form.Field name="password">
+          {(field) => {
+            return (
+              <>
+                <Input
+                  name={field.name}
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  type="password"
+                  placeholder="Enter Password"
                   className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
                 />
                 <FieldError field={field} />

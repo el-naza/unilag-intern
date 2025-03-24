@@ -197,7 +197,7 @@ export default function CompanyDetailPage() {
         <h3 className="font-medium text-[1.2rem] mt-8">Siwes Reports</h3>
         <p className="text-sm">All supervisors reports</p>
 
-        <p className='font-semibold'>No reports</p>
+        <p className='font-semibold'>No reports yet</p>
 
         {/* <div className="mt-4">
           <div className="flex gap-4 border-[1px] border-gray-light-2 rounded-[8px] p-4">

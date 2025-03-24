@@ -13,6 +13,7 @@ import { ChevronDown, ChevronLeft, ChevronRight, LogOut } from 'lucide-react'
 import './tool-bar.scss'
 import { signOut, useSession } from 'next-auth/react'
 import { useEffect, useMemo } from 'react'
+import useInitials from '@/custom-hooks/useInitials'
 
 const ToolBar = () => {
 
@@ -42,12 +43,12 @@ const ToolBar = () => {
 
         <div className="flex gap-3 items-center">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="Profile" />
-            <AvatarFallback>O</AvatarFallback>
+            <AvatarImage src='' alt="Profile" />
+            <AvatarFallback className='bg-accent-orange'>{ useInitials(user?.name) }</AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium">S.C</p>
-            <p className="text-xs">+2348287382</p>
+            <p className="font-medium">{ user?.name }</p>
+            <p className="text-xs">{ user?.email}</p>
           </div>
 
           <DropdownMenu>

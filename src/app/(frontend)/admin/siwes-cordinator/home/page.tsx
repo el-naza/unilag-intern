@@ -30,9 +30,9 @@ import { getAllReports, getEmployments } from '@/services/admin/reports'
 import { deleteStudent, getAllStudents } from '@/services/admin/students'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Edit2, EllipsisVertical, ListFilter, Plus, Trash } from 'lucide-react'
+import { Edit2, EllipsisVertical, Eye, ListFilter, Plus, Trash } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 import { toast } from 'sonner'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
@@ -100,65 +100,94 @@ export default function HomePage() {
   const router = useRouter()
   const [openPopover, setOpenPopover] = useState(false)
 
-  const fetchReports = async (params?: string) => {
-    return getAllReports('reports', params).then((res: any) => {
-      const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
-      console.log('Reports: ', docs)
+  const [totalStudents, setTotalStudents] = useState(0)
+  const [totalEmployments, setTotalEmployments] = useState(0)
 
+  const fetchReports = useCallback(async (params?: any) => {
+    try {
+      const res: any = await getAllReports('reports', params)
+      const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
       setReportData(docs)
       setReportPage(page)
       setReportPageSize(totalPages)
+      setReportTotal(totalDocs)
       setReportHasNext(hasNextPage)
       setReportHasPrevious(hasPrevPage)
-      setReportTotal(totalDocs)
-    })
-  }
+    } catch (error) {
+      console.error('Error fetching reports:', error)
+    }
+  }, [])
 
-  const fetchEmployments = async () => {
-    const query = new URLSearchParams({ 'sort': '-createdAt' }).toString()
-    return getEmployments('employments', query).then((res: any) => {
-      const { docs } = res.data
+  const fetchEmployments = useCallback(async () => {
+    try {
+      const query = new URLSearchParams({ sort: '-createdAt' }).toString()
+      const res: any = await getEmployments('employments', query)
+      const { docs, totalDocs } = res.data
+
       setEmployedData(docs)
-    })
-  }
+      setTotalEmployments(totalDocs)
 
-  const fetchTotalStudents = () => {
-    const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
-    return getAllStudents('students', query).then((res: any) => {
-      const { totalDocs } = res.data
-
-      setConfig((prevConfig) => ({
-        ...prevConfig,
-        stats: prevConfig.stats.map((stat, index) =>
-          index === 0 ? { ...stat, count: totalDocs } : stat,
+      setConfig((prev) => ({
+        ...prev,
+        stats: prev.stats.map((stat, index) =>
+          index === 1 ? { ...stat, count: totalDocs } : stat,
         ),
       }))
-    })
-  }
+    } catch (error) {
+      console.error('Error fetching employments:', error)
+    }
+  }, [])
 
-  const fetchTotalCompanies = () => {
-    const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
-    return getAllCompanies('companies', query).then((res: any) => {
+  const fetchCompanies = useCallback(async () => {
+    try {
+      const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+      const res: any = await getAllCompanies('companies', query)
       const { totalDocs } = res.data
-
-      setConfig((prevConfig) => ({
-        ...prevConfig,
-        stats: prevConfig.stats.map((stat, index) =>
+      setConfig((prev) => ({
+        ...prev,
+        stats: prev.stats.map((stat, index) =>
           index === 3 ? { ...stat, count: totalDocs } : stat,
         ),
       }))
-    })
-  }
+    } catch (error) {
+      console.error('Error fetching companies:', error)
+    }
+  }, [])
+
+  const fetchStudents = useCallback(async () => {
+    try {
+      const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+      const res: any = await getAllStudents('students', query)
+      const { totalDocs } = res.data
+
+      setTotalStudents(totalDocs)
+      setConfig((prev) => ({
+        ...prev,
+        stats: prev.stats.map((stat, index) =>
+          index === 0 ? { ...stat, count: totalDocs } : stat,
+        ),
+      }))
+    } catch (error) {
+      console.error('Error fetching students:', error)
+    }
+  }, [])
 
   useEffect(() => {
-    Promise.allSettled([fetchTotalStudents(), fetchTotalCompanies()]).then(() =>
-      console.log('Analytics data fetched'),
-    )
+    Promise.allSettled([
+      fetchReports(),
+      fetchEmployments(),
+      fetchCompanies(),
+      fetchStudents(),
+    ]).then(() => {
 
-    Promise.allSettled([fetchReports(), fetchEmployments()]).then(() =>
-      console.log('Reports and employment data fetched'),
-    )
-  }, [])
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        stats: prevConfig.stats.map((stat, index) =>
+          index === 2 ? { ...stat, count: totalStudents - totalEmployments } : stat,
+        ),
+      }))
+    })
+  }, [fetchReports, fetchEmployments, fetchCompanies, fetchStudents])
 
   const reportColumns = useMemo(
     () => [
@@ -173,9 +202,9 @@ export default function HomePage() {
         accessorKey: 'reportNumber',
       },
       {
-        id: 'studentName',
+        id: 'student',
         header: 'Student Name',
-        accessorKey: 'studentName',
+        accessorKey: 'student',
         cell: ({ _, row }) => {
           const rowData = row.original
           return `${rowData.student.firstName} ${rowData.student.lastName}`
@@ -231,7 +260,7 @@ export default function HomePage() {
         id: 'name',
         header: 'Name',
         accessorKey: 'name',
-        cell: ({ _, row }) => {
+        cell: ({ data, row }) => {
           const rowData = row.original
           return `${rowData.student.firstName} ${rowData.student.lastName}`
         },
@@ -240,7 +269,7 @@ export default function HomePage() {
         id: 'department',
         header: 'Department',
         accessorKey: 'department',
-        cell: ({ _, row }) => {
+        cell: ({ data, row }) => {
           const rowData = row.original
           return `${rowData.student.course}`
         },
@@ -304,7 +333,7 @@ export default function HomePage() {
     <div className="p-8">
       <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
-      <div className="grid grid-cols-12 gap-4 mt-8 items-start h-[33rem] py-4">
+      <div className="grid grid-cols-12 gap-4 mt-8 items-start py-4">
         <div className="col-span-7 p-4 bg-white rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-10">
             <p>Total Reports</p>
@@ -332,7 +361,7 @@ export default function HomePage() {
           </ChartContainer>
         </div>
 
-        <div className="col-span-5 p-4 bg-white rounded-lg shadow-md h-full overflow-auto">
+        <div className="col-span-5 p-4 bg-white rounded-lg shadow-md max-h-[60vh] overflow-auto">
           <div className="flex justify-between items-center">
             <p>Recently Added Student</p>
 
@@ -461,7 +490,7 @@ export default function HomePage() {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
-                 <TableCell className="float-right">
+                <TableCell className="float-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost">
@@ -470,14 +499,49 @@ export default function HomePage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 bg-white border-none">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem>
-                          <Edit2 />
-                          <span>Edit</span>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            router.push(
+                              `students/${row.original?.student?.id}#report`,
+                            )
+                          }
+                        >
+                          <Eye />
+                          <span>View Student Report</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Trash />
-                          <span>Delete</span>
-                        </DropdownMenuItem>
+                        {/* <DropdownMenuItem onClick={() => console.log(row.original)}>
+                          <Eye />
+                          <span>View Company Report</span>
+                        </DropdownMenuItem> */}
+                        {/* <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                              <Trash />
+                              <span>Delete</span>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                            <div className="flex gap-4 items-center w-full">
+                              <Button
+                                variant="ghost"
+                                className="w-full"
+                                onClick={() => setOpenPopover(false)}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                className="w-full"
+                                onClick={() => {
+                                  deleteReport(row)
+                                  setOpenPopover(false)
+                                }}
+                              >
+                                Continue
+                              </Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover> */}
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>

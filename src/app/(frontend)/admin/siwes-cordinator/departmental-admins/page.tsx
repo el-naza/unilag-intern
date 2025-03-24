@@ -53,7 +53,7 @@ type Admin = {
 
 export default function DepartmentalAdminsPage() {
   const [config, setConfig] = useState<IFIlterConfig>({
-    page: 'Departmental Admins',
+    page: 'Departmental Cordinators',
     showFilters: false,
     stats: [{ label: 'Total No of Admins', iconName: 'Shield', count: 0 }],
   })
@@ -211,12 +211,12 @@ export default function DepartmentalAdminsPage() {
           <Dialog open={adminOpenDialog} onOpenChange={setAdminOpenDialog}>
             <DialogTrigger asChild>
               <Button>
-                <Plus /> Add Departmental Admin
+                <Plus /> Add Departmental Cordinator
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-screen-md bg-white">
               <DialogHeader>
-                <DialogTitle>Add Departmental Admin</DialogTitle>
+                <DialogTitle>Add Departmental Cordinator</DialogTitle>
               </DialogHeader>
 
               <AddAdmin onCloseEmit={closeDialog} />
@@ -227,7 +227,7 @@ export default function DepartmentalAdminsPage() {
 
       <div className="mt-4 p-4 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <p>All Departmental Admins</p>
+          <p>All Departmental Cordinators</p>
 
           {/* <Button>Export Data</Button> */}
         </div>

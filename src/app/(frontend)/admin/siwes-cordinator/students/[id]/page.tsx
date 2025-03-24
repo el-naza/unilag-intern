@@ -38,6 +38,13 @@ export default function StudentDetailPage() {
   }
 
   useEffect(() => {
+    if (window.location.hash) {
+      const element = document.getElementById(window.location.hash.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    
     fetchStudentDetail()
   }, [])
 
@@ -202,10 +209,10 @@ export default function StudentDetailPage() {
 
         {siwesForm && <p>{siwesForm.name}</p>}
 
-        <h3 className="font-medium text-[1.2rem] mt-8">Siwes Reports</h3>
+        <h3 className="font-medium text-[1.2rem] mt-8" id='report'>Siwes Reports</h3>
         <p className="text-sm">All supervisors reports</p>
 
-        <p className='font-semibold'>No reports</p>
+        <p className='font-semibold'>No reports yet</p>
 
         {/* <div className="mt-4">
           <div className="flex gap-4 border-[1px] border-gray-light-2 rounded-[8px] p-4">
