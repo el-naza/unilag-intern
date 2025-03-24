@@ -2,7 +2,7 @@
 
 import hero from '../../assets/images/company-hero-bg.png'
 import studentImage from '../../assets/images/student-image.png'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import NavBar from '../../common/nav-bar'
 import BlurBackground from '../../components/Layout/blurBackground'
 import Image from 'next/image'
@@ -15,13 +15,15 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import Spinner from '@/components/spinner'
 import { Input } from '@/components/ui/input'
+import Loader from '../../components/Layouts/Loader'
 
 export default function Reports() {
-  const [active, setActive] = useState<string>('All Report')
+  const [active, setActive] = useState<string>('All Reports')
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null)
   const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({})
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  const careers = [{ title: 'All Report' }, { title: 'Reassigned' }, { title: 'Approved' }]
+  const careers = [{ title: 'All Reports' }, { title: 'Reassigned' }, { title: 'Approved' }]
+  const [loading, setLoading] = useState<boolean>(true)
 
   type Student = {
     id: string
@@ -52,6 +54,7 @@ export default function Reports() {
   const fetchInternReports = async () => {
     const res: any = await fetchDocs('reports')
     console.log('reports', res)
+    setLoading(false)
 
     if (res?.docs) {
       setReportDocs(res.docs)
@@ -79,6 +82,12 @@ export default function Reports() {
   const filteredReports = selectedStudent
     ? reportDocs && reportDocs.filter((s) => s?.student?.id === selectedStudent)
     : []
+
+  const activeReports = useMemo(() => {
+    if (active === 'All Reports') return filteredReports
+    if (active === 'Reassigned') return filteredReports.filter((r) => r.status === 'reassigned')
+    if (active === 'Approved') return filteredReports.filter((r) => r.status === 'approved')
+  }, [filteredReports])
 
   const [reports, setReports] = useState<Report[]>(filteredReports || [])
 
@@ -271,164 +280,178 @@ export default function Reports() {
         <div className="max-w-full lg:w-[866px] mx-auto absolute top-[200px] left-0 right-0 px-4 lg:px-0 w-full">
           <p className="py-[7px] font-[500] text-[20px] text-white text-start">Reports</p>
 
-          <BlurBackground background="bg-[#fafafa]">
-            <div className="flex lg:flex-row flex-col ">
-              {/* Message List */}
-              <div className={`lg:w-[350px] ${selectedMessage ? 'hidden' : 'block'} lg:block`}>
-                <div className="flex items-center mb-[28px]">
-                  {careers.map((c) => (
-                    <button
-                      className={`py-[6px] px-[20px] rounded-[32px] font-[400] text-[12px] ${
-                        active === c.title ? 'bg-[#0B7077] text-[#FFFFFF]' : ''
-                      }`}
-                      key={c.title}
-                      onClick={() => setActive(c.title)}
-                    >
-                      {c.title}
-                    </button>
-                  ))}
-                </div>
-                <div className="w-full max-h-[500px] overflow-y-auto scrollbar-hide">
-                  {uniqueStudents.map((r) => (
-                    <div key={r.id} onClick={() => setSelectedStudent(r?.student?.id)}>
-                      <MessageList
-                        image={r?.student?.image?.url || studentImage}
-                        name={`${r?.student?.firstName} ${r?.student?.lastName}`}
-                        message="View Reports"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Message Body */}
-              <div
-                className={`lg:w-[484px] ${selectedMessage ? 'block' : 'hidden'} lg:block px-[4px] `}
-              >
-                {/* Back Button (Mobile View) */}
-                <button
-                  className="lg:hidden text-[#0B7077] mb-4"
-                  onClick={() => setSelectedMessage(null)}
-                >
-                  Back to Messages
-                </button>
-
-                <div className="flex items-start gap-3 py-[12px]">
-                  <Image
-                    src={studentImage.src}
-                    width={40}
-                    height={40}
-                    alt="image"
-                    objectFit="cover"
-                    className="rounded-full"
-                  />
-                  <div>
-                    <h4 className="mb-[4px] text-[#303030] text-[14px] font-[400]">
-                      {uniqueStudents.find((s) => s.id === selectedStudent)?.firstName}{' '}
-                      {uniqueStudents.find((s) => s.id === selectedStudent)?.lastName}
-                    </h4>
-                    <p className="font-[400] text-[12px] text-[#686868]">
-                      All Report: {filteredReports.length}{' '}
-                      <span className="text-[#FF9500]">Reassigned: {reassignedReports.length}</span>{' '}
-                      <span className="text-[#34C759]">Approved: {approvedReports.length}</span>
-                    </p>
+          {loading ? (
+            <div className="flex items-center justify-center w-full">
+              <Loader height="auto" background="transparent" />
+            </div>
+          ) : (
+            <BlurBackground background="bg-[#fafafa]">
+              <div className="flex lg:flex-row flex-col ">
+                {/* Message List */}
+                <div className={`lg:w-[350px] ${selectedMessage ? 'hidden' : 'block'} lg:block`}>
+                  <div className="flex items-center mb-[28px]">
+                    {careers.map((c) => (
+                      <button
+                        className={`py-[6px] px-[20px] rounded-[32px] font-[400] text-[12px] ${
+                          active === c.title ? 'bg-[#0B7077] text-[#FFFFFF]' : ''
+                        }`}
+                        key={c.title}
+                        onClick={() => setActive(c.title)}
+                      >
+                        {c.title}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="w-full max-h-[500px] overflow-y-auto scrollbar-hide">
+                    {uniqueStudents.map((r) => (
+                      <div
+                        className="cursor-pointer"
+                        key={r.id}
+                        onClick={() => setSelectedStudent(r?.student?.id)}
+                      >
+                        <MessageList
+                          image={r?.student?.image?.url || studentImage}
+                          name={`${r?.student?.firstName} ${r?.student?.lastName}`}
+                          message="View Reports"
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto scrollbar-hide">
-                  {filteredReports &&
-                    filteredReports.map((card) => (
-                      <div className="flex items-center gap-2">
-                        <div>
-                          <div className="border w-[290px] rounded">
-                            {card?.image ? (
-                              <Image
-                                src={card?.image?.url}
-                                alt="image"
-                                width={290}
-                                height={120}
-                                objectFit="cover"
-                                className="h-[120px]"
-                              />
-                            ) : null}
 
-                            <div className="w-full p-[8px]">
-                              <h4 className="font-[700] text-[12px] mb-[4px]">{card.title}</h4>
-                              <p className="text-[#8E8E93] font-[400] text-[10px]">
-                                {card.details}
-                              </p>
-                              <p className="mt-[6px] text-[#667085] font-[400] text-[12px]">
-                                {card.timestamp}
-                              </p>
-                              <div className="flex flex-col gap-1">
-                                {card.status === 'pending' ? (
-                                  <>
-                                    <Select
-                                      options={approvalStatus}
-                                      value={approvalStatus.find(
-                                        (option) =>
-                                          option.value === selectedValues[card.id]?.status,
-                                      )}
-                                      onChange={(selectedOption) =>
-                                        handleStatusChange(selectedOption, card.id)
-                                      }
-                                      placeholder="Select Approval Status"
-                                      styles={getCustomStyles()}
-                                      components={{ Option: CustomOption }}
-                                    />
-                                    {errors[card.id] &&
-                                      errors[card.id].includes('Approval status') && (
-                                        <p className="text-red-500 text-xs mt-1">
-                                          {errors[card.id]}
-                                          {errors[card.id]}
-                                        </p>
-                                      )}
-                                  </>
-                                ) : (
-                                  <>
-                                    <Input
-                                      disabled={true}
-                                      placeholder="Status"
-                                      className="bg-white/40 placeholder:text-[#8E8E93] border"
-                                      defaultValue={
-                                        card.status.charAt(0).toUpperCase() + card.status.slice(1)
-                                      }
-                                    />
-                                  </>
-                                )}
+                {/* Message Body */}
+                <div
+                  className={`lg:w-[484px] ${selectedMessage ? 'block' : 'hidden'} lg:block px-[4px] `}
+                >
+                  {/* Back Button (Mobile View) */}
+                  <button
+                    className="lg:hidden text-[#0B7077] mb-4"
+                    onClick={() => setSelectedMessage(null)}
+                  >
+                    Back to Messages
+                  </button>
 
-                                {/* Remark Select */}
-
-                                <Input
-                                  disabled={card.status !== 'pending'}
-                                  onChange={(e: any) => handleRemarkChange(e.target.value, card.id)}
-                                  placeholder="Remark"
-                                  className="bg-white/40 placeholder:text-[#8E8E93] border"
-                                  defaultValue={card.remark}
+                  <div className="flex items-start gap-3 py-[12px]">
+                    <Image
+                      src={studentImage.src}
+                      width={40}
+                      height={40}
+                      alt="image"
+                      objectFit="cover"
+                      className="rounded-full"
+                    />
+                    <div>
+                      <h4 className="mb-[4px] text-[#303030] text-[14px] font-[400]">
+                        {uniqueStudents.find((s) => s.id === selectedStudent)?.firstName}{' '}
+                        {uniqueStudents.find((s) => s.id === selectedStudent)?.lastName}
+                      </h4>
+                      <p className="font-[400] text-[12px] text-[#686868]">
+                        All Report: {filteredReports.length}{' '}
+                        <span className="text-[#FF9500]">
+                          Reassigned: {reassignedReports.length}
+                        </span>{' '}
+                        <span className="text-[#34C759]">Approved: {approvedReports.length}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto scrollbar-hide">
+                    {activeReports &&
+                      activeReports.map((card) => (
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <div className="border w-[290px] rounded">
+                              {card?.image ? (
+                                <Image
+                                  src={card?.image?.url}
+                                  alt="image"
+                                  width={290}
+                                  height={120}
+                                  objectFit="cover"
+                                  className="h-[120px]"
                                 />
-                                {errors[card.id] && errors[card.id].includes('Remark') && (
-                                  <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
-                                )}
+                              ) : null}
 
-                                {/* Submit Button */}
-                                {card.status === 'pending' && (
-                                  <Button
-                                    className="p-[10px] bg-[#0B7077] text-white rounded w-full mt-3"
-                                    onClick={() => handleRespond(card.id)}
-                                    disabled={loadingStates[card.id] || false}
-                                  >
-                                    {loadingStates[card.id] ? <Spinner /> : 'Send'}
-                                  </Button>
-                                )}
+                              <div className="w-full p-[8px]">
+                                <h4 className="font-[700] text-[12px] mb-[4px]">{card.title}</h4>
+                                <p className="text-[#8E8E93] font-[400] text-[10px]">
+                                  {card.details}
+                                </p>
+                                <p className="mt-[6px] text-[#667085] font-[400] text-[12px]">
+                                  {card.timestamp}
+                                </p>
+                                <div className="flex flex-col gap-1">
+                                  {card.status === 'pending' ? (
+                                    <>
+                                      <Select
+                                        options={approvalStatus}
+                                        value={approvalStatus.find(
+                                          (option) =>
+                                            option.value === selectedValues[card.id]?.status,
+                                        )}
+                                        onChange={(selectedOption) =>
+                                          handleStatusChange(selectedOption, card.id)
+                                        }
+                                        placeholder="Select Approval Status"
+                                        styles={getCustomStyles()}
+                                        components={{ Option: CustomOption }}
+                                      />
+                                      {errors[card.id] &&
+                                        errors[card.id].includes('Approval status') && (
+                                          <p className="text-red-500 text-xs mt-1">
+                                            {errors[card.id]}
+                                            {errors[card.id]}
+                                          </p>
+                                        )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Input
+                                        disabled={true}
+                                        placeholder="Status"
+                                        className="bg-white/40 placeholder:text-[#8E8E93] border"
+                                        value={
+                                          card.status.charAt(0).toUpperCase() + card.status.slice(1)
+                                        }
+                                      />
+                                    </>
+                                  )}
+
+                                  {/* Remark Select */}
+
+                                  <Input
+                                    disabled={card.status !== 'pending'}
+                                    onChange={(e: any) =>
+                                      handleRemarkChange(e.target.value, card.id)
+                                    }
+                                    placeholder="Remark"
+                                    className="bg-white/40 placeholder:text-[#8E8E93] border"
+                                    defaultValue={card.remark}
+                                  />
+                                  {errors[card.id] && errors[card.id].includes('Remark') && (
+                                    <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
+                                  )}
+
+                                  {/* Submit Button */}
+                                  {card.status === 'pending' && (
+                                    <Button
+                                      className="p-[10px] bg-[#0B7077] text-white rounded w-full mt-3"
+                                      onClick={() => handleRespond(card.id)}
+                                      disabled={loadingStates[card.id] || false}
+                                    >
+                                      {loadingStates[card.id] ? <Spinner /> : 'Send'}
+                                    </Button>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </BlurBackground>
+            </BlurBackground>
+          )}
         </div>
       </div>
     </div>
