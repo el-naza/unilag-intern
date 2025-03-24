@@ -14,6 +14,7 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import Spinner from '@/components/spinner'
+import { Input } from '@/components/ui/input'
 
 export default function Reports() {
   const [active, setActive] = useState<string>('All Report')
@@ -60,7 +61,7 @@ export default function Reports() {
         uniqueStudentsMap.set(report.student.id, report)
       })
 
-      setUniqueStudents(Array.from(uniqueStudentsMap.values())) 
+      setUniqueStudents(Array.from(uniqueStudentsMap.values()))
       console.log(uniqueStudents)
     }
   }
@@ -78,7 +79,6 @@ export default function Reports() {
   const filteredReports = selectedStudent
     ? reportDocs && reportDocs.filter((s) => s?.student?.id === selectedStudent)
     : []
-
 
   const [reports, setReports] = useState<Report[]>(filteredReports || [])
 
@@ -170,7 +170,7 @@ export default function Reports() {
 
   const approvalStatus = [
     { value: 'approved', label: 'Approved', color: 'green' },
-    { value: 'reasign', label: 'Reasign', color: 'blue' },
+    { value: 'reassigned', label: 'Reasign', color: 'blue' },
     // { value: 'pending', label: 'Pending', color: 'yellow' },
   ]
 
@@ -199,7 +199,7 @@ export default function Reports() {
   const handleRemarkChange = (selectedOption: any, id: string) => {
     setSelectedValues((prev) => ({
       ...prev,
-      [id]: { ...prev[id], remark: selectedOption.value },
+      [id]: { ...prev[id], remark: selectedOption },
     }))
   }
 
@@ -218,6 +218,7 @@ export default function Reports() {
         toast.success('Report updated')
 
         console.log('Response:', res)
+        fetchInternReports()
         return res
       } catch (error) {
         console.error('Error updating application:', error)
@@ -230,7 +231,7 @@ export default function Reports() {
 
   const handleRespond = async (id: string) => {
     const { status, remark } = selectedValues[id] || {}
-  
+
     if (!status) {
       setErrors((prev) => ({ ...prev, [id]: 'Approval status is required' }))
       toast.error('Please select an approval status')
@@ -247,6 +248,8 @@ export default function Reports() {
     await updtaeReportMtn.mutateAsync({ id, status, remark })
   }
 
+  const approvedReports = filteredReports.filter((r) => r.status === 'approved')
+  const reassignedReports = filteredReports.filter((r) => r.status === 'reassigned')
 
   return (
     <div className="pb-[600px]">
@@ -325,8 +328,9 @@ export default function Reports() {
                       {uniqueStudents.find((s) => s.id === selectedStudent)?.lastName}
                     </h4>
                     <p className="font-[400] text-[12px] text-[#686868]">
-                      All Report: 12 <span className="text-[#FF9500]">Reassigned: 2</span>{' '}
-                      <span className="text-[#34C759]">Approved: 10</span>
+                      All Report: {filteredReports.length}{' '}
+                      <span className="text-[#FF9500]">Reassigned: {reassignedReports.length}</span>{' '}
+                      <span className="text-[#34C759]">Approved: {approvedReports.length}</span>
                     </p>
                   </div>
                 </div>
@@ -356,48 +360,65 @@ export default function Reports() {
                                 {card.timestamp}
                               </p>
                               <div className="flex flex-col gap-1">
-                                <Select
-                                  options={approvalStatus}
-                                  value={approvalStatus.find(
-                                    (option) => option.value === selectedValues[card.id]?.status,
-                                  )}
-                                  onChange={(selectedOption) =>
-                                    handleStatusChange(selectedOption, card.id)
-                                  }
-                                  placeholder="Select Approval Status"
-                                  styles={getCustomStyles()}
-                                  components={{ Option: CustomOption }}
-                                />
-                                {errors[card.id] && errors[card.id].includes('Approval status') && (
-                                  <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
+                                {card.status === 'pending' ? (
+                                  <>
+                                    <Select
+                                      options={approvalStatus}
+                                      value={approvalStatus.find(
+                                        (option) =>
+                                          option.value === selectedValues[card.id]?.status,
+                                      )}
+                                      onChange={(selectedOption) =>
+                                        handleStatusChange(selectedOption, card.id)
+                                      }
+                                      placeholder="Select Approval Status"
+                                      styles={getCustomStyles()}
+                                      components={{ Option: CustomOption }}
+                                    />
+                                    {errors[card.id] &&
+                                      errors[card.id].includes('Approval status') && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                          {errors[card.id]}
+                                          {errors[card.id]}
+                                        </p>
+                                      )}
+                                  </>
+                                ) : (
+                                  <>
+                                    <Input
+                                      disabled={true}
+                                      placeholder="Status"
+                                      className="bg-white/40 placeholder:text-[#8E8E93] border"
+                                      defaultValue={
+                                        card.status.charAt(0).toUpperCase() + card.status.slice(1)
+                                      }
+                                    />
+                                  </>
                                 )}
 
                                 {/* Remark Select */}
 
-                                <Select
-                                  options={remarkOptions}
-                                  value={remarkOptions.find(
-                                    (option) => option.value === selectedValues[card.id]?.remark,
-                                  )}
-                                  onChange={(selectedOption) =>
-                                    handleRemarkChange(selectedOption, card.id)
-                                  }
-                                  placeholder="Select a Remark"
-                                  styles={getCustomStyles()}
-                                  components={{ Option: CustomOption }}
+                                <Input
+                                  disabled={card.status !== 'pending'}
+                                  onChange={(e: any) => handleRemarkChange(e.target.value, card.id)}
+                                  placeholder="Remark"
+                                  className="bg-white/40 placeholder:text-[#8E8E93] border"
+                                  defaultValue={card.remark}
                                 />
                                 {errors[card.id] && errors[card.id].includes('Remark') && (
                                   <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
                                 )}
 
                                 {/* Submit Button */}
-                                <Button
-                                  className="p-[10px] bg-[#0B7077] text-white rounded w-full mt-3"
-                                  onClick={() => handleRespond(card.id)}
-                                  disabled={loadingStates[card.id] || false}
-                                >
-                                  {loadingStates[card.id] ? <Spinner /> : 'Send'}
-                                </Button>
+                                {card.status === 'pending' && (
+                                  <Button
+                                    className="p-[10px] bg-[#0B7077] text-white rounded w-full mt-3"
+                                    onClick={() => handleRespond(card.id)}
+                                    disabled={loadingStates[card.id] || false}
+                                  >
+                                    {loadingStates[card.id] ? <Spinner /> : 'Send'}
+                                  </Button>
+                                )}
                               </div>
                             </div>
                           </div>
