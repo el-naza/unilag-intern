@@ -415,6 +415,7 @@ export interface Report {
   status?: ('pending' | 'approved' | 'reassigned') | null;
   media?: (string | null) | Media;
   week: number;
+  grade?: ('A' | 'B' | 'C' | 'D' | 'E' | 'F') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -707,6 +708,7 @@ export interface ReportsSelect<T extends boolean = true> {
   status?: T;
   media?: T;
   week?: T;
+  grade?: T;
   updatedAt?: T;
   createdAt?: T;
 }
