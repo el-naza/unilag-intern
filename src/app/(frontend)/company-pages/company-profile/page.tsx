@@ -1,21 +1,20 @@
 'use client'
+import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import { useMemo } from 'react'
+import LinkIcon from '../../assets/icons/link'
+import LocationIcon from '../../assets/icons/location'
+import MailIcon from '../../assets/icons/mail'
+import PhoneIcon from '../../assets/icons/phone'
 import hero from '../../assets/images/company-hero-bg.png'
-import studentImage from '../../assets/images/student-img.png'
 import profileLogo from '../../assets/images/compay-profile-logo.png'
-import { useMemo, useState } from 'react'
+import studentImage from '../../assets/images/student-img.png'
 import NavBar from '../../common/nav-bar'
 import StudentProfileCard from '../../components/Cards/studentProfileCard'
-import Image from 'next/image'
 import InputField from '../../components/Form/inputField'
-import PhoneIcon from '../../assets/icons/phone'
-import MailIcon from '../../assets/icons/mail'
-import LocationIcon from '../../assets/icons/location'
-import LinkIcon from '../../assets/icons/link'
-import { useSession } from 'next-auth/react'
 
 export default function CompanyProfile() {
   const { data: session } = useSession()
-
   const user = useMemo<any>(() => session?.user, [session])
 
   const fields = [

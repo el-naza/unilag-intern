@@ -1,6 +1,5 @@
 'use client'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Dialog,
   DialogContent,
@@ -12,10 +11,10 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import useInitials from '@/custom-hooks/useInitials'
 import { getCompany } from '@/services/admin/companies'
 import { getAllReports, getEmployments } from '@/services/admin/reports'
-import { format } from 'date-fns'
-import { MessageSquareText } from 'lucide-react'
+import { format, formatDistanceToNow } from 'date-fns'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -36,26 +35,24 @@ export default function CompanyDetailPage() {
       setCompany(res.data)
       setLoading(false)
     })
-
   }
 
   const fetchEmployments = async () => {
     const query = new URLSearchParams({ 'where[company]': id }).toString()
     return getEmployments('employments', query).then((res: any) => {
-      console.log('Employments: ', res);
+      console.log('Employments: ', res)
       const { docs } = res.data
       setSiwesStudents(docs)
     })
   }
 
-   const fetchReports = async (params?: string) => {
-      return getAllReports('reports', params).then((res: any) => {
-        console.log('Reports: ', res);
-        const { docs } = res.data
-        setSiwesReports(docs)
-      })
-      
-   }
+  const fetchReports = async (params?: string) => {
+    return getAllReports('reports', params).then((res: any) => {
+      console.log('Reports: ', res)
+      const { docs } = res.data
+      setSiwesReports(docs)
+    })
+  }
 
   useEffect(() => {
     Promise.allSettled([fetchCompanyDetail(), fetchEmployments(), fetchReports()])
@@ -69,7 +66,8 @@ export default function CompanyDetailPage() {
       <div className="flex items-center justify-between mt-4 p-8 w-full mb-8 bg-[url(/images/profile-bg.png)] bg-cover bg-no-repeat bg-center">
         <div className="flex items-center gap-4">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="Profile" />
+            <AvatarImage src={company?.picture} alt="Profile" />
+            <AvatarFallback className='bg-white'>{useInitials(company?.name)}</AvatarFallback>
           </Avatar>
 
           <div>
@@ -80,7 +78,7 @@ export default function CompanyDetailPage() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="bg-gray-light-2 text-black-2">Assigned Student</Button>
+            {/* <Button className="bg-gray-light-2 text-black-2">Assigned Student</Button> */}
           </DialogTrigger>
           <DialogContent className="max-w-screen-lg max-h-[90vh] overflow-auto bg-white">
             <DialogHeader>
@@ -119,9 +117,9 @@ export default function CompanyDetailPage() {
           </div>
 
           <div>
-            <Label className="mt-3 block">Location</Label>
+            <Label className="mt-3 block">Address</Label>
             <Input
-              value={'Lng: ' + company?.location.longitude + ' Lat: ' + company?.location.latitude}
+              value={company?.address}
               readOnly
               placeholder="Enter Location"
               className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
@@ -172,33 +170,42 @@ export default function CompanyDetailPage() {
 
         <div className="mt-4">
           <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 gap-4">
-            <div className="relative inline-block overflow-hidden rounded-md">
-              <Image
-                src="/images/student-image.jpeg"
-                width={500}
-                height={700}
-                alt="Picture"
-                className="w-full h-full object-cover"
-              />
+            {siwesStudents?.map((employment: any, index: number) => (
+              <div className="relative inline-block overflow-hidden rounded-md" key={index}>
+                <Image
+                  src="/images/student-image.jpeg"
+                  width={500}
+                  height={700}
+                  alt="Picture"
+                  className="w-full h-full object-cover"
+                />
 
-              <div className="absolute bottom-0 text-white w-full px-3 pb-1 bg-gradient-to-t from-[#00000069] to-[transparent]">
-                <h4>Kota Faruq</h4>
-                <p className="flex flex-wrap justify-between items-center text-sm">
-                  <span>Mathematics</span> <span>2 weeks</span>
-                </p>
+                <div className="absolute bottom-0 text-white w-full px-3 pb-1 bg-gradient-to-t from-[#00000069] to-[transparent]">
+                  <h4>{employment.student.firstName + ' ' + employment.student.lastName}</h4>
+                  <p className="flex flex-wrap justify-between items-center text-[.6rem]">
+                    <span>{employment.student.course}</span>{' '}
+                    <span>
+                      {formatDistanceToNow(employment.student.createdAt, { addSuffix: true })}
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
         <h3 className="font-medium text-[1.2rem] mt-8">Siwes Reports</h3>
         <p className="text-sm">All supervisors reports</p>
 
-        <div className="mt-4">
+        <p className='font-semibold'>No reports</p>
+
+        {/* <div className="mt-4">
           <div className="flex gap-4 border-[1px] border-gray-light-2 rounded-[8px] p-4">
             <div className="p-3 rounded-full grid place-content-center bg-primary text-white w-[40px] h-[40px]">
               <MessageSquareText></MessageSquareText>
             </div>
+
+           
             <div>
               <h4 className="font-medium">Report 001</h4>
               <p className="text-gray-dark-3">By Fredrick Precious 02/03/2023</p>
@@ -209,7 +216,7 @@ export default function CompanyDetailPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

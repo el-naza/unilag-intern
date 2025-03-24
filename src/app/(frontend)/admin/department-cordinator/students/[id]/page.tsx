@@ -125,6 +125,7 @@ export default function StudentDetailPage() {
         <div className="flex items-center gap-4">
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" alt="Profile" />
+            {student?.firstName} {student?.lastName}
           </Avatar>
 
           <div>
@@ -137,7 +138,7 @@ export default function StudentDetailPage() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="bg-gray-light-2 text-black-2">Assigned Siwes</Button>
+            {/* <Button className="bg-gray-light-2 text-black-2">Assigned Siwes</Button> */}
           </DialogTrigger>
           <DialogContent className="max-w-screen-lg max-h-[90vh] overflow-auto bg-white">
             <DialogHeader>

@@ -272,7 +272,7 @@ export default function ReportPage() {
         <div className="flex justify-between items-center mb-4">
           <p>All Reports</p>
 
-          <Button>Export Data</Button>
+          {/* <Button>Export Data</Button> */}
         </div>
 
         <Table>

@@ -73,6 +73,8 @@ export default function CompaniesPage() {
   const fetchCompanies = async (params?: string) => {
     const res: any = await getAllCompanies('companies', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+    console.log('Companies: ', docs);
+    
     setCompanies(docs)
     setPerPage(page)
     setPageSize(totalPages)
@@ -117,13 +119,9 @@ export default function CompaniesPage() {
         accessorKey: 'phone',
       },
       {
-        id: 'location',
-        header: 'Location',
-        accessorKey: 'location',
-        cell: ({ getValue }) => {
-          const location = getValue()
-          return `Lat :${location.latitude}, Lng: ${location.longitude}`
-        },
+        id: 'address',
+        header: 'Address',
+        accessorKey: 'address',
       },
       {
         id: 'createdAt',
@@ -286,7 +284,7 @@ export default function CompaniesPage() {
         <div className="flex justify-between items-center mb-4">
           <p>All Companies</p>
 
-          <Button>Export Data</Button>
+          {/* <Button>Export Data</Button> */}
         </div>
 
         <Table>

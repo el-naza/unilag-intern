@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import './avatar-group.scss'
 
 const AvatarGroup = () => {
@@ -8,18 +8,23 @@ const AvatarGroup = () => {
        <div className='avatar-groups'>
         <Avatar className='lg:w-[30px] lg:h-[30px] sm:w-[25px] sm:h-[25px]'>
            <AvatarImage src="https://github.com/shadcn.png" />
+           <AvatarFallback>O</AvatarFallback>
         </Avatar>
         <Avatar className='lg:w-[30px] lg:h-[30px] sm:w-[25px] sm:h-[25px]'>
            <AvatarImage src="https://github.com/shadcn.png" />
+           <AvatarFallback>O</AvatarFallback>
         </Avatar>
         <Avatar className='lg:w-[30px] lg:h-[30px] sm:w-[25px] sm:h-[25px]'>
            <AvatarImage src="https://github.com/shadcn.png" />
+           <AvatarFallback>O</AvatarFallback>
         </Avatar>
         <Avatar className='lg:w-[30px] lg:h-[30px] sm:w-[25px] sm:h-[25px]'>
            <AvatarImage src="https://github.com/shadcn.png" />
+           <AvatarFallback>O</AvatarFallback>
         </Avatar>
         <Avatar className='lg:w-[30px] lg:h-[30px] sm:w-[25px] sm:h-[25px]'>
            <AvatarImage src="https://github.com/shadcn.png" />
+           <AvatarFallback>O</AvatarFallback>
         </Avatar>
        </div>
             
