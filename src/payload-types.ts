@@ -272,6 +272,7 @@ export interface Company {
   resetPasswordOtpHash?: string | null;
   updatedAt: string;
   createdAt: string;
+  isWaiting?: boolean | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -590,6 +591,7 @@ export interface CompaniesSelect<T extends boolean = true> {
   resetPasswordOtpHash?: T;
   updatedAt?: T;
   createdAt?: T;
+  isWaiting?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
