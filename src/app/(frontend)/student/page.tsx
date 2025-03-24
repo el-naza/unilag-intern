@@ -67,7 +67,7 @@ const Page = () => {
     [],
   )
 
-  if (status === 'unauthenticated') signOut()
+  // if (status === 'unauthenticated') signOut()
 
   const handleCourseAreaChange = (courseArea: string) => {
     setPage(1)
@@ -151,7 +151,7 @@ const Page = () => {
   }, [user])
   return (
     <>
-      {loading ? (
+      {loading || status !== 'authenticated' ? (
         <Loader />
       ) : (
         <div>
