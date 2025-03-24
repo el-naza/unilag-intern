@@ -31,6 +31,7 @@ import { useMemo, useState } from 'react'
 import { Companies } from '@/collections/Companies'
 import signInUser, { signInUserClient } from '@/services/signinUser'
 import { authStore } from '@/store/authStore'
+import CompanySignUp from '@/components/ui/company-signup-form'
 
 function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
@@ -161,208 +162,211 @@ export default function SignUp() {
   })
 
   return (
-    <div className="">
-      <button
-        onClick={() => router.back()}
-        className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
-      >
-        <ArrowIcon /> Back
-      </button>
-      <h2 className="font-[500] text-[24px] text-center mt-[40px]">Sign up as a Siwes Company'</h2>
-      <p className="text-center text-gray-dark-2 font-[400] text-[14px] mt-8 mb-[40px]">
-        Enter your company information to proceed
-      </p>
+    // <div className="">
+    //   <button
+    //     onClick={() => router.back()}
+    //     className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
+    //   >
+    //     <ArrowIcon /> Back
+    //   </button>
+    //   <h2 className="font-[500] text-[24px] text-center mt-[40px]">Sign up as a Siwes Company'</h2>
+    //   <p className="text-center text-gray-dark-2 font-[400] text-[14px] mt-8 mb-[40px]">
+    //     Enter your company information to proceed
+    //   </p>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          form.handleSubmit()
-        }}
-      >
-        <form.Field
-          name="name"
-          children={(field) => {
-            return (
-              <>
-                <Label>Company Name</Label>
-                <Input
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Enter Company Name"
-                  className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2  border-[1px] mb-3 placeholder:text-[#969a9b] ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
-                />
-                <FieldError field={field} />
-              </>
-            )
-          }}
-        />
-        <form.Field
-          name="email"
-          children={(field) => {
-            return (
-              <>
-                <Label>Email</Label>
-                <Input
-                  value={field.state.value || ''}
-                  type="email"
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Enter Email"
-                  className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2  border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
-                />
-                <FieldError field={field} />
-              </>
-            )
-          }}
-        />
+    //   <form
+    //     onSubmit={(e) => {
+    //       e.preventDefault()
+    //       e.stopPropagation()
+    //       form.handleSubmit()
+    //     }}
+    //   >
+    //     <form.Field
+    //       name="name"
+    //       children={(field) => {
+    //         return (
+    //           <>
+    //             <Label>Company Name</Label>
+    //             <Input
+    //               value={field.state.value || ''}
+    //               onBlur={field.handleBlur}
+    //               onChange={(e) => field.handleChange(e.target.value)}
+    //               placeholder="Enter Company Name"
+    //               className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2  border-[1px] mb-3 placeholder:text-[#969a9b] ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+    //             />
+    //             <FieldError field={field} />
+    //           </>
+    //         )
+    //       }}
+    //     />
+    //     <form.Field
+    //       name="email"
+    //       children={(field) => {
+    //         return (
+    //           <>
+    //             <Label>Email</Label>
+    //             <Input
+    //               value={field.state.value || ''}
+    //               type="email"
+    //               onBlur={field.handleBlur}
+    //               onChange={(e) => field.handleChange(e.target.value)}
+    //               placeholder="Enter Email"
+    //               className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2  border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+    //             />
+    //             <FieldError field={field} />
+    //           </>
+    //         )
+    //       }}
+    //     />
 
-        <form.Field
-          name="phone"
-          children={(field) => {
-            return (
-              <>
-                <Label>Company phone No.</Label>
-                <Input
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Enter phone No."
-                  className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2  border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
-                />
-                <FieldError field={field} />
-              </>
-            )
-          }}
-        />
+    //     <form.Field
+    //       name="phone"
+    //       children={(field) => {
+    //         return (
+    //           <>
+    //             <Label>Company phone No.</Label>
+    //             <Input
+    //               value={field.state.value || ''}
+    //               onBlur={field.handleBlur}
+    //               onChange={(e) => field.handleChange(e.target.value)}
+    //               placeholder="Enter phone No."
+    //               className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2  border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+    //             />
+    //             <FieldError field={field} />
+    //           </>
+    //         )
+    //       }}
+    //     />
 
-        <form.Field
-          name="address"
-          children={(field) => {
-            return (
-              <>
-                <Label>Company Address</Label>
-                <Input
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Enter Address"
-                  className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2  border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
-                />
-                <FieldError field={field} />
-              </>
-            )
-          }}
-        />
-        <form.Field
-          name="location.longitude"
-          children={(field) => {
-            return (
-              <>
-                <Label>Longitude</Label>
-                <Input
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(Number(e.target.value))} // Ensure it's a number
-                  placeholder="Enter Longitude"
-                  className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2 border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
-                />
-                <FieldError field={field} />
-              </>
-            )
-          }}
-        />
-        <form.Field
-          name="location.latitude"
-          children={(field) => {
-            return (
-              <>
-                <Label>Latitude</Label>
-                <Input
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(Number(e.target.value))} // Ensure it's a number
-                  placeholder="Enter Latitude"
-                  className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2 border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
-                />
-                <FieldError field={field} />
-              </>
-            )
-          }}
-        />
+    //     <form.Field
+    //       name="address"
+    //       children={(field) => {
+    //         return (
+    //           <>
+    //             <Label>Company Address</Label>
+    //             <Input
+    //               value={field.state.value || ''}
+    //               onBlur={field.handleBlur}
+    //               onChange={(e) => field.handleChange(e.target.value)}
+    //               placeholder="Enter Address"
+    //               className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2  border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+    //             />
+    //             <FieldError field={field} />
+    //           </>
+    //         )
+    //       }}
+    //     />
+    //     <form.Field
+    //       name="location.longitude"
+    //       children={(field) => {
+    //         return (
+    //           <>
+    //             <Label>Longitude</Label>
+    //             <Input
+    //               value={field.state.value || ''}
+    //               onBlur={field.handleBlur}
+    //               onChange={(e) => field.handleChange(Number(e.target.value))} // Ensure it's a number
+    //               placeholder="Enter Longitude"
+    //               className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2 border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+    //             />
+    //             <FieldError field={field} />
+    //           </>
+    //         )
+    //       }}
+    //     />
+    //     <form.Field
+    //       name="location.latitude"
+    //       children={(field) => {
+    //         return (
+    //           <>
+    //             <Label>Latitude</Label>
+    //             <Input
+    //               value={field.state.value || ''}
+    //               onBlur={field.handleBlur}
+    //               onChange={(e) => field.handleChange(Number(e.target.value))} // Ensure it's a number
+    //               placeholder="Enter Latitude"
+    //               className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2 border-[1px] mb-3 placeholder:text-[#969a9b]  ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
+    //             />
+    //             <FieldError field={field} />
+    //           </>
+    //         )
+    //       }}
+    //     />
 
-        <form.Field
-          name="courseAreas"
-          children={(field) => {
-            // Manually defined options
+    //     <form.Field
+    //       name="courseAreas"
+    //       children={(field) => {
+    //         // Manually defined options
 
-            return (
-              <>
-                <Label>Course Areas</Label>
-                <Select
-                  value={field.state?.value?.[0] || ''}
-                  onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
-                  onValueChange={(value) => {
-                    console.log('Selected Course Area:', value) // Debugging
-                    field.handleChange([value] as any)
-                  }}
-                  // value={(field.state.value as string) || ''}
-                  // onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
-                  // onValueChange={(value) => field.handleChange(value as any)}
-                  // className="border border-black-2 mb-3 p?laceholder:text-[#969a9b]"
-                >
-                  <SelectTrigger
-                    className={`${field.state.value ? '' : 'text-muted-foreground'} mb-3 border  mb-3 placeholder:text-[#969a9b]`}
-                  >
-                    <SelectValue placeholder="Select Course Area" className="text-[#969a9b]" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(
-                      Companies.fields.find(
-                        (f: Field & { name: string; options: string[] }) => f.name === field.name,
-                      ) as { options: string[] }
-                    )?.options?.map((option, i) => (
-                      <SelectItem value={option} key={i}>
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FieldError field={field} />
-              </>
-            )
-          }}
-        />
+    //         return (
+    //           <>
+    //             <Label>Course Areas</Label>
+    //             <Select
+    //               value={field.state?.value?.[0] || ''}
+    //               onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
+    //               onValueChange={(value) => {
+    //                 console.log('Selected Course Area:', value) // Debugging
+    //                 field.handleChange([value] as any)
+    //               }}
+    //               // value={(field.state.value as string) || ''}
+    //               // onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
+    //               // onValueChange={(value) => field.handleChange(value as any)}
+    //               // className="border border-black-2 mb-3 p?laceholder:text-[#969a9b]"
+    //             >
+    //               <SelectTrigger
+    //                 className={`${field.state.value ? '' : 'text-muted-foreground'} mb-3 border  mb-3 placeholder:text-[#969a9b]`}
+    //               >
+    //                 <SelectValue placeholder="Select Course Area" className="text-[#969a9b]" />
+    //               </SelectTrigger>
+    //               <SelectContent>
+    //                 {(
+    //                   Companies.fields.find(
+    //                     (f: Field & { name: string; options: string[] }) => f.name === field.name,
+    //                   ) as { options: string[] }
+    //                 )?.options?.map((option, i) => (
+    //                   <SelectItem value={option} key={i}>
+    //                     {option}
+    //                   </SelectItem>
+    //                 ))}
+    //               </SelectContent>
+    //             </Select>
+    //             <FieldError field={field} />
+    //           </>
+    //         )
+    //       }}
+    //     />
 
-        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-          {([canSubmit, isSubmitting]) => (
-            <>
-              <Button
-                type="submit"
-                disabled={!canSubmit}
-                size="lg"
-                className="w-full mt-5"
-                variant="secondary"
-              >
-                Continue {isSubmitting && <Spinner />}
-              </Button>
-              <FormError form={form} />
-            </>
-          )}
-        </form.Subscribe>
-      </form>
+    //     <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+    //       {([canSubmit, isSubmitting]) => (
+    //         <>
+    //           <Button
+    //             type="submit"
+    //             disabled={!canSubmit}
+    //             size="lg"
+    //             className="w-full mt-5"
+    //             variant="secondary"
+    //           >
+    //             Continue {isSubmitting && <Spinner />}
+    //           </Button>
+    //           <FormError form={form} />
+    //         </>
+    //       )}
+    //     </form.Subscribe>
+    //   </form>
 
-      <p className="font-[400] text-[12px] text-gray-dark-2 leading-[16px] mt-[12px] text-cente r">
-        Already have an account ?
-        <span
-          className="text-[#007AFF] cursor-pointer"
-          onClick={() => router.push('/company-auth/login')}
-        >
-          {' '}
-          login as a company
-        </span>
-      </p>
+    //   <p className="font-[400] text-[12px] text-gray-dark-2 leading-[16px] mt-[12px] text-cente r">
+    //     Already have an account ?
+    //     <span
+    //       className="text-[#007AFF] cursor-pointer"
+    //       onClick={() => router.push('/company-auth/login')}
+    //     >
+    //       {' '}
+    //       login as a company
+    //     </span>
+    //   </p>
+    // </div>
+    <div className="py-10">
+      <CompanySignUp />
     </div>
   )
 }
