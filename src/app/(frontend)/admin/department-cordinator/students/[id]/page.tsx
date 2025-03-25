@@ -3,8 +3,10 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -13,10 +15,32 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { getStudent } from '@/services/admin/students'
 import { format } from 'date-fns'
-import { MessageSquareText } from 'lucide-react'
+import { Edit2, EllipsisVertical, MessageSquareText } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import AssignCompany from './assign-company'
+import { getAllReports } from '@/services/admin/reports'
+import Pagination from '../../../_components/pagination'
+import Spinner from '@/components/spinner'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { toast } from 'sonner'
+import { useMutation } from '@tanstack/react-query'
+import updateDoc from '@/services/updateDoc'
+import fetchStudentReports from '@/services/fetchStudentReports'
 
 export default function StudentDetailPage() {
   const { id }: { id: string } = useParams()
@@ -24,7 +48,12 @@ export default function StudentDetailPage() {
 
   const [siwesForm, setSiwesForm] = useState<File | null>(null)
   const [student, setStudent] = useState<any>(null)
+  const [reports, setReports] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [grade, setGrade] = useState('')
+  const [reportId, seReportId] = useState('')
 
   const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -35,8 +64,53 @@ export default function StudentDetailPage() {
   const fetchStudentDetail = async () => {
     const res: any = await getStudent('students', id)
     setStudent(res.data)
+    await fetchReports(res.data.id)
     setLoading(false)
   }
+
+  const launchGradeReport = (reportId: string) => {
+    setOpenDialog(true)
+    seReportId(reportId)
+  }
+
+  const fetchReports = async (id: string) => {
+    const res: any = await fetchStudentReports(id)
+    const flatRes = Object.values(res)
+    setReports(flatRes)
+  }
+
+  const gradeReport = async () => {
+    if (!grade) {
+      toast.error('Please select a grade')
+      return
+    }
+    setSubmitting(true)
+    await updateReportMtn.mutateAsync()
+  }
+
+  const updateReportMtn = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await updateDoc('reports', reportId, { grade })
+
+        if (!res) {
+          toast.error('Network error; please try again later')
+          return
+        }
+        toast.success('Report updated')
+
+        console.log('Response:', res)
+        fetchReports(student.id)
+        setOpenDialog(false)
+        return res
+      } catch (error) {
+        console.error('Error updating report:', error)
+        toast.error('An error occurred while updating; please try again later')
+      } finally {
+        setSubmitting(false)
+      }
+    },
+  })
 
   useEffect(() => {
     fetchStudentDetail()
@@ -207,21 +281,101 @@ export default function StudentDetailPage() {
         <p className="text-sm">All supervisors reports</p>
 
         <div className="mt-4">
-          <div className="flex gap-4 border-[1px] border-gray-light-2 rounded-[8px] p-4">
-            <div className="p-3 rounded-full grid place-content-center bg-primary text-white w-[40px] h-[40px]">
-              <MessageSquareText></MessageSquareText>
-            </div>
-            <div>
-              <h4 className="font-medium">Report 001</h4>
-              <p className="text-gray-dark-3">By Fredrick Precious 02/03/2023</p>
+          {reports.map((report, index) => (
+            <div
+              key={index}
+              className="flex gap-4 border-[1px] border-gray-light-2 rounded-[8px] p-4 mb-2"
+            >
+              <div className="p-3 rounded-full grid place-content-center bg-primary text-white w-[40px] h-[40px]">
+                <MessageSquareText></MessageSquareText>
+              </div>
+              <div className="w-full">
+                <div className="flex justify-between">
+                  <h4 className="font-medium">Report {index + 1}</h4>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost">
+                        <EllipsisVertical className="text-primary" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 bg-white border-none">
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          onClick={() => launchGradeReport(report[0].id)}
+                        >
+                          <Edit2 />
+                          <span>Grade Report</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <p className="text-gray-dark-3">
+                  By {report[0].student.firstName + '' + report[0].student.lastName}{' '}
+                  {format(new Date(report[0].createdAt), 'MMM dd, yyyy')}
+                </p>
 
-              <div className="mt-3">
-                <p className="text-primary">Message</p>
-                <p className="text-gray-dark-3">Student is doing well</p>
+                {report.map((reportItem) => (
+                  <>
+                    <div key={reportItem.id} className="mt-3">
+                      <p className="text-primary">Details</p>
+                      <p className="text-gray-dark-3">{reportItem.details}</p>
+                    </div>
+                    <div className="mt-3">
+                      <p className="text-primary">Remark</p>
+                      <p className="text-gray-dark-3">{reportItem.remark}</p>
+                    </div>
+                  </>
+                ))}
+                <div className="mt-3">
+                  <p className="text-primary">Grade</p>
+                  <p className="text-gray-dark-3">
+                    {report[0].grade ? report[0].grade : 'Not graded yet'}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
+
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+          <DialogContent className="bg-white rounded-lg gap-2">
+            <DialogTitle className="text-[#0B7077] font-normal">Grade Report</DialogTitle>
+            <DialogDescription className="text-[#8E8E93]">Select Grade</DialogDescription>
+            <div className="grid gap-4 text-center">
+              <Select onValueChange={(value) => setGrade(value)}>
+                <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-full">
+                  <SelectValue placeholder="Select Grade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="A">A</SelectItem>
+                    <SelectItem value="B">B</SelectItem>
+                    <SelectItem value="C">C</SelectItem>
+                    <SelectItem value="D">D</SelectItem>
+                    <SelectItem value="E">E</SelectItem>
+                    <SelectItem value="F">F</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <DialogFooter className="grid grid-cols-4 gap-1">
+              <DialogClose className="col-start-2 text-xs bg-white text-[#48484A] border-0">
+                Cancel
+              </DialogClose>
+              <button
+                disabled={submitting}
+                onClick={gradeReport}
+                className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+              >
+                <div className="flex m-auto">
+                  <span>Submit</span> {submitting && <Spinner className="ms-1 h-4" />}
+                </div>
+              </button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )

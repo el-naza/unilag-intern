@@ -63,5 +63,11 @@ export const Reports: CollectionConfig = {
       type: 'number',
       required: true,
     },
+    {
+      name: 'grade',
+      type: 'select',
+      options: ['A', 'B', 'C', 'D', 'E', 'F'],
+      defaultValue: () => null,
+    },
   ],
 }

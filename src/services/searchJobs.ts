@@ -29,7 +29,6 @@ export default async function searchJobs<T>(
   )
 
   const col: CollectionSlug = 'companies'
-
   return (
     await axiosInstance
       .get(`/api/${col}${stringifiedQuery}`, {

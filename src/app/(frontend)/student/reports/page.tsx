@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import ReportDailyCard from '@/app/(frontend)/components/Cards/ReportDailyCard'
 import {
@@ -29,17 +29,28 @@ import { signOut, useSession } from 'next-auth/react'
 import fetchStudentReports from '@/services/fetchStudentReports'
 import { format, isToday, isYesterday } from 'date-fns'
 import { object } from 'zod'
+import fetchDocs from '@/services/fetchDocs'
 
 export default function Page() {
   const router = useRouter()
   const { data: session, status } = useSession()
+  const [employments, setEmployments] = useState<any[]>([])
+
+  const fetchEmployments = async () => {
+    const res: any = await fetchDocs('employments')
+    setEmployments(res.docs)
+  }
+
+  const employment = useMemo(() => (employments.length ? employments[0] : {}), [employments])
+
+  const user = useMemo<any>(() => session?.user, [session])
 
   const saveReportMtn = useMutation({
     mutationFn: async (report: Report) => {
       try {
         // randomly generate password for reports on creation for now
-
         const res = await saveDoc('reports', report)
+        console.log(res)
         if (!res) return toast.error('Network err; pls try again later')
 
         return res
@@ -58,6 +69,10 @@ export default function Page() {
   //   // signOut()
   //   router.replace('/auth/login')
   // }
+
+  useEffect(() => {
+    fetchEmployments()
+  }, [])
 
   return (
     <div className="min-h-screen relative text-sm text-black py-0 lg:py-20">
@@ -110,6 +125,8 @@ export default function Page() {
                     },
                     validators: {
                       onSubmitAsync: async ({ value }) => {
+                        value.employment = employment?.id
+                        value.student = user?.id
                         const emptyRequiredFields = Reports.fields.reduce<object>(
                           (
                             acc: ValidationFieldError,
@@ -121,8 +138,8 @@ export default function Page() {
                           }),
                           {},
                         )
-
                         if (Object.keys(emptyRequiredFields).length) {
+                          console.log(emptyRequiredFields)
                           return {
                             form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
                             fields: emptyRequiredFields,
@@ -148,6 +165,7 @@ export default function Page() {
                         // success here so naviagate or toast to success !!
                         form.reset()
                         toast.success('Report saved successful')
+                        reportsQuery.refetch()
                         // router.push('/student')
                         // router.refresh()
 
@@ -343,7 +361,7 @@ export default function Page() {
                             <div className="hidden lg:grid gap-4">
                               {/* {reportsQuery?.data?.[i.toString()]} */}
                               {reportsQuery?.data?.[(i + 1).toString()]?.map((report, i, arr) => {
-                                let formattedDate = getFormattedDate(new Date(report.createdAt))
+                                const formattedDate = getFormattedDate(new Date(report.createdAt))
                                 return (
                                   <div className="">
                                     {i - 1 >= 0 &&

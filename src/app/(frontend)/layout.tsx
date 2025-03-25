@@ -1,16 +1,12 @@
 'use client'
 
+import { cn } from 'src/utilities/cn'
+import { Poppins, Inter } from 'next/font/google'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
-import { Inter } from 'next/font/google'
-import {
-  QueryClient,
-  QueryClientProvider
-} from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SessionProvider } from 'next-auth/react'
-import { Poppins } from 'next/font/google'
 import React from 'react'
-import { cn } from 'src/utilities/cn'
 
 import { Toaster } from '@/components/ui/sonner'
 import 'animate.css'
