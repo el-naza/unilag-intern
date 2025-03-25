@@ -54,10 +54,10 @@ export default function Page() {
     queryFn: () => fetchStudentReports(),
   })
 
-  if (status === 'unauthenticated' || (status === 'authenticated' && !session.user)) {
-    signOut()
-    router.replace('/auth/login')
-  }
+  // if (status === 'authenticated' && !session.user) {
+  //   // signOut()
+  //   router.replace('/auth/login')
+  // }
 
   return (
     <div className="min-h-screen relative text-sm text-black py-0 lg:py-20">
@@ -343,7 +343,7 @@ export default function Page() {
                             <div className="hidden lg:grid gap-4">
                               {/* {reportsQuery?.data?.[i.toString()]} */}
                               {reportsQuery?.data?.[(i + 1).toString()]?.map((report, i, arr) => {
-                                let formattedDate = getFormattedDate(new Date(report.createdAt))
+                                const formattedDate = getFormattedDate(new Date(report.createdAt))
                                 return (
                                   <div className="">
                                     {i - 1 >= 0 &&

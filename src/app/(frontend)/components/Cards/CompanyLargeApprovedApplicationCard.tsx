@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import Spinner from '@/components/spinner'
 import { toast } from 'sonner'
+import { usePathname } from 'next/navigation'
 
 interface Props {
   interviewInvitation: InterviewInvitation
@@ -27,14 +28,12 @@ export default function CompanyLargeApprovedApplicationCard({
   interviewInvitation,
   onRespond,
 }: Props) {
+  const pathname = usePathname()
   const [open, setOpen] = useState<boolean>(false)
+  const [open2, setOpen2] = useState<boolean>(false)
   const [submitting, setSubmitting] = useState<boolean>(false)
   const [declineReason, setDeclineReason] = useState<string>('')
-
-  const action = useMemo(
-    (): 'Accept' | 'Decline' => (interviewInvitation.status === 'declined' ? 'Accept' : 'Decline'),
-    [interviewInvitation],
-  )
+  const [action, setAction] = useState<string>('Accept')
 
   const handleDeclineReasonInput = (e: any) => {
     setDeclineReason(e.target.value)
@@ -48,6 +47,7 @@ export default function CompanyLargeApprovedApplicationCard({
     })
     setSubmitting(false)
     setOpen(false)
+    setOpen2(false)
     toast.success('Invitation accepted successfully')
   }
 
@@ -61,6 +61,7 @@ export default function CompanyLargeApprovedApplicationCard({
     setDeclineReason('')
     setSubmitting(false)
     setOpen(false)
+    setOpen2(false)
     toast.success('Invitation declined successfully')
   }
 
@@ -121,18 +122,51 @@ export default function CompanyLargeApprovedApplicationCard({
                   </button>
                 </Link>
               </div>
-              <div>
-                <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger asChild>
-                    <button className="bg-[#A71C51] rounded-lg p-2 min-w-40">
-                      <span className="text-white text-sm">{action}</span>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="bg-white rounded-lg gap-2">
-                    <DialogTitle className="text-[#0B7077] font-normal">
-                      {action} Invitation
-                    </DialogTitle>
-                    {interviewInvitation.status !== 'declined' && (
+              {pathname === '/student/applications/interviews' ? (
+                <div className="grid grid-cols-2 gap-2">
+                  <Dialog open={open2} onOpenChange={setOpen2}>
+                    <DialogTrigger asChild>
+                      <button
+                        onClick={() => setAction('Accept')}
+                        className="bg-primary rounded-lg p-2 min-w-40"
+                      >
+                        <span className="text-white text-sm">Accept</span>
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-white rounded-lg gap-2">
+                      <DialogTitle className="text-[#0B7077] font-normal">
+                        Accept Invitation
+                      </DialogTitle>
+                      <DialogFooter className="grid grid-cols-5 gap-1">
+                        <DialogClose className="col-start-3 text-xs bg-white text-[#48484A] border-0">
+                          Cancel
+                        </DialogClose>
+                        <button
+                          disabled={submitting}
+                          onClick={acceptInterview}
+                          className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+                        >
+                          <div className="flex m-auto">
+                            <span>Continue</span> {submitting && <Spinner className="ms-1 h-4" />}
+                          </div>
+                        </button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger asChild>
+                      <button
+                        onClick={() => setAction('Decline')}
+                        className="bg-[#A71C51] rounded-lg p-2 min-w-40"
+                      >
+                        <span className="text-white text-sm">Decline</span>
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-white rounded-lg gap-2">
+                      <DialogTitle className="text-[#0B7077] font-normal">
+                        Decline Invitation
+                      </DialogTitle>
+                      {/* {interviewInvitation.status !== 'declined' && ( */}
                       <>
                         <DialogDescription className="text-[#8E8E93]">
                           Reason for {action}
@@ -146,28 +180,27 @@ export default function CompanyLargeApprovedApplicationCard({
                           ></textarea>
                         </div>
                       </>
-                    )}
-                    <DialogFooter className="grid grid-cols-5 gap-1">
-                      <DialogClose className="col-start-3 text-xs bg-white text-[#48484A] border-0">
-                        Cancel
-                      </DialogClose>
-                      <button
-                        disabled={submitting}
-                        onClick={
-                          interviewInvitation.status !== 'declined'
-                            ? declineInterview
-                            : acceptInterview
-                        }
-                        className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
-                      >
-                        <div className="flex m-auto">
-                          <span>Continue</span> {submitting && <Spinner className="ms-1 h-4" />}
-                        </div>
-                      </button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
+                      {/* )} */}
+                      <DialogFooter className="grid grid-cols-5 gap-1">
+                        <DialogClose className="col-start-3 text-xs bg-white text-[#48484A] border-0">
+                          Cancel
+                        </DialogClose>
+                        <button
+                          disabled={submitting}
+                          onClick={declineInterview}
+                          className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+                        >
+                          <div className="flex m-auto">
+                            <span>Continue</span> {submitting && <Spinner className="ms-1 h-4" />}
+                          </div>
+                        </button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>

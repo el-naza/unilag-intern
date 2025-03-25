@@ -4,14 +4,15 @@ import { companies } from '@/access/companies'
 import { relatedCompany } from '@/access/relatedCompany'
 import { relatedStudentOrCompany } from '@/access/relatedStudentOrCompany'
 import { authenticatedUsers } from '@/access/authenticated-users'
+import { companyOrStudent } from './Companies/Internships'
 
 export const Employments: CollectionConfig = {
   slug: 'employments',
   access: {
     create: companies,
     delete: relatedStudentOrCompany,
-    update: relatedCompany,
-    read: authenticatedUsers,
+    update: companyOrStudent,
+    read: companyOrStudent,
   },
   fields: [
     {
@@ -29,6 +30,12 @@ export const Employments: CollectionConfig = {
     {
       name: 'dateEnded',
       type: 'date',
+    },
+    {
+      name: 'status',
+      type: 'select',
+      options: ['pending', 'Decline', 'Accept', 'Terminate'],
+      defaultValue: 'pending',
     },
   ],
 }

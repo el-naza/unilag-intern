@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from 'src/utilities/cn'
-import { Poppins } from 'next/font/google'
+import { Poppins, Inter } from 'next/font/google'
 import React from 'react'
 import {
   useQuery,
@@ -26,12 +26,26 @@ const poppins = Poppins({
   fallback: ['sans-serif'],
 })
 
+const inter = Inter({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  fallback: ['sans-serif'],
+})
+
 const queryClient = new QueryClient()
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      className={cn(poppins.variable, poppins.className, 'tracking-[0.37px]')}
+      className={cn(
+        poppins.variable,
+        poppins.className,
+        inter.variable,
+        inter.className,
+        'tracking-[0.37px]',
+      )}
       lang="en"
       suppressHydrationWarning
     >

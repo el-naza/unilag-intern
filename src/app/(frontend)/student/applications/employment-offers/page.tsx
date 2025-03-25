@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNavbar'
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
 import CompanyApprovedApplicationCard from '@/app/(frontend)/components/Cards/CompanyApprovedApplicationCard'
@@ -17,13 +17,17 @@ import { useMutation } from '@tanstack/react-query'
 import StudentApplicationHeader from '@/app/(frontend)/components/Layouts/Student/StudentApplicationHeader'
 import { stringify } from 'qs-esm'
 import { Where } from 'payload'
+import EmploymentCard from '@/app/(frontend)/components/Cards/EmploymentCard'
+import { useSession } from 'next-auth/react'
 
 const Page = () => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [interviewInvitations, setInterviewInvitations] = useState<InterviewInvitation[]>([])
+  const [employmentOffers, setEmploymentsOffers] = useState<any[]>([])
+  const { data: session } = useSession()
+  const user = useMemo<any>(() => session?.user, [session])
 
-  const fetchInterviewInvitations = async () => {
-    const query: Where = { status: { equals: 'declined' } }
+  const fetchemploymentOffers = async () => {
+    const query: Where = { status: { equals: 'pending' } }
 
     const stringifiedQuery = stringify(
       {
@@ -32,37 +36,95 @@ const Page = () => {
       { addQueryPrefix: true },
     )
 
-    const res: any = await fetchDocs('interview-invitations', stringifiedQuery)
-    console.log(res)
-    setInterviewInvitations(res.docs)
+    const res: any = await fetchDocs('employments', stringifiedQuery)
+    console.log('my employment ', res)
+    setEmploymentsOffers(res.docs)
     setLoading(false)
   }
 
   const respondToInterviewMtn = useMutation({
-    mutationFn: async (interviewInvitation: InterviewInvitation) => {
+    mutationFn: async ({
+      id,
+      status,
+      employmentId,
+    }: {
+      id: string
+      status: string
+      employmentId?: string
+    }) => {
       try {
-        console.log(interviewInvitation)
-        const res = await updateDoc(
-          'interview-invitations',
-          interviewInvitation.id,
-          interviewInvitation,
-        )
+        console.log('data being sent ', id, status, employmentId)
+
+        const res = await updateDoc('employments', id, { status })
         console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
+
         return res
       } catch {
         toast.error('An error occured while updating; pls try again later')
       }
     },
   })
+  const [reqloading, setReqLoading] = React.useState<string | null>(null)
 
-  const handleRespond = async (value: InterviewInvitation) => {
-    await respondToInterviewMtn.mutateAsync(value)
-    await fetchInterviewInvitations()
+  const handleRespond = async (
+    id: string,
+    status: string,
+    employmentId?: string,
+    studentId?: string,
+  ) => {
+    try {
+      setReqLoading(status as string) 
+      const res = await respondToInterviewMtn.mutateAsync({ id, status, employmentId })
+
+      if (res && status === 'Accepted' && employmentId && studentId) {
+        const employedData = {
+          employedBy: {
+            employmentId,
+            dateEmployed: new Date().toISOString(), 
+          },
+        }
+
+        
+        await updateDoc('students', studentId, employedData)
+      }
+
+      toast.success('Employment status updated successfully, you are now employed!')
+    } catch (error) {
+      console.error('Error updating employment status:', error)
+    } finally {
+      setReqLoading(null) // Reset loading state
+    }
   }
 
+  // const handleRespond = async (
+  //   id: string,
+  //   status: string,
+  //   employmentId?: string,
+  //   studentId?: string,
+  // ) => {
+  //   try {
+  //     const res = await respondToInterviewMtn.mutateAsync({ id, status, employmentId })
+
+  //     if (res && status === 'Accepted' && employmentId && studentId) {
+  //       const employedData = {
+  //         employedBy: {
+  //           employmentId,
+  //           dateEmployed: new Date().toISOString(), // Save current date as employment date
+  //         },
+  //       }
+
+  //       // Update the student document with the employment details
+  //       let updateStudent = await updateDoc('students', studentId, employedData)
+  //       console.log('updateStudent', updateStudent)
+  //     }
+  //   } catch (error) {
+  //     console.error('Error updating employment status:', error)
+  //   }
+  // }
+
   useEffect(() => {
-    fetchInterviewInvitations()
+    fetchemploymentOffers()
   }, [])
 
   return (
@@ -79,17 +141,9 @@ const Page = () => {
             <div className="container">
               <main className="py-1 bg-white text-sm">
                 <div className="mt-1 mb-3">
-                  <h6 className="text-[#48484A]">Declined Interviews</h6>
+                  <h6 className="text-[#48484A]">Approved Invites</h6>
                 </div>
-                <div className="grid gap-4">
-                  {interviewInvitations.map((interviewInvitation) => (
-                    <CompanyApprovedApplicationCard
-                      interviewInvitation={interviewInvitation}
-                      key={interviewInvitation.id}
-                      onRespond={handleRespond}
-                    />
-                  ))}
-                </div>
+                <div className="grid gap-4"></div>
               </main>
             </div>
           </div>
@@ -113,7 +167,7 @@ const Page = () => {
                     <span>Back</span>
                   </div>
                 </Link>
-                <div className="text-white text-3xl font-bold ms-4">Declined Interviews</div>
+                <div className="text-white text-3xl font-bold ms-4">My Interviews</div>
               </div>
               <div className="text-black bg-white rounded-lg">
                 <div className="grid grid-cols-5 gap-4">
@@ -121,11 +175,22 @@ const Page = () => {
                     <div className="p-5">
                       <StudentApplicationHeader />
                       <div className="grid gap-4">
-                        {interviewInvitations.map((interviewInvitation) => (
-                          <CompanyLargeApprovedApplicationCard
-                            interviewInvitation={interviewInvitation}
-                            key={interviewInvitation.id}
-                            onRespond={handleRespond}
+                        {employmentOffers.map((offer) => (
+                          <EmploymentCard
+                            key={offer.id}
+                            company={{
+                              name: offer.company.name,
+                              address: 'Lokogoma',
+                              phone: offer.company.phone,
+                            }}
+                            status={offer.status}
+                            student={{
+                              firstName: offer.student.firstName,
+                              lastName: offer.student.lastName,
+                            }}
+                            loading={reqloading}
+                            onAccept={() => handleRespond(offer.id, 'Accept', offer.id, user.id)}
+                            onCancel={() => handleRespond(offer.id, 'Decline')}
                           />
                         ))}
                       </div>

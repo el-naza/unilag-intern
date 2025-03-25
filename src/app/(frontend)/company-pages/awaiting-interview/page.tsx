@@ -62,7 +62,7 @@ export default function AwaitingInterview() {
       studentId?: string
     }) => {
       try {
-        console.log(id, status, studentId)
+        console.log("data being sent ", id, status, studentId)
         const res = await updateDoc('interview-invitations', id, { status })
 
         console.log(res)
@@ -170,7 +170,7 @@ export default function AwaitingInterview() {
                           clickAccept: () =>
                             handleRespond(
                               invitation.id,
-                              'company accepted',
+                              'company accected',
                               invitation?.student?.id,
                             ),
                           clickDecline: () => handleRespond(invitation.id, 'company declined'),

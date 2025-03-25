@@ -357,5 +357,21 @@ export const Students: CollectionConfig = {
       type: 'text',
       hidden: true,
     },
+    {
+      name: 'employedBy',
+      type: 'group',
+      fields: [
+        {
+          name: 'employmentId',
+          type: 'relationship',
+          relationTo: 'companies',
+        },
+        {
+          name: 'dateEmployed',
+          type: 'date',
+        },
+      ],
+    },
+    
   ],
 }

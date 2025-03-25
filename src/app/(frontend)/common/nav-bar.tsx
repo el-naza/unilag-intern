@@ -22,7 +22,7 @@ export default function NavBar({ fill }: naveBarProps) {
   const navLinks = [
     { label: 'All Interns', paths: ['/company-pages/all-interns'] },
     {
-      label: 'Invitations',
+      label: 'Applications',
       paths: [
         '/company-pages/internship-post',
         '/company-pages/awaiting-interview',

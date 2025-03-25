@@ -2,21 +2,26 @@ import type { CollectionConfig } from 'payload'
 
 import { students } from '@/access/sutdents'
 import { relatedStudent } from '@/access/reports/relatedStudent'
-import { companyOrStudent } from './Companies/Internships'
-import { anyone } from '@/access/anyone'
+import { relatedStudentOrCompany } from '@/access/relatedStudentOrCompany'
 
 export const Reports: CollectionConfig = {
   slug: 'reports',
-  access: {
-    create: students,
-    delete: relatedStudent,
-    update: anyone,
-  },
+  // access: {
+  //   create: students,
+  //   delete: relatedStudent,
+  //   update: relatedStudentOrCompany,
+  // },
   fields: [
     {
       name: 'student',
       type: 'relationship',
       relationTo: 'students',
+      required: true,
+    },
+    {
+      name: 'employment',
+      type: 'relationship',
+      relationTo: 'employments',
       required: true,
     },
     {
