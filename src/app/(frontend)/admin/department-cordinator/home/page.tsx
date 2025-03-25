@@ -261,7 +261,7 @@ export default function HomePage() {
           </ChartContainer>
         </div>
 
-        <div className="col-span-5 p-4 bg-white rounded-lg shadow-md">
+        <div className="col-span-5 p-4 bg-white rounded-lg shadow-md max-h-[54%] overflow-auto">
           <div className="flex justify-between items-center">
             <p>Recently Employed Student</p>
 
@@ -336,7 +336,7 @@ export default function HomePage() {
         <div className="flex justify-between items-center">
           <p>All Reports</p>
 
-          <Button>Export Data</Button>
+          {/* <Button>Export Data</Button> */}
         </div>
 
         <Table>

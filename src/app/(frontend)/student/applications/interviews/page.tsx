@@ -23,7 +23,7 @@ const Page = () => {
   const [interviewInvitations, setInterviewInvitations] = useState<InterviewInvitation[]>([])
 
   const fetchInterviewInvitations = async () => {
-    const query: Where = { status: { equals: 'declined' } }
+    const query: Where = { status: { equals: 'pending' } }
 
     const stringifiedQuery = stringify(
       {
@@ -79,7 +79,7 @@ const Page = () => {
             <div className="container">
               <main className="py-1 bg-white text-sm">
                 <div className="mt-1 mb-3">
-                  <h6 className="text-[#48484A]">Declined Interviews</h6>
+                  <h6 className="text-[#48484A]">Approved Invites</h6>
                 </div>
                 <div className="grid gap-4">
                   {interviewInvitations.map((interviewInvitation) => (
@@ -113,7 +113,7 @@ const Page = () => {
                     <span>Back</span>
                   </div>
                 </Link>
-                <div className="text-white text-3xl font-bold ms-4">Declined Interviews</div>
+                <div className="text-white text-3xl font-bold ms-4">My Interviews</div>
               </div>
               <div className="text-black bg-white rounded-lg">
                 <div className="grid grid-cols-5 gap-4">

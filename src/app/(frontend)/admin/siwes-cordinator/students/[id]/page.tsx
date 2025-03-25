@@ -1,22 +1,21 @@
 'use client'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { format } from 'date-fns'
-import { MessageSquareText } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import AssignCompany from './assign-company'
-import { useParams } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import useInitials from '@/custom-hooks/useInitials'
 import { getStudent } from '@/services/admin/students'
+import { format } from 'date-fns'
+import { useParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
+import AssignCompany from './assign-company'
 
 export default function StudentDetailPage() {
   const { id }: { id: string } = useParams()
@@ -50,7 +49,8 @@ export default function StudentDetailPage() {
       <div className="flex items-center justify-between mt-4 p-8 w-full mb-8  bg-[url(/images/profile-bg.png)] bg-cover bg-no-repeat bg-center">
         <div className="flex items-center gap-4">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="Profile" />
+            <AvatarImage src={student?.picture} alt="Profile" />
+            <AvatarFallback className='bg-white'>{useInitials(`${student?.firstName +' '+ student?.lastName}`)}</AvatarFallback>
           </Avatar>
 
           <div>
@@ -63,7 +63,7 @@ export default function StudentDetailPage() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="bg-gray-light-2 text-black-2">Assigned Siwes</Button>
+            {/* <Button className="bg-gray-light-2 text-black-2">Assigned Siwes</Button> */}
           </DialogTrigger>
           <DialogContent className="max-w-screen-lg max-h-[90vh] overflow-auto bg-white">
             <DialogHeader>
@@ -132,7 +132,7 @@ export default function StudentDetailPage() {
           </div>
 
           <div>
-            <Label className="mt-3 block"> Location</Label>
+            <Label className="mt-3 block"> Address</Label>
             <Input
               value={student?.homeAddress || ''}
               readOnly
@@ -205,7 +205,9 @@ export default function StudentDetailPage() {
         <h3 className="font-medium text-[1.2rem] mt-8">Siwes Reports</h3>
         <p className="text-sm">All supervisors reports</p>
 
-        <div className="mt-4">
+        <p className='font-semibold'>No reports</p>
+
+        {/* <div className="mt-4">
           <div className="flex gap-4 border-[1px] border-gray-light-2 rounded-[8px] p-4">
             <div className="p-3 rounded-full grid place-content-center bg-primary text-white w-[40px] h-[40px]">
               <MessageSquareText></MessageSquareText>
@@ -220,7 +222,7 @@ export default function StudentDetailPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

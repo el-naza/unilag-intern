@@ -395,12 +395,12 @@ const Page = () => {
                             <NavUnderlineLarge />
                           </Link>
                         </div>
-                        <div>
+                        {/* <div>
                           <Link href="/student" className="relative group block text-center">
                             <span className="text-xl">History</span>
                             <NavUnderlineLarge />
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div className="z-10">

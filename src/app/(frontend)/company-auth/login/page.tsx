@@ -53,7 +53,6 @@ export default function Login() {
   )
   const router = useRouter()
 
-
   const companyPreLoginMtn = useMutation({
     mutationFn: async (email: string) => {
       try {
@@ -188,7 +187,7 @@ export default function Login() {
   return (
     <div className="">
       <button
-        onClick={()=>router.back()}
+        onClick={() => router.back()}
         className="font-[400] text-[14px] flex items-center gap-3 text-[#0C0C0C]"
       >
         <ArrowIcon /> Back
@@ -216,7 +215,7 @@ export default function Login() {
           form.handleSubmit()
         }}
       >
-        <Label>Comapny Email</Label>
+        <Label>Company Email</Label>
         <form.Field name="email">
           {(field) => {
             return (
@@ -270,8 +269,14 @@ export default function Login() {
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <>
-              <Button type="submit" disabled={!canSubmit} size="lg" className="w-full mt-8"  variant="secondary"
-                                      color="white">
+              <Button
+                type="submit"
+                disabled={!canSubmit}
+                size="lg"
+                className="w-full mt-8"
+                variant="secondary"
+                color="white"
+              >
                 {hasPassword ? 'Login' : 'Continue'} {isSubmitting && <Spinner />}
               </Button>
               <FormError form={form} />
@@ -281,14 +286,16 @@ export default function Login() {
       </form>
 
       <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
-        Not registered yet? 
-          <span onClick={()=>router.push("/company-auth/sign-up")} className="text-[#007AFF] cursor-pointer mx-1">
+        Not registered yet?
+        <span
+          onClick={() => router.push('/company-auth/sign-up')}
+          className="text-[#007AFF] cursor-pointer mx-1"
+        >
           Sign up as a company
-         </span>
-           now to connect with top talent effortlessly!
+        </span>
+        now to connect with top talent effortlessly!
       </p>
       {/* )} */}
     </div>
   )
 }
-
