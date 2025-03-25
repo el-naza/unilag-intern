@@ -13,7 +13,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { User, Loader2, MapPin, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -23,6 +22,12 @@ import { randomString } from '@/utilities'
 import { useEffect, useState, useRef } from 'react'
 import industries from '@/utilities/industries'
 import ArrowIcon from '@/app/(frontend)/assets/icons/arrow'
+import { Companies } from '@/collections/Companies'
+import { Company } from '@/payload-types'
+import signInUser, { signInUserClient } from '@/services/signinUser'
+import { authStore } from '@/store/authStore'
+import { ValidationErrors } from '@/utilities/types'
+import { ValidationFieldError } from 'payload'
 
 // Form validation schema
 const waitlistFormSchema = z.object({
@@ -114,6 +119,19 @@ export default function CompanySignUp() {
       },
     },
     mode: 'onChange', // Enable validation on change for isValid
+  })
+
+  const signUpCompanytMtn = useMutation({
+    mutationFn: async (data: Company) => {
+      try {
+        const res = await saveDoc('companies', data)
+        console.log('res', res)
+        if (!res) return toast.error('Network err; pls try again later')
+        return res
+      } catch {
+        toast.error('An error occured while saving message; pls try again later')
+      }
+    },
   })
 
   // Check if all fields are filled
@@ -256,7 +274,7 @@ export default function CompanySignUp() {
 
   // Use mutation for API call
   const saveCompanyMutation = useMutation({
-    mutationFn: async (data: WaitlistFormValues) => {
+    mutationFn: async (data: Company) => {
       try {
         // Add password field to the data
         const dataWithPassword = {
@@ -264,6 +282,48 @@ export default function CompanySignUp() {
           password: randomString(10), // Generate random password with 10 characters
         }
 
+        const res = await signUpCompanytMtn.mutateAsync(dataWithPassword)
+        if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
+          return {
+            form: (res as ValidationErrors).errors[0].message,
+            fields: (res as ValidationErrors).errors[0].data.errors.reduce<object>(
+              (acc: ValidationFieldError, err) => ({
+                ...acc,
+                [err.path]: err.message,
+              }),
+              {},
+            ),
+          }
+        }
+
+        const signInRes = await signInUserClient({
+          email: dataWithPassword.email,
+          password: dataWithPassword.password,
+          col: 'companies',
+        })
+
+        console.log('signInRes ' + signInRes)
+        // success here so naviagate or toast to success
+        form.reset()
+        toast.success('Successfully Signed up!')
+        setIndustryQuery('')
+
+        if (signInRes?.token) {
+          authStore.setState((state) => {
+            return {
+              ...state,
+              signUpAuthToken: signInRes?.token!,
+              signedUpUserId: signInRes?.user?.id!,
+            }
+          })
+          router.push('/company-auth/sign-up/update-profile-image')
+        } else {
+          toast.success('Sign up successful')
+
+          // router.push('/company-auth/login')
+        }
+        console.log('email: ', dataWithPassword.email)
+        console.log('Generated Password: ', dataWithPassword.password)
         console.log('Submitting data with password:', dataWithPassword)
 
         const response = await saveDoc('companies', dataWithPassword)
@@ -274,20 +334,10 @@ export default function CompanySignUp() {
         throw error
       }
     },
-    onSuccess: () => {
-      toast.success('Successfully joined the waitlist!')
-      form.reset()
-      setIndustryQuery('')
-      //   router.push('/waitinglist/success')
-    },
-    onError: (error) => {
-      console.error('Error submitting form:', error)
-      toast.error('There was an error joining the waitlist. Please try again.')
-    },
   })
 
   // Form submission handler
-  function onSubmit(data: WaitlistFormValues) {
+  function onSubmit(data: Company) {
     console.log('Form data:', data)
     saveCompanyMutation.mutate(data)
   }
