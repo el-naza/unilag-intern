@@ -83,7 +83,7 @@ const HeroCarousel = () => {
       >
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
           <CarouselContent>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-1.png"
                 alt="Hero 1"
@@ -130,7 +130,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-2.png"
                 alt="Hero 2"
@@ -159,7 +159,7 @@ const HeroCarousel = () => {
                   alt="Icon"
                   width={40}
                   height={40}
-                  className="w-[2rem] scale-[2]"
+                  className="w-[2rem]"
                 />
                 <div>
                   <p className="text-sm">Tutors</p>
@@ -177,7 +177,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-3.png"
                 alt="Hero 3"
@@ -224,7 +224,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-4.png"
                 alt="Hero 4"

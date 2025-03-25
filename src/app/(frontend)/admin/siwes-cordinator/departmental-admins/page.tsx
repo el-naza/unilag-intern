@@ -41,6 +41,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddAdmin from './add-admin'
+import { toast } from 'sonner'
 
 type Admin = {
   name: string
@@ -65,6 +66,8 @@ export default function DepartmentalAdminsPage() {
   const [total, setTotal] = useState(0)
   const [hasNext, setHasNext] = useState(false)
   const [hasPrevious, setHasPrevious] = useState(false)
+
+  const [adminData, setAdminData] = useState(false)
   const router = useRouter()
 
   const fetchAdmins = async (params?: string) => {
@@ -111,9 +114,9 @@ export default function DepartmentalAdminsPage() {
         accessorKey: 'email',
       },
       {
-        id: 'phoneNumber',
+        id: 'phone',
         header: 'Phone Number',
-        accessorKey: 'phoneNumber',
+        accessorKey: 'phone',
       },
       {
         id: 'numberOfStudents',
@@ -171,8 +174,23 @@ export default function DepartmentalAdminsPage() {
   }, [debouncedQuery])
 
     const [adminOpenDialog, setAdminOpenDialog] = useState(false)
-    const closeDialog = () => {
+    const closeDialog = (refresh: boolean) => {
       setAdminOpenDialog(false)
+
+      if(refresh) fetchAdmins()
+    }
+
+   const editAdmin = (record: any) => {
+      setAdminData(record)
+      setAdminOpenDialog(true)
+    }
+
+    const deleteAdmin = async (record: any) => {
+      const adminId = record.original.id
+      const res: any = await getAllAdmins('admins', adminId)
+      console.log('Admins: ', res)
+      toast.success('Departmental cordinator deleted successfully')
+      fetchAdmins()
     }
 
   return (
@@ -219,7 +237,7 @@ export default function DepartmentalAdminsPage() {
                 <DialogTitle>Add Departmental Cordinator</DialogTitle>
               </DialogHeader>
 
-              <AddAdmin onCloseEmit={closeDialog} />
+              <AddAdmin adminData={ adminData } onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>
         </div>
@@ -267,11 +285,11 @@ export default function DepartmentalAdminsPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 bg-white border-none">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editAdmin(row.original)}>
                           <Edit2 />
                           <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => deleteAdmin(row)}>
                           <Trash />
                           <span>Delete</span>
                         </DropdownMenuItem>

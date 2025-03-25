@@ -77,6 +77,7 @@ export interface Config {
     'interview-invitations': InterviewInvitation;
     'internship-applications': InternshipApplication;
     employments: Employment;
+    'email-subscribers': EmailSubscriber;
     reports: Report;
     internships: Internship;
     'payload-locked-documents': PayloadLockedDocument;
@@ -93,6 +94,7 @@ export interface Config {
     'interview-invitations': InterviewInvitationsSelect<false> | InterviewInvitationsSelect<true>;
     'internship-applications': InternshipApplicationsSelect<false> | InternshipApplicationsSelect<true>;
     employments: EmploymentsSelect<false> | EmploymentsSelect<true>;
+    'email-subscribers': EmailSubscribersSelect<false> | EmailSubscribersSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
     internships: InternshipsSelect<false> | InternshipsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -241,7 +243,24 @@ export interface Company {
   id: string;
   name: string;
   cac?: string | null;
-  courseAreas: ('Mathematics' | 'Science' | 'History' | 'Engineering' | 'Arts')[];
+  industry:
+    | 'Agriculture'
+    | 'Banking/Finance'
+    | 'Construction/Real Estate'
+    | 'Consumer services'
+    | 'Consumer goods'
+    | 'Conglomerates'
+    | 'Entertainment'
+    | 'Health Care'
+    | 'Hospitality'
+    | 'ICT'
+    | 'Natural Resources'
+    | 'Media'
+    | 'Oil & gas'
+    | 'Retail'
+    | 'Technology'
+    | 'Telecommunications'
+    | 'Utilities';
   location: {
     longitude: number;
     latitude: number;
@@ -255,6 +274,7 @@ export interface Company {
   resetPasswordOtpHash?: string | null;
   updatedAt: string;
   createdAt: string;
+  isWaiting?: boolean | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -273,6 +293,7 @@ export interface DepartmentalCoordinator {
   name: string;
   phone?: string | null;
   picture?: (string | null) | Media;
+  department: string;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -308,6 +329,7 @@ export interface Student {
   bankName?: string | null;
   accountNo?: string | null;
   resetPasswordOtpHash?: string | null;
+  coins?: number | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -383,11 +405,22 @@ export interface Employment {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-subscribers".
+ */
+export interface EmailSubscriber {
+  id: string;
+  email: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reports".
  */
 export interface Report {
   id: string;
   student: string | Student;
+  employment: string | Employment;
   title: string;
   details: string;
   supervisor: string;
@@ -437,6 +470,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'employments';
         value: string | Employment;
+      } | null)
+    | ({
+        relationTo: 'email-subscribers';
+        value: string | EmailSubscriber;
       } | null)
     | ({
         relationTo: 'reports';
@@ -557,7 +594,7 @@ export interface AdminsSelect<T extends boolean = true> {
 export interface CompaniesSelect<T extends boolean = true> {
   name?: T;
   cac?: T;
-  courseAreas?: T;
+  industry?: T;
   location?:
     | T
     | {
@@ -573,6 +610,7 @@ export interface CompaniesSelect<T extends boolean = true> {
   resetPasswordOtpHash?: T;
   updatedAt?: T;
   createdAt?: T;
+  isWaiting?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -589,6 +627,7 @@ export interface DepartmentalCoordinatorsSelect<T extends boolean = true> {
   name?: T;
   phone?: T;
   picture?: T;
+  department?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -622,6 +661,7 @@ export interface StudentsSelect<T extends boolean = true> {
   bankName?: T;
   accountNo?: T;
   resetPasswordOtpHash?: T;
+  coins?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -674,10 +714,20 @@ export interface EmploymentsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-subscribers_select".
+ */
+export interface EmailSubscribersSelect<T extends boolean = true> {
+  email?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reports_select".
  */
 export interface ReportsSelect<T extends boolean = true> {
   student?: T;
+  employment?: T;
   title?: T;
   details?: T;
   supervisor?: T;

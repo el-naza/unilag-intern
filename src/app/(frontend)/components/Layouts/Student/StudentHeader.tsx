@@ -9,7 +9,7 @@ export default function StudentHeader() {
 
   const user = useMemo<any>(() => session?.user, [session])
 
-  if (status === 'unauthenticated') signOut()
+  // if (status === 'unauthenticated') signOut()
 
   return (
     <div className="grid grid-cols-5 mb-4">

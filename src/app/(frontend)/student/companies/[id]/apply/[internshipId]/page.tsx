@@ -53,11 +53,6 @@ const Page = () => {
   const submitApplicationMtn = useMutation({
     mutationFn: async (internshipApplication: InternshipApplication) => {
       try {
-        // const formData = new FormData()
-        // formData.set('letter', internshipApplication.letter)
-        // formData.set('student', internshipApplication.student.toString())
-        // formData.set('company', internshipApplication.company?.toString())
-        // const res = await saveFormDataDoc(formData, 'internship-applications')
         const res = await saveDoc('internship-applications', {
           letter: internshipApplication.letter,
           student: internshipApplication.student,

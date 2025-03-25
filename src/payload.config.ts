@@ -19,6 +19,7 @@ import { DepartmentalCoordinators } from './collections/DepartmentalCoordinators
 import { InternshipApplications } from './collections/InternshipApplications'
 import { Employments } from './collections/Employments'
 import { Reports } from './collections/Reports'
+import { EmailSubscribers } from './collections/EmailSubscribers'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -37,6 +38,7 @@ export default buildConfig({
     InterviewInvitations,
     InternshipApplications,
     Employments,
+    EmailSubscribers,
     Reports,
     Internships,
   ],
@@ -55,7 +57,7 @@ export default buildConfig({
   // }),
   email: resendAdapter({
     defaultFromAddress: process.env.EMAIL_USER!,
-    defaultFromName: 'UNILAG INTERNSHIP',
+    defaultFromName: 'INTRNS',
     apiKey: process.env.RESEND_API_KEY || '',
   }),
   plugins: [

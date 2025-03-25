@@ -14,20 +14,35 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import Autoplay from 'embla-carousel-autoplay'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getPopularCompanies } from '@/services/website/website'
+import industries from '@/utilities/industries'
+import Spinner from '@/components/spinner'
 
 export default function HomePage() {
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }))
 
+  const [industy, setIndustry] = useState<string[]>([])
+
+  const [isLoadingCompany, setIsLoadingCompany] = useState<boolean>(true)
+  const [companies, setCompanies] = useState<any[]>([])
+
   const fetchPopularCompanies = async (params?: string) => {
     const res: any = await getPopularCompanies('companies', params)
-    console.log('Website: ', res)
+    const { docs } = res.data
+    setCompanies(docs)
+    setIsLoadingCompany(false)
   }
 
   useEffect(() => {
     fetchPopularCompanies()
+    setIndustry(industries)
   }, [])
+
+  const companyTabChanged = (value: any) => {
+    console.log('Tab Changed: ', value);
+    // fetchPopularCompanies()
+  }
 
   return (
     <div>
@@ -38,75 +53,42 @@ export default function HomePage() {
           Popular Companies
         </h2>
 
-        <Tabs defaultValue="all" className="">
-          <TabsList className="mx-auto w-full bg-transparent gap-8 flex-wrap sm:mb-20">
+        <Tabs defaultValue="all" className="" onValueChange={(value) => companyTabChanged(value)}>
+          <TabsList className="w-full bg-transparent gap-4 overflow-x-auto overflow-y-hidden justify-start py-10">
             <TabsTrigger
               value="all"
               className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
             >
-              All Programme
+              All Industries
             </TabsTrigger>
-            <TabsTrigger
-              value="science"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Science
-            </TabsTrigger>
-            <TabsTrigger
-              value="engineering"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Engineering
-            </TabsTrigger>
-            <TabsTrigger
-              value="business"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Business
-            </TabsTrigger>
-            <TabsTrigger
-              value="art"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Art
-            </TabsTrigger>
-            <TabsTrigger
-              value="medicine"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Medicine
-            </TabsTrigger>
+
+            {industy?.map((ind: string, index: number) => (
+              <TabsTrigger
+                key={index}
+                value={ind}
+                className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
+              >
+                {ind}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           <TabsContent value="all">
-            <CompanyCard />
+            { isLoadingCompany && <Spinner className='mx-auto border-t-primary border-r-primary' /> }
+            <CompanyCard companies={companies} />
           </TabsContent>
 
-          <TabsContent value="science">
-            <CompanyCard />
-          </TabsContent>
-
-          <TabsContent value="engineering">
-            <CompanyCard />
-          </TabsContent>
-
-          <TabsContent value="business">
-            <CompanyCard />
-          </TabsContent>
-
-          <TabsContent value="art">
-            <CompanyCard />
-          </TabsContent>
-
-          <TabsContent value="medicine">
-            <CompanyCard />
-          </TabsContent>
+          {/* {industy?.map((ind: string, index: number) => (
+            <TabsContent value={ind} key={index}>
+              {companies?.map((company: any) => <CompanyCard key={company.id} company={company} />)}
+            </TabsContent>
+          ))} */}
         </Tabs>
       </div>
 
       <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32">
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
-          Intern Category
+          Intern Categories
           <Image
             src="/images/underline.png"
             alt="Gift Card"
@@ -239,8 +221,9 @@ export default function HomePage() {
           />
         </h2>
         <p className="text-center text-[#696984] text-[22px]">
-          Onlearing is one powerful online software suite that combines all the tools <br /> needed
-          to run a successful school or office.
+          Your Inside Scoop on Intern Insights & Opportunities.
+          <br />
+          Unlock Your Potential: News & Resources for Interns.
         </p>
       </div>
 

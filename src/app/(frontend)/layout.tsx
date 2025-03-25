@@ -2,6 +2,7 @@
 
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { Inter } from 'next/font/google'
 import {
   QueryClient,
   QueryClientProvider
@@ -23,12 +24,26 @@ const poppins = Poppins({
   fallback: ['sans-serif'],
 })
 
+const inter = Inter({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  fallback: ['sans-serif'],
+})
+
 const queryClient = new QueryClient()
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      className={cn(poppins.variable, poppins.className, 'tracking-[0.37px]')}
+      className={cn(
+        poppins.variable,
+        poppins.className,
+        inter.variable,
+        inter.className,
+        'tracking-[0.37px]',
+      )}
       lang="en"
       suppressHydrationWarning
     >
