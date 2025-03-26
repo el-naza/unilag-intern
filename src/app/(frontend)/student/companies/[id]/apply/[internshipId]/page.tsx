@@ -318,6 +318,7 @@ const Page = () => {
                                 Your Application has been sent successfully
                               </p>
                             </div>
+                            
                             <DialogFooter>
                               <button
                                 onClick={goHome}
