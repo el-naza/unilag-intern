@@ -329,6 +329,10 @@ export interface Student {
   bankName?: string | null;
   accountNo?: string | null;
   resetPasswordOtpHash?: string | null;
+  employedBy?: {
+    employment?: (string | null) | Employment;
+    dateEmployed?: string | null;
+  };
   coins?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -401,18 +405,6 @@ export interface Internship {
   endDate: string;
   image?: (string | null) | Media;
   status?: ('open' | 'closed') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "employments".
- */
-export interface Employment {
-  id: string;
-  student: string | Student;
-  company: string | Company;
-  dateEnded?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -675,6 +667,12 @@ export interface StudentsSelect<T extends boolean = true> {
   bankName?: T;
   accountNo?: T;
   resetPasswordOtpHash?: T;
+  employedBy?:
+    | T
+    | {
+        employment?: T;
+        dateEmployed?: T;
+      };
   coins?: T;
   updatedAt?: T;
   createdAt?: T;
