@@ -28,15 +28,15 @@ export default function AwaitingInterview() {
     try {
       const res: any = await fetchDocs('interview-invitations')
       if (res) {
-        const getAcceptedInvitation = res?.docs.filter((s) => s.status === 'accepted')
+        const getAcceptedInvitation = res?.docs?.filter((s) => s.status === 'accepted')
 
         const now = new Date()
 
         const awaiting = getAcceptedInvitation.filter((inv) => new Date(inv.dateTime) >= now)
         const completed = getAcceptedInvitation.filter((inv) => new Date(inv.dateTime) < now)
 
-        setAwaitingInterviews(awaiting)
-        setCompletedInterviews(completed)
+        setAwaitingInterviews(awaiting?.length > 0 ? awaiting : [])
+        setCompletedInterviews(completed?.length > 0 ? completed : [])
       } else {
         toast.success('No internship data found:', res)
       }

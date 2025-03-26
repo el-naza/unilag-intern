@@ -40,8 +40,8 @@ export default function InternshipRequest() {
     console.log(res)
     const getApplication = res?.docs.filter((s) => s.status === 'pending')
     console.log('applications', getApplication)
-    setInternReq(getApplication || [])
-    setTableData(res)
+    setInternReq(getApplication?.length > 0 ? getApplication : [])
+    setTableData(res?.docs ? res : null)
     setLoading(false)
   }
 

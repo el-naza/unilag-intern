@@ -38,7 +38,7 @@ const Page = () => {
 
     const res: any = await fetchDocs('employments', stringifiedQuery)
     console.log('my employment ', res)
-    setEmploymentsOffers(res.docs)
+    setEmploymentsOffers(res?.docs)
     setLoading(false)
   }
 
@@ -180,7 +180,7 @@ const Page = () => {
                             key={offer.id}
                             company={{
                               name: offer.company.name,
-                              address: 'Lokogoma',
+                              // address: 'Lokogoma',
                               phone: offer.company.phone,
                             }}
                             status={offer.status}

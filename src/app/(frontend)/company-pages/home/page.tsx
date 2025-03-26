@@ -35,7 +35,7 @@ export default function CompanyHomePage() {
   const fetchStudents = async () => {
     const res: any = await fetchDocs('students')
     console.log(res)
-    setStudents(res.docs)
+    setStudents(res?.docs)
     setLoading(false)
   }
 
