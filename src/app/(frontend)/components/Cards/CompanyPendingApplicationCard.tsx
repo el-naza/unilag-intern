@@ -40,7 +40,7 @@ export default function CompanyPendingApplicationCard({ application, onDelete })
           <div className="ms-2">
             <h5 className="text-black mb-0 text-[12px]">{application.company.name}</h5>
             <p className="text-[10px] text-[#8E8E93] mb-0">
-              Career Area: {application.company.courseAreas.join(', ')}
+              Career Area: {application.company.courseAreas}
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">

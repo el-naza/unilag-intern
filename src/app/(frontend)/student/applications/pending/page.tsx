@@ -20,8 +20,9 @@ export default function Page() {
   const fetchPendingApplications = async () => {
     const res: any = await fetchDocs('internship-applications')
     console.log(res)
+    const getPending =  res.docs.filter((p)=> p.status === "pending")
 
-    setPendingApplications(res.docs)
+    setPendingApplications(getPending)
     setLoading(false)
   }
 
