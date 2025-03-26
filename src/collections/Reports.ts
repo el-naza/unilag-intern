@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { students } from '@/access/sutdents'
+import { students } from '@/access/students'
 import { relatedStudent } from '@/access/reports/relatedStudent'
 import { relatedStudentOrCompany } from '@/access/relatedStudentOrCompany'
 
