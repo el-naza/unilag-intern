@@ -128,9 +128,9 @@ const FilterStats = ({ page, showFilters, stats, onEmitFilter, onEmitDateFilter 
           const Icon = icons[stat.iconName]
 
           return (
-            <div key={index} className="bg-gray-light-2 p-4 rounded-[10px]">
+            <div key={index} className="bg-gray-light-2 p-4 rounded-[10px] grid gap-8">
               <h2 className="font-medium text-[1.2rem]">{stat.label}</h2>
-              <p className="text-primary text-[2.5rem] flex items-center gap-4 mt-4">
+              <p className="text-primary text-[2.5rem] flex items-center gap-4">
                 {' '}
                 {Icon && <Icon className="w-[40px] h-[40px]" />} {stat.count}
               </p>

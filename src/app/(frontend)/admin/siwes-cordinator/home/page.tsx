@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Table,
   TableBody,
@@ -24,20 +25,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { getAllCompanies } from '@/services/admin/companies'
 import { getAllReports, getEmployments } from '@/services/admin/reports'
+import { deleteStudent, getAllStudents } from '@/services/admin/students'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Edit2, EllipsisVertical, ListFilter, Plus, Share } from 'lucide-react'
+import { Edit2, EllipsisVertical, ListFilter, Plus, Trash } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import { toast } from 'sonner'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from '../students/add-student'
-import { deleteStudent, getAllStudents } from '@/services/admin/students'
-import { getAllCompanies } from '@/services/admin/companies'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 type Report = {
   companyName: string
@@ -103,6 +103,8 @@ export default function HomePage() {
   const fetchReports = async (params?: string) => {
     return getAllReports('reports', params).then((res: any) => {
       const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
+      console.log('Reports: ', docs)
+
       setReportData(docs)
       setReportPage(page)
       setReportPageSize(totalPages)
@@ -113,7 +115,8 @@ export default function HomePage() {
   }
 
   const fetchEmployments = async () => {
-    return getEmployments('employments').then((res: any) => {
+    const query = new URLSearchParams({ 'sort': '-createdAt' }).toString()
+    return getEmployments('employments', query).then((res: any) => {
       const { docs } = res.data
       setEmployedData(docs)
     })
@@ -166,23 +169,31 @@ export default function HomePage() {
       },
       {
         id: 'reportNumber',
-        header: 'Report Number',
+        header: 'Report Week',
         accessorKey: 'reportNumber',
       },
       {
         id: 'studentName',
         header: 'Student Name',
         accessorKey: 'studentName',
+        cell: ({ _, row }) => {
+          const rowData = row.original
+          return `${rowData.student.firstName} ${rowData.student.lastName}`
+        },
       },
       {
-        id: 'reportMessage',
+        id: 'title',
         header: 'Report Message',
-        accessorKey: 'reportMessage',
+        accessorKey: 'title',
       },
       {
-        id: 'reportDate',
+        id: 'createdAt',
         header: 'Report Date',
-        accessorKey: 'reportDate',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const rawDate = getValue()
+          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+        },
       },
     ],
     [],
@@ -293,7 +304,7 @@ export default function HomePage() {
     <div className="p-8">
       <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
-      <div className="grid grid-cols-12 gap-4 mt-8">
+      <div className="grid grid-cols-12 gap-4 mt-8 items-start h-[33rem] py-4">
         <div className="col-span-7 p-4 bg-white rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-10">
             <p>Total Reports</p>
@@ -321,9 +332,9 @@ export default function HomePage() {
           </ChartContainer>
         </div>
 
-        <div className="col-span-5 p-4 bg-white rounded-lg shadow-md">
+        <div className="col-span-5 p-4 bg-white rounded-lg shadow-md h-full overflow-auto">
           <div className="flex justify-between items-center">
-            <p>Recently Employed Student</p>
+            <p>Recently Added Student</p>
 
             <Dialog open={studentOpenDialog} onOpenChange={setStudentOpenDialog}>
               <DialogTrigger asChild>
@@ -421,7 +432,7 @@ export default function HomePage() {
         <div className="flex justify-between items-center">
           <p>All Reports</p>
 
-          <Button>Export Data</Button>
+          {/* <Button>Export Data</Button> */}
         </div>
 
         <Table>
@@ -450,14 +461,26 @@ export default function HomePage() {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
-                <TableCell className="float-right flex gap-3">
-                  <Button variant="ghost">
-                    <Edit2 className="text-primary" />
-                  </Button>
-
-                  <Button variant="ghost">
-                    <Share className="text-primary" />
-                  </Button>
+                 <TableCell className="float-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost">
+                        <EllipsisVertical className="text-primary" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 bg-white border-none">
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                          <Edit2 />
+                          <span>Edit</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Trash />
+                          <span>Delete</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}

@@ -8,6 +8,8 @@ import * as otpGenerator from 'otp-generator'
 import bcrypt from 'bcryptjs'
 import { isBefore } from 'date-fns'
 import { generateEmailHTML } from '../../utilities/generateEmail'
+import { admins } from '@/access/admins'
+import { studentSelfOrAdmin } from '@/access/studentSelfOrAdmin'
 const PreLogin = z.object({
   matricNo: z.string(),
 })
@@ -18,10 +20,10 @@ export const Students: CollectionConfig = {
   slug: 'students',
   access: {
     create: anyone,
-    delete: self,
+    delete: studentSelfOrAdmin,
     // read: authenticatedUsers,
     read: anyone,
-    update: self,
+    update: studentSelfOrAdmin,
   },
   hooks: {
     beforeOperation: [
@@ -378,5 +380,10 @@ export const Students: CollectionConfig = {
     //   relationTo: 'employments',
     //   defaultValue: () => null,
     // },
+    {
+      name: 'coins',
+      type: 'number',
+      defaultValue: 3,
+    },
   ],
 }

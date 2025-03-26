@@ -28,5 +28,10 @@ export const DepartmentalCoordinators: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
     },
+    {
+      name: 'department',
+      type: 'text',
+      required: true,
+    },
   ],
 }

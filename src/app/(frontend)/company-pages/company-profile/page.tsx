@@ -1,11 +1,10 @@
 'use client'
+import Image from 'next/image'
 import hero from '../../assets/images/company-hero-bg.png'
-import studentImage from '../../assets/images/student-img.png'
 import profileLogo from '../../assets/images/compay-profile-logo.png'
 import { useEffect, useMemo, useState } from 'react'
 import NavBar from '../../common/nav-bar'
 import StudentProfileCard from '../../components/Cards/studentProfileCard'
-import Image from 'next/image'
 import InputField from '../../components/Form/inputField'
 import PhoneIcon from '../../assets/icons/phone'
 import MailIcon from '../../assets/icons/mail'
@@ -20,7 +19,6 @@ import { toast } from 'sonner'
 
 export default function CompanyProfile() {
   const { data: session } = useSession()
-
   const user = useMemo<any>(() => session?.user, [session])
 
   const fields = [
