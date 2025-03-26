@@ -372,11 +372,5 @@ export const Students: CollectionConfig = {
         },
       ],
     },
-    // {
-    //   name: 'employment',
-    //   type: 'relationship',
-    //   relationTo: 'employments',
-    //   defaultValue: () => null,
-    // },
   ],
 }
