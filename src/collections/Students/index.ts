@@ -38,7 +38,7 @@ export const Students: CollectionConfig = {
         const employmentRecords = await req.payload.find({
           collection: 'employments',
           where: { student: { equals: doc.id } },
-          depth:0
+          depth: 0,
         })
 
         doc.employments = employmentRecords.docs // Attach employment records to student
@@ -372,6 +372,11 @@ export const Students: CollectionConfig = {
         },
       ],
     },
-    
+    // {
+    //   name: 'employment',
+    //   type: 'relationship',
+    //   relationTo: 'employments',
+    //   defaultValue: () => null,
+    // },
   ],
 }
