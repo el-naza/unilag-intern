@@ -38,10 +38,10 @@ export default function InternshipRequest() {
   const fetchInternReq = async () => {
     const res: any = await fetchDocs('internship-applications')
     console.log(res)
-    const getApplication = res?.docs.filter((s) => s.status === 'approved')
+    const getApplication = res?.docs?.filter((s) => s.status === 'approved')
     console.log('applications',getApplication)
-    setInternReq(getApplication || [])
-    setTableData(res)
+    setInternReq(getApplication? getApplication : [])
+    setTableData(res? res : null)
     setLoading(false)
   }
 

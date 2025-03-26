@@ -75,7 +75,7 @@ export default function CompanyApprovedApplicationCard({ interviewInvitation, on
           <div className="ms-2 leading-normal">
             <h5 className="text-black mb-0 text-[12px]">{interviewInvitation.company.name}</h5>
             <p className="text-[10px] text-[#8E8E93]">
-              Career Area: {interviewInvitation.company.courseAreas.join(', ')}
+              Career Area: {interviewInvitation.company.courseAreas}
             </p>
             <p className="text-[10px] text-[#8E8E93]">
               Interview Scheduled: {formatDate(interviewInvitation.dateTime)}

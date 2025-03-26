@@ -25,8 +25,8 @@ export default function RejectedRequest() {
     // console.log(res)
     const getRejected = res?.docs.filter((s: any) => s.status === 'company declined')
     console.log(getRejected)
-    setInternReq(getRejected)
-    setTableData(res)
+    setInternReq(getRejected ? getRejected : [])
+    setTableData(res ? res : null)
     setLoading(false)
   }
 

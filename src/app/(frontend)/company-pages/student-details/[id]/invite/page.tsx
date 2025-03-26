@@ -44,12 +44,23 @@ export default function StudentInvitation() {
 
   const user = useMemo<any>(() => session?.user, [session])
 
-  const dates = ['07:00 am', '08:00 am', '09:00 am']
+  const dates = [
+    '07:00 am',
+    '08:00 am',
+    '09:00 am',
+    '10:00 am',
+    '11:00 am',
+    '12:00 pm',
+    '01:00 pm',
+    '02:00 pm',
+    '03:00 pm',
+    '04:00 pm',
+  ]
 
   const fetchStudent = async () => {
     const res: any = await fetchDoc('students', studentId)
     console.log('student', res)
-    setStudent(res)
+    setStudent(res ? res : {})
   }
 
   const sendInvitationMtn = useMutation({
@@ -251,7 +262,7 @@ export default function StudentInvitation() {
 
               {/* <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                 {([canSubmit, isSubmitting]) => ( */}
-              <div className='mb-[100px]'>
+              <div className="mb-[100px]">
                 <Button
                   type="submit"
                   disabled={loading}

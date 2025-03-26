@@ -41,6 +41,16 @@ const Page = () => {
   const [loading, setLoading] = useState<boolean>(true)
 
   const attachmentRef = useRef<HTMLInputElement>(null)
+  const [files, setFiles] = useState([])
+
+  const handleFileChange = (event) => {
+    const selectedFiles = Array.from(event.target.files)
+    setFiles([...files, ...selectedFiles])
+  }
+
+  const removeFile = (index) => {
+    setFiles(files.filter((_, i) => i !== index))
+  }
 
   const user = useMemo<any>(() => session?.user, [session])
 
@@ -277,11 +287,46 @@ const Page = () => {
                               ref={attachmentRef}
                               type="file"
                               name="attachment"
+                              onChange={handleFileChange}
                             />
                           </div>
                         </div>
                         <div className="text-[#8E8E93] text-xs">
                           Only support .jpg, .png and .svg and zip files (2mb below)
+                        </div>
+
+                        <div className="mt-4">
+                          {files.map((file, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between gap-3 mb-2 p-2 border rounded"
+                            >
+                              {file.type.startsWith('image/') ? (
+                                <img
+                                  src={URL.createObjectURL(file)}
+                                  alt={file.name}
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                              ) : file.type === 'application/pdf' ? (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-red-500">📄 PDF</span>
+                                  <p className="text-sm">{file.name}</p>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-gray-500">📂 File</span>
+                                  <p className="text-sm">{file.name}</p>
+                                </div>
+                              )}
+
+                              <button
+                                onClick={() => removeFile(index)}
+                                className="h-[25px] w-[25px] rounded-full text-white  border border-2 border-[#FF3636] text-center"
+                              >
+                                ❌
+                              </button>
+                            </div>
+                          ))}
                         </div>
                       </div>
                       <div className="mb-3">

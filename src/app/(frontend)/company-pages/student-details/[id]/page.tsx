@@ -38,13 +38,13 @@ export default function StudentDetails() {
 
   const fetchStudentDetails = async () => {
     const res: any = await fetchDoc('students', studentId)
-    setStudentDetails(res)
+    setStudentDetails(res?res : {})
     setLoading(false)
   }
 
   const findStudent = async () => {
     const res: any = await fetchDocs('internship-applications')
-    const getStudent = res?.docs.find((s) => s.student.id === studentId)
+    const getStudent = res?.docs?.find((s) => s.student.id === studentId)
     if (getStudent) {
       setStudentLater(getStudent.letter)
     }
