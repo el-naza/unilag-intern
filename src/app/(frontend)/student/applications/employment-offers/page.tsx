@@ -46,14 +46,14 @@ const Page = () => {
     mutationFn: async ({
       id,
       status,
-      employmentId,
+      employment,
     }: {
       id: string
       status: string
-      employmentId?: string
+      employment?: string
     }) => {
       try {
-        console.log('data being sent ', id, status, employmentId)
+        console.log('data being sent ', id, status, employment)
 
         const res = await updateDoc('employments', id, { status })
         console.log('res', res)
@@ -70,17 +70,17 @@ const Page = () => {
   const handleRespond = async (
     id: string,
     status: string,
-    employmentId?: string,
+    employment?: string,
     studentId?: string,
   ) => {
     try {
       setReqLoading(status as string) 
-      const res = await respondToInterviewMtn.mutateAsync({ id, status, employmentId })
+      const res = await respondToInterviewMtn.mutateAsync({ id, status, employment })
 
-      if (res && status === 'Accepted' && employmentId && studentId) {
+      if (res && status === 'Accepted' && employment && studentId) {
         const employedData = {
           employedBy: {
-            employmentId,
+            employment,
             dateEmployed: new Date().toISOString(), 
           },
         }
@@ -100,16 +100,16 @@ const Page = () => {
   // const handleRespond = async (
   //   id: string,
   //   status: string,
-  //   employmentId?: string,
+  //   employment?: string,
   //   studentId?: string,
   // ) => {
   //   try {
-  //     const res = await respondToInterviewMtn.mutateAsync({ id, status, employmentId })
+  //     const res = await respondToInterviewMtn.mutateAsync({ id, status, employment })
 
-  //     if (res && status === 'Accepted' && employmentId && studentId) {
+  //     if (res && status === 'Accepted' && employment && studentId) {
   //       const employedData = {
   //         employedBy: {
-  //           employmentId,
+  //           employment,
   //           dateEmployed: new Date().toISOString(), // Save current date as employment date
   //         },
   //       }
@@ -175,7 +175,7 @@ const Page = () => {
                     <div className="p-5">
                       <StudentApplicationHeader />
                       <div className="grid gap-4">
-                        {employmentOffers.map((offer) => (
+                        {employmentOffers&&employmentOffers.map((offer) => (
                           <EmploymentCard
                             key={offer.id}
                             company={{

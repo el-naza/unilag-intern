@@ -333,7 +333,7 @@ export const Students: CollectionConfig = {
       name: 'internshipType',
       type: 'select',
       required: true,
-      options: ['SIWES', 'TEACHING PRACTICE'],
+      options: ['SIWES', 'TEACHING PRACTICE', 'HOUSEMANSHIP', 'OTHERS'],
     },
     {
       name: 'image',
@@ -362,9 +362,9 @@ export const Students: CollectionConfig = {
       type: 'group',
       fields: [
         {
-          name: 'employmentId',
+          name: 'employment',
           type: 'relationship',
-          relationTo: 'companies',
+          relationTo: 'employments',
         },
         {
           name: 'dateEmployed',

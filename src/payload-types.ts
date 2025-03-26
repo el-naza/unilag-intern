@@ -320,14 +320,14 @@ export interface Student {
   gender: 'MALE' | 'FEMALE';
   course: string;
   level: string;
-  internshipType: 'SIWES' | 'TEACHING PRACTICE';
+  internshipType: 'SIWES' | 'TEACHING PRACTICE' | 'HOUSEMANSHIP' | 'OTHERS';
   image?: (string | null) | Media;
   bankCode?: string | null;
   bankName?: string | null;
   accountNo?: string | null;
   resetPasswordOtpHash?: string | null;
   employedBy?: {
-    employmentId?: (string | null) | Company;
+    employment?: (string | null) | Employment;
     dateEmployed?: string | null;
   };
   updatedAt: string;
@@ -341,6 +341,19 @@ export interface Student {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "employments".
+ */
+export interface Employment {
+  id: string;
+  student: string | Student;
+  company: string | Company;
+  dateEnded?: string | null;
+  status?: ('pending' | 'Decline' | 'Accept' | 'Terminate') | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -388,19 +401,6 @@ export interface Internship {
   endDate: string;
   image?: (string | null) | Media;
   status?: ('open' | 'closed') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "employments".
- */
-export interface Employment {
-  id: string;
-  student: string | Student;
-  company: string | Company;
-  dateEnded?: string | null;
-  status?: ('pending' | 'Decline' | 'Accept' | 'Terminate') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -650,7 +650,7 @@ export interface StudentsSelect<T extends boolean = true> {
   employedBy?:
     | T
     | {
-        employmentId?: T;
+        employment?: T;
         dateEmployed?: T;
       };
   updatedAt?: T;
