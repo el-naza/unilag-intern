@@ -241,7 +241,24 @@ export interface Company {
   id: string;
   name: string;
   cac?: string | null;
-  courseAreas: ('Mathematics' | 'Science' | 'History' | 'Engineering' | 'Arts')[];
+  industry:
+    | 'Agriculture'
+    | 'Banking/Finance'
+    | 'Construction/Real Estate'
+    | 'Consumer services'
+    | 'Consumer goods'
+    | 'Conglomerates'
+    | 'Entertainment'
+    | 'Health Care'
+    | 'Hospitality'
+    | 'ICT'
+    | 'Natural Resources'
+    | 'Media'
+    | 'Oil & gas'
+    | 'Retail'
+    | 'Technology'
+    | 'Telecommunications'
+    | 'Utilities';
   location: {
     longitude: number;
     latitude: number;
@@ -255,6 +272,7 @@ export interface Company {
   resetPasswordOtpHash?: string | null;
   updatedAt: string;
   createdAt: string;
+  isWaiting?: boolean | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -308,6 +326,10 @@ export interface Student {
   bankName?: string | null;
   accountNo?: string | null;
   resetPasswordOtpHash?: string | null;
+  employedBy?: {
+    employmentId?: (string | null) | Company;
+    dateEmployed?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -378,6 +400,7 @@ export interface Employment {
   student: string | Student;
   company: string | Company;
   dateEnded?: string | null;
+  status?: ('pending' | 'Decline' | 'Accept' | 'Terminate') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -388,6 +411,7 @@ export interface Employment {
 export interface Report {
   id: string;
   student: string | Student;
+  employment: string | Employment;
   title: string;
   details: string;
   supervisor: string;
@@ -557,7 +581,7 @@ export interface AdminsSelect<T extends boolean = true> {
 export interface CompaniesSelect<T extends boolean = true> {
   name?: T;
   cac?: T;
-  courseAreas?: T;
+  industry?: T;
   location?:
     | T
     | {
@@ -573,6 +597,7 @@ export interface CompaniesSelect<T extends boolean = true> {
   resetPasswordOtpHash?: T;
   updatedAt?: T;
   createdAt?: T;
+  isWaiting?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -622,6 +647,12 @@ export interface StudentsSelect<T extends boolean = true> {
   bankName?: T;
   accountNo?: T;
   resetPasswordOtpHash?: T;
+  employedBy?:
+    | T
+    | {
+        employmentId?: T;
+        dateEmployed?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -669,6 +700,7 @@ export interface EmploymentsSelect<T extends boolean = true> {
   student?: T;
   company?: T;
   dateEnded?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -678,6 +710,7 @@ export interface EmploymentsSelect<T extends boolean = true> {
  */
 export interface ReportsSelect<T extends boolean = true> {
   student?: T;
+  employment?: T;
   title?: T;
   details?: T;
   supervisor?: T;

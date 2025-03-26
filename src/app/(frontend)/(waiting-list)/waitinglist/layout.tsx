@@ -1,0 +1,12 @@
+import Footer from '../../(website)/_components/waitlist-footer'
+import Navbar from '../../(website)/_components/waitlist-navbar'
+
+export default function SiteLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Navbar />
+      <main>{children}</main>
+      <Footer />
+    </>
+  )
+}

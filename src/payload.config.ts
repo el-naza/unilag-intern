@@ -55,7 +55,7 @@ export default buildConfig({
   // }),
   email: resendAdapter({
     defaultFromAddress: process.env.EMAIL_USER!,
-    defaultFromName: 'UNILAG INTERNSHIP',
+    defaultFromName: 'INTRNS',
     apiKey: process.env.RESEND_API_KEY || '',
   }),
   plugins: [
