@@ -30,7 +30,7 @@ export default function InvitiationDetails() {
 
   const fetchStudentDetails = async () => {
     const res: any = await fetchDoc('internships', postId)
-    setStudentDetails(res)
+    setStudentDetails(res?res:{})
     setPostLoading(false)
   }
 

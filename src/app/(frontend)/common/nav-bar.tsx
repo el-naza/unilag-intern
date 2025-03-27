@@ -88,7 +88,7 @@ export default function NavBar({ fill }: naveBarProps) {
       )}
 
       <div className="flex items-center gap-[54px]">
-        <BellIcon fill={fill} />
+        {/* <BellIcon fill={fill} /> */}
         <div
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => router.push('/company-pages/company-profile')}

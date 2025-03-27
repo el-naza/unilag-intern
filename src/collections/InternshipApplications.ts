@@ -12,7 +12,7 @@ export const InternshipApplications: CollectionConfig = {
     create: students,
     delete: relatedStudentOrCompany,
     update: companyOrStudent,
-    read: companyOrStudent
+    read: companyOrStudent,
   },
   fields: [
     {

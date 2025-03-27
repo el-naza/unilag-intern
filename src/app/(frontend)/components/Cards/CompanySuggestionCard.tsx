@@ -10,7 +10,7 @@ export default function CompanySuggestionCard({ company }) {
       <div className="p-2">
         <h5 className="text-black mb-2 font-bold">{company.name}</h5>
         <div className="text-[#8E8E93] text-xs mb-2">
-          Career Area: {company.courseAreas.join(', ')}
+          Career Area: {company.courseAreas}
         </div>
         <div className="text-[#8E8E93] text-xs mb-2">Location: {company.address}</div>
         <Link href={`/student/companies/${company.id}`}>

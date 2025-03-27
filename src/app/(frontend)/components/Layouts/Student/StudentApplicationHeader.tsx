@@ -27,11 +27,19 @@ const StudentApplicationHeader = () => {
             Accepted Interviews
           </div>
         </Link>
+
         <Link href={'/student/applications/declined'}>
           <div
             className={`text-white text-center p-2 ${pathname === '/student/applications/declined' ? 'rounded-xl bg-[#0B7077]' : ''}`}
           >
             Rejected Interviews
+          </div>
+        </Link>
+        <Link href={'/student/applications/employment-offers'}>
+          <div
+            className={`text-white text-center p-2 ${pathname === '/student/applications/employment-offers' ? 'rounded-xl bg-[#0B7077]' : ''}`}
+          >
+       Exployment Offers
           </div>
         </Link>
       </div>

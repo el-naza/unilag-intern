@@ -16,6 +16,13 @@ import { Button } from '@/components/ui/button'
 import Spinner from '@/components/spinner'
 import { Input } from '@/components/ui/input'
 import Loader from '../../components/Layouts/Loader'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 export default function Reports() {
   const [active, setActive] = useState<string>('All Reports')
@@ -50,6 +57,8 @@ export default function Reports() {
   const [allReports, setAllReports] = useState<Report[]>([])
   const [reportDocs, setReportDocs] = useState<Report[]>([])
   const [uniqueStudents, setUniqueStudents] = useState<Report[]>([])
+  const [openDialog, setOpenDialog] = useState(false)
+  const [media, setMedia] = useState({})
 
   const fetchInternReports = async () => {
     const res: any = await fetchDocs('reports')
@@ -260,6 +269,12 @@ export default function Reports() {
   const approvedReports = filteredReports.filter((r) => r.status === 'approved')
   const reassignedReports = filteredReports.filter((r) => r.status === 'reassigned')
 
+  const showMedia = (mediaItem: any) => {
+    setMedia(mediaItem)
+    setOpenDialog(true)
+    console.log(mediaItem)
+  }
+
   return (
     <div className="pb-[600px]">
       <div className="relative">
@@ -357,7 +372,7 @@ export default function Reports() {
                   <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto scrollbar-hide">
                     {activeReports &&
                       activeReports.map((card) => (
-                        <div className="flex items-center gap-2">
+                        <div key={card.id} className="flex items-center gap-2">
                           <div>
                             <div className="border w-[290px] rounded">
                               {card?.image ? (
@@ -372,10 +387,24 @@ export default function Reports() {
                               ) : null}
 
                               <div className="w-full p-[8px]">
-                                <h4 className="font-[700] text-[12px] mb-[4px]">{card.title}</h4>
-                                <p className="text-[#8E8E93] font-[400] text-[10px]">
-                                  {card.details}
-                                </p>
+                                <div className="flex justify-between">
+                                  <div>
+                                    <h4 className="font-[700] text-[12px] mb-[4px]">
+                                      {card.title}
+                                    </h4>
+                                    <p className="text-[#8E8E93] font-[400] text-[10px]">
+                                      {card.details}
+                                    </p>
+                                  </div>
+                                  {card.media && (
+                                    <span
+                                      onClick={() => showMedia(card.media)}
+                                      className="whitespace-nowrap text-[12px] cursor-pointer text-primary"
+                                    >
+                                      View File
+                                    </span>
+                                  )}
+                                </div>
                                 <p className="mt-[6px] text-[#667085] font-[400] text-[12px]">
                                   {card.timestamp}
                                 </p>
@@ -452,6 +481,27 @@ export default function Reports() {
               </div>
             </BlurBackground>
           )}
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogContent className="bg-white rounded-lg gap-2 !max-w-[700px]">
+              <div className="grid gap-4 text-center flex">
+                <Image className="m-auto" src={media.url} width={500} height={500} alt="media" />
+              </div>
+              <DialogFooter className="grid grid-cols-4 gap-1">
+                <DialogClose className="col-start-2 text-xs bg-white text-[#48484A] border-0">
+                  Cancel
+                </DialogClose>
+                <a
+                  href={media.url}
+                  target="_blank"
+                  className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+                >
+                  <div className="flex m-auto">
+                    <span>Expand</span>
+                  </div>
+                </a>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ export default function InputField({
   label,
   placeholder,
   Icon,
-  type = 'string',
+  type = 'text',
   disabled = false,
   radius,
   fill = '#8E8E93',
