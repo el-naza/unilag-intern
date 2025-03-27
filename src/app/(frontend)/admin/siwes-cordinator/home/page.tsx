@@ -64,19 +64,19 @@ export default function HomePage() {
     ],
   })
 
-  const chartData = [
-    { month: 'January', desktop: 186 },
-    { month: 'February', desktop: 305 },
-    { month: 'March', desktop: 237 },
-    { month: 'April', desktop: 73 },
-    { month: 'May', desktop: 209 },
-    { month: 'July', desktop: 214 },
-    { month: 'August', desktop: 394 },
-    { month: 'September', desktop: 120 },
-    { month: 'October', desktop: 201 },
-    { month: 'November', desktop: 112 },
-    { month: 'December', desktop: 200 },
-  ]
+  const [chartData, setChartData] = useState<{ month: string; report: number }[]>([
+    { month: 'January', report: 0 },
+    { month: 'February', report: 0 },
+    { month: 'March', report: 0 },
+    { month: 'April', report: 0 },
+    { month: 'May', report: 0 },
+    { month: 'July', report: 0 },
+    { month: 'August', report: 0 },
+    { month: 'September', report: 0 },
+    { month: 'October', report: 0 },
+    { month: 'November', report: 0 },
+    { month: 'December', report: 0 },
+  ])
 
   const chartConfig = {
     desktop: {
@@ -172,6 +172,294 @@ export default function HomePage() {
     }
   }, [])
 
+  // JAN CHARTS REPORT
+  const fetchJanReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfJanuary = `${currentYear}-01-01T00:00:00.000Z`
+      const endOfJanuary = `${currentYear}-01-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfJanuary,
+        'where[createdAt][less_than]': endOfJanuary,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'January' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching Jan reports:', error)
+    }
+  }, [])
+
+  // FEB CHARTS REPORT
+  const fetchFebReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfFeburary = `${currentYear}-02-01T00:00:00.000Z`
+      const endOfFeburary = `${currentYear}-02-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfFeburary,
+        'where[createdAt][less_than]': endOfFeburary,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'Feburary' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching feb reports:', error)
+    }
+  }, [])
+
+  // MAR CHARTS REPORT
+  const fetchMarReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfMarch = `${currentYear}-03-01T00:00:00.000Z`
+      const endOfMarch = `${currentYear}-03-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfMarch,
+        'where[createdAt][less_than]': endOfMarch,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'March' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching march reports:', error)
+    }
+  }, [])
+
+  // APR CHARTS REPORT
+  const fetchAprilReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfApril = `${currentYear}-04-01T00:00:00.000Z`
+      const endOfApril = `${currentYear}-04-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfApril,
+        'where[createdAt][less_than]': endOfApril,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'April' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching april reports:', error)
+    }
+  }, [])
+
+  // MAY CHARTS REPORT
+  const fetchMayReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfMay = `${currentYear}-05-01T00:00:00.000Z`
+      const endOfMay = `${currentYear}-05-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfMay,
+        'where[createdAt][less_than]': endOfMay,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'May' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching may reports:', error)
+    }
+  }, [])
+
+  // JUNE CHARTS REPORT
+  const fetchJuneReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfJune = `${currentYear}-06-01T00:00:00.000Z`
+      const endOfJune = `${currentYear}-06-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfJune,
+        'where[createdAt][less_than]': endOfJune,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'June' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching june reports:', error)
+    }
+  }, [])
+
+  // JULY CHARTS REPORT
+  const fetchJulyReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfJuly = `${currentYear}-07-01T00:00:00.000Z`
+      const endOfJuly = `${currentYear}-07-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfJuly,
+        'where[createdAt][less_than]': endOfJuly,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'July' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching july reports:', error)
+    }
+  }, [])
+
+  // AUG CHARTS REPORT
+  const fetchAugReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfAug = `${currentYear}-08-01T00:00:00.000Z`
+      const endOfAug = `${currentYear}-08-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfAug,
+        'where[createdAt][less_than]': endOfAug,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'August' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching august reports:', error)
+    }
+  }, [])
+
+  // SEPT CHARTS REPORT
+  const fetchSeptReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfSept = `${currentYear}-09-01T00:00:00.000Z`
+      const endOfSept = `${currentYear}-09-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfSept,
+        'where[createdAt][less_than]': endOfSept,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'September' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching sept reports:', error)
+    }
+  }, [])
+
+  // OCT CHARTS REPORT
+  const fetchOctReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfOct = `${currentYear}-10-01T00:00:00.000Z`
+      const endOfOct = `${currentYear}-10-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfOct,
+        'where[createdAt][less_than]': endOfOct,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'October' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching october reports:', error)
+    }
+  }, [])
+
+  // NOV CHARTS REPORT
+  const fetchNovReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfNov = `${currentYear}-11-01T00:00:00.000Z`
+      const endOfNov = `${currentYear}-11-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfNov,
+        'where[createdAt][less_than]': endOfNov,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'November' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching nov reports:', error)
+    }
+  }, [])
+
+  // DEC CHARTS REPORT
+  const fetchDecReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfDec = `${currentYear}-12-01T00:00:00.000Z`
+      const endOfDec = `${currentYear}-12-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfDec,
+        'where[createdAt][less_than]': endOfDec,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'December' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching dec reports:', error)
+    }
+  }, [])
+
   useEffect(() => {
     Promise.allSettled([
       fetchReports(),
@@ -179,7 +467,6 @@ export default function HomePage() {
       fetchCompanies(),
       fetchStudents(),
     ]).then(() => {
-
       setConfig((prevConfig) => ({
         ...prevConfig,
         stats: prevConfig.stats.map((stat, index) =>
@@ -187,7 +474,42 @@ export default function HomePage() {
         ),
       }))
     })
-  }, [fetchReports, fetchEmployments, fetchCompanies, fetchStudents])
+
+    // CHARTs
+    Promise.allSettled([
+      fetchJanReports(),
+      fetchFebReports(),
+      fetchMarReports(),
+      fetchAprilReports(),
+      fetchMayReports(),
+      fetchJuneReports(),
+      fetchJulyReports(),
+      fetchAugReports(),
+      fetchSeptReports(),
+      fetchOctReports(),
+      fetchNovReports(),
+      fetchDecReports(),
+    ])
+  }, [
+    fetchReports,
+    fetchEmployments,
+    fetchCompanies,
+    fetchStudents,
+    totalEmployments,
+    totalStudents,
+    fetchJanReports,
+    fetchFebReports,
+    fetchMarReports,
+    fetchAprilReports,
+    fetchMayReports,
+    fetchJuneReports,
+    fetchJulyReports,
+    fetchAugReports,
+    fetchSeptReports,
+    fetchOctReports,
+    fetchNovReports,
+    fetchDecReports,
+  ])
 
   const reportColumns = useMemo(
     () => [
@@ -338,9 +660,9 @@ export default function HomePage() {
           <div className="flex justify-between items-center mb-10">
             <p>Total Reports</p>
 
-            <Button variant="ghost" className="bg-gray-light-2">
+            {/* <Button variant="ghost" className="bg-gray-light-2">
               <ListFilter /> Month
-            </Button>
+            </Button> */}
           </div>
 
           <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
@@ -355,8 +677,7 @@ export default function HomePage() {
               />
               <ChartTooltip content={<ChartTooltipContent className="bg-white border-none" />} />
               <ChartLegend content={<ChartLegendContent />} />
-              <Bar dataKey="desktop" fill="#195F7E" radius={2} />
-              {/* <Bar dataKey="mobile" fill="#0B7077" radius={2} /> */}
+              <Bar dataKey="report" fill="#195F7E" radius={2} />
             </BarChart>
           </ChartContainer>
         </div>
@@ -501,9 +822,7 @@ export default function HomePage() {
                       <DropdownMenuGroup>
                         <DropdownMenuItem
                           onClick={() =>
-                            router.push(
-                              `students/${row.original?.student?.id}#report`,
-                            )
+                            router.push(`students/${row.original?.student?.id}#report`)
                           }
                         >
                           <Eye />
