@@ -40,7 +40,7 @@ import AddStudent from './add-student'
 import { toast } from 'sonner'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { getEmployments } from '@/services/admin/reports'
-
+import Spinner from '@/components/spinner'
 
 export type Student = {
   id: string
@@ -77,8 +77,9 @@ export default function StudentPage() {
   const [totalStudents, setTotalStudents] = useState(0)
   const [totalEmployments, setTotalEmployments] = useState(0)
 
-
   const fetchStudents = useCallback(async (params?: string) => {
+    setLoading(true)
+
     const res: any = await getAllStudents('students', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
     setTotalStudents(totalDocs)
@@ -101,41 +102,35 @@ export default function StudentPage() {
   }, [])
 
   const fetchEmployments = useCallback(async () => {
-      try {
-        const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
-        const res: any = await getEmployments('employments', query)
-        const { totalDocs } = res.data
+    try {
+      const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+      const res: any = await getEmployments('employments', query)
+      const { totalDocs } = res.data
 
-        setTotalEmployments(totalDocs)
-        setConfig((prevConfig) => ({
-          ...prevConfig,
-          stats: prevConfig.stats.map((stat, index) =>
-            index === 1 ? { ...stat, count: totalDocs } : stat,
-          ),
-        }))
-      } catch (error) {
-        console.error('Error fetching employments:', error)
-      }
-    }, [])
-
-
-  useEffect(() => {
-    Promise.allSettled([
-      fetchEmployments(),
-      fetchStudents(),
-    ]).then(() => {
-
-     setTimeout(() => {
+      setTotalEmployments(totalDocs)
       setConfig((prevConfig) => ({
         ...prevConfig,
         stats: prevConfig.stats.map((stat, index) =>
-          index === 2 ? { ...stat, count: totalStudents - totalEmployments } : stat,
+          index === 1 ? { ...stat, count: totalDocs } : stat,
         ),
       }))
-     }, 2000)
+    } catch (error) {
+      console.error('Error fetching employments:', error)
+    }
+  }, [])
+
+  useEffect(() => {
+    Promise.allSettled([fetchEmployments(), fetchStudents()]).then(() => {
+      setTimeout(() => {
+        setConfig((prevConfig) => ({
+          ...prevConfig,
+          stats: prevConfig.stats.map((stat, index) =>
+            index === 2 ? { ...stat, count: totalStudents - totalEmployments } : stat,
+          ),
+        }))
+      }, 2000)
     })
   }, [fetchEmployments, fetchStudents])
-
 
   const columns = useMemo(
     () => [
@@ -209,12 +204,12 @@ export default function StudentPage() {
     router.push(`/admin/siwes-cordinator/students/${studentId}`)
   }
 
-    const deleteAStudent = async (rowRecord: any) => {
-      const studentId = rowRecord.original.id
-      const res = await deleteStudent('students', studentId)
-      fetchStudents()
-      toast.success('Student deleted successfully')
-    }
+  const deleteAStudent = async (rowRecord: any) => {
+    const studentId = rowRecord.original.id
+    const res = await deleteStudent('students', studentId)
+    fetchStudents()
+    toast.success('Student deleted successfully')
+  }
 
   const [query, setQuery] = useState('')
   const [searchFilter, setSearchFilter] = React.useState<
@@ -237,28 +232,27 @@ export default function StudentPage() {
   }, [debouncedQuery])
 
   const filterStats = (date: Date) => {
-    const today = format(new Date(), 'yyyy-MM-dd');
-    const endDate = format(date, 'yyyy-MM-dd');
+    const today = format(new Date(), 'yyyy-MM-dd')
+    const endDate = format(date, 'yyyy-MM-dd')
 
     const query = new URLSearchParams({
       'where[createdAt][greater_than]': endDate,
       'where[createdAt][less_than]': today,
-    }).toString();
+    }).toString()
 
     fetchStudents(query)
   }
 
   const filterStatsbyDate = (date: Date) => {
-    const selectedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  
+    const selectedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
     const query = new URLSearchParams({
       'where[createdAt][greater_than_equal]': `${selectedDate}T00:00:00.000Z`,
       'where[createdAt][less_than]': `${selectedDate}T23:59:59.999Z`,
-    }).toString();
-  
-    fetchStudents(query);
-  };
-  
+    }).toString()
+
+    fetchStudents(query)
+  }
 
   const [studentOpenDialog, setStudentOpenDialog] = useState(false)
   const closeDialog = () => {
@@ -270,11 +264,7 @@ export default function StudentPage() {
       <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
       <div className="flex flex-wrap gap-4 justify-between items-center mt-8 w-full">
-        <ToggleGroup
-          type="single"
-          value={filter}
-          onValueChange={(value) => setFilter(value)}
-        >
+        <ToggleGroup type="single" value={filter} onValueChange={(value) => setFilter(value)}>
           <ToggleGroupItem
             value="all"
             aria-label="Toggle all"
@@ -341,6 +331,8 @@ export default function StudentPage() {
         <div className="flex justify-between items-center mb-4">
           <p>All Students</p>
 
+          {loading && <Spinner className="border-t-primary border-r-primary border-b-primary" />}
+
           {/* <Button>Export Data</Button> */}
         </div>
 
@@ -384,32 +376,33 @@ export default function StudentPage() {
                           <span>Edit</span>
                         </DropdownMenuItem>
                         <Popover open={openPopover} onOpenChange={setOpenPopover}>
-                            <PopoverTrigger asChild>
-                              <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
-                                <Trash /><span>Delete</span>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                              <Trash />
+                              <span>Delete</span>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                            <div className="flex gap-4 items-center w-full">
+                              <Button
+                                variant="ghost"
+                                className="w-full"
+                                onClick={() => setOpenPopover(false)}
+                              >
+                                Cancel
                               </Button>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                              <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
-                              <div className="flex gap-4 items-center w-full">
-                                <Button
-                                  variant="ghost"
-                                  className="w-full"
-                                  onClick={() => setOpenPopover(false)}
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  className="w-full"
-                                  onClick={() => {
-                                    deleteAStudent(row)
-                                    setOpenPopover(false)
-                                  }}
-                                >
-                                  Continue
-                                </Button>
-                              </div>
-                            </PopoverContent>
+                              <Button
+                                className="w-full"
+                                onClick={() => {
+                                  deleteAStudent(row)
+                                  setOpenPopover(false)
+                                }}
+                              >
+                                Continue
+                              </Button>
+                            </div>
+                          </PopoverContent>
                         </Popover>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>

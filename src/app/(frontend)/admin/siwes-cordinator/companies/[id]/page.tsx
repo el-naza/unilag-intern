@@ -63,7 +63,9 @@ export default function CompanyDetailPage() {
   }
 
   useEffect(() => {
-    Promise.allSettled([fetchCompanyDetail(), fetchEmployments(), fetchReports()])
+    Promise.allSettled([fetchCompanyDetail(), fetchEmployments(), fetchReports()]).then(_ => {
+      setLoading(false)
+    })
   }, [])
 
   const requiredFields = useMemo(
@@ -185,7 +187,11 @@ export default function CompanyDetailPage() {
       e.stopPropagation()
       form.handleSubmit()
     }}>
+      <div className='flex gap-3 items-center'>
       <h1 className="font-semibold text-[1.5rem]">Company Profile</h1>
+         {loading && <Spinner className="border-t-primary border-r-primary border-b-primary" />}
+      </div>
+      
       <p>{formattedDate}</p>
 
       <div className="flex items-center justify-between mt-4 p-8 w-full mb-8 bg-[url(/images/profile-bg.png)] bg-cover bg-no-repeat bg-center">

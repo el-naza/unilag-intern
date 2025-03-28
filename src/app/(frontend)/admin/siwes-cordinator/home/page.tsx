@@ -38,6 +38,7 @@ import { toast } from 'sonner'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from '../students/add-student'
+import Spinner from '@/components/spinner'
 
 type Report = {
   companyName: string
@@ -91,6 +92,9 @@ export default function HomePage() {
 
   // Report Table Configurations
   const [reportLoading, setReportLoading] = useState<boolean>(true)
+  const [chartsLoading, setChartsLoading] = useState<boolean>(true)
+  const [recentEmploymentsLoading, setRecentEmploymentsLoading] = useState<boolean>(true)
+
   const [reportData, setReportData] = useState<Report[]>([])
   const [reportPage, setReportPage] = useState(0)
   const [reportPageSize, setReportPageSize] = useState(0)
@@ -104,6 +108,8 @@ export default function HomePage() {
   const [totalEmployments, setTotalEmployments] = useState(0)
 
   const fetchReports = useCallback(async (params?: any) => {
+    setReportLoading(true)
+
     try {
       const res: any = await getAllReports('reports', params)
       const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
@@ -113,12 +119,16 @@ export default function HomePage() {
       setReportTotal(totalDocs)
       setReportHasNext(hasNextPage)
       setReportHasPrevious(hasPrevPage)
+
+      setReportLoading(false)
     } catch (error) {
       console.error('Error fetching reports:', error)
     }
   }, [])
 
   const fetchEmployments = useCallback(async () => {
+    setRecentEmploymentsLoading(true)
+
     try {
       const query = new URLSearchParams({ sort: '-createdAt' }).toString()
       const res: any = await getEmployments('employments', query)
@@ -133,6 +143,8 @@ export default function HomePage() {
           index === 1 ? { ...stat, count: totalDocs } : stat,
         ),
       }))
+
+      setRecentEmploymentsLoading(false)
     } catch (error) {
       console.error('Error fetching employments:', error)
     }
@@ -462,10 +474,10 @@ export default function HomePage() {
 
   useEffect(() => {
     Promise.allSettled([
-      fetchReports(),
       fetchEmployments(),
-      fetchCompanies(),
       fetchStudents(),
+      fetchReports(),
+      fetchCompanies(),
     ]).then(() => {
       setConfig((prevConfig) => ({
         ...prevConfig,
@@ -489,7 +501,9 @@ export default function HomePage() {
       fetchOctReports(),
       fetchNovReports(),
       fetchDecReports(),
-    ])
+    ]).then((_) => {
+      setChartsLoading(false)
+    })
   }, [
     fetchReports,
     fetchEmployments,
@@ -660,6 +674,10 @@ export default function HomePage() {
           <div className="flex justify-between items-center mb-10">
             <p>Total Reports</p>
 
+            {chartsLoading && (
+              <Spinner className="border-t-primary border-r-primary border-b-primary" />
+            )}
+
             {/* <Button variant="ghost" className="bg-gray-light-2">
               <ListFilter /> Month
             </Button> */}
@@ -684,7 +702,12 @@ export default function HomePage() {
 
         <div className="col-span-5 p-4 bg-white rounded-lg shadow-md max-h-[60vh] overflow-auto">
           <div className="flex justify-between items-center">
-            <p>Recently Added Student</p>
+            <div className="flex gap-2 items-center">
+              <p>Recently Added Student</p>
+              {recentEmploymentsLoading && (
+                <Spinner className="border-t-primary border-r-primary border-b-primary" />
+              )}
+            </div>
 
             <Dialog open={studentOpenDialog} onOpenChange={setStudentOpenDialog}>
               <DialogTrigger asChild>
@@ -782,6 +805,9 @@ export default function HomePage() {
         <div className="flex justify-between items-center">
           <p>All Reports</p>
 
+          {reportLoading && (
+            <Spinner className="border-t-primary border-r-primary border-b-primary" />
+          )}
           {/* <Button>Export Data</Button> */}
         </div>
 

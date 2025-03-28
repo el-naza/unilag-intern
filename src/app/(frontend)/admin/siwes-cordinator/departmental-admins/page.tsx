@@ -42,6 +42,7 @@ import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddAdmin from './add-admin'
 import { toast } from 'sonner'
+import Spinner from '@/components/spinner'
 
 type Admin = {
   name: string
@@ -71,6 +72,8 @@ export default function DepartmentalAdminsPage() {
   const router = useRouter()
 
   const fetchAdmins = async (params?: string) => {
+    setLoading(true)
+    
     const res: any = await getAllAdmins('admins', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
     console.log('Admins: ', docs)
@@ -173,25 +176,25 @@ export default function DepartmentalAdminsPage() {
     }
   }, [debouncedQuery])
 
-    const [adminOpenDialog, setAdminOpenDialog] = useState(false)
-    const closeDialog = (refresh: boolean) => {
-      setAdminOpenDialog(false)
+  const [adminOpenDialog, setAdminOpenDialog] = useState(false)
+  const closeDialog = (refresh: boolean) => {
+    setAdminOpenDialog(false)
 
-      if(refresh) fetchAdmins()
-    }
+    if (refresh) fetchAdmins()
+  }
 
-   const editAdmin = (record: any) => {
-      setAdminData(record)
-      setAdminOpenDialog(true)
-    }
+  const editAdmin = (record: any) => {
+    setAdminData(record)
+    setAdminOpenDialog(true)
+  }
 
-    const deleteAdmin = async (record: any) => {
-      const adminId = record.original.id
-      const res: any = await getAllAdmins('admins', adminId)
-      console.log('Admins: ', res)
-      toast.success('Departmental cordinator deleted successfully')
-      fetchAdmins()
-    }
+  const deleteAdmin = async (record: any) => {
+    const adminId = record.original.id
+    const res: any = await getAllAdmins('admins', adminId)
+    console.log('Admins: ', res)
+    toast.success('Departmental cordinator deleted successfully')
+    fetchAdmins()
+  }
 
   return (
     <div className="p-8">
@@ -237,7 +240,7 @@ export default function DepartmentalAdminsPage() {
                 <DialogTitle>Add Departmental Cordinator</DialogTitle>
               </DialogHeader>
 
-              <AddAdmin adminData={ adminData } onCloseEmit={closeDialog} />
+              <AddAdmin adminData={adminData} onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>
         </div>
@@ -247,6 +250,7 @@ export default function DepartmentalAdminsPage() {
         <div className="flex justify-between items-center mb-4">
           <p>All Departmental Cordinators</p>
 
+          {loading && <Spinner className="border-t-primary border-r-primary border-b-primary" />}
           {/* <Button>Export Data</Button> */}
         </div>
 

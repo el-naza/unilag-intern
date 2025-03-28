@@ -40,9 +40,10 @@ export default function StudentDetailPage() {
   }
 
   const fetchStudentDetail = async () => {
+    setLoading(true)
     const res: any = await getStudent('students', id)
-    console.log('Student: ', res.data);
-    
+    console.log('Student: ', res.data)
+
     setStudent(res.data)
     setLoading(false)
   }
@@ -199,7 +200,11 @@ export default function StudentDetailPage() {
         form.handleSubmit()
       }}
     >
-      <h1 className="font-semibold text-[1.5rem]">Student Profile</h1>
+      <div className="flex gap-3 items-center">
+        <h1 className="font-semibold text-[1.5rem]">Student Profile</h1>
+        {loading && <Spinner className="border-t-primary border-r-primary border-b-primary" />}
+      </div>
+
       <p>{formattedDate}</p>
 
       <div className="flex items-center justify-between mt-4 p-8 w-full mb-8  bg-[url(/images/profile-bg.png)] bg-cover bg-no-repeat bg-center">

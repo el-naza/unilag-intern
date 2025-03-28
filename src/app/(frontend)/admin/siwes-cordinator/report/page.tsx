@@ -33,6 +33,7 @@ import { Edit2, EllipsisVertical, Trash } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
+import Spinner from '@/components/spinner'
 
 type Report = {
   companyName: string
@@ -58,6 +59,7 @@ export default function ReportPage() {
   const [hasPrevious, setHasPrevious] = useState(false)
 
   const fetchReports = async (params?: string) => {
+    setLoading(true)
     const res: any = await getAllReports('reports', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
     setReports(docs)
@@ -192,6 +194,7 @@ export default function ReportPage() {
         <div className="flex justify-between items-center mb-4">
           <p>All Reports</p>
 
+          {loading && <Spinner className="border-t-primary border-r-primary border-b-primary" />}
           {/* <Button>Export Data</Button> */}
         </div>
 
