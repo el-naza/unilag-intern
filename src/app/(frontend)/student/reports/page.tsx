@@ -24,24 +24,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
-import { Loader } from 'lucide-react'
-import { signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import fetchStudentReports from '@/services/fetchStudentReports'
 import { format, isToday, isYesterday } from 'date-fns'
-import { object } from 'zod'
-import fetchDocs from '@/services/fetchDocs'
 
 export default function Page() {
   const router = useRouter()
   const { data: session, status } = useSession()
-  const [employments, setEmployments] = useState<any[]>([])
-
-  const fetchEmployments = async () => {
-    const res: any = await fetchDocs('employments')
-    setEmployments(res.docs)
-  }
-
-  const employment = useMemo(() => (employments.length ? employments[0] : {}), [employments])
 
   const user = useMemo<any>(() => session?.user, [session])
 
@@ -69,10 +58,6 @@ export default function Page() {
   //   // signOut()
   //   router.replace('/auth/login')
   // }
-
-  useEffect(() => {
-    fetchEmployments()
-  }, [])
 
   return (
     <div className="min-h-screen relative text-sm text-black py-0 lg:py-20">
@@ -125,7 +110,11 @@ export default function Page() {
                     },
                     validators: {
                       onSubmitAsync: async ({ value }) => {
-                        value.employment = employment?.id
+                        if (!user?.employedBy?.employment) {
+                          toast.error("You haven't been employed yet")
+                          return null
+                        }
+                        value.employment = user?.employedBy?.employment?.id
                         value.student = user?.id
                         const emptyRequiredFields = Reports.fields.reduce<object>(
                           (
