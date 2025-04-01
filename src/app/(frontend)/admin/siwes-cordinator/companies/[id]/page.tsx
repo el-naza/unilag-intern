@@ -12,13 +12,21 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import useInitials from '@/custom-hooks/useInitials'
-import { getCompany } from '@/services/admin/companies'
+import { getCompany, updateCompany } from '@/services/admin/companies'
 import { getAllReports, getEmployments } from '@/services/admin/reports'
 import { format, formatDistanceToNow } from 'date-fns'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import AssignStudent from './assign-student'
+import { Button } from '@/components/ui/button'
+import { useForm } from '@tanstack/react-form'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { ValidationFieldError, Field } from 'payload'
+import FieldError from '@/components/FieldError'
+import FormError from '@/components/FormError'
+import Spinner from '@/components/spinner'
 
 export default function CompanyDetailPage() {
   const { id }: { id: string } = useParams()
@@ -55,19 +63,142 @@ export default function CompanyDetailPage() {
   }
 
   useEffect(() => {
-    Promise.allSettled([fetchCompanyDetail(), fetchEmployments(), fetchReports()])
+    Promise.allSettled([fetchCompanyDetail(), fetchEmployments(), fetchReports()]).then(_ => {
+      setLoading(false)
+    })
   }, [])
 
+  const requiredFields = useMemo(
+    () => [
+      {
+        name: 'name',
+        type: 'text',
+        required: true,
+      },
+      {
+        name: 'cac',
+        type: 'text',
+        required: true,
+      },
+      {
+        name: 'address',
+        type: 'text',
+        required: true,
+      },
+      {
+        name: 'email',
+        type: 'text',
+        required: true,
+      },
+      {
+        name: 'phone',
+        type: 'text',
+        required: true,
+      },
+      {
+        name: 'website',
+        type: 'text',
+        required: false,
+      },
+      {
+        name: 'description',
+        type: 'text',
+        required: false,
+      },
+    ],
+    [],
+  )
+
+  const form = useForm<any>({
+    defaultValues: {
+      name: company?.name || '',
+      cac: company?.cac || '',
+      address: company?.address || '',
+      website: company?.website || '',
+      email: company?.email || '',
+      phone: company?.phone || '',
+      description: company?.description || '',
+    },
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        const emptyRequiredFields = requiredFields.reduce<object>(
+          (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
+            ...acc,
+            ...(field?.required && !value[field.name] && { [field.name]: 'Required' }),
+          }),
+          {},
+        )
+
+        if (Object.keys(emptyRequiredFields).length) {
+          return {
+            form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
+            fields: emptyRequiredFields,
+          }
+        }
+
+        const error = await updateCompanyInfo.mutateAsync(value)
+
+        if (error) {
+          return {
+            form: error as string,
+            fields: {},
+          }
+        }
+
+        toast.success(`Company updated successfully`)
+        return null
+      },
+    },
+  })
+
+  const updateCompanyInfo = useMutation({
+    mutationFn: async (payload: any) => {
+      try {
+        const res = await updateCompany('companies', payload)
+
+        console.log('Result: ', res)
+
+        if (!res) {
+          const errMsg = 'Network err; pls try again later'
+          toast.error(errMsg)
+          return errMsg
+        }
+
+        if (res.status === 500) {
+          const errMsg = 'Server error pls try again later'
+          toast.error(errMsg)
+          return errMsg
+        }
+
+        if (res.success && res.status !== 500) return
+
+        return res.data?.message
+      } catch {
+        const errMsg = 'An error occured; pls try again later'
+        toast.error(errMsg)
+        return errMsg
+      }
+    },
+  })
+
   return (
-    <div className="p-8">
+    <form className="p-8" onSubmit={(e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      form.handleSubmit()
+    }}>
+      <div className='flex gap-3 items-center'>
       <h1 className="font-semibold text-[1.5rem]">Company Profile</h1>
+         {loading && <Spinner className="border-t-primary border-r-primary border-b-primary" />}
+      </div>
+      
       <p>{formattedDate}</p>
 
       <div className="flex items-center justify-between mt-4 p-8 w-full mb-8 bg-[url(/images/profile-bg.png)] bg-cover bg-no-repeat bg-center">
         <div className="flex items-center gap-4">
           <Avatar>
             <AvatarImage src={company?.picture} alt="Profile" />
-            <AvatarFallback className='bg-white'>{useInitials(company?.name)}</AvatarFallback>
+            <AvatarFallback className="bg-white">{useInitials(company?.name)}</AvatarFallback>
           </Avatar>
 
           <div>
@@ -76,6 +207,16 @@ export default function CompanyDetailPage() {
           </div>
         </div>
 
+         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                  {([canSubmit, isSubmitting]) => (
+                    <>
+                     <Button type="submit" disabled={!canSubmit} className="bg-gray-light-2 text-black-2">
+                          Update Details {isSubmitting && <Spinner />}
+                        </Button>
+                      <FormError form={form} />
+                    </>
+                  )}
+          </form.Subscribe>
         <Dialog>
           <DialogTrigger asChild>
             {/* <Button className="bg-gray-light-2 text-black-2">Assigned Student</Button> */}
@@ -98,72 +239,157 @@ export default function CompanyDetailPage() {
         <div className="grid grid-cols-3 gap-4 mb-8 mt-4">
           <div>
             <Label className="mt-3 block">Company Name</Label>
-            <Input
-              value={company?.name || ''}
-              readOnly
-              placeholder="Enter Company Name"
-              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
-            />
+            <form.Field name="name">
+              {(field) => {
+                return (
+                  <>
+                    <Input
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      type="text"
+                      placeholder="Enter company Name"
+                      className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                    />
+                    <FieldError field={field} />
+                  </>
+                )
+              }}
+            </form.Field>
           </div>
 
           <div>
             <Label className="mt-3 block">CAC Number</Label>
-            <Input
-              value={company?.cac || ''}
-              readOnly
-              placeholder="Enter CAC Number"
-              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
-            />
+            <form.Field name="cac">
+              {(field) => {
+                return (
+                  <>
+                    <Input
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      type="text"
+                      placeholder="Enter company cac"
+                      className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                    />
+                    <FieldError field={field} />
+                  </>
+                )
+              }}
+            </form.Field>
           </div>
 
           <div>
             <Label className="mt-3 block">Address</Label>
-            <Input
-              value={company?.address}
-              readOnly
-              placeholder="Enter Location"
-              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
-            />
+            <form.Field name="address">
+              {(field) => {
+                return (
+                  <>
+                    <Input
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      type="text"
+                      placeholder="Enter address"
+                      className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                    />
+                    <FieldError field={field} />
+                  </>
+                )
+              }}
+            </form.Field>
           </div>
 
           <div>
             <Label className="mt-3 block">Email</Label>
-            <Input
-              value={company?.email || ''}
-              readOnly
-              placeholder="Enter Email"
-              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
-            />
+            <form.Field name="email">
+              {(field) => {
+                return (
+                  <>
+                    <Input
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      type="email"
+                      placeholder="Enter company cac"
+                      className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                    />
+                    <FieldError field={field} />
+                  </>
+                )
+              }}
+            </form.Field>
           </div>
 
           <div>
             <Label className="mt-3 block">Phone</Label>
-            <Input
-              value={company?.phone || ''}
-              readOnly
-              placeholder="Enter Phone"
-              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
-            />
+            <form.Field name="phone">
+              {(field) => {
+                return (
+                  <>
+                    <Input
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      type="text"
+                      placeholder="Enter phone number"
+                      className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                    />
+                    <FieldError field={field} />
+                  </>
+                )
+              }}
+            </form.Field>
           </div>
 
           <div>
             <Label className="mt-3 block">Website</Label>
-            <Input
-              value={company?.website || ''}
-              readOnly
-              placeholder="Enter Website"
-              className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
-            />
+            <form.Field name="website">
+              {(field) => {
+                return (
+                  <>
+                    <Input
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      type="text"
+                      placeholder="Enter company website"
+                      className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                    />
+                    <FieldError field={field} />
+                  </>
+                )
+              }}
+            </form.Field>
           </div>
         </div>
 
-        <Label className="mt-3 block">Description</Label>
-        <Textarea
-          value={company?.description || ''}
-          readOnly
-          placeholder="Type your message here."
-          className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
-        />
+        <div>
+          <Label className="mt-3 block">Description</Label>
+          <form.Field name="desctiption">
+            {(field) => {
+              return (
+                <>
+                  <Textarea
+                    name={field.name}
+                    value={field.state.value || ''}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Enter company description"
+                    className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                  />
+                  <FieldError field={field} />
+                </>
+              )
+            }}
+          </form.Field>
+        </div>
 
         <h3 className="font-medium text-[1.2rem] mt-8">Siwes Students</h3>
         <p className="text-sm">Company students</p>
@@ -197,7 +423,7 @@ export default function CompanyDetailPage() {
         <h3 className="font-medium text-[1.2rem] mt-8">Siwes Reports</h3>
         <p className="text-sm">All supervisors reports</p>
 
-        <p className='font-semibold'>No reports</p>
+        <p className="font-semibold">No reports yet</p>
 
         {/* <div className="mt-4">
           <div className="flex gap-4 border-[1px] border-gray-light-2 rounded-[8px] p-4">
@@ -218,6 +444,6 @@ export default function CompanyDetailPage() {
           </div>
         </div> */}
       </div>
-    </div>
+    </form>
   )
 }

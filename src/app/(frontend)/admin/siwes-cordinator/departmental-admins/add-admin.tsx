@@ -2,54 +2,36 @@
 import FieldError from '@/components/FieldError'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { createAdmin } from '@/services/admin/admins'
+import { createAdmin, updateAdmin } from '@/services/admin/admins'
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
-import { User } from 'lucide-react'
 import { Field, ValidationFieldError } from 'payload'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 interface IAdminProp {
-  onCloseEmit: () => void
+  adminData?: any;
+  onCloseEmit: (refresh?: boolean) => void
 }
 
-const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
-  const closeDialog = () => {
-    onCloseEmit()
+const AddAdmin = ({ adminData, onCloseEmit }: IAdminProp) => {
+  const [ isUpdate, setIsUpdate ] = useState(false)
+
+  const closeDialog = (refresh?: boolean) => {
+    onCloseEmit(refresh)
   }
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const [profilePicture, setProfilePicture] = useState<string>('')
-  const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null)
-  const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0]
-
-      if (profilePicture) URL.revokeObjectURL(profilePicture)
-      const img = URL.createObjectURL(file)
-      setProfilePicture(img)
-      setProfilePictureFile(file)
-    }
-  }
+  useEffect(() => {
+    if (adminData) setIsUpdate(true);
+  }, [adminData])
 
   const saveAdmin = useMutation({
     mutationFn: async (payload: any) => {
       try {
-        const res = await createAdmin('admins', payload)
+        const res = isUpdate ? await updateAdmin('admins', payload) :  await createAdmin('admins', payload)
 
         console.log('Result: ', res)
 
@@ -98,11 +80,23 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
         type: 'text',
         required: true,
       },
+      {
+        name: 'password',
+        type: 'text',
+        required: false,
+      },
     ],
     [],
   )
 
-  const form = useForm<{ name: string; email: string; phone: string; department: string }>({
+  const form = useForm<{ name: string; email: string; phone: string; department: string, password: string }>({
+    defaultValues: {
+      name: adminData?.name || '',
+      email: adminData?.email || '',
+      phone: adminData?.phone || '',
+      department: adminData?.department || '',
+      password: '',
+    },
     validators: {
       onSubmitAsync: async ({ value }) => {
         const emptyRequiredFields = requiredFields.reduce<object>(
@@ -120,15 +114,6 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
           }
         }
 
-        // const { name, email, phone, department } = value
-
-        // const formData = new FormData()
-        // profilePictureFile && formData.append('Profile_Picture', profilePictureFile)
-        // formData.append('name', name)
-        // formData.append('email', email)
-        // formData.append('phone', phone)
-        // formData.append('department', department)
-
         const error = await saveAdmin.mutateAsync(value)
 
         if (error) {
@@ -139,8 +124,8 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
         }
 
         form.reset()
-        closeDialog()
-        toast.success('Admin created successfully')
+        closeDialog(true)
+        toast.success(`Admin ${isUpdate ? 'updated' : 'created'} successfully`)
         return null
       },
     },
@@ -262,6 +247,28 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
         </form.Field>
       </div>
 
+      <div>
+        <Label className="mt-3 block">Password</Label>
+        <form.Field name="password">
+          {(field) => {
+            return (
+              <>
+                <Input
+                  name={field.name}
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  type="password"
+                  placeholder="Enter Password"
+                  className="bg-white/40 backdrop-blur-[70px] placeholder:text-gray-light-5 mb-1 border-[1px] border-[#B3FAFF]"
+                />
+                <FieldError field={field} />
+              </>
+            )
+          }}
+        </form.Field>
+      </div>
+
       {/* <div>
         <Label className="mt-3 block">Department</Label>
         <form.Field name="department">
@@ -301,7 +308,7 @@ const AddAdmin = ({ onCloseEmit }: IAdminProp) => {
                 </Button>
 
                 <Button type="submit" disabled={!canSubmit}>
-                  Save {isSubmitting && <Spinner />}
+                  { isUpdate ? 'Update' : 'Save'} {isSubmitting && <Spinner />}
                 </Button>
               </div>
               <FormError form={form} />

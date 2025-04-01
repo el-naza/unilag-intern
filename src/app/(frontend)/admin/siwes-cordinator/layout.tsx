@@ -31,7 +31,7 @@ export default function SiwesCordinatorLayout({ children }: { children: React.Re
     //   iconName: 'MessageCircleQuestion'
     // },
     {
-      label: 'Departmental Admins',
+      label: 'Departmental Cord.',
       route: '/admin/siwes-cordinator/departmental-admins',
        iconName: 'Users'
     },

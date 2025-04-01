@@ -15,7 +15,7 @@ const NewsLetterCard = () => {
         />
 
         <div className="flex gap-3 items-center absolute right-[1rem] bottom-[1rem] bg-white rounded-[50px] px-2 py-1">
-          <h3 className="scroll-m-20 text-xl font-bold tracking-tight text-[#FD661F]">
+          <h3 className="scroll-m-20 text-xl font-bold tracking-tight text-[#FD661F] text-[.8rem]">
             2 vacancies
           </h3>
           {/* <p className="line-through">$500</p> */}

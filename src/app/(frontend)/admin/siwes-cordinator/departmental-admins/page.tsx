@@ -41,6 +41,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddAdmin from './add-admin'
+import { toast } from 'sonner'
+import Spinner from '@/components/spinner'
 
 type Admin = {
   name: string
@@ -53,7 +55,7 @@ type Admin = {
 
 export default function DepartmentalAdminsPage() {
   const [config, setConfig] = useState<IFIlterConfig>({
-    page: 'Departmental Admins',
+    page: 'Departmental Cordinators',
     showFilters: false,
     stats: [{ label: 'Total No of Admins', iconName: 'Shield', count: 0 }],
   })
@@ -65,9 +67,13 @@ export default function DepartmentalAdminsPage() {
   const [total, setTotal] = useState(0)
   const [hasNext, setHasNext] = useState(false)
   const [hasPrevious, setHasPrevious] = useState(false)
+
+  const [adminData, setAdminData] = useState(false)
   const router = useRouter()
 
   const fetchAdmins = async (params?: string) => {
+    setLoading(true)
+    
     const res: any = await getAllAdmins('admins', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
     console.log('Admins: ', docs)
@@ -111,9 +117,9 @@ export default function DepartmentalAdminsPage() {
         accessorKey: 'email',
       },
       {
-        id: 'phoneNumber',
+        id: 'phone',
         header: 'Phone Number',
-        accessorKey: 'phoneNumber',
+        accessorKey: 'phone',
       },
       {
         id: 'numberOfStudents',
@@ -170,10 +176,25 @@ export default function DepartmentalAdminsPage() {
     }
   }, [debouncedQuery])
 
-    const [adminOpenDialog, setAdminOpenDialog] = useState(false)
-    const closeDialog = () => {
-      setAdminOpenDialog(false)
-    }
+  const [adminOpenDialog, setAdminOpenDialog] = useState(false)
+  const closeDialog = (refresh: boolean) => {
+    setAdminOpenDialog(false)
+
+    if (refresh) fetchAdmins()
+  }
+
+  const editAdmin = (record: any) => {
+    setAdminData(record)
+    setAdminOpenDialog(true)
+  }
+
+  const deleteAdmin = async (record: any) => {
+    const adminId = record.original.id
+    const res: any = await getAllAdmins('admins', adminId)
+    console.log('Admins: ', res)
+    toast.success('Departmental cordinator deleted successfully')
+    fetchAdmins()
+  }
 
   return (
     <div className="p-8">
@@ -211,15 +232,15 @@ export default function DepartmentalAdminsPage() {
           <Dialog open={adminOpenDialog} onOpenChange={setAdminOpenDialog}>
             <DialogTrigger asChild>
               <Button>
-                <Plus /> Add Departmental Admin
+                <Plus /> Add Departmental Cordinator
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-screen-md bg-white">
               <DialogHeader>
-                <DialogTitle>Add Departmental Admin</DialogTitle>
+                <DialogTitle>Add Departmental Cordinator</DialogTitle>
               </DialogHeader>
 
-              <AddAdmin onCloseEmit={closeDialog} />
+              <AddAdmin adminData={adminData} onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>
         </div>
@@ -227,8 +248,9 @@ export default function DepartmentalAdminsPage() {
 
       <div className="mt-4 p-4 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <p>All Departmental Admins</p>
+          <p>All Departmental Cordinators</p>
 
+          {loading && <Spinner className="border-t-primary border-r-primary border-b-primary" />}
           {/* <Button>Export Data</Button> */}
         </div>
 
@@ -267,11 +289,11 @@ export default function DepartmentalAdminsPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 bg-white border-none">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editAdmin(row.original)}>
                           <Edit2 />
                           <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => deleteAdmin(row)}>
                           <Trash />
                           <span>Delete</span>
                         </DropdownMenuItem>
