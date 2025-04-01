@@ -13,10 +13,12 @@ export default async function fetchDocs<T>(
   col: CollectionSlug,
   where: string = '',
   token = '',
+  params = {},
 ): Promise<{ data: T } | ValidationErrors> {
   return (
     await axiosInstance
       .get(`/api/${col}${where}`, {
+        params,
         headers: {
           Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'), req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token! || token}`,
         },

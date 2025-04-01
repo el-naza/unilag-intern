@@ -111,8 +111,8 @@ export default function HomePage() {
           />
         </h2>
         <p className="text-center text-[#696984] text-[22px]">
-          Onlearing is one powerful online software suite that combines all the tools <br /> needed
-          to run a successful school or office.
+          Intrns is the central online software suite that combines all the tools <br /> needed to
+          recruit all kinds of interns.
         </p>
 
         <div className="mt-8">
