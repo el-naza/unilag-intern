@@ -1,0 +1,21 @@
+There should be another search button beside the company search input field
+
+The document preview in the application form should show the file name according to its design and should be replicated across all file upload inputs
+
+Continue with debugging the companies' auth issue on the deployed dev environment.
+
+Company's avatar image is still not circular
+
+All images should have fallbacks especially on the companies side. There should be no broken image links
+
+The applications/coins counting along with the upgrade button should be hidden from the deployed version until they're all ready
+
+The shadow should be removed from homepage header
+
+Login and sign up on the homepage should be changed I'm a student and I'm a company respectively.
+
+Resolve the www and non www of intrns.com
+
+On the homepage, update the carousel images to higher quality and adequeately increase the width per image so that only one shows per cycle and the neighbouring images don't bulge out from the sides
+
+The companies' interview time selection area is not matching the UI design yet
