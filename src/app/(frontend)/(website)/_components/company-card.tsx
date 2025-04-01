@@ -42,7 +42,7 @@ const CompanyCard = ({ companies }: ICompanyProp) => {
 
   return (
     <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 p-4 rounded-md">
-      {companies.map((company, index) => (
+      {companies?.map((company, index) => (
         <div className="shadow-lg rounded-[14px] bg-white" key={company.id}>
           <div className="w-full relative">
             <Image

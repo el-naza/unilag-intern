@@ -1,5 +1,6 @@
 'use server'
 
+import { Company } from '@/payload-types'
 import axiosInstance from '@/utilities/axiosInstance'
 import { ServiceResponse, ErrorResponse } from '@/utilities/types'
 import { AxiosError } from 'axios'
@@ -9,6 +10,7 @@ import { CollectionSlug } from 'payload'
 
 type Response = {
   message: string
+  docs: Company[]
 }
 
 export async function getPopularCompanies(

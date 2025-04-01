@@ -18,41 +18,25 @@ import { useEffect, useRef, useState } from 'react'
 import { getPopularCompanies } from '@/services/website/website'
 import industries from '@/utilities/industries'
 import Spinner from '@/components/spinner'
+import { useQuery } from '@tanstack/react-query'
 
 export default function HomePage() {
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }))
 
-  const [industy, setIndustry] = useState<string[]>([])
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('all')
 
-  const [isLoadingCompany, setIsLoadingCompany] = useState<boolean>(true)
-  const [companies, setCompanies] = useState<any[]>([])
-
-  const fetchPopularCompanies = async (params?: any) => {
-    console.log('Fetching popular companies with params: ', params)
-    setIsLoadingCompany(true)
-    getPopularCompanies('companies', params).then((res: any) => {
-      const { docs } = res.data
-      console.log('Fetched popular companies: ', docs)
-      setCompanies(docs)
-      setIsLoadingCompany(false)
-    })
-  }
-
-  useEffect(() => {
-    fetchPopularCompanies()
-    setIndustry(industries)
-  }, [])
-
-  const companyTabChanged = (value: any) => {
-    console.log('Tab Changed: ', value)
-    fetchPopularCompanies({
-      where: {
-        industry: {
-          equals: value,
-        },
-      },
-    }).then(() => setIsLoadingCompany(false))
-  }
+  const popularCompaniesQuery = useQuery({
+    queryKey: ['popularCompanies', selectedIndustry],
+    queryFn: async () =>
+      (
+        await getPopularCompanies(
+          'companies',
+          selectedIndustry === 'all'
+            ? undefined
+            : { where: { industry: { equals: selectedIndustry } } },
+        )
+      )?.data!.docs,
+  })
 
   return (
     <div>
@@ -62,9 +46,15 @@ export default function HomePage() {
         <div id="companies" className="absolute -top-20" />
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-[#FD661F] text-center mb-[45px]">
           Popular Companies
+          <Image
+            src="/images/underline2.png"
+            alt="Gift Card"
+            width={200}
+            height={100}
+            className="absolute right-[25%]"
+          />
         </h2>
-
-        <Tabs defaultValue="all" className="" onValueChange={(value) => companyTabChanged(value)}>
+        <Tabs defaultValue="all" className="" onValueChange={setSelectedIndustry}>
           <TabsList className="w-full bg-transparent gap-4 overflow-x-auto overflow-y-hidden justify-start py-10">
             <TabsTrigger
               value="all"
@@ -73,7 +63,7 @@ export default function HomePage() {
               All Industries
             </TabsTrigger>
 
-            {industy?.map((ind: string, index: number) => (
+            {industries?.map((ind: string, index: number) => (
               <TabsTrigger
                 key={index}
                 value={ind}
@@ -84,9 +74,11 @@ export default function HomePage() {
             ))}
           </TabsList>
 
-          <TabsContent value="all">
-            {isLoadingCompany && <Spinner className="mx-auto border-t-primary border-r-primary" />}
-            <CompanyCard companies={companies} />
+          <TabsContent value={selectedIndustry}>
+            {popularCompaniesQuery.status === 'pending' && (
+              <Spinner className="mx-auto border-t-primary border-r-primary" />
+            )}
+            <CompanyCard companies={popularCompaniesQuery.data} />
           </TabsContent>
 
           {/* {industy?.map((ind: string, index: number) => (
