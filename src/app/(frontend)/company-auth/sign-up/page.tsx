@@ -143,6 +143,7 @@ export default function SignUp() {
         const userCreationObj = { ...value, password: randomString(10) }
         console.log('email: ', userCreationObj.email)
         console.log('Generated Password: ', userCreationObj.password)
+        console.log('Data: ', userCreationObj)
 
         const res = await signUpCompanytMtn.mutateAsync(userCreationObj)
         if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
