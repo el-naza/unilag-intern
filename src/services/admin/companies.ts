@@ -16,7 +16,7 @@ export async function getAllCompanies(
   params?: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
-    secureCookie: process.env.NODE_ENV === 'production',
+    secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -46,7 +46,7 @@ export async function getCompany(
   companyId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
-    secureCookie: process.env.NODE_ENV === 'production',
+    secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -76,7 +76,7 @@ export async function deleteCompany(
   companyId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
-    secureCookie: process.env.NODE_ENV === 'production',
+    secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })

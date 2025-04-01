@@ -2,8 +2,6 @@ There should be another search button beside the company search input field
 
 The document preview in the application form should show the file name according to its design and should be replicated across all file upload inputs
 
-Continue with debugging the companies' auth issue on the deployed dev environment.
-
 Company's avatar image is still not circular
 
 All images should have fallbacks especially on the companies side. There should be no broken image links

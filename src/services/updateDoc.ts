@@ -21,7 +21,7 @@ export default async function updateDoc(
     '***Token',
     (
       await getToken({
-        secureCookie: process.env.NODE_ENV === 'production',
+        secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
         req: { headers: await headers() },
         secret: process.env.NEXTAUTH_SECRET,
       })
@@ -30,7 +30,7 @@ export default async function updateDoc(
   return await axiosInstance
     .patch<Response | ErrorResponse>(`/api/${col}/${id}`, update, {
       headers: {
-        Authorization: `Bearer ${authToken || (await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+        Authorization: `Bearer ${authToken || (await getToken({ secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'), req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
       },
     })
     .catch((error: AxiosError) => {
