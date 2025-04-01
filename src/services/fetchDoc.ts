@@ -15,7 +15,7 @@ export default async function fetchDoc<T>(
     '*******token getting',
     (
       await getToken({
-        secureCookie: process.env.NODE_ENV === 'production',
+        secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
         req: { headers: await headers() },
         secret: process.env.NEXTAUTH_SECRET,
       })
@@ -25,7 +25,7 @@ export default async function fetchDoc<T>(
     await axiosInstance
       .get(`/api/${col}/${id}`, {
         headers: {
-          Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+          Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'), req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
         },
       })
       .catch((error: AxiosError) => {

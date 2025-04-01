@@ -127,7 +127,7 @@ export default function InternshipPost() {
         const res = await saveDoc('internships', {
           company: user?.id,
           jobDescription: Internship.jobDescription,
-          location: Internship.location,
+          courseArea: Internship.courseArea,
           startDate: Internship.startDate,
           endDate: Internship.endDate,
           postDescription: Internship.postDescription,

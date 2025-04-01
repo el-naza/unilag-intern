@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { students } from '@/access/sutdents'
+import { students } from '@/access/students'
 import { relatedStudent } from '@/access/reports/relatedStudent'
 import { relatedStudentOrCompany } from '@/access/relatedStudentOrCompany'
 
@@ -16,6 +16,12 @@ export const Reports: CollectionConfig = {
       name: 'student',
       type: 'relationship',
       relationTo: 'students',
+      required: true,
+    },
+    {
+      name: 'employment',
+      type: 'relationship',
+      relationTo: 'employments',
       required: true,
     },
     {
@@ -56,6 +62,12 @@ export const Reports: CollectionConfig = {
       name: 'week',
       type: 'number',
       required: true,
+    },
+    {
+      name: 'grade',
+      type: 'select',
+      options: ['A', 'B', 'C', 'D', 'E', 'F'],
+      defaultValue: () => null,
     },
   ],
 }

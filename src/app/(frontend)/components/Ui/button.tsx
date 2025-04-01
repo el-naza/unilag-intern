@@ -11,7 +11,7 @@ interface ButtonProps {
   textWrap?: string
   borderRadius?: string
   handleClick?: () => void
-  disabled?: string
+  disabled?: any
 }
 
 export default function MainButton({
@@ -33,7 +33,7 @@ export default function MainButton({
     <button
       className={`${width} ${height} ${backgroundColor} ${padding} ${color} ${border} ${fontWeight} ${fontSize} ${textWrap} ${borderRadius}`}
       onClick={handleClick}
-      // disabled={disabled}
+      disabled={disabled}
     >
       {title}
     </button>

@@ -8,24 +8,33 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <nav className="flex justify-between items-center py-2 lg:px-24 md:px-16 sm:px-8 bg-white sticky top-0 w-full shadow-md z-20">
+    <nav className="flex justify-between items-center py-2 lg:px-24 md:px-16 sm:px-8 absolute top-0 w-full z-20">
       <Image src="/images/unilag-logo.png" alt="Logo" width={60} height={100} />
 
       <ul className="list-none lg:flex md:flex sm:hidden items-center lg:gap-40 md:gap-16 transition-all">
         <li className="hover:text-[#A71C51] hover:font-semibold">
-          <Link href="/home">Home</Link>
+          <Link href="#">Home</Link>
         </li>
         <li className="hover:text-[#A71C51] hover:font-semibold">
-          <Link href="/company">Companies</Link>
+          <Link href="#companies">Companies</Link>
         </li>
         <li className="hover:text-[#A71C51] hover:font-semibold">
-          <Link href="/blog">Blog</Link>
+          <Link href="#interns">Interns</Link>
         </li>
       </ul>
 
       <div className="flex gap-4 items-center">
-        <Button className='bg-white text-primary' variant='ghost'>Log In</Button>
-        <Button className='bg-primary text-white'>Sign Up</Button>
+        <Link href="/company-auth/login">
+          <Button
+            className="bg-white text-primary uppercase border-white border-[1px]"
+            variant="ghost"
+          >
+            I’m a company
+          </Button>
+        </Link>
+        <Link href="/auth/login">
+          <Button className="bg-primary text-white uppercase border-[1px]">I’m a Student</Button>
+        </Link>
 
         <Sheet>
           <SheetTrigger asChild>
@@ -38,13 +47,13 @@ const Navbar = () => {
             <div>
               <ul className="list-none items-center lg:gap-40 md:gap-16 transition-all leading-[2rem] my-4">
                 <li className="hover:text-[#A71C51] hover:font-semibold hover:bg-slate-300 p-2 rounded-xl mb-4 cursor-pointer">
-                  <Link href="/home">Home</Link>
+                  <Link href="#">Home</Link>
                 </li>
                 <li className="hover:text-[#A71C51] hover:font-semibold hover:bg-slate-300 p-2 rounded-xl mb-4 cursor-pointer">
-                  <Link href="/company">Companies</Link>
+                  <Link href="#companies">Companies</Link>
                 </li>
                 <li className="hover:text-[#A71C51] hover:font-semibold hover:bg-slate-300 p-2 rounded-xl mb-4 cursor-pointer">
-                  <Link href="/blog">Blog</Link>
+                  <Link href="#interns">Interns</Link>
                 </li>
               </ul>
             </div>

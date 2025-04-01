@@ -32,6 +32,21 @@ import { Edit2, EllipsisVertical, Trash } from 'lucide-react'
 import React, { useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
+import { format } from 'date-fns'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import Spinner from '@/components/spinner'
+import ReactSelect from 'react-select'
+import { useMutation } from '@tanstack/react-query'
+import updateDoc from '@/services/updateDoc'
+import { toast } from 'sonner'
 
 type Report = {
   companyName: string
@@ -55,9 +70,30 @@ export default function ReportPage() {
   const [total, setTotal] = useState(0)
   const [hasNext, setHasNext] = useState(false)
   const [hasPrevious, setHasPrevious] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [grade, setGrade] = useState('')
+  const [reportId, seReportId] = useState('')
+
+  const formattedReports = useMemo(
+    () =>
+      reports.map((report: any) => {
+        return {
+          ...report,
+          reportDate: format(new Date(report.createdAt), 'MMM dd, yyyy'),
+          companyName: report.employment?.company?.name,
+          reportMessage: report.details,
+          reportRemark: report.remark,
+          studentName: `${report.student?.firstName} ${report.student?.lastName}`,
+          status: report.status.charAt(0).toUpperCase() + report.status.slice(1),
+        }
+      }),
+    [reports],
+  )
 
   const fetchReports = async (params?: string) => {
-    const res: any = await getAllReports('departmental-coordinators', params)
+    const res: any = await getAllReports('reports', params)
+
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
     setReports(docs)
     setPerPage(page)
@@ -79,6 +115,11 @@ export default function ReportPage() {
     setLoading(false)
   }
 
+  const launchGradeReport = (reportId: string) => {
+    setOpenDialog(true)
+    seReportId(reportId)
+  }
+
   useEffect(() => {
     fetchReports()
   }, [])
@@ -91,19 +132,34 @@ export default function ReportPage() {
         accessorKey: 'companyName',
       },
       {
-        id: 'reportNumber',
-        header: 'Report Number',
-        accessorKey: 'reportNumber',
-      },
-      {
         id: 'studentName',
         header: 'Student Name',
         accessorKey: 'studentName',
       },
       {
+        id: 'week',
+        header: 'Week',
+        accessorKey: 'week',
+      },
+      {
         id: 'reportMessage',
         header: 'Report Message',
         accessorKey: 'reportMessage',
+      },
+      {
+        id: 'reportRemark',
+        header: 'Report Remark',
+        accessorKey: 'reportRemark',
+      },
+      {
+        id: 'status',
+        header: 'Report Status',
+        accessorKey: 'status',
+      },
+      {
+        id: 'grade',
+        header: 'Report Grade',
+        accessorKey: 'grade',
       },
       {
         id: 'reportDate',
@@ -116,7 +172,7 @@ export default function ReportPage() {
 
   const table = useReactTable({
     columns,
-    data: reports,
+    data: formattedReports,
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -135,6 +191,39 @@ export default function ReportPage() {
   const [query, setQuery] = useState('')
   const [searchFilter, setSearchFilter] = React.useState<'company' | 'report-number'>()
   const debouncedQuery = useDebounce(query)
+
+  const gradeReport = async () => {
+    if (!grade) {
+      toast.error('Please select a grade')
+      return
+    }
+    setSubmitting(true)
+    await updateReportMtn.mutateAsync()
+  }
+
+  const updateReportMtn = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await updateDoc('reports', reportId, { grade })
+
+        if (!res) {
+          toast.error('Network error; please try again later')
+          return
+        }
+        toast.success('Report updated')
+
+        console.log('Response:', res)
+        fetchReports()
+        setOpenDialog(false)
+        return res
+      } catch (error) {
+        console.error('Error updating report:', error)
+        toast.error('An error occurred while updating; please try again later')
+      } finally {
+        setSubmitting(false)
+      }
+    },
+  })
 
   useEffect(() => {
     switch (searchFilter) {
@@ -183,7 +272,7 @@ export default function ReportPage() {
         <div className="flex justify-between items-center mb-4">
           <p>All Reports</p>
 
-          <Button>Export Data</Button>
+          {/* <Button>Export Data</Button> */}
         </div>
 
         <Table>
@@ -221,13 +310,12 @@ export default function ReportPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 bg-white border-none">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          onClick={() => launchGradeReport(row.original.id)}
+                        >
                           <Edit2 />
-                          <span>Edit</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Trash />
-                          <span>Delete</span>
+                          <span>Grade Report</span>
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
@@ -237,6 +325,44 @@ export default function ReportPage() {
             ))}
           </TableBody>
         </Table>
+
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+          <DialogContent className="bg-white rounded-lg gap-2">
+            <DialogTitle className="text-[#0B7077] font-normal">Grade Report</DialogTitle>
+            <DialogDescription className="text-[#8E8E93]">Select Grade</DialogDescription>
+            <div className="grid gap-4 text-center">
+              <Select onValueChange={(value) => setGrade(value)}>
+                <SelectTrigger className="border-[1px] border-gray-light-2 bg-white w-full">
+                  <SelectValue placeholder="Select Grade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="A">A</SelectItem>
+                    <SelectItem value="B">B</SelectItem>
+                    <SelectItem value="C">C</SelectItem>
+                    <SelectItem value="D">D</SelectItem>
+                    <SelectItem value="E">E</SelectItem>
+                    <SelectItem value="F">F</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <DialogFooter className="grid grid-cols-4 gap-1">
+              <DialogClose className="col-start-2 text-xs bg-white text-[#48484A] border-0">
+                Cancel
+              </DialogClose>
+              <button
+                disabled={submitting}
+                onClick={gradeReport}
+                className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+              >
+                <div className="flex m-auto">
+                  <span>Submit</span> {submitting && <Spinner className="ms-1 h-4" />}
+                </div>
+              </button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <Pagination
           {...paginationProps}

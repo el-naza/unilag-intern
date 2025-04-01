@@ -15,13 +15,24 @@ import updateDoc from '@/services/updateDoc'
 import { toast } from 'sonner'
 import { useMutation } from '@tanstack/react-query'
 import StudentApplicationHeader from '@/app/(frontend)/components/Layouts/Student/StudentApplicationHeader'
+import { stringify } from 'qs-esm'
+import { Where } from 'payload'
 
 const Page = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [interviewInvitations, setInterviewInvitations] = useState<InterviewInvitation[]>([])
 
   const fetchInterviewInvitations = async () => {
-    const res: any = await fetchDocs('interview-invitations')
+    const query: Where = { status: { equals: 'accepted' } }
+
+    const stringifiedQuery = stringify(
+      {
+        where: query,
+      },
+      { addQueryPrefix: true },
+    )
+
+    const res: any = await fetchDocs('interview-invitations', stringifiedQuery)
     console.log(res)
     setInterviewInvitations(res.docs)
     setLoading(false)
@@ -102,7 +113,7 @@ const Page = () => {
                     <span>Back</span>
                   </div>
                 </Link>
-                <div className="text-white text-3xl font-bold ms-4">My Interviews</div>
+                <div className="text-white text-3xl font-bold ms-4">Accepted Interviews</div>
               </div>
               <div className="text-black bg-white rounded-lg">
                 <div className="grid grid-cols-5 gap-4">

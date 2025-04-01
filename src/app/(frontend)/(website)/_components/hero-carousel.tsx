@@ -38,11 +38,15 @@ const HeroCarousel = () => {
         <div className="flex gap-12 mt-12">
           <Link href="/auth/login">
             {' '}
-            <Button className="bg-primary text-white">I&apos;m a student</Button>
+            <Button className="bg-primary text-white uppercase border-[1px]">
+              I&apos;m a student
+            </Button>
           </Link>
           <Link href="/company-auth/login">
             {' '}
-            <Button className="bg-secondary text-white">I&apos;m a company</Button>
+            <Button className="bg-secondary text-white uppercase border-[1px]">
+              I&apos;m a company
+            </Button>
           </Link>
         </div>
       </div>
@@ -74,16 +78,16 @@ const HeroCarousel = () => {
           alt="Play"
           width={50}
           height={50}
-          className="w-[3rem] mx-auto"
+          className="w-[3rem] mx-auto ml-2"
         />
       </div>
 
       <div
-        className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[9rem] ${bg2Colors[currentSlide]}`}
+        className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[10rem] ${bg2Colors[currentSlide]}`}
       >
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
           <CarouselContent>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-1.png"
                 alt="Hero 1"
@@ -115,7 +119,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-xs">Tutors</p>
+                  <p className="text-xs">Interns</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
@@ -130,7 +134,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-2.png"
                 alt="Hero 2"
@@ -159,10 +163,10 @@ const HeroCarousel = () => {
                   alt="Icon"
                   width={40}
                   height={40}
-                  className="w-[2rem] scale-[2]"
+                  className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
+                  <p className="text-sm">Interns</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
@@ -177,7 +181,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-3.png"
                 alt="Hero 3"
@@ -209,7 +213,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
+                  <p className="text-sm">Interns</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
@@ -224,7 +228,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-4.png"
                 alt="Hero 4"
@@ -256,7 +260,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
+                  <p className="text-sm">Interns</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
