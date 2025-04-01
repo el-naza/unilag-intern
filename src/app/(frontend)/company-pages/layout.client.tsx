@@ -5,7 +5,7 @@ import Loader from '../components/Layouts/Loader'
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
-  console.log('session', session)
-  console.log('status', status)
+  // console.log('session', session)
+  // console.log('status', status)
   return status === 'authenticated' ? children : <Loader></Loader>
 }

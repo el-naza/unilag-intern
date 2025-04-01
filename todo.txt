@@ -1,6 +1,6 @@
-There should be another search button beside the company search input field
+There should be another search button beside the company search input field; check the UI design
 
-test the filtering of loaded companies according to their industries on the homepage
+For the "popular companies" section, run a query that queryies for the industries that have companies registered under them first so that each industry tab has companies showing under them. Then fix the filtering as it is not working
 
 All images should be referenced and must have fallbacks especially on the companies side. There should be no broken image links
 
@@ -13,8 +13,6 @@ Remove features that're not working or not ready from production
 The document preview in the application form should show the file name according to its design and should be replicated across all file upload inputs
 
 Company's avatar image is still not circular
-
-On the homepage, update the carousel images to higher quality and adequeately increase the width per image so that only one shows per cycle and the neighbouring images don't bulge out from the sides
 
 The shadow on the homepage header should be removed
 

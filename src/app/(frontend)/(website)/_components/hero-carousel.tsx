@@ -38,11 +38,15 @@ const HeroCarousel = () => {
         <div className="flex gap-12 mt-12">
           <Link href="/auth/login">
             {' '}
-            <Button className="bg-primary text-white">I&apos;m a student</Button>
+            <Button className="bg-primary text-white uppercase border-[1px]">
+              I&apos;m a student
+            </Button>
           </Link>
           <Link href="/company-auth/login">
             {' '}
-            <Button className="bg-secondary text-white">I&apos;m a company</Button>
+            <Button className="bg-secondary text-white uppercase border-[1px]">
+              I&apos;m a company
+            </Button>
           </Link>
         </div>
       </div>
@@ -74,12 +78,12 @@ const HeroCarousel = () => {
           alt="Play"
           width={50}
           height={50}
-          className="w-[3rem] mx-auto"
+          className="w-[3rem] mx-auto ml-2"
         />
       </div>
 
       <div
-        className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[9rem] ${bg2Colors[currentSlide]}`}
+        className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[10rem] ${bg2Colors[currentSlide]}`}
       >
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
           <CarouselContent>
@@ -115,7 +119,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-xs">Tutors</p>
+                  <p className="text-xs">Interns</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
@@ -162,7 +166,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
+                  <p className="text-sm">Interns</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
@@ -209,7 +213,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
+                  <p className="text-sm">Interns</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
@@ -256,7 +260,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
+                  <p className="text-sm">Interns</p>
                   <p className="font-semibold">250+</p>
                 </div>
               </div>
