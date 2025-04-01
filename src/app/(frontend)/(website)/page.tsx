@@ -51,7 +51,7 @@ export default function HomePage() {
             alt="Gift Card"
             width={200}
             height={100}
-            className="absolute right-[25%]"
+            className="absolute right-[25vw]"
           />
         </h2>
         <Tabs defaultValue="all" className="" onValueChange={setSelectedIndustry}>
