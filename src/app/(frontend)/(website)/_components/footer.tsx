@@ -193,7 +193,7 @@ const Footer = () => {
           </div>
 
           {/* Links */}
-          <div className="text-center xl:text-left mt-5 xl:mt-0 xl:-ml-10 text-wrap md:w-[200px]">
+          <div className="text-center xl:text-left mt-5 xl:mt-0 xl:-ml-10 text-wrap max-2xl:w-[200px]">
             <p className="text-black font-semibold">Links</p>
             <ul className="space-y-2">
               <li>
