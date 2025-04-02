@@ -16,10 +16,13 @@ import Loader from '../../components/Layouts/Loader'
 import { useMutation } from '@tanstack/react-query'
 import updateDoc from '@/services/updateDoc'
 import { toast } from 'sonner'
+import comapnyDefaultImage from '../../assets/images/company-default-image.avif'
+
 
 export default function CompanyProfile() {
   const { data: session } = useSession()
   const user = useMemo<any>(() => session?.user, [session])
+  console.log(user)
 
   const fields = [
     { label: 'Company Name', placeholder: user?.name || 'Company Name', type: 'text' },
@@ -122,21 +125,20 @@ export default function CompanyProfile() {
           <div className=" flex lg:flex-row flex-col items-center gap-[12px] px-4">
             <Image
               alt="image"
-              src={user?.logo || profileLogo.src}
+              src={user?.image || comapnyDefaultImage.src}
               height="150"
               width="150"
               objectFit="cover"
-              className="rounded-full border-2 border-[#418A7E]"
+              className="rounded-full border-2 h-[150px] . w-[150px] rounded-full border-[#418A7E]"
             />
             <h2 className="text-white font-[700] text-[30px]">{user?.name}</h2>
           </div>
-          {/* <button className='bg-white h-[33px] w-[89px] text-black font-[500] text-[12px] rounded '>Edit profile</button> */}
-          <button
+          {/* <button
             className="bg-white h-[33px] w-[89px] text-black font-[500] text-[12px] rounded"
             onClick={() => (isEditing ? setShowModal(true) : setIsEditing(true))}
           >
             {isEditing ? 'Save' : 'Edit Profile'}
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -159,15 +161,15 @@ export default function CompanyProfile() {
         </div>
 
         <div>
-          <p className="font-[400] text-[#48484A] text-[14px] my-[8px]">Description</p>
-          <div className="p-[12px] w-full bg-white">
+          {/* <p className="font-[400] text-[#48484A] text-[14px] my-[8px]">Description</p> */}
+          {/* <div className="p-[12px] w-full bg-white">
             <p className="text-[#48484A] font-[400] text-[14px]">
               CMR Shopping Mall is a premier retail and lifestyle destination that redefines the
               shopping and entertainment experience. Located at the heart of , CMR is designed to
               cater to diverse needs, offering a vibrant mix of retail, dining, entertainment, and
               leisure all under one roof.
             </p>
-          </div>
+          </div> */}
         </div>
         <div className="mt-[38px] mb-[18px]">
           <h3 className="font-[400] text-[16px]">All Interns </h3>

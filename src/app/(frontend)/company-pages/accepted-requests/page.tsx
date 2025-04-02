@@ -39,9 +39,9 @@ export default function InternshipRequest() {
     const res: any = await fetchDocs('internship-applications')
     console.log(res)
     const getApplication = res?.docs?.filter((s) => s.status === 'approved')
-    console.log('applications',getApplication)
-    setInternReq(getApplication? getApplication : [])
-    setTableData(res? res : null)
+    console.log('applications', getApplication)
+    setInternReq(getApplication ? getApplication : [])
+    setTableData(res ? res : null)
     setLoading(false)
   }
 
@@ -76,7 +76,7 @@ export default function InternshipRequest() {
         return res
       } catch {
         toast.error('An error occurred while updating; please try again later')
-      }finally{
+      } finally {
         // setLoadUpdateReq(false)
       }
     },
@@ -99,7 +99,7 @@ export default function InternshipRequest() {
         className="flex items-center"
       >
         <img
-          src={item.student?.image?.url || studentImage}
+          src={item.student?.image?.url ? item.student.image.url : studentImage.src}
           alt={item.student.firstName}
           className="w-8 h-8 rounded-full mr-2"
         />
@@ -128,11 +128,10 @@ export default function InternshipRequest() {
           onClick={() => handleRespond(item.id, 'company declined')}
           disabled={respondToInterviewMtn.isPending}
         >
-          {respondToInterviewMtn.isPending ?'processing...' : '✘ Decline'} 
+          {respondToInterviewMtn.isPending ? 'processing...' : '✘ Decline'}
         </button>
       </div>,
     ])
-
 
   const totalItems = 1234
 
@@ -210,7 +209,11 @@ export default function InternshipRequest() {
                   <div className="flex items-start flex-col gap-5 lg:flex-row">
                     <div className="max-w-[200px] md:max-w-full ">
                       <Image
-                        src={invitationDetails?.student?.image?.url}
+                        src={
+                          invitationDetails.student?.image?.url
+                            ? invitationDetails.student.image.url
+                            : studentImage.src
+                        }
                         // src={studentImage}
                         alt="image"
                         width={0}

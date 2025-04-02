@@ -51,6 +51,10 @@ export default function InternshipPost() {
     }
   }
 
+  const removeSelectedFile = () => {
+    setSelectedFile(null)
+  }
+
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDropRejected(fileRejections: FileRejection[], event: DropEvent) {
       // console.log('Some files rejected', fileRejections, 'ev', event)
@@ -138,7 +142,6 @@ export default function InternshipPost() {
           const newPostId = res?.data?.doc?.id as any
           setPostId(newPostId)
           console.log('new post ', newPostId)
-
 
           // Ensure the post ID is set before uploading the image
           if (selectedFile) {
@@ -259,12 +262,11 @@ export default function InternshipPost() {
           >
             <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-6 w-full">
               <div className="h-[] lg:w-[376px] w-full  relative overflow-hidden ">
-               
                 <form.Field name="image">
                   {(field) => {
                     return (
                       <>
-                        {!!selectedFile && (
+                        {/* {!!selectedFile && (
                           <Image
                             src={URL.createObjectURL(selectedFile)}
                             className="mx-auto rounded-full w-[64px] aspect-square"
@@ -285,7 +287,7 @@ export default function InternshipPost() {
                             height={16}
                             alt="icon"
                           />
-                        </Button>
+                        </Button> */}
 
                         <div {...getRootProps()}>
                           <div
@@ -328,6 +330,27 @@ export default function InternshipPost() {
                               Browse files
                             </Button>
                           </div>
+                          {selectedFile && (
+                            <div className="mt-4 w-full flex flex-col items-start border p-2">
+                              <div className="w-full flex items-center justify-between">
+                                <Image
+                                  src={URL.createObjectURL(selectedFile)}
+                                  alt="Preview"
+                                  width={80}
+                                  height={80}
+                                  className="rounded-md shadow"
+                                />
+                                <Button
+                                  variant="destructive"
+                                  onClick={removeSelectedFile}
+                                  className="h-[25px] w-[25px] rounded"
+                                >
+                                  ❌
+                                </Button>
+                              </div>
+                              <p className="mt-2 text-sm text-gray-600">{selectedFile.name}</p>
+                            </div>
+                          )}
                         </div>
                       </>
                     )
@@ -361,7 +384,7 @@ export default function InternshipPost() {
                   children={(field) => {
                     return (
                       <>
-                        <Label clasName="text-[#48484A]">Course Area</Label>
+                        <Label className="text-[#48484A]">Course Area</Label>
                         <Select
                           value={field.state.value || ''}
                           onOpenChange={(isOpen) => (isOpen ? null : field.handleBlur())}
@@ -466,7 +489,7 @@ export default function InternshipPost() {
                         type="submit"
                         disabled={!canSubmit}
                         size="lg"
-                        className="w-full mt-5"
+                        className="lg:w-[104px] w-full mt-5"
                         variant="secondary"
                         color="white"
                       >
@@ -476,7 +499,6 @@ export default function InternshipPost() {
                     </>
                   )}
                 </form.Subscribe>
-               
               </div>
             </div>
           </form>
