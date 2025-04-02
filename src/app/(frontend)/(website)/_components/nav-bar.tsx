@@ -8,10 +8,10 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <nav className="flex justify-between items-center py-2 lg:px-24 md:px-16 sm:px-8 absolute top-0 w-full z-20">
+    <nav className="flex justify-between items-center py-2 container absolute top-0 w-full z-20">
       <Image src="/images/unilag-logo.png" alt="Logo" width={60} height={100} />
 
-      <ul className="list-none lg:flex md:flex sm:hidden items-center lg:gap-40 md:gap-16 transition-all">
+      <ul className="list-none lg:flex md:flex sm:hidden items-center lg:gap-40 md:gap-16 transition-all max-md:hidden">
         <li className="hover:text-[#A71C51] hover:font-semibold">
           <Link href="#">Home</Link>
         </li>

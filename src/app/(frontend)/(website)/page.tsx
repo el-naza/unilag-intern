@@ -42,7 +42,7 @@ export default function HomePage() {
     <div>
       <HeroCarousel />
 
-      <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32 relative">
+      <div className="container mx-auto mb-32 relative">
         <div id="companies" className="absolute -top-20" />
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-[#FD661F] text-center mb-[45px]">
           Popular Companies
@@ -89,7 +89,7 @@ export default function HomePage() {
         </Tabs>
       </div>
 
-      <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32 relative">
+      <div className="container mx-auto mb-32 relative">
         <div id="interns" className="absolute -top-20" />
 
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
@@ -113,7 +113,7 @@ export default function HomePage() {
       </div>
 
       {/* STUDENT ID CARD */}
-      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32">
+      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 container mx-auto mb-32">
         <div>
           <span className="rounded-[10px] bg-[#f5f5f5] text-primary px-4 py-2 font-medium">
             Benefit
@@ -157,7 +157,7 @@ export default function HomePage() {
       </div>
 
       {/* STAFF TRAINING */}
-      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-48">
+      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 container mx-auto mb-48">
         <div className="grid place-content-center py-10">
           <Image src="/images/staff.png" alt="Staff" width={500} height={10} />
         </div>
@@ -202,7 +202,7 @@ export default function HomePage() {
       </div>
 
       {/* GIFT CARDS */}
-      <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto  bg-[#DF1C25] text-white rounded-[16px] flex relative mb-32">
+      <div className="container mx-auto  bg-[#DF1C25] text-white rounded-[16px] flex relative mb-32">
         <div className="p-12 z-10">
           <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 mb-[20px]">
             Why you should buy <br /> gift cards?
@@ -231,7 +231,7 @@ export default function HomePage() {
       </div>
 
       {/* NEWS LETTER */}
-      {/* <div className="lg:px-24 lg:pb-24 lg:max-w-[75vw] sm:max-w-[90vw] mx-auto">
+      {/* <div className="lg:px-24 lg:pb-24 container mx-auto">
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
           News Letter
           <Image

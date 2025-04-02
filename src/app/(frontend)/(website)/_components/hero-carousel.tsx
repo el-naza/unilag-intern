@@ -24,9 +24,9 @@ const HeroCarousel = () => {
   }, [api])
 
   return (
-    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 place-content-center h-[90vh] mb-28 transition-all relative">
+    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 place-content-center md:h-[90vh] mb-28 transition-all max-md:mt-20 relative">
       <div
-        className={`grid place-content-center my-auto mx-0 items-center justify-items-start content-center z-10 pl-12 pr-4 py-4 rounded-tr-[50px] rounded-br-[50px] h-[80%] ${bgColors[currentSlide]}`}
+        className={`grid place-content-center my-auto mx-0 items-center justify-items-start content-center z-10 pl-12 pr-4 py-4 rounded-tr-[50px] rounded-br-[50px] md:h-[80%] ${bgColors[currentSlide]}`}
       >
         <p className="text-sm  mb-8 bg-white px-3 py-2 rounded-md">Never stop learning</p>
         <h1
