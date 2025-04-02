@@ -26,6 +26,7 @@ import { authStore } from '@/store/authStore'
 import industries from '@/utilities/industries'
 import Spinner from '@/components/spinner'
 import { ValidationErrors } from '@/utilities/types'
+import Link from 'next/link'
 
 // Load Google Maps API script dynamically
 const loadGoogleMapsScript = () => {
@@ -186,6 +187,7 @@ export default function SignUp() {
           router.push('/company-auth/sign-up/update-profile-image')
         } else {
           toast.success('Sign up successful')
+          router.push('/company-auth/login')
         }
 
         return null
@@ -506,15 +508,11 @@ export default function SignUp() {
         </form.Subscribe>
       </form>
 
-      <p className="font-[400] text-[12px] text-gray-dark-2 leading-[16px] mt-[12px] text-cente r">
-        Already have an account ?
-        <span
-          className="text-[#007AFF] cursor-pointer"
-          onClick={() => router.push('/company-auth/login')}
-        >
-          {' '}
-          login as a company
-        </span>
+      <p className="font-[400] text-[12px] text-gray-dark-2 leading-[16px] mt-[12px] text-center">
+        Already have an account?
+        <Link href={'/company-auth/login'}>
+          <span className="text-[#007AFF] cursor-pointer"> Login as a company</span>
+        </Link>
       </p>
     </div>
   )

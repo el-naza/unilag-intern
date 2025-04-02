@@ -20,8 +20,8 @@ import { useForm } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Link } from 'lucide-react'
 import useSendCompanyOtpMtn from '../forgot-password/useSendCompanyOtpMtn'
+import Link from 'next/link'
 
 export default function Login() {
   const [step, setStep] = useState<
@@ -287,13 +287,10 @@ export default function Login() {
 
       <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
         Not registered yet?
-        <span
-          onClick={() => router.push('/company-auth/sign-up')}
-          className="text-[#007AFF] cursor-pointer mx-1"
-        >
-          Sign up as a company
-        </span>
-        now to connect with top talent effortlessly!
+        <Link href={'/company-auth/sign-up'}>
+          <span className="text-[#007AFF] cursor-pointer mx-1">Sign up as a company</span>
+        </Link>
+        now to connect with top talents effortlessly!
       </p>
       {/* )} */}
     </div>
