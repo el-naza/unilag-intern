@@ -105,7 +105,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="font-semibold">20+</p>
+                  <p className="font-semibold">99+</p>
                   <p className="text-xs">Company Listed</p>
                 </div>
               </div>
@@ -120,7 +120,7 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="text-xs">Interns</p>
-                  <p className="font-semibold">250+</p>
+                  <p className="font-semibold">999+</p>
                 </div>
               </div>
 
@@ -152,7 +152,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="font-semibold">20+</p>
+                  <p className="font-semibold">99+</p>
                   <p className="text-sm">Company Listed</p>
                 </div>
               </div>
@@ -167,7 +167,7 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="text-sm">Interns</p>
-                  <p className="font-semibold">250+</p>
+                  <p className="font-semibold">999+</p>
                 </div>
               </div>
 
@@ -199,7 +199,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="font-semibold">20+</p>
+                  <p className="font-semibold">99+</p>
                   <p className="text-sm">Company Listed</p>
                 </div>
               </div>
@@ -214,7 +214,7 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="text-sm">Interns</p>
-                  <p className="font-semibold">250+</p>
+                  <p className="font-semibold">999+</p>
                 </div>
               </div>
 
@@ -246,7 +246,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="font-semibold">20+</p>
+                  <p className="font-semibold">99+</p>
                   <p className="text-sm">Company Listed</p>
                 </div>
               </div>
@@ -261,7 +261,7 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="text-sm">Interns</p>
-                  <p className="font-semibold">250+</p>
+                  <p className="font-semibold">999+</p>
                 </div>
               </div>
 
