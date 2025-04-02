@@ -1,10 +1,8 @@
 There should be another search button beside the company search input field; check the UI design
 
-For the "popular companies" section, run a query that queryies for the industries that have companies registered under them first so that each industry tab has companies showing under them. Then fix the filtering as it is not working
+For the "popular companies" section, run a query that queryies for the industries that have companies registered under them first so that each industry tab has companies showing under them
 
 All images should be referenced and must have fallbacks especially on the companies side. There should be no broken image links
-
-Login and sign up on the homepage header nav should be changed to "I'm a student" and "I'm a company" respectively.
 
 The applications/coins counting along with the upgrade button should be hidden from the deployed version until they're all ready
 

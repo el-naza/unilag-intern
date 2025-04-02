@@ -106,7 +106,7 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="font-semibold">99+</p>
-                  <p className="text-xs">Company Listed</p>
+                  <p className="text-xs">Companies Listed</p>
                 </div>
               </div>
 
@@ -153,7 +153,7 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="font-semibold">99+</p>
-                  <p className="text-sm">Company Listed</p>
+                  <p className="text-sm">Companies Listed</p>
                 </div>
               </div>
 
@@ -200,7 +200,7 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="font-semibold">99+</p>
-                  <p className="text-sm">Company Listed</p>
+                  <p className="text-sm">Companies Listed</p>
                 </div>
               </div>
 
@@ -247,7 +247,7 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="font-semibold">99+</p>
-                  <p className="text-sm">Company Listed</p>
+                  <p className="text-sm">Companies Listed</p>
                 </div>
               </div>
 
