@@ -46,13 +46,15 @@ export default function HomePage() {
         <div id="companies" className="absolute -top-20" />
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-[#FD661F] text-center mb-[45px]">
           Popular Companies
-          <Image
-            src="/images/underline2.png"
-            alt="Gift Card"
-            width={200}
-            height={100}
-            className="absolute right-[25vw]"
-          />
+          <div className="absolute right-0 left-0 mx-auto w-[200px]">
+            <Image
+              src="/images/underline2.png"
+              alt="Gift Card"
+              width={200}
+              height={100}
+              className="ml-36"
+            />
+          </div>
         </h2>
         <Tabs defaultValue="all" className="" onValueChange={setSelectedIndustry}>
           <TabsList className="w-full bg-transparent gap-4 overflow-x-auto overflow-y-hidden justify-start py-10">

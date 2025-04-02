@@ -68,13 +68,11 @@ const CourseCard = () => {
           </div>
         ))}
       </div>
-      <Button
-        className="grid mx-auto lg:w-[15%] sm:w-[50%] mt-10"
-        variant="outline"
-        onClick={() => router.push('/company-pages/home')}
-      >
-        View all
-      </Button>
+      <Link href={'/company-pages/home'}>
+        <Button className="grid mx-auto lg:w-[15%] sm:w-[50%] mt-10" variant="outline">
+          View all
+        </Button>
+      </Link>
     </>
   )
 }
