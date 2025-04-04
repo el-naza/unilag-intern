@@ -26,40 +26,40 @@ export default function CompanyRecommendedCard({ company }) {
   return (
     <div className="shadow rounded-lg">
       <div className="rounded-t-lg relative flex flex-col">
-        <Image className="rounded-t-lg" src={companyBanner} alt="company-banner" />
+        <Image className="rounded-t-lg w-full" src={companyBanner} alt="company-banner" />
         <div className="-bottom-5 absolute flex w-full">
-          <div className="bg-[#FAFAFA] px-2 py-3 mx-auto w-[90%] rounded-full text-sm m-auto block grid grid-cols-2">
+          <div className="bg-[#FAFAFA] px-2 py-3 mx-auto w-[90%] rounded-full text-sm m-auto block grid grid-cols-1">
             <div className="relative">
               <Image
-                className="absolute -top-1.5 right-[90px] z-50"
+                className="absolute -top-1.5 right-[130px] z-50"
                 src={enrolledStudent1}
                 alt="enrolled-student-1"
                 height={29}
                 width={29}
               />
               <Image
-                className="absolute -top-1.5 right-[70px] z-40"
+                className="absolute -top-1.5 right-[110px] z-40"
                 src={enrolledStudent2}
                 alt="enrolled-student-2"
                 height={29}
                 width={29}
               />
               <Image
-                className="absolute -top-1.5 right-[50px] z-30"
+                className="absolute -top-1.5 right-[90px] z-30"
                 src={enrolledStudent3}
                 alt="enrolled-student-3"
                 height={29}
                 width={29}
               />
               <Image
-                className="absolute -top-1.5 right-[30px] z-10"
+                className="absolute -top-1.5 right-[70px] z-10"
                 src={enrolledStudent4}
                 alt="enrolled-student-4"
                 height={29}
                 width={29}
               />
               <Image
-                className="absolute -top-1.5 right-[10px]"
+                className="absolute -top-1.5 right-[50px]"
                 src={enrolledStudent5}
                 alt="enrolled-student-5"
                 height={29}
