@@ -151,7 +151,7 @@ const Page = () => {
   }, [user])
   return (
     <>
-      {loading || status !== 'authenticated' ? (
+      {loading ? (
         <Loader />
       ) : (
         <div>
@@ -300,7 +300,7 @@ const Page = () => {
                         Welcome {user?.firstName}
                       </span>
                     ) : (
-                      <Loader />
+                      <Spinner />
                     )}
                   </div>
                   <div className="col-span-2 flex items-center">
@@ -362,7 +362,7 @@ const Page = () => {
                               </div> */}
                             </div>
                           ) : (
-                            <Loader />
+                            <Spinner />
                           )}
                         </div>
                       </div>
