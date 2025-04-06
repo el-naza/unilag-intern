@@ -124,10 +124,11 @@ export default function InternshipRequest() {
         className="flex items-center"
       >
         <img
-          src={item.student?.image?.url || studentImage}
-          alt={item.student.firstName}
+          src={item.student?.image?.url ? item.student.image.url : studentImage.src}
+          alt={item.student?.firstName || 'Student'}
           className="w-8 h-8 rounded-full mr-2"
         />
+
         {`${item.student.firstName} ${item.student.lastName}`}
       </div>,
       <p
@@ -249,7 +250,8 @@ export default function InternshipRequest() {
                   <div className="flex items-start flex-col gap-5 lg:flex-row">
                     <div className="max-w-[200px] md:max-w-full ">
                       <Image
-                        src={invitationDetails?.student?.image?.url || studentImage}
+                              src={invitationDetails.student?.image?.url ? invitationDetails.student.image.url : studentImage.src}
+                        // src={invitationDetails?.student?.image?.url || studentImage}
                         // src={studentImage}
                         alt="image"
                         width={0}
@@ -280,7 +282,6 @@ export default function InternshipRequest() {
                   </div>
                   <div className="flex items-center gap-2 mt-10">
                     <button
-                  
                       disabled={loadingId === invitationDetails.id}
                       onClick={() =>
                         handleRespond(
