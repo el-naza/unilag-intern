@@ -5,7 +5,6 @@ import { AxiosError } from 'axios'
 
 export default async function signInUser(credentials) {
   const { username, password, col, email }: any = credentials
-  console.log('credentials ' + username, password, col, email)
   return await axiosInstance
     .post(`/api/${col}/login`, {
       username,
