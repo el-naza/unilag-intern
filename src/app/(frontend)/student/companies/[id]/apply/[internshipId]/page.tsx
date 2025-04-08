@@ -373,7 +373,11 @@ const Page = () => {
                                       </clipPath>
                                     </defs>
                                   </svg>
-                                  <p className="font-[400] text-[12px] text-[#8E8E93]">
+                                  <p className="font-[400] text-[12px] text-[black] truncate w-full overflow-hidden whitespace-nowrap max-w-[100px]">
+                                    {file.name}
+                                  </p>
+
+                                  <p className="font-[400] text-[12px] text-[#8E8E93] whitespace-nowrap">
                                     {file.size > 1024 * 1024
                                       ? (file.size / (1024 * 1024)).toFixed(2) + ' MB'
                                       : (file.size / 1024).toFixed(2) + ' KB'}
@@ -382,7 +386,11 @@ const Page = () => {
                               ) : (
                                 <div className="flex items-center gap-2">
                                   <span className="text-gray-500">📂 File</span>
-                                  <p className="font-[400] text-[12px] text-[#8E8E93]">
+                                  <p className="font-[400] text-[12px] text-[black] truncate w-full overflow-hidden whitespace-nowrap max-w-[100px]">
+                                    {file.name}
+                                  </p>
+
+                                  <p className="font-[400] text-[12px] text-[#8E8E93] whitespace-nowrap">
                                     {file.size > 1024 * 1024
                                       ? (file.size / (1024 * 1024)).toFixed(2) + ' MB'
                                       : (file.size / 1024).toFixed(2) + ' KB'}

@@ -72,16 +72,22 @@ export default function AwaitingInterview() {
 
         // If the company accepts, create an employment document
         if (status === 'company accepted') {
-          const createEmployment = await saveDoc('employments', {
-            student: studentId,
-            company: user?.id,
-          })
-
-          console.log('Employment record created:', createEmployment)
-
-          if (!createEmployment) {
-            return toast.error('Failed to create employment record')
+          try {
+            const createEmployment = await saveDoc('employments', {
+              student: studentId,
+              company: user?.id,
+            })
+          
+            console.log('Employment record created:', createEmployment)
+          
+            if (!createEmployment) {
+              toast.error('Failed to create employment record')
+            }
+          } catch (e) {
+            console.error('Error creating employment:', e)
+            toast.error('Something went wrong while creating employment')
           }
+          
         }
         console.log(res)
 
@@ -170,7 +176,7 @@ export default function AwaitingInterview() {
                           clickAccept: () =>
                             handleRespond(
                               invitation.id,
-                              'company accected',
+                              'company accepted',
                               invitation?.student?.id,
                             ),
                           clickDecline: () => handleRespond(invitation.id, 'company declined'),

@@ -65,7 +65,7 @@ const Page = () => {
       }
     },
   })
-  const [reqloading, setReqLoading] = React.useState<string | null>(null)
+  const [loadingIds, setLoadingIds] = useState<string[]>([])
 
   const handleRespond = async (
     id: string,
@@ -74,28 +74,28 @@ const Page = () => {
     studentId?: string,
   ) => {
     try {
-      setReqLoading(status as string) 
+      setLoadingIds((prev) => [...prev, id])
+  
       const res = await respondToInterviewMtn.mutateAsync({ id, status, employment })
-
+  
       if (res && status === 'Accepted' && employment && studentId) {
         const employedData = {
           employedBy: {
             employment,
-            dateEmployed: new Date().toISOString(), 
+            dateEmployed: new Date().toISOString(),
           },
         }
-
-        
         await updateDoc('students', studentId, employedData)
       }
-
+  
       toast.success('Employment status updated successfully, you are now employed!')
     } catch (error) {
       console.error('Error updating employment status:', error)
     } finally {
-      setReqLoading(null) // Reset loading state
+      setLoadingIds((prev) => prev.filter((loadingId) => loadingId !== id))
     }
   }
+  
 
   // const handleRespond = async (
   //   id: string,
@@ -174,24 +174,24 @@ const Page = () => {
                   <div className="col-span-4">
                     <div className="p-5">
                       <StudentApplicationHeader />
-                      <div className="grid gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {employmentOffers&&employmentOffers.map((offer) => (
-                          <EmploymentCard
-                            key={offer.id}
-                            company={{
-                              name: offer.company.name,
-                              // address: 'Lokogoma',
-                              phone: offer.company.phone,
-                            }}
-                            status={offer.status}
-                            student={{
-                              firstName: offer.student.firstName,
-                              lastName: offer.student.lastName,
-                            }}
-                            loading={reqloading}
-                            onAccept={() => handleRespond(offer.id, 'Accept', offer.id, user.id)}
-                            onCancel={() => handleRespond(offer.id, 'Decline')}
-                          />
+                        <EmploymentCard
+                        key={offer.id}
+                        company={{
+                          name: offer.company.name,
+                          phone: offer.company.phone,
+                        }}
+                        status={offer.status}
+                        student={{
+                          firstName: offer.student.firstName,
+                          lastName: offer.student.lastName,
+                        }}
+                        loading={loadingIds.includes(offer.id)} 
+                        onAccept={() => handleRespond(offer.id, 'Accepted', offer.id, user.id)}
+                        onCancel={() => handleRespond(offer.id, 'Declined')}
+                      />
+                      
                         ))}
                       </div>
                     </div>

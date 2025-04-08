@@ -67,20 +67,6 @@ export default function InternshipPost() {
     setSelectedFile(null)
   }
 
-  // const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
-  //   onDropRejected(fileRejections: FileRejection[], event: DropEvent) {
-  //     // console.log('Some files rejected', fileRejections, 'ev', event)
-  //     toast.error('File(s) rejected: Follow the instructions to upload acceptable file(s)')
-  //   },
-  //   onError(err: Error) {
-  //     // console.log('An error occured', err)
-  //     toast.error('An error occured with your file; try again')
-  //   },
-  //   noClick: true,
-  //   accept: { 'image/*': ['.png', '.svg', '.jpg', '.jpeg'] },
-  //   maxFiles: 1,
-  //   maxSize: 5 * 1024 * 1024,
-  // })
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDropRejected(fileRejections: FileRejection[], event: DropEvent) {
@@ -95,7 +81,7 @@ export default function InternshipPost() {
       'application/pdf': ['.pdf'],
     },
     maxFiles: 1,
-    maxSize: 5 * 1024 * 1024, // 5MB limit
+    maxSize: 5 * 1024 * 1024,
   })
 
   function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
