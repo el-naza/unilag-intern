@@ -1,92 +1,99 @@
 'use client'
 
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
-import { LatLngBounds, LatLngExpression, LatLngTuple } from 'leaflet'
-
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
-import 'leaflet-defaulticon-compatibility'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api'
 import { Company } from '@/payload-types'
 import CompanyRecommendedCard from '../Cards/CompanyRecommendedCard'
 
 interface MapProps {
   companies: Company[]
-  zoom?: number
 }
 
-const defaults: { zoom: number; center: LatLngExpression } = {
-  zoom: 19,
-  center: [9.0563, 7.4985],
+const defaults = {
+  center: { lat: 9.0563, lng: 7.4985 },
 }
 
-const Map = ({ zoom = defaults.zoom, companies }: MapProps) => {
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string
+
+const Map = ({ companies }: MapProps) => {
+  const mapRef = useRef<google.maps.Map | null>(null)
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
+  const [zoom, setZoom] = useState<number>(14) // Default zoom level
+
   const companiesWithLocation = useMemo(
     () => companies.filter((company) => company.location.latitude && company.location.longitude),
     [companies],
   )
 
-  const positions = useMemo<LatLngExpression[] | LatLngTuple[]>(
+  const positions = useMemo(
     () =>
-      companiesWithLocation.map((company) => [
-        company.location.latitude,
-        company.location.longitude,
-      ]),
+      companiesWithLocation.map((company) => ({
+        lat: company.location.latitude,
+        lng: company.location.longitude,
+      })),
     [companiesWithLocation],
   )
 
   const center = useMemo(() => (positions.length ? positions[0] : defaults.center), [positions])
 
-  const MapCentralizer = ({ positions }: { positions: LatLngExpression[] | LatLngTuple[] }) => {
-    const map = useMap()
+  const handleMapLoad = (map: google.maps.Map) => {
+    mapRef.current = map
 
-    useEffect(() => {
-      if (positions.length) {
-        const bounds = new LatLngBounds(positions as LatLngExpression[] | LatLngTuple[])
-        map.fitBounds(bounds, { padding: [50, 50] })
-      }
-    }, [map, positions])
+    if (positions.length) {
+      const bounds = new google.maps.LatLngBounds()
+      positions.forEach((pos) => bounds.extend(pos))
+      map.fitBounds(bounds)
 
-    return null
+      google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
+        setZoom(map.getZoom() ?? 14) // Update zoom dynamically
+      })
+    }
   }
 
+  useEffect(() => {
+    if (!mapRef.current || positions.length === 0) return
+
+    const bounds = new google.maps.LatLngBounds()
+    positions.forEach((pos) => bounds.extend(pos))
+
+    mapRef.current.fitBounds(bounds)
+
+    google.maps.event.addListenerOnce(mapRef.current, 'bounds_changed', () => {
+      setZoom(mapRef.current?.getZoom() ?? 14)
+    })
+  }, [positions])
+
   return (
-    <MapContainer
-      center={center}
-      zoom={zoom}
-      scrollWheelZoom={false}
-      className="w-full min-h-[400px] lg:h-full"
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+      <GoogleMap
+        center={center}
+        zoom={zoom} // Dynamically updated zoom
+        onLoad={handleMapLoad}
+        mapContainerClassName="w-full min-h-[400px] lg:h-full"
+      >
+        {companiesWithLocation.map((company, index) => (
+          <Marker
+            key={index}
+            position={{ lat: company.location.latitude, lng: company.location.longitude }}
+            onClick={() => setSelectedCompany(company)}
+          />
+        ))}
 
-      <MapCentralizer positions={positions} />
-
-      {companiesWithLocation.map((company, index) => (
-        <Marker
-          key={`position-${index}`}
-          position={[company.location.latitude, company.location.longitude]}
-          draggable={false}
-        >
-          <Popup minWidth={300}>
-            <CompanyRecommendedCard company={company} />
-            {/* <div className="grid gap-2">
-              <div className="font-medium">{company.name}</div>
-              <div>{company.description}</div>
-              <div className="text-right">
-                <Link href={`/student/companies/${company.id}`}>
-                  <Button size="sm">Apply</Button>
-                </Link>
-              </div>
-            </div> */}
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        {selectedCompany && (
+          <InfoWindow
+            position={{
+              lat: selectedCompany.location.latitude,
+              lng: selectedCompany.location.longitude,
+            }}
+            onCloseClick={() => setSelectedCompany(null)}
+          >
+            <div className="w-64">
+              <CompanyRecommendedCard company={selectedCompany} />
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
+    </LoadScript>
   )
 }
 

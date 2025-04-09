@@ -11,16 +11,6 @@ export default async function fetchDoc<T>(
   col: CollectionSlug,
   id: string,
 ): Promise<{ data: T } | ValidationErrors> {
-  console.log(
-    '*******token getting',
-    (
-      await getToken({
-        secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
-        req: { headers: await headers() },
-        secret: process.env.NEXTAUTH_SECRET,
-      })
-    )?.token!,
-  )
   return (
     await axiosInstance
       .get(`/api/${col}/${id}`, {

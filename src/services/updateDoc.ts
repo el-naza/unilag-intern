@@ -17,16 +17,6 @@ export default async function updateDoc(
   update: object,
   authToken?: string | undefined,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  console.log(
-    '***Token',
-    (
-      await getToken({
-        secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
-        req: { headers: await headers() },
-        secret: process.env.NEXTAUTH_SECRET,
-      })
-    )?.token!,
-  )
   return await axiosInstance
     .patch<Response | ErrorResponse>(`/api/${col}/${id}`, update, {
       headers: {
