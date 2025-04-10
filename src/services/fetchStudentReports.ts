@@ -23,7 +23,7 @@ export default async function fetchStudentReports(
       },
       sort: '-createdAt',
     },
-    // { addQueryPrefix: true },
+    { addQueryPrefix: true },
   )
 
   const reports = await fetchDocs<Report>('reports', stringifiedQuery)
