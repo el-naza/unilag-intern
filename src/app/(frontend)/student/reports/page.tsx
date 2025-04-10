@@ -12,7 +12,7 @@ import {
 import { useForm } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Report } from '@/payload-types'
+import { Report, Student } from '@/payload-types'
 import saveDoc from '@/services/saveDoc'
 import { toast } from 'sonner'
 import { Reports } from '@/collections/Reports'
@@ -24,15 +24,17 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
-import { useSession } from 'next-auth/react'
 import fetchStudentReports from '@/services/fetchStudentReports'
 import { format, isToday, isYesterday } from 'date-fns'
+import fetchMe from '@/services/fetchMe'
 
 export default function Page() {
-  const router = useRouter()
-  const { data: session, status } = useSession()
+  const meQuery = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => (await fetchMe('students'))?.user as Student | undefined,
+  })
 
-  const user = useMemo<any>(() => session?.user, [session])
+  const user = useMemo<any>(() => meQuery.data, [meQuery.data])
 
   const saveReportMtn = useMutation({
     mutationFn: async (report: Report) => {
@@ -106,7 +108,7 @@ export default function Page() {
                   const form = useForm<Partial<Report>>({
                     defaultValues: {
                       week: i + 1,
-                      student: session?.user?.id,
+                      student: user?.id,
                     },
                     validators: {
                       onSubmitAsync: async ({ value }) => {
