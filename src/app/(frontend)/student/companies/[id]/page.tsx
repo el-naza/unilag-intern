@@ -166,6 +166,7 @@ const Page = () => {
                     <div className="grid grid-cols-3 mb-3">
                       <div className="flex items-center text-center text-[#FF9500] font-bold">
                         {internships?.length} vacancies
+                        {internships?.length} vacancies
                       </div>
                       <div className="col-span-2">
                         <Dialog open={open} onOpenChange={setOpen}>
@@ -176,8 +177,8 @@ const Page = () => {
                           </DialogTrigger>
                           <DialogContent className="bg-white rounded-lg gap-2">
                             <DialogDescription className="grid gap-4 p-2 text-[#8E8E93]">
-                              {internships?.map((internship: any) => (
-                                <div key={internship?.id} className="justify-between flex">
+                              {internships &&internships.map((internship: any) => (
+                                <div key={internship.id} className="justify-between flex">
                                   <div>
                                     <div className="text-black font-bold text-sm">
                                       {internship?.postDescription

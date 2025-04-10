@@ -187,8 +187,8 @@ export default function Reports() {
   }
 
   const approvalStatus = [
-    { value: 'approved', label: 'Approved', color: 'green' },
-    { value: 'reassigned', label: 'Reasign', color: 'blue' },
+    { value: 'approved', label: 'Approved', color: '#34C759' },
+    { value: 'reassigned', label: 'Reasign', color: '#FF9500' },
     // { value: 'pending', label: 'Pending', color: 'yellow' },
   ]
 

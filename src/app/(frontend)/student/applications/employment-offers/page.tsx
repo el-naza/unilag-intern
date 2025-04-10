@@ -188,8 +188,8 @@ const Page = () => {
                           lastName: offer.student.lastName,
                         }}
                         loading={loadingIds.includes(offer.id)} 
-                        onAccept={() => handleRespond(offer.id, 'Accepted', offer.id, user.id)}
-                        onCancel={() => handleRespond(offer.id, 'Declined')}
+                        onAccept={() => handleRespond(offer.id, 'Accept', offer.id, user.id)}
+                        onCancel={() => handleRespond(offer.id, 'Decline', offer.id, user.id)}
                       />
                       
                         ))}
