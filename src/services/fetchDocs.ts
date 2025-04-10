@@ -14,7 +14,7 @@ export default async function fetchDocs<T>(
   where: string = '',
   token = '',
   params = {},
-): Promise<{ data: T } | ValidationErrors> {
+): Promise<{ docs: T } | ValidationErrors> {
   return (
     await axiosInstance
       .get(`/api/${col}${where}`, {

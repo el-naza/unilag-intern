@@ -26,11 +26,11 @@ export default async function fetchStudentReports(
     { addQueryPrefix: true },
   )
 
-  const reports = await fetchDocs<Report>('reports', stringifiedQuery)
+  const reports = await fetchDocs<Report[]>('reports', stringifiedQuery)
   console.log('reports', reports)
 
   const result = {}
-  for (const report of (reports as { docs: Report[] }).docs) {
+  for (const report of (reports as { docs: Report[] })?.docs) {
     if (report?.week?.toString?.())
       result[report?.week?.toString?.()] = [...(result?.[report?.week?.toString?.()] || []), report]
   }
