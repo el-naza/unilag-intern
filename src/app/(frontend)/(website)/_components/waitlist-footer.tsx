@@ -1,11 +1,88 @@
+'use client'
+
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import './footer.scss'
+import FormError from '@/components/FormError'
+import { useMutation } from '@tanstack/react-query'
+import { EmailSubscriber } from '@/payload-types'
+import { useForm } from '@tanstack/react-form'
+import { toast } from 'sonner'
+import saveDoc from '@/services/saveDoc'
+import { EmailSubscribers } from '@/collections/EmailSubscribers'
+import { Field, ValidationFieldError } from 'payload'
+import { ValidationErrors } from '@/utilities/types'
+import Spinner from '@/components/spinner'
+import FieldError from '@/components/FieldError'
 
 const Footer = () => {
+  const saveSubscriberMtn = useMutation({
+    mutationFn: async ({ email }: EmailSubscriber) => {
+      try {
+        const res = await saveDoc('email-subscribers', { email })
+        if (!res) return toast.error('Network err; pls try again later')
+
+        return res
+      } catch {
+        toast.error('An error occured while saving message; pls try again later')
+      }
+    },
+  })
+
+  const form = useForm<EmailSubscriber>({
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        const emptyRequiredFields = EmailSubscribers.fields.reduce<object>(
+          (acc: ValidationFieldError, field: Field & { required: boolean; name: string }) => ({
+            ...acc,
+            ...(field?.required && !value[field.name] && { [field.name]: 'Required!' }),
+          }),
+          {},
+        )
+
+        if (Object.keys(emptyRequiredFields).length) {
+          return {
+            form: 'Some required fields are missing. Please fill out all mandatory fields to proceed.',
+            fields: emptyRequiredFields,
+          }
+        }
+
+        // const error = await saveSubscriberMtn.mutateAsync(value)
+        const res = await saveSubscriberMtn.mutateAsync(value)
+        if ((res as ValidationErrors)?.errors?.[0]?.data?.errors?.length) {
+          if ((res as ValidationErrors).errors[0].data.errors[0].message.includes('unique')) {
+            toast.error('Email already subscribed')
+            return {
+              form: 'Email already subscribed',
+              fields: { email: '' },
+            }
+          }
+
+          return {
+            form: (res as ValidationErrors).errors[0].message,
+            fields: (res as ValidationErrors).errors[0].data.errors.reduce<object>(
+              (acc: ValidationFieldError, err) => ({
+                ...acc,
+                [err.path]: err.message,
+              }),
+              {},
+            ),
+          }
+        }
+
+        // success here so naviagate or toast to success !!
+        form.reset()
+        toast.success('Your email has been saved successfully')
+        // router.push('/student')
+
+        return null
+      },
+    },
+  })
+
   return (
     <footer className="bg-[#D2E6E4] text-primary w-full curved-top px-4 sm:px-6 xl:px-8 lg:px-24 py-12 xl:pt-24 xl:pb-16">
       <div className="container mx-auto">
@@ -99,7 +176,7 @@ const Footer = () => {
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                   <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
-                Email: info@onlearn.com
+                Email: help@intrns.com
               </li>
             </ul>
           </div>
@@ -187,12 +264,55 @@ const Footer = () => {
             <p className="text-primary xl:text-sm font-normal mb-2 mt-5 xl:mt-0 text-center xl:text-left">
               Stay up to date with the latest information
             </p>
-            <div className="flex w-full max-w-sm items-center space-x-2 mt-2 bg-white p-2 rounded-[14px]">
-              <Input type="email" placeholder="Email" className="border-0 outline-none" />
-              <Button type="submit" className="bg-primary text-white rounded-[12px]">
-                Send
-              </Button>
-            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                form.handleSubmit()
+              }}
+              className="w-full max-w-sm"
+            >
+              <div className="flex w-full max-w-sm items-center space-x-2 mt-2 bg-white p-2 rounded-[14px]">
+                <form.Field name="email">
+                  {(field) => {
+                    return (
+                      <>
+                        <Input
+                          name={field.name}
+                          value={field.state.value || ''}
+                          onBlur={field.handleBlur}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="Email"
+                          className="border-0 outline-none"
+                        />
+                        <FieldError field={field} className="" />
+                      </>
+                    )
+                  }}
+                </form.Field>
+
+                <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                  {([canSubmit, isSubmitting]) => (
+                    <>
+                      <Button
+                        type="submit"
+                        disabled={!canSubmit}
+                        className="bg-primary text-white rounded-[12px]"
+                      >
+                        Send {isSubmitting && <Spinner />}
+                      </Button>
+
+                      {/* <FormError form={form} /> */}
+                    </>
+                  )}
+                </form.Subscribe>
+                {/* <Input type="email" placeholder="Email" className="border-0 outline-none" /> */}
+                {/* <Button type="submit" className="bg-primary text-white rounded-[12px]">
+                  Send
+                </Button> */}
+              </div>
+            </form>
+            <FormError form={form} />
           </div>
         </div>
       </div>

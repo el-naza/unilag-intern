@@ -148,7 +148,7 @@ export default function StudentInvitation() {
       <nav className="w-full bg-[#FAFAFA99]">
         <NavBar fill="#0B7077" />
       </nav>
-      <div className="max-w-[866px] m-auto lg:mt-[58px]">
+      <div className="max-w-[866px] m-auto lg:mt-[58px] mb-[70px]">
         <button
           className="flex items-center gap-[4px] font-[400] text-[14px] p-[24px] lg:p-0"
           onClick={() => router.back()}
@@ -163,7 +163,7 @@ export default function StudentInvitation() {
             form.handleSubmit()
           }}
         >
-          <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row ">
+          <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row mb-[70px]">
             <div className="max-w-[250px]">
               <Image
                 src={student?.image?.url || studentImage}
@@ -228,53 +228,52 @@ export default function StudentInvitation() {
                 )}
               </form.Field>
 
-              {/* Time Selection */}
-              <form.Field name="dateTime">
-                {(field) => (
-                  <>
-                    <div className="mt-[12px]">
-                      <p className="font-[400] text-[14px]">Select Time</p>
-                      <div className="mt-[6px] bg-[#FFFFFF] rounded-[4px] p-[6px] w-full flex gap-2 flex-wrap">
-                        {dates.map((time) => (
-                          <button
-                            key={time}
-                            type="button"
-                            onClick={() => setSelectedTime(time)}
-                            className={`px-[12px] py-[6px] text-[14px] rounded-[4px] ${selectedTime === time ? 'bg-[#0B7077] text-white' : 'bg-gray-200'}`}
-                          >
-                            {time}
-                          </button>
-                        ))}
+              <div className="lg:flex items-start gap-[12px] mb-[30px]">
+                <form.Field name="dateTime">
+                  {(field) => (
+                    <>
+                      <div className="lg:max-w-[246px]">
+                        <p className="font-[400] text-[14px]">Select Time</p>
+                        <div className="mt-[6px] h-[116px] overflow-hidden overflow-y-scroll bg-[#FFFFFF] rounded-[4px] p-[6px] w-full flex gap-2 flex-wrap">
+                          {dates.map((time) => (
+                            <button
+                              key={time}
+                              type="button"
+                              onClick={() => setSelectedTime(time)}
+                              className={`px-[12px] py-[6px] text-[14px] rounded-[4px] block w-full ${selectedTime === time ? 'bg-[#B3FAFF] text-black' : ''}`}
+                            >
+                              {time}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
 
-                    <FieldError field={field} />
-                  </>
-                )}
-              </form.Field>
+                      <FieldError field={field} />
+                    </>
+                  )}
+                </form.Field>
 
-              <div></div>
-
-              <p className="text-[#FF9500] font-[400] text-[12px] my-[12px]">
-                Confirm your invitation before sending. The recipient will be notified once you
-                proceed.
-              </p>
-
-              {/* <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-                {([canSubmit, isSubmitting]) => ( */}
-              <div className="mb-[100px]">
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  size="lg"
-                  className="w-full rounded p-3 bg-[#0B7077] text-white text-center mt-[24px] "
-                >
-                  Send Application {loading && <Spinner />}
-                </Button>
-                <FormError form={form} />
+                <div className="lg:max-w-[256px]">
+                  <p className="font-[400]  text-[14px]"> Invitation Conversation </p>
+                  <p className="text-[#FF9500] font-[400] text-[12px] my-[15px]">
+                    Confirm your invitation before sending. The recipient will be notified once you
+                    proceed.
+                  </p>
+                  <div className="mb-[70px]">
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      size="lg"
+                      className="w-full rounded p-3 bg-[#0B7077] text-white text-center  "
+                    >
+                      Send Application {loading && <Spinner />}
+                    </Button>
+                    <FormError form={form} />
+                  </div>
+                </div>
               </div>
-              {/* )}
-              </form.Subscribe> */}
+
+   
             </div>
           </div>
         </form>

@@ -42,7 +42,7 @@ export default async function searchStudents<T>(
     await axiosInstance
       .get(`/api/${col}${stringifiedQuery}`, {
         headers: {
-          Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
+          Authorization: `Bearer ${(await getToken({ secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'), req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))?.token!}`,
         },
       })
       .catch((error: AxiosError) => {

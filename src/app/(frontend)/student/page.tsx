@@ -151,7 +151,7 @@ const Page = () => {
   }, [user])
   return (
     <>
-      {loading || status !== 'authenticated' ? (
+      {loading ? (
         <Loader />
       ) : (
         <div>
@@ -300,7 +300,7 @@ const Page = () => {
                         Welcome {user?.firstName}
                       </span>
                     ) : (
-                      <Loader />
+                      <Spinner />
                     )}
                   </div>
                   <div className="col-span-2 flex items-center">
@@ -349,7 +349,7 @@ const Page = () => {
                               <div>
                                 <span>{user?.homeAddress}</span>
                               </div>
-                              <div className="flex gap-2">
+                              {/* <div className="flex gap-2">
                                 <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                                   <span>0 Duration</span>
                                 </div>
@@ -359,10 +359,10 @@ const Page = () => {
                                 >
                                   <span>Upgrade</span>
                                 </Link>
-                              </div>
+                              </div> */}
                             </div>
                           ) : (
-                            <Loader />
+                            <Spinner />
                           )}
                         </div>
                       </div>

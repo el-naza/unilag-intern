@@ -12,8 +12,6 @@ import Loader from '../../components/Layouts/Loader'
 import comapnyDefaultImage from '../../assets/images/company-default-image.avif'
 
 export default function Interviews() {
-
-
   const [loading, setLoading] = useState<boolean>(true)
   const [internshipPosts, setInternshipPosts] = useState<any[]>([])
 

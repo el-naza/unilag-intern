@@ -44,8 +44,10 @@ export default function Page() {
         // randomly generate password for students on creation for now
         const res = await updateUserImage('companies', signedUpUserId, file, signUpAuthToken)
         console.log('res', res)
-        if (!res) return toast.error('Network err; pls try again later')
-        return res
+        if (!res) {
+          toast.error('Network err; pls try again later')
+          return 'Network err; pls try again later'
+        }
       } catch {
         toast.error('An error occured while saving message; pls try again later')
       }

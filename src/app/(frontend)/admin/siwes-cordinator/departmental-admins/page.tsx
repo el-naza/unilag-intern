@@ -137,7 +137,7 @@ export default function DepartmentalAdminsPage() {
 
   const table = useReactTable({
     columns,
-    data: admins,
+    data: Array.isArray(admins) ? admins : [],
     getCoreRowModel: getCoreRowModel(),
   })
 

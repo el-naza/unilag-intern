@@ -140,7 +140,7 @@ export default function CompaniesPage() {
 
   const table = useReactTable({
     columns,
-    data: companies,
+    data: Array.isArray(companies) ? companies : [],
     getCoreRowModel: getCoreRowModel(),
   })
 

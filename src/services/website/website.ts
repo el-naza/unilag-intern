@@ -1,24 +1,22 @@
 'use server'
 
+import { Company } from '@/payload-types'
 import axiosInstance from '@/utilities/axiosInstance'
-import { ServiceResponse, ErrorResponse } from '@/utilities/types'
+import { ErrorResponse, ServiceResponse } from '@/utilities/types'
 import { AxiosError } from 'axios'
-import { getToken } from 'next-auth/jwt'
-import { headers } from 'next/headers'
 import { CollectionSlug } from 'payload'
 
 type Response = {
   message: string
+  docs: Company[]
 }
 
 export async function getPopularCompanies(
   col: CollectionSlug,
-  params?: string,
+  params?: any,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-
   return await axiosInstance
-    .get<Response | ErrorResponse>(`/api/${col}/?${params}`,
-)
+    .get<Response | ErrorResponse>(`/api/${col}/?${params}`)
     .catch((error: AxiosError) => {
       if (error.response)
         return {

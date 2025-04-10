@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const courses = [
   {
@@ -54,25 +55,24 @@ const CourseCard = () => {
                 {program.title}
               </h3>
               <p className="pb-8 mt-3 line-clamp-2">{program.description}</p>
-
-              <Button
-                onClick={() => router.push(program.link)}
-                className="bg-white shadow-2xl rounded-[10px] group-hover:bg-primary group-hover:text-white"
-                variant="ghost"
-              >
-                Explore Departments
-              </Button>
+              <Link href={program.link}>
+                <Button
+                  // onClick={() => router.push(program.link)}
+                  className="bg-white shadow-2xl rounded-[10px] group-hover:bg-primary group-hover:text-white"
+                  variant="ghost"
+                >
+                  Explore Departments
+                </Button>
+              </Link>
             </div>
           </div>
         ))}
       </div>
-      <Button
-        className="grid mx-auto lg:w-[15%] sm:w-[50%] mt-10"
-        variant="outline"
-        onClick={() => router.push('/company-pages/home')}
-      >
-        View all
-      </Button>
+      <Link href={'/company-pages/home'}>
+        <Button className="grid mx-auto lg:w-[15%] sm:w-[50%] mt-10" variant="outline">
+          View all
+        </Button>
+      </Link>
     </>
   )
 }
