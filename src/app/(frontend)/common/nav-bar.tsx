@@ -96,9 +96,9 @@ export default function NavBar({ fill }: naveBarProps) {
           <Image
             src={user?.image?.url || comapnyDefaultImage}
             alt="image"
-            // width={40}
-            // height={40}
-            style={{ objectFit: 'cover', height:"44px", width:"44px", borderRadius:"100%"  }}
+            width={44}
+            height={44}
+            style={{ objectFit: 'cover', height: '44px', width: '44px', borderRadius: '100%' }}
             className="rounded-full"
           />
           <div>
