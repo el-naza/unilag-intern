@@ -75,19 +75,20 @@ const Page = () => {
   ) => {
     try {
       setLoadingIds((prev) => [...prev, id])
-  
+
       const res = await respondToInterviewMtn.mutateAsync({ id, status, employment })
-  
-      if (res && status === 'Accepted' && employment && studentId) {
+
+      if (res && status === 'Accept' && employment && studentId) {
         const employedData = {
           employedBy: {
             employment,
             dateEmployed: new Date().toISOString(),
           },
         }
+
         await updateDoc('students', studentId, employedData)
       }
-  
+
       toast.success('Employment status updated successfully, you are now employed!')
     } catch (error) {
       console.error('Error updating employment status:', error)
@@ -95,7 +96,6 @@ const Page = () => {
       setLoadingIds((prev) => prev.filter((loadingId) => loadingId !== id))
     }
   }
-  
 
   // const handleRespond = async (
   //   id: string,
@@ -175,24 +175,24 @@ const Page = () => {
                     <div className="p-5">
                       <StudentApplicationHeader />
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {employmentOffers&&employmentOffers.map((offer) => (
-                        <EmploymentCard
-                        key={offer.id}
-                        company={{
-                          name: offer.company.name,
-                          phone: offer.company.phone,
-                        }}
-                        status={offer.status}
-                        student={{
-                          firstName: offer.student.firstName,
-                          lastName: offer.student.lastName,
-                        }}
-                        loading={loadingIds.includes(offer.id)} 
-                        onAccept={() => handleRespond(offer.id, 'Accept', offer.id, user.id)}
-                        onCancel={() => handleRespond(offer.id, 'Decline', offer.id, user.id)}
-                      />
-                      
-                        ))}
+                        {employmentOffers &&
+                          employmentOffers.map((offer) => (
+                            <EmploymentCard
+                              key={offer.id}
+                              company={{
+                                name: offer.company.name,
+                                phone: offer.company.phone,
+                              }}
+                              status={offer.status}
+                              student={{
+                                firstName: offer.student.firstName,
+                                lastName: offer.student.lastName,
+                              }}
+                              loading={loadingIds.includes(offer.id)}
+                              onAccept={() => handleRespond(offer.id, 'Accept', offer.id, user.id)}
+                              onCancel={() => handleRespond(offer.id, 'Decline', offer.id, user.id)}
+                            />
+                          ))}
                       </div>
                     </div>
                   </div>
