@@ -10,6 +10,9 @@ import { isBefore } from 'date-fns'
 import { generateEmailHTML } from '../../utilities/generateEmail'
 import { admins } from '@/access/admins'
 import { studentSelfOrAdmin } from '@/access/studentSelfOrAdmin'
+import { Student } from '@/payload-types'
+import { v4 as uuidv4 } from 'uuid' // Import uuid package
+
 const PreLogin = z.object({
   matricNo: z.string(),
 })
@@ -258,6 +261,87 @@ export const Students: CollectionConfig = {
             overrideAccess: false,
           }),
         )
+      },
+    },
+
+    {
+      method: 'post',
+      path: '/batch-upload',
+      handler: async (req) => {
+        try {
+          const { students }: { students: Student[] } = (await req.json?.()) ?? { students: [] }
+
+          if (!Array.isArray(students) || students.length === 0) {
+            return Response.json({ message: 'No valid student data provided' }, { status: 400 })
+          }
+
+          const createdStudents: Student[] = []
+          const skippedStudents: { matricNo: string; reason: string }[] = []
+          const errors: { matricNo: string; error: string }[] = []
+
+          for (const student of students) {
+            try {
+              // Check if student already exists
+              const existingStudent = await req.payload.find({
+                collection: 'students',
+                where: { matricNo: { equals: student.matricNo.toLowerCase() } },
+              })
+
+              if (existingStudent?.docs?.length > 0) {
+                skippedStudents.push({ matricNo: student.matricNo, reason: 'Already exists' })
+                continue
+              }
+
+              // Insert new student
+              const newStudent = await req.payload.create({
+                collection: 'students',
+                data: {
+                  // id: uuidv4(),
+                  firstName: student.firstName,
+                  lastName: student.lastName,
+                  middleName: student.middleName || '', // Ensure middleName is included
+                  username: student.username?.trim() || student.matricNo.toLowerCase(), // Ensure username
+                  matricNo: student.matricNo.toLowerCase(),
+                  dob: student.dob,
+                  nationality: student.nationality,
+                  stateOfOrigin: student.stateOfOrigin,
+                  homeAddress: student.homeAddress,
+                  gender: student.gender,
+                  course: student.course,
+                  level: student.level,
+                  internshipType: student.internshipType,
+                  bankCode: student.bankCode || '000', // Default value for bankCode
+                  bankName: student.bankName?.trim() || 'Unknown Bank',
+                  accountNo: student.accountNo || '',
+                  email: student.email?.trim() || '', // Ensure email is provided
+                  password: student.password || 'DefaultPassword123', // Set a default password if missing
+                  // image: student.image || '', // Ensure image field is included
+                  // coins: student.coins || 0, // Default value for coins
+                },
+              })
+
+              createdStudents.push(newStudent)
+            } catch (error) {
+              console.log(error)
+
+              errors.push({ matricNo: student.matricNo, error: error.message })
+            }
+          }
+
+          return Response.json({
+            message: 'Batch upload completed',
+            successCount: createdStudents.length,
+            skippedCount: skippedStudents.length,
+            errorCount: errors.length,
+            skippedStudents,
+            errors,
+          })
+        } catch (err) {
+          return Response.json(
+            { message: 'Internal Server Error', error: err.message },
+            { status: 500 },
+          )
+        }
       },
     },
   ],
