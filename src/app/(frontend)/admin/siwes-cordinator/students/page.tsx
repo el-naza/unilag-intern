@@ -323,7 +323,7 @@ export default function StudentPage() {
                 <Plus /> Add Student
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-screen-md overflow-auto bg-white">
+            <DialogContent className="max-w-screen-xl w-full overflow-auto bg-white p-6">
               <AddStudent onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>

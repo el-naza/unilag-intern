@@ -1,5 +1,6 @@
 'use server'
 
+import { Company } from '@/payload-types'
 import axiosInstance from '@/utilities/axiosInstance'
 import { ServiceResponse, ErrorResponse } from '@/utilities/types'
 import { AxiosError } from 'axios'
@@ -117,6 +118,40 @@ export async function deleteCompany(
         Authorization: `Bearer ${authResult?.token}`,
       },
     })
+    .catch((error: AxiosError) => {
+      if (error.response)
+        return {
+          status: error.response.status,
+          data: error.response.data as ErrorResponse,
+        }
+    })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
+}
+
+export async function batchUploadCompanies(
+  col: CollectionSlug,
+  companies: Company[],
+): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
+    req: { headers: await headers() },
+    secret: process.env.NEXTAUTH_SECRET,
+  })
+
+  return await axiosInstance
+    .post<Response | ErrorResponse>(
+      `/api/${col}/batch-upload`,
+      { companies },
+      {
+        headers: {
+          Authorization: `Bearer ${authResult?.token}`,
+        },
+      },
+    )
     .catch((error: AxiosError) => {
       if (error.response)
         return {

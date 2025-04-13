@@ -275,7 +275,7 @@ export default function CompaniesPage() {
                 <Plus /> Add Company
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-screen-md overflow-auto bg-white">
+            <DialogContent className="max-w-screen-xl w-full overflow-auto bg-white p-6">
               <AddCompany onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>

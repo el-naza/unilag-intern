@@ -265,6 +265,76 @@ export const Companies: CollectionConfig = {
         return Response.json(companyFindRes, { status: 200 })
       },
     },
+    {
+      method: 'post',
+      path: '/batch-upload',
+      handler: async (req) => {
+        const { companies }: { companies: Company[] } = (await req.json?.()) ?? { companies: [] }
+
+        if (!Array.isArray(companies) || companies.length === 0) {
+          return Response.json({ message: 'Invalid or empty data array' }, { status: 400 })
+        }
+
+        const createdCompanies: string[] = []
+        const skippedCompanies: { email: string; reason: string }[] = []
+        const errors: { email: string; error: string }[] = []
+
+        for (const company of companies) {
+          try {
+            const existing = await req.payload.find({
+              collection: 'companies',
+              where: {
+                email: {
+                  equals: company.email,
+                },
+              },
+            })
+
+            if (existing.docs.length > 0) {
+              skippedCompanies.push({ email: company.email, reason: 'Company already exists' })
+              continue
+            }
+
+            const created = await req.payload.create({
+              collection: 'companies',
+              data: {
+                ...company,
+                password: company.password || 'DefaultPassword123',
+                hasSetPassword: false,
+              },
+              req,
+            })
+
+            createdCompanies.push(created.email)
+
+            req.payload
+              .sendEmail({
+                to: created.email,
+                subject: 'Welcome to INTRNS',
+                text: `Dear ${created.name},\n\nWelcome! We’re excited to have you onboard.\n\nINTRNS Team`,
+              })
+              .catch((e) => {
+                console.error(`Failed to send email to ${created.email}`, e)
+              })
+          } catch (err: any) {
+            errors.push({ email: company.email || '[no-email]', error: err.message })
+          }
+        }
+
+        return Response.json(
+          {
+            message: 'Batch upload completed',
+            successCount: createdCompanies.length,
+            skippedCount: skippedCompanies.length,
+            errorCount: errors.length,
+            createdCompanies,
+            skippedCompanies,
+            errors,
+          },
+          { status: 200 },
+        )
+      },
+    },
   ],
   hooks: {
     afterChange: [
