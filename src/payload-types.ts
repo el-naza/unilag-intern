@@ -323,12 +323,16 @@ export interface Student {
   gender: 'MALE' | 'FEMALE';
   course: string;
   level: string;
-  internshipType: 'SIWES' | 'TEACHING PRACTICE';
+  internshipType: 'SIWES' | 'TEACHING PRACTICE' | 'HOUSEMANSHIP' | 'OTHERS';
   image?: (string | null) | Media;
   bankCode?: string | null;
   bankName?: string | null;
   accountNo?: string | null;
   resetPasswordOtpHash?: string | null;
+  employedBy?: {
+    employment?: (string | null) | Employment;
+    dateEmployed?: string | null;
+  };
   coins?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -344,6 +348,19 @@ export interface Student {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "employments".
+ */
+export interface Employment {
+  id: string;
+  student: string | Student;
+  company: string | Company;
+  dateEnded?: string | null;
+  status?: ('pending' | 'Decline' | 'Accept' | 'Terminate') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "interview-invitations".
  */
 export interface InterviewInvitation {
@@ -352,7 +369,7 @@ export interface InterviewInvitation {
   company: string | Company;
   message: string;
   dateTime: string;
-  status?: ('pending' | 'accepted' | 'declined' | 'company accected' | 'company declined') | null;
+  status?: ('pending' | 'accepted' | 'declined' | 'company accepted' | 'company declined') | null;
   declineReason?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -393,18 +410,6 @@ export interface Internship {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "employments".
- */
-export interface Employment {
-  id: string;
-  student: string | Student;
-  company: string | Company;
-  dateEnded?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "email-subscribers".
  */
 export interface EmailSubscriber {
@@ -429,6 +434,7 @@ export interface Report {
   status?: ('pending' | 'approved' | 'reassigned') | null;
   media?: (string | null) | Media;
   week: number;
+  grade?: ('A' | 'B' | 'C' | 'D' | 'E' | 'F') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -661,6 +667,12 @@ export interface StudentsSelect<T extends boolean = true> {
   bankName?: T;
   accountNo?: T;
   resetPasswordOtpHash?: T;
+  employedBy?:
+    | T
+    | {
+        employment?: T;
+        dateEmployed?: T;
+      };
   coins?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -709,6 +721,7 @@ export interface EmploymentsSelect<T extends boolean = true> {
   student?: T;
   company?: T;
   dateEnded?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -736,6 +749,7 @@ export interface ReportsSelect<T extends boolean = true> {
   status?: T;
   media?: T;
   week?: T;
+  grade?: T;
   updatedAt?: T;
   createdAt?: T;
 }

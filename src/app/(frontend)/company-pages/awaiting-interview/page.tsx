@@ -21,38 +21,31 @@ export default function AwaitingInterview() {
   const { data: session } = useSession()
   const user = useMemo<any>(() => session?.user, [session])
 
-
   const [awaitingInterviews, setAwaitingInterviews] = useState<any[]>([])
-const [completedInterviews, setCompletedInterviews] = useState<any[]>([])
+  const [completedInterviews, setCompletedInterviews] = useState<any[]>([])
 
-const fetchInternshipApplicants = async () => {
-  try {
-    const res: any = await fetchDocs('interview-invitations')
-    if (res) {    
-      const getAcceptedInvitation = res?.docs.filter((s) => s.status === 'accepted')
+  const fetchInternshipApplicants = async () => {
+    try {
+      const res: any = await fetchDocs('interview-invitations')
+      if (res) {
+        const getAcceptedInvitation = res?.docs?.filter((s) => s.status === 'accepted')
 
-      const now = new Date()
+        const now = new Date()
 
-      const awaiting = getAcceptedInvitation.filter(
-        (inv) => new Date(inv.dateTime) >= now
-      )
-      const completed = getAcceptedInvitation.filter(
-        (inv) => new Date(inv.dateTime) < now
-      )
+        const awaiting = getAcceptedInvitation.filter((inv) => new Date(inv.dateTime) >= now)
+        const completed = getAcceptedInvitation.filter((inv) => new Date(inv.dateTime) < now)
 
-      setAwaitingInterviews(awaiting)
-      setCompletedInterviews(completed)
-    } else {
-      toast.success('No internship data found:', res)
+        setAwaitingInterviews(awaiting?.length > 0 ? awaiting : [])
+        setCompletedInterviews(completed?.length > 0 ? completed : [])
+      } else {
+        toast.success('No internship data found:', res)
+      }
+    } catch (error) {
+      console.error('Error fetching internship posts:', error)
+    } finally {
+      setLoading(false)
     }
-  } catch (error) {
-    console.error('Error fetching internship posts:', error)
-  } finally {
-    setLoading(false)
   }
-}
-
-  
 
   useEffect(() => {
     fetchInternshipApplicants()
@@ -69,26 +62,34 @@ const fetchInternshipApplicants = async () => {
       studentId?: string
     }) => {
       try {
-
+        console.log("data being sent ", id, status, studentId)
         const res = await updateDoc('interview-invitations', id, { status })
 
+        console.log(res)
         if (!res) {
           return toast.error('Network error; please try again later')
         }
 
         // If the company accepts, create an employment document
         if (status === 'company accepted') {
-          const createEmployment = await saveDoc('employments', {
-            student: studentId,
-            company: user?.id,
-          })
-
-          console.log('Employment record created:', createEmployment)
-
-          if (!createEmployment) {
-            return toast.error('Failed to create employment record')
+          try {
+            const createEmployment = await saveDoc('employments', {
+              student: studentId,
+              company: user?.id,
+            })
+          
+            console.log('Employment record created:', createEmployment)
+          
+            if (!createEmployment) {
+              toast.error('Failed to create employment record')
+            }
+          } catch (e) {
+            console.error('Error creating employment:', e)
+            toast.error('Something went wrong while creating employment')
           }
+          
         }
+        console.log(res)
 
         return res
       } catch (error) {
@@ -128,54 +129,67 @@ const fetchInternshipApplicants = async () => {
                 <Loader height="auto" background="transparent" />
               ) : (
                 <div>
-            
                   <div className="bg-white p-[6px] m-auto mt-[12px]">
-  <h3 className="font-[400] text-[16px] text-[#48484A]">Awaiting interview</h3>
-</div>
-<div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-end gap-[14px] mt-[12px]">
-  {awaitingInterviews.map((invitation) => (
-    <AwaitingInterviewCard
-      key={invitation.id}
-      awaitingInterview={{
-        firstName: invitation.student.firstName,
-        lastName: invitation.student.lastName,
-        dateTime: invitation.dateTime,
-        status: invitation.status,
-        clickAccept: () =>
-          handleRespond(invitation.id, 'company accepted', invitation?.student?.id),
-        clickDecline: () => handleRespond(invitation.id, 'company declined'),
-        viewClick: () =>
-          router.push(`/company-pages/student-details/${invitation.student.id}`),
-        rescheduleClick: () =>
-          router.push(`/company-pages/student-details/${invitation.student.id}/invite`),
-      }}
-    />
-  ))}
-</div>
+                    <h3 className="font-[400] text-[16px] text-[#48484A]">Awaiting interview</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-end gap-[14px] mt-[12px]">
+                    {awaitingInterviews.map((invitation) => (
+                      <AwaitingInterviewCard
+                        key={invitation.id}
+                        awaitingInterview={{
+                          image: invitation.student?.image?.url || studentImage,
+                          firstName: invitation.student.firstName,
+                          lastName: invitation.student.lastName,
+                          dateTime: invitation.dateTime,
+                          status: invitation.status,
+                          clickAccept: () =>
+                            handleRespond(
+                              invitation.id,
+                              'company accepted',
+                              invitation?.student?.id,
+                            ),
+                          clickDecline: () => handleRespond(invitation.id, 'company declined'),
+                          viewClick: () =>
+                            router.push(`/company-pages/student-details/${invitation.student.id}`),
+                          rescheduleClick: () =>
+                            router.push(
+                              `/company-pages/student-details/${invitation.student.id}/invite`,
+                            ),
+                        }}
+                      />
+                    ))}
+                  </div>
 
-                   <div className="bg-white p-[6px] m-auto mt-[12px]">
-  <h3 className="font-[400] text-[16px] text-[#48484A]">Completed interview</h3>
-</div>
-<div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-end gap-[14px] mt-[12px]">
-  {completedInterviews.map((invitation) => (
-    <AwaitingInterviewCard
-      key={invitation.id}
-      awaitingInterview={{
-        firstName: invitation.student.firstName,
-        lastName: invitation.student.lastName,
-        dateTime: invitation.dateTime,
-        status: invitation.status,
-        clickAccept: () =>
-          handleRespond(invitation.id, 'company accepted', invitation?.student?.id),
-        clickDecline: () => handleRespond(invitation.id, 'company declined'),
-        viewClick: () =>
-          router.push(`/company-pages/student-details/${invitation.student.id}`),
-        rescheduleClick: () =>
-          router.push(`/company-pages/student-details/${invitation.student.id}/invite`),
-      }}
-    />
-  ))}
-</div>
+                  <div className="bg-white p-[6px] m-auto mt-[12px]">
+                    <h3 className="font-[400] text-[16px] text-[#48484A]">Completed interview</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-end gap-[14px] mt-[12px]">
+                    {completedInterviews.map((invitation) => (
+                      <AwaitingInterviewCard
+                        key={invitation.id}
+                        awaitingInterview={{
+                          image: invitation.student?.image?.url || studentImage,
+                          firstName: invitation.student.firstName,
+                          lastName: invitation.student.lastName,
+                          dateTime: invitation.dateTime,
+                          status: invitation.status,
+                          clickAccept: () =>
+                            handleRespond(
+                              invitation.id,
+                              'company accepted',
+                              invitation?.student?.id,
+                            ),
+                          clickDecline: () => handleRespond(invitation.id, 'company declined'),
+                          viewClick: () =>
+                            router.push(`/company-pages/student-details/${invitation.student.id}`),
+                          rescheduleClick: () =>
+                            router.push(
+                              `/company-pages/student-details/${invitation.student.id}/invite`,
+                            ),
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </BlurBackground>

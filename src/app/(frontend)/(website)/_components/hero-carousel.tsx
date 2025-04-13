@@ -24,9 +24,9 @@ const HeroCarousel = () => {
   }, [api])
 
   return (
-    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 place-content-center h-[90vh] mb-28 transition-all relative">
+    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 place-content-center md:h-[90vh] mb-28 transition-all max-md:mt-20 relative">
       <div
-        className={`grid place-content-center my-auto mx-0 items-center justify-items-start content-center z-10 pl-12 pr-4 py-4 rounded-tr-[50px] rounded-br-[50px] h-[80%] ${bgColors[currentSlide]}`}
+        className={`grid place-content-center my-auto mx-0 items-center justify-items-start content-center z-10 pl-12 pr-4 py-4 rounded-tr-[50px] rounded-br-[50px] md:h-[80%] ${bgColors[currentSlide]}`}
       >
         <p className="text-sm  mb-8 bg-white px-3 py-2 rounded-md">Never stop learning</p>
         <h1
@@ -38,11 +38,15 @@ const HeroCarousel = () => {
         <div className="flex gap-12 mt-12">
           <Link href="/auth/login">
             {' '}
-            <Button className="bg-primary text-white">I&apos;m a student</Button>
+            <Button className="bg-primary text-white uppercase border-[1px]">
+              I&apos;m a student
+            </Button>
           </Link>
           <Link href="/company-auth/login">
             {' '}
-            <Button className="bg-secondary text-white">I&apos;m a company</Button>
+            <Button className="bg-secondary text-white uppercase border-[1px]">
+              I&apos;m a company
+            </Button>
           </Link>
         </div>
       </div>
@@ -74,16 +78,16 @@ const HeroCarousel = () => {
           alt="Play"
           width={50}
           height={50}
-          className="w-[3rem] mx-auto"
+          className="w-[3rem] mx-auto ml-2"
         />
       </div>
 
       <div
-        className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[9rem] ${bg2Colors[currentSlide]}`}
+        className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[10rem] ${bg2Colors[currentSlide]}`}
       >
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
           <CarouselContent>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-1.png"
                 alt="Hero 1"
@@ -101,8 +105,8 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="font-semibold">250k</p>
-                  <p className="text-xs">Company Listed</p>
+                  <p className="font-semibold">99+</p>
+                  <p className="text-xs">Companies Listed</p>
                 </div>
               </div>
 
@@ -115,8 +119,8 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-xs">Tutors</p>
-                  <p className="font-semibold">250+</p>
+                  <p className="text-xs">Interns</p>
+                  <p className="font-semibold">999+</p>
                 </div>
               </div>
 
@@ -130,7 +134,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-2.png"
                 alt="Hero 2"
@@ -148,8 +152,8 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="font-semibold">250k</p>
-                  <p className="text-sm">Company Listed</p>
+                  <p className="font-semibold">99+</p>
+                  <p className="text-sm">Companies Listed</p>
                 </div>
               </div>
 
@@ -159,11 +163,11 @@ const HeroCarousel = () => {
                   alt="Icon"
                   width={40}
                   height={40}
-                  className="w-[2rem] scale-[2]"
+                  className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
-                  <p className="font-semibold">250+</p>
+                  <p className="text-sm">Interns</p>
+                  <p className="font-semibold">999+</p>
                 </div>
               </div>
 
@@ -177,7 +181,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-3.png"
                 alt="Hero 3"
@@ -195,8 +199,8 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="font-semibold">250k</p>
-                  <p className="text-sm">Company Listed</p>
+                  <p className="font-semibold">99+</p>
+                  <p className="text-sm">Companies Listed</p>
                 </div>
               </div>
 
@@ -209,8 +213,8 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
-                  <p className="font-semibold">250+</p>
+                  <p className="text-sm">Interns</p>
+                  <p className="font-semibold">999+</p>
                 </div>
               </div>
 
@@ -224,7 +228,7 @@ const HeroCarousel = () => {
                 />
               </div>
             </CarouselItem>
-            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem]">
+            <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">
               <Image
                 src="/images/hero-4.png"
                 alt="Hero 4"
@@ -242,8 +246,8 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="font-semibold">250k</p>
-                  <p className="text-sm">Company Listed</p>
+                  <p className="font-semibold">99+</p>
+                  <p className="text-sm">Companies Listed</p>
                 </div>
               </div>
 
@@ -256,8 +260,8 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Tutors</p>
-                  <p className="font-semibold">250+</p>
+                  <p className="text-sm">Interns</p>
+                  <p className="font-semibold">999+</p>
                 </div>
               </div>
 

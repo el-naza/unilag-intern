@@ -1,0 +1,9 @@
+There should be another search button beside the company search input field; check the UI design
+
+For the "popular companies" section, run a query that queryies for the industries that have companies registered under them first so that each industry tab has companies showing under them
+
+All images should be referenced and must have fallbacks especially on the companies side. There should be no broken image links
+
+The document preview in the application form should show the file name according to its design and should be replicated across all file upload inputs
+
+The wire-like squigly lines img on the UI design should be added and positioned on the hero section too

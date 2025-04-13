@@ -16,7 +16,6 @@ import MenuIcon from '../assets/icons/menu'
 import NotificationBellIcon from '../assets/icons/notificationBell'
 import FilterAltIcon from '../assets/icons/filterAltIcon'
 import Link from 'next/link'
-import { useSession, signOut } from 'next-auth/react'
 import getAge from '@/utilities/getAge'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '../components/Layouts/Loader'
@@ -24,8 +23,8 @@ import dynamic from 'next/dynamic'
 import { ValidationErrors } from '@/utilities/types'
 import { ValidationFieldError } from 'payload'
 import { useForm } from '@tanstack/react-form'
-import { useMutation } from '@tanstack/react-query'
-import { Company } from '@/payload-types'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { Company, Student } from '@/payload-types'
 import searchJobs from '@/services/searchJobs'
 import { toast } from 'sonner'
 import FieldError from '@/components/FieldError'
@@ -35,10 +34,15 @@ import { Button } from '@/components/ui/button'
 import courseAreas from '@/utilities/courseAreas'
 import CompanyCard from '../components/Cards/CompanyCard'
 import { useRouter } from 'next/navigation'
+import fetchMe from '@/services/fetchMe'
 
 const Page = () => {
-  const router = useRouter()
-  const { data: session, status } = useSession()
+  const meQuery = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => (await fetchMe('students'))?.user as Student | undefined,
+  })
+
+  const user = useMemo<any>(() => meQuery.data, [meQuery.data])
 
   const [loading, setLoading] = useState<boolean>(true)
   const [employments, setEmployments] = useState<any[]>([])
@@ -47,8 +51,6 @@ const Page = () => {
   const [filter, setFilter] = useState<{ careerArea: string }>({ careerArea: '' })
   const [page, setPage] = useState<number>(1)
   const [loadingMap, setLoadingMap] = useState<boolean>(false)
-
-  const user = useMemo<any>(() => session?.user, [session])
 
   const filteredCompanies = useMemo<any[]>(
     () =>
@@ -151,7 +153,7 @@ const Page = () => {
   }, [user])
   return (
     <>
-      {loading || status !== 'authenticated' ? (
+      {loading ? (
         <Loader />
       ) : (
         <div>
@@ -295,12 +297,12 @@ const Page = () => {
                     />
                   </div>
                   <div className="flex items-center">
-                    {status === 'authenticated' ? (
+                    {meQuery.data ? (
                       <span className="font-oleo text-white text-3xl">
                         Welcome {user?.firstName}
                       </span>
                     ) : (
-                      <Loader />
+                      <Spinner />
                     )}
                   </div>
                   <div className="col-span-2 flex items-center">
@@ -329,7 +331,7 @@ const Page = () => {
                           />
                         </div>
                         <div className="col-span-2 flex items-center">
-                          {status === 'authenticated' ? (
+                          {meQuery.data ? (
                             <div className="grid grid-rows-4 gap-1">
                               <div>
                                 <span className="text-3xl font-bold">
@@ -349,7 +351,7 @@ const Page = () => {
                               <div>
                                 <span>{user?.homeAddress}</span>
                               </div>
-                              <div className="flex gap-2">
+                              {/* <div className="flex gap-2">
                                 <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                                   <span>0 Duration</span>
                                 </div>
@@ -359,10 +361,10 @@ const Page = () => {
                                 >
                                   <span>Upgrade</span>
                                 </Link>
-                              </div>
+                              </div> */}
                             </div>
                           ) : (
-                            <Loader />
+                            <Spinner />
                           )}
                         </div>
                       </div>
@@ -395,12 +397,12 @@ const Page = () => {
                             <NavUnderlineLarge />
                           </Link>
                         </div>
-                        <div>
+                        {/* <div>
                           <Link href="/student" className="relative group block text-center">
                             <span className="text-xl">History</span>
                             <NavUnderlineLarge />
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div className="z-10">

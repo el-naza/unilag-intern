@@ -11,16 +11,6 @@ export default async function studentPreLogin<T>(
   // col: CollectionSlug,
   data: T,
 ): Promise<{ ready?: boolean; message: string }> {
-  console.log(
-    '***Token',
-    (
-      await getToken({
-        secureCookie: process.env.NODE_ENV === 'production',
-        req: { headers: await headers() },
-        secret: process.env.NEXTAUTH_SECRET,
-      })
-    )?.token!,
-  )
   return (
     await axiosInstance.post(`/api/students/pre-login`, data).catch((error: AxiosError) => {
       return error.response

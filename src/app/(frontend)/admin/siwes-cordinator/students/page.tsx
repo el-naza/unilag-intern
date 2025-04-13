@@ -33,12 +33,14 @@ import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-tabl
 import { format } from 'date-fns'
 import { Edit2, EllipsisVertical, Plus, Trash } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from './add-student'
 import { toast } from 'sonner'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { getEmployments } from '@/services/admin/reports'
+import Spinner from '@/components/spinner'
 
 export type Student = {
   id: string
@@ -72,11 +74,15 @@ export default function StudentPage() {
   const [hasPrevious, setHasPrevious] = useState(false)
   const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
+  const [totalStudents, setTotalStudents] = useState(0)
+  const [totalEmployments, setTotalEmployments] = useState(0)
 
-  const fetchStudents = async (params?: string) => {
+  const fetchStudents = useCallback(async (params?: string) => {
+    setLoading(true)
+
     const res: any = await getAllStudents('students', params)
     const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
-    console.log('Data: ', docs)
+    setTotalStudents(totalDocs)
 
     setStudents(docs)
     setPerPage(page)
@@ -93,11 +99,38 @@ export default function StudentPage() {
     }))
 
     setLoading(false)
-  }
+  }, [])
+
+  const fetchEmployments = useCallback(async () => {
+    try {
+      const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+      const res: any = await getEmployments('employments', query)
+      const { totalDocs } = res.data
+
+      setTotalEmployments(totalDocs)
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        stats: prevConfig.stats.map((stat, index) =>
+          index === 1 ? { ...stat, count: totalDocs } : stat,
+        ),
+      }))
+    } catch (error) {
+      console.error('Error fetching employments:', error)
+    }
+  }, [])
 
   useEffect(() => {
-    fetchStudents()
-  }, [])
+    Promise.allSettled([fetchEmployments(), fetchStudents()]).then(() => {
+      setTimeout(() => {
+        setConfig((prevConfig) => ({
+          ...prevConfig,
+          stats: prevConfig.stats.map((stat, index) =>
+            index === 2 ? { ...stat, count: totalStudents - totalEmployments } : stat,
+          ),
+        }))
+      }, 2000)
+    })
+  }, [fetchEmployments, fetchStudents])
 
   const columns = useMemo(
     () => [
@@ -298,7 +331,9 @@ export default function StudentPage() {
         <div className="flex justify-between items-center mb-4">
           <p>All Students</p>
 
-          <Button>Export Data</Button>
+          {loading && <Spinner className="border-t-primary border-r-primary border-b-primary" />}
+
+          {/* <Button>Export Data</Button> */}
         </div>
 
         <Table>

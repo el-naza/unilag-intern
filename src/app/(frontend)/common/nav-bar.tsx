@@ -88,7 +88,7 @@ export default function NavBar({ fill }: naveBarProps) {
       )}
 
       <div className="flex items-center gap-[54px]">
-        <BellIcon fill={fill} />
+        {/* <BellIcon fill={fill} /> */}
         <div
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => router.push('/company-pages/company-profile')}
@@ -98,7 +98,7 @@ export default function NavBar({ fill }: naveBarProps) {
             alt="image"
             width={44}
             height={44}
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'cover', height: '44px', width: '44px', borderRadius: '100%' }}
             className="rounded-full"
           />
           <div>

@@ -419,7 +419,7 @@ export const Students: CollectionConfig = {
       name: 'internshipType',
       type: 'select',
       required: true,
-      options: ['SIWES', 'TEACHING PRACTICE'],
+      options: ['SIWES', 'TEACHING PRACTICE', 'HOUSEMANSHIP', 'OTHERS'],
     },
     {
       name: 'image',
@@ -443,6 +443,27 @@ export const Students: CollectionConfig = {
       type: 'text',
       hidden: true,
     },
+    {
+      name: 'employedBy',
+      type: 'group',
+      fields: [
+        {
+          name: 'employment',
+          type: 'relationship',
+          relationTo: 'employments',
+        },
+        {
+          name: 'dateEmployed',
+          type: 'date',
+        },
+      ],
+    },
+    // {
+    //   name: 'employment',
+    //   type: 'relationship',
+    //   relationTo: 'employments',
+    //   defaultValue: () => null,
+    // },
     {
       name: 'coins',
       type: 'number',

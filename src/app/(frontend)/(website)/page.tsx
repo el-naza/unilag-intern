@@ -1,11 +1,11 @@
 'use client'
-import CompanyCard from '../_components/company-card'
-import CourseCard from '../_components/course-card'
-import HeroCarousel from '../_components/hero-carousel'
+import CompanyCard from './_components/company-card'
+import CourseCard from './_components/course-card'
+import HeroCarousel from './_components/hero-carousel'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import NewsLetterCard from '../_components/news-letter-card'
+import NewsLetterCard from './_components/news-letter-card'
 import {
   Carousel,
   CarouselContent,
@@ -14,87 +14,86 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import Autoplay from 'embla-carousel-autoplay'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { getPopularCompanies } from '@/services/website/website'
+import industries from '@/utilities/industries'
+import Spinner from '@/components/spinner'
+import { useQuery } from '@tanstack/react-query'
 
 export default function HomePage() {
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }))
+
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('all')
+
+  const popularCompaniesQuery = useQuery({
+    queryKey: ['popularCompanies', selectedIndustry],
+    queryFn: async () =>
+      (
+        await getPopularCompanies(
+          'companies',
+          selectedIndustry === 'all'
+            ? undefined
+            : { where: { industry: { equals: selectedIndustry } } },
+        )
+      )?.data!.docs,
+  })
 
   return (
     <div>
       <HeroCarousel />
 
-      <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32">
+      <div className="container mx-auto mb-32 relative">
+        <div id="companies" className="absolute -top-20" />
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-[#FD661F] text-center mb-[45px]">
           Popular Companies
+          <div className="absolute right-0 left-0 mx-auto w-[200px]">
+            <Image
+              src="/images/underline2.png"
+              alt="Gift Card"
+              width={200}
+              height={100}
+              className="ml-36"
+            />
+          </div>
         </h2>
-
-        <Tabs defaultValue="all" className="">
-          <TabsList className="mx-auto w-full bg-transparent gap-8 flex-wrap sm:mb-20">
+        <Tabs defaultValue="all" className="" onValueChange={setSelectedIndustry}>
+          <TabsList className="w-full bg-transparent gap-4 overflow-x-auto overflow-y-hidden justify-start py-10">
             <TabsTrigger
               value="all"
               className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
             >
-              All Programme
+              All Industries
             </TabsTrigger>
-            <TabsTrigger
-              value="science"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Science
-            </TabsTrigger>
-            <TabsTrigger
-              value="engineering"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Engineering
-            </TabsTrigger>
-            <TabsTrigger
-              value="business"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Business
-            </TabsTrigger>
-            <TabsTrigger
-              value="art"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Art
-            </TabsTrigger>
-            <TabsTrigger
-              value="medicine"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
-            >
-              Medicine
-            </TabsTrigger>
+
+            {industries?.map((ind: string, index: number) => (
+              <TabsTrigger
+                key={index}
+                value={ind}
+                className="data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=inactive]:border-[1px] data-[state=inactive]:border-secondary rounded-[8px]"
+              >
+                {ind}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
-          <TabsContent value="all">
-            <CompanyCard />
+          <TabsContent value={selectedIndustry}>
+            {popularCompaniesQuery.status === 'pending' && (
+              <Spinner className="mx-auto border-t-primary border-r-primary" />
+            )}
+            <CompanyCard companies={popularCompaniesQuery.data} />
           </TabsContent>
 
-          <TabsContent value="science">
-            <CompanyCard />
-          </TabsContent>
-
-          <TabsContent value="engineering">
-            <CompanyCard />
-          </TabsContent>
-
-          <TabsContent value="business">
-            <CompanyCard />
-          </TabsContent>
-
-          <TabsContent value="art">
-            <CompanyCard />
-          </TabsContent>
-
-          <TabsContent value="medicine">
-            <CompanyCard />
-          </TabsContent>
+          {/* {industy?.map((ind: string, index: number) => (
+            <TabsContent value={ind} key={index}>
+              {companies?.map((company: any) => <CompanyCard key={company.id} company={company} />)}
+            </TabsContent>
+          ))} */}
         </Tabs>
       </div>
 
-      <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32">
+      <div className="container mx-auto mb-32 relative">
+        <div id="interns" className="absolute -top-20" />
+
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
           Intern Categories
           <Image
@@ -106,8 +105,8 @@ export default function HomePage() {
           />
         </h2>
         <p className="text-center text-[#696984] text-[22px]">
-          Onlearing is one powerful online software suite that combines all the tools <br /> needed
-          to run a successful school or office.
+          Intrns is the central online software suite that combines all the tools <br /> needed to
+          recruit all kinds of interns.
         </p>
 
         <div className="mt-8">
@@ -116,7 +115,7 @@ export default function HomePage() {
       </div>
 
       {/* STUDENT ID CARD */}
-      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-32">
+      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 container mx-auto mb-32">
         <div>
           <span className="rounded-[10px] bg-[#f5f5f5] text-primary px-4 py-2 font-medium">
             Benefit
@@ -129,21 +128,29 @@ export default function HomePage() {
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/grid.png" alt="Grid Icon" width={20} height={5} />
             </span>
-            <p>Teachers don’t get lost in the grid view and have a dedicated Podium space.</p>
+            <p>
+              An intern ID provides official identification for organizational access and resource
+              use.
+            </p>
           </div>
 
           <div className="flex items-center gap-6 mb-4">
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/group.png" alt="Group Icon" width={20} height={5} />
             </span>
-            <p>TA’s and presenters can be moved to the front of the class.</p>
+            <p>
+              Having an ID card offers professional recognition and facilitates workplace
+              integration.
+            </p>
           </div>
 
           <div className="flex items-center gap-6">
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/people.png" alt="People Icon" width={20} height={5} />
             </span>
-            <p>Teachers can easily see all students and class data at one time.</p>
+            <p>
+              Intern IDs can unlock potential discounts and benefits within the local community.
+            </p>
           </div>
         </div>
         <div className="grid place-content-center bg-[#D2E6E4] rounded-[20px] py-10">
@@ -152,43 +159,52 @@ export default function HomePage() {
       </div>
 
       {/* STAFF TRAINING */}
-      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 lg:max-w-[75vw] sm:max-w-[90vw] mx-auto mb-48">
+      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 container mx-auto mb-48">
         <div className="grid place-content-center py-10">
           <Image src="/images/staff.png" alt="Staff" width={500} height={10} />
         </div>
         <div>
           <span className="rounded-[10px] bg-[#f5f5f5] text-primary px-4 py-2 font-medium">
-            Certificate
+            Reports
           </span>
           <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary mb-[45px]">
-            Certificate of Completion
+            Evidence of Completion
           </h2>
 
           <div className="flex items-center gap-6 mb-4">
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/grid.png" alt="Grid Icon" width={20} height={5} />
             </span>
-            <p>Teachers don’t get lost in the grid view and have a dedicated Podium space.</p>
+            <p>
+              Weekly reports consistently prove your active involvement and learning throughout the
+              internship.
+            </p>
           </div>
 
           <div className="flex items-center gap-6 mb-4">
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/group.png" alt="Group Icon" width={20} height={5} />
             </span>
-            <p>TA’s and presenters can be moved to the front of the class.</p>
+            <p>
+              These reports showcase tangible skills and accomplishments gained during your
+              internship.
+            </p>
           </div>
 
           <div className="flex items-center gap-6">
             <span className="w-[40px] h-[40px] shadow-xl rounded-full grid place-content-center">
               <Image src="/icons/people.png" alt="People Icon" width={20} height={5} />
             </span>
-            <p>Teachers can easily see all students and class data at one time.</p>
+            <p>
+              Weekly reports provide documented verification and feedback for formal completion
+              assessment.
+            </p>
           </div>
         </div>
       </div>
 
       {/* GIFT CARDS */}
-      <div className="lg:max-w-[75vw] sm:max-w-[90vw] mx-auto  bg-[#DF1C25] text-white rounded-[16px] flex relative">
+      <div className="container mx-auto  bg-[#DF1C25] text-white rounded-[16px] flex relative mb-32">
         <div className="p-12 z-10">
           <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 mb-[20px]">
             Why you should buy <br /> gift cards?
@@ -196,15 +212,15 @@ export default function HomePage() {
           <ul className="leading-[2.3rem] mb-8">
             <li className="flex gap-3 items-center">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
-              Teachers don’t get lost in the grid view and have a dedicated Podium space.
+              You can give the perfect present easily with our flexible gift cards.
             </li>
             <li className="flex gap-3 items-center">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
-              Teachers don’t get lost in the grid view and have a dedicated Podium space.
+              Our gift cards unlock access to many desired products and services across the web.
             </li>
             <li className="flex gap-3 items-center">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
-              Teachers don’t get lost in the grid view and have a dedicated Podium space.
+              Trust us for a safe and reliable way to purchase your gift cards.
             </li>
           </ul>
           <Button className="bg-white text-primary" variant="ghost">
@@ -217,7 +233,7 @@ export default function HomePage() {
       </div>
 
       {/* NEWS LETTER */}
-      <div className="lg:p-24 lg:max-w-[75vw] sm:max-w-[90vw] mx-auto">
+      {/* <div className="lg:px-24 lg:pb-24 container mx-auto">
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
           News Letter
           <Image
@@ -262,7 +278,7 @@ export default function HomePage() {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
-      </div>
+      </div> */}
     </div>
   )
 }

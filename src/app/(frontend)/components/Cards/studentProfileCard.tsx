@@ -16,13 +16,13 @@ type StudentProfileCardProps = {
 }
 
 export default function StudentProfileCard({ student }: StudentProfileCardProps) {
-  const { id, firstName, course, cgpa, lastName } = student
+  const { id, firstName, course, cgpa, lastName, image } = student
   const router = useRouter()
   return (
     <div
       className="relative h-[240px] w-full text-white rounded-[4px] border overflow-hidden flex items-end cursor-pointer"
       style={{
-        backgroundImage: `url(${defaultProfileImage.src})`,
+        backgroundImage: image ? `url(${image})` : `url(${defaultProfileImage.src})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         borderRadius: '4px',

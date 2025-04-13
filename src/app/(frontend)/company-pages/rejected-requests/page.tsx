@@ -9,6 +9,7 @@ import BlurBackground from '../../components/Layout/blurBackground'
 import InvitationTabs from '../../components/Ui/tab'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '../../components/Layouts/Loader'
+import studentImage from '../../assets/images/profile-image.webp'
 
 export default function RejectedRequest() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -25,8 +26,8 @@ export default function RejectedRequest() {
     // console.log(res)
     const getRejected = res?.docs.filter((s: any) => s.status === 'company declined')
     console.log(getRejected)
-    setInternReq(getRejected)
-    setTableData(res)
+    setInternReq(getRejected ? getRejected : [])
+    setTableData(res ? res : null)
     setLoading(false)
   }
 
@@ -43,7 +44,7 @@ export default function RejectedRequest() {
         className="flex items-center"
       >
         <img
-          src={item.student.imageUrl || '/default-avatar.png'}
+          src={item.student?.image?.url ? item.student.image.url : studentImage.src}
           alt={item.student.firstName}
           className="w-8 h-8 rounded-full mr-2"
         />

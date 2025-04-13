@@ -38,13 +38,13 @@ export default function StudentDetails() {
 
   const fetchStudentDetails = async () => {
     const res: any = await fetchDoc('students', studentId)
-    setStudentDetails(res)
+    setStudentDetails(res?res : {})
     setLoading(false)
   }
 
   const findStudent = async () => {
     const res: any = await fetchDocs('internship-applications')
-    const getStudent = res?.docs.find((s) => s.student.id === studentId)
+    const getStudent = res?.docs?.find((s) => s.student.id === studentId)
     if (getStudent) {
       setStudentLater(getStudent.letter)
     }
@@ -75,7 +75,7 @@ export default function StudentDetails() {
           <div className="p-[24px] flex items-start flex-col gap-5 lg:flex-row">
             <div className="max-w-[250px] md:max-w-full ">
               <Image
-                src={studentDetails?.image?.url || studentImage}
+                src={studentDetails?.image?.url  ? studentDetails?.image?.url  :  studentImage}
                 alt="image"
                 width={0}
                 height={300}

@@ -2,21 +2,15 @@
 
 import { cn } from 'src/utilities/cn'
 import { Poppins, Inter } from 'next/font/google'
-import React from 'react'
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SessionProvider } from 'next-auth/react'
+import React from 'react'
 
-import './globals.css'
-import 'animate.css'
 import { Toaster } from '@/components/ui/sonner'
+import 'animate.css'
+import './globals.css'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],

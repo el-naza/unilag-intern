@@ -2,7 +2,7 @@
 
 import hero from '../../assets/images/company-hero-bg.png'
 import studentImage from '../../assets/images/student-image.png'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import NavBar from '../../common/nav-bar'
 import BlurBackground from '../../components/Layout/blurBackground'
 import Image from 'next/image'
@@ -14,13 +14,23 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import Spinner from '@/components/spinner'
+import { Input } from '@/components/ui/input'
+import Loader from '../../components/Layouts/Loader'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 export default function Reports() {
-  const [active, setActive] = useState<string>('All Report')
+  const [active, setActive] = useState<string>('All Reports')
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null)
   const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({})
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  const careers = [{ title: 'All Report' }, { title: 'Reassigned' }, { title: 'Approved' }]
+  const careers = [{ title: 'All Reports' }, { title: 'Reassigned' }, { title: 'Approved' }]
+  const [loading, setLoading] = useState<boolean>(true)
 
   type Student = {
     id: string
@@ -47,10 +57,13 @@ export default function Reports() {
   const [allReports, setAllReports] = useState<Report[]>([])
   const [reportDocs, setReportDocs] = useState<Report[]>([])
   const [uniqueStudents, setUniqueStudents] = useState<Report[]>([])
+  const [openDialog, setOpenDialog] = useState(false)
+  const [media, setMedia] = useState({})
 
   const fetchInternReports = async () => {
     const res: any = await fetchDocs('reports')
     console.log('reports', res)
+    setLoading(false)
 
     if (res?.docs) {
       setReportDocs(res.docs)
@@ -60,7 +73,7 @@ export default function Reports() {
         uniqueStudentsMap.set(report.student.id, report)
       })
 
-      setUniqueStudents(Array.from(uniqueStudentsMap.values())) 
+      setUniqueStudents(Array.from(uniqueStudentsMap.values()))
       console.log(uniqueStudents)
     }
   }
@@ -79,6 +92,11 @@ export default function Reports() {
     ? reportDocs && reportDocs.filter((s) => s?.student?.id === selectedStudent)
     : []
 
+  const activeReports = useMemo(() => {
+    if (active === 'All Reports') return filteredReports
+    if (active === 'Reassigned') return filteredReports.filter((r) => r.status === 'reassigned')
+    if (active === 'Approved') return filteredReports.filter((r) => r.status === 'approved')
+  }, [filteredReports])
 
   const [reports, setReports] = useState<Report[]>(filteredReports || [])
 
@@ -169,8 +187,8 @@ export default function Reports() {
   }
 
   const approvalStatus = [
-    { value: 'approved', label: 'Approved', color: 'green' },
-    { value: 'reasign', label: 'Reasign', color: 'blue' },
+    { value: 'approved', label: 'Approved', color: '#34C759' },
+    { value: 'reassigned', label: 'Reasign', color: '#FF9500' },
     // { value: 'pending', label: 'Pending', color: 'yellow' },
   ]
 
@@ -199,7 +217,7 @@ export default function Reports() {
   const handleRemarkChange = (selectedOption: any, id: string) => {
     setSelectedValues((prev) => ({
       ...prev,
-      [id]: { ...prev[id], remark: selectedOption.value },
+      [id]: { ...prev[id], remark: selectedOption },
     }))
   }
 
@@ -218,6 +236,7 @@ export default function Reports() {
         toast.success('Report updated')
 
         console.log('Response:', res)
+        fetchInternReports()
         return res
       } catch (error) {
         console.error('Error updating application:', error)
@@ -230,7 +249,7 @@ export default function Reports() {
 
   const handleRespond = async (id: string) => {
     const { status, remark } = selectedValues[id] || {}
-  
+
     if (!status) {
       setErrors((prev) => ({ ...prev, [id]: 'Approval status is required' }))
       toast.error('Please select an approval status')
@@ -247,6 +266,14 @@ export default function Reports() {
     await updtaeReportMtn.mutateAsync({ id, status, remark })
   }
 
+  const approvedReports = filteredReports.filter((r) => r.status === 'approved')
+  const reassignedReports = filteredReports.filter((r) => r.status === 'reassigned')
+
+  const showMedia = (mediaItem: any) => {
+    setMedia(mediaItem)
+    setOpenDialog(true)
+    console.log(mediaItem)
+  }
 
   return (
     <div className="pb-[600px]">
@@ -268,146 +295,213 @@ export default function Reports() {
         <div className="max-w-full lg:w-[866px] mx-auto absolute top-[200px] left-0 right-0 px-4 lg:px-0 w-full">
           <p className="py-[7px] font-[500] text-[20px] text-white text-start">Reports</p>
 
-          <BlurBackground background="bg-[#fafafa]">
-            <div className="flex lg:flex-row flex-col ">
-              {/* Message List */}
-              <div className={`lg:w-[350px] ${selectedMessage ? 'hidden' : 'block'} lg:block`}>
-                <div className="flex items-center mb-[28px]">
-                  {careers.map((c) => (
-                    <button
-                      className={`py-[6px] px-[20px] rounded-[32px] font-[400] text-[12px] ${
-                        active === c.title ? 'bg-[#0B7077] text-[#FFFFFF]' : ''
-                      }`}
-                      key={c.title}
-                      onClick={() => setActive(c.title)}
-                    >
-                      {c.title}
-                    </button>
-                  ))}
-                </div>
-                <div className="w-full max-h-[500px] overflow-y-auto scrollbar-hide">
-                  {uniqueStudents.map((r) => (
-                    <div key={r.id} onClick={() => setSelectedStudent(r?.student?.id)}>
-                      <MessageList
-                        image={r?.student?.image?.url || studentImage}
-                        name={`${r?.student?.firstName} ${r?.student?.lastName}`}
-                        message="View Reports"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Message Body */}
-              <div
-                className={`lg:w-[484px] ${selectedMessage ? 'block' : 'hidden'} lg:block px-[4px] `}
-              >
-                {/* Back Button (Mobile View) */}
-                <button
-                  className="lg:hidden text-[#0B7077] mb-4"
-                  onClick={() => setSelectedMessage(null)}
-                >
-                  Back to Messages
-                </button>
-
-                <div className="flex items-start gap-3 py-[12px]">
-                  <Image
-                    src={studentImage.src}
-                    width={40}
-                    height={40}
-                    alt="image"
-                    objectFit="cover"
-                    className="rounded-full"
-                  />
-                  <div>
-                    <h4 className="mb-[4px] text-[#303030] text-[14px] font-[400]">
-                      {uniqueStudents.find((s) => s.id === selectedStudent)?.firstName}{' '}
-                      {uniqueStudents.find((s) => s.id === selectedStudent)?.lastName}
-                    </h4>
-                    <p className="font-[400] text-[12px] text-[#686868]">
-                      All Report: 12 <span className="text-[#FF9500]">Reassigned: 2</span>{' '}
-                      <span className="text-[#34C759]">Approved: 10</span>
-                    </p>
+          {loading ? (
+            <div className="flex items-center justify-center w-full">
+              <Loader height="auto" background="transparent" />
+            </div>
+          ) : (
+            <BlurBackground background="bg-[#fafafa]">
+              <div className="flex lg:flex-row flex-col ">
+                {/* Message List */}
+                <div className={`lg:w-[350px] ${selectedMessage ? 'hidden' : 'block'} lg:block`}>
+                  <div className="flex items-center mb-[28px]">
+                    {careers.map((c) => (
+                      <button
+                        className={`py-[6px] px-[20px] rounded-[32px] font-[400] text-[12px] ${
+                          active === c.title ? 'bg-[#0B7077] text-[#FFFFFF]' : ''
+                        }`}
+                        key={c.title}
+                        onClick={() => setActive(c.title)}
+                      >
+                        {c.title}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="w-full max-h-[500px] overflow-y-auto scrollbar-hide">
+                    {uniqueStudents.map((r) => (
+                      <div
+                        className="cursor-pointer"
+                        key={r.id}
+                        onClick={() => setSelectedStudent(r?.student?.id)}
+                      >
+                        <MessageList
+                          image={r?.student?.image?.url || studentImage}
+                          name={`${r?.student?.firstName} ${r?.student?.lastName}`}
+                          message="View Reports"
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto scrollbar-hide">
-                  {filteredReports &&
-                    filteredReports.map((card) => (
-                      <div className="flex items-center gap-2">
-                        <div>
-                          <div className="border w-[290px] rounded">
-                            {card?.image ? (
-                              <Image
-                                src={card?.image?.url}
-                                alt="image"
-                                width={290}
-                                height={120}
-                                objectFit="cover"
-                                className="h-[120px]"
-                              />
-                            ) : null}
 
-                            <div className="w-full p-[8px]">
-                              <h4 className="font-[700] text-[12px] mb-[4px]">{card.title}</h4>
-                              <p className="text-[#8E8E93] font-[400] text-[10px]">
-                                {card.details}
-                              </p>
-                              <p className="mt-[6px] text-[#667085] font-[400] text-[12px]">
-                                {card.timestamp}
-                              </p>
-                              <div className="flex flex-col gap-1">
-                                <Select
-                                  options={approvalStatus}
-                                  value={approvalStatus.find(
-                                    (option) => option.value === selectedValues[card.id]?.status,
-                                  )}
-                                  onChange={(selectedOption) =>
-                                    handleStatusChange(selectedOption, card.id)
-                                  }
-                                  placeholder="Select Approval Status"
-                                  styles={getCustomStyles()}
-                                  components={{ Option: CustomOption }}
+                {/* Message Body */}
+                <div
+                  className={`lg:w-[484px] ${selectedMessage ? 'block' : 'hidden'} lg:block px-[4px] `}
+                >
+                  {/* Back Button (Mobile View) */}
+                  <button
+                    className="lg:hidden text-[#0B7077] mb-4"
+                    onClick={() => setSelectedMessage(null)}
+                  >
+                    Back to Messages
+                  </button>
+
+                  <div className="flex items-start gap-3 py-[12px]">
+                    <Image
+                      src={studentImage.src}
+                      width={40}
+                      height={40}
+                      alt="image"
+                      objectFit="cover"
+                      className="rounded-full"
+                    />
+                    <div>
+                      <h4 className="mb-[4px] text-[#303030] text-[14px] font-[400]">
+                        {uniqueStudents.find((s) => s.id === selectedStudent)?.firstName}{' '}
+                        {uniqueStudents.find((s) => s.id === selectedStudent)?.lastName}
+                      </h4>
+                      <p className="font-[400] text-[12px] text-[#686868]">
+                        All Report: {filteredReports.length}{' '}
+                        <span className="text-[#FF9500]">
+                          Reassigned: {reassignedReports.length}
+                        </span>{' '}
+                        <span className="text-[#34C759]">Approved: {approvedReports.length}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto scrollbar-hide">
+                    {activeReports &&
+                      activeReports.map((card) => (
+                        <div key={card.id} className="flex items-center gap-2">
+                          <div>
+                            <div className="border w-[290px] rounded">
+                              {card?.image ? (
+                                <Image
+                                  src={card?.image?.url}
+                                  alt="image"
+                                  width={290}
+                                  height={120}
+                                  objectFit="cover"
+                                  className="h-[120px]"
                                 />
-                                {errors[card.id] && errors[card.id].includes('Approval status') && (
-                                  <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
-                                )}
+                              ) : null}
 
-                                {/* Remark Select */}
-
-                                <Select
-                                  options={remarkOptions}
-                                  value={remarkOptions.find(
-                                    (option) => option.value === selectedValues[card.id]?.remark,
+                              <div className="w-full p-[8px]">
+                                <div className="flex justify-between">
+                                  <div>
+                                    <h4 className="font-[700] text-[12px] mb-[4px]">
+                                      {card.title}
+                                    </h4>
+                                    <p className="text-[#8E8E93] font-[400] text-[10px]">
+                                      {card.details}
+                                    </p>
+                                  </div>
+                                  {card.media && (
+                                    <span
+                                      onClick={() => showMedia(card.media)}
+                                      className="whitespace-nowrap text-[12px] cursor-pointer text-primary"
+                                    >
+                                      View File
+                                    </span>
                                   )}
-                                  onChange={(selectedOption) =>
-                                    handleRemarkChange(selectedOption, card.id)
-                                  }
-                                  placeholder="Select a Remark"
-                                  styles={getCustomStyles()}
-                                  components={{ Option: CustomOption }}
-                                />
-                                {errors[card.id] && errors[card.id].includes('Remark') && (
-                                  <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
-                                )}
+                                </div>
+                                <p className="mt-[6px] text-[#667085] font-[400] text-[12px]">
+                                  {card.timestamp}
+                                </p>
+                                <div className="flex flex-col gap-1">
+                                  {card.status === 'pending' ? (
+                                    <>
+                                      <Select
+                                        options={approvalStatus}
+                                        value={approvalStatus.find(
+                                          (option) =>
+                                            option.value === selectedValues[card.id]?.status,
+                                        )}
+                                        onChange={(selectedOption) =>
+                                          handleStatusChange(selectedOption, card.id)
+                                        }
+                                        placeholder="Select Approval Status"
+                                        styles={getCustomStyles()}
+                                        components={{ Option: CustomOption }}
+                                      />
+                                      {errors[card.id] &&
+                                        errors[card.id].includes('Approval status') && (
+                                          <p className="text-red-500 text-xs mt-1">
+                                            {errors[card.id]}
+                                            {errors[card.id]}
+                                          </p>
+                                        )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Input
+                                        disabled={true}
+                                        placeholder="Status"
+                                        className="bg-white/40 placeholder:text-[#8E8E93] border"
+                                        value={
+                                          card.status.charAt(0).toUpperCase() + card.status.slice(1)
+                                        }
+                                      />
+                                    </>
+                                  )}
 
-                                {/* Submit Button */}
-                                <Button
-                                  className="p-[10px] bg-[#0B7077] text-white rounded w-full mt-3"
-                                  onClick={() => handleRespond(card.id)}
-                                  disabled={loadingStates[card.id] || false}
-                                >
-                                  {loadingStates[card.id] ? <Spinner /> : 'Send'}
-                                </Button>
+                                  {/* Remark Select */}
+
+                                  <Input
+                                    disabled={card.status !== 'pending'}
+                                    onChange={(e: any) =>
+                                      handleRemarkChange(e.target.value, card.id)
+                                    }
+                                    placeholder="Remark"
+                                    className="bg-white/40 placeholder:text-[#8E8E93] border"
+                                    defaultValue={card.remark}
+                                  />
+                                  {errors[card.id] && errors[card.id].includes('Remark') && (
+                                    <p className="text-red-500 text-xs mt-1">{errors[card.id]}</p>
+                                  )}
+
+                                  {/* Submit Button */}
+                                  {card.status === 'pending' && (
+                                    <Button
+                                      className="p-[10px] bg-[#0B7077] text-white rounded w-full mt-3"
+                                      onClick={() => handleRespond(card.id)}
+                                      disabled={loadingStates[card.id] || false}
+                                    >
+                                      {loadingStates[card.id] ? <Spinner /> : 'Send'}
+                                    </Button>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </BlurBackground>
+            </BlurBackground>
+          )}
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogContent className="bg-white rounded-lg gap-2 !max-w-[700px]">
+              <div className="grid gap-4 text-center flex">
+                <Image className="m-auto" src={media.url} width={500} height={500} alt="media" />
+              </div>
+              <DialogFooter className="grid grid-cols-4 gap-1">
+                <DialogClose className="col-start-2 text-xs bg-white text-[#48484A] border-0">
+                  Cancel
+                </DialogClose>
+                <a
+                  href={media.url}
+                  target="_blank"
+                  className="w-full flex disabled:opacity-50 items-center col-span-2 rounded p-2 text-xs bg-[#0B7077] text-white text-center"
+                >
+                  <div className="flex m-auto">
+                    <span>Expand</span>
+                  </div>
+                </a>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

@@ -14,8 +14,9 @@ export default function AllInterns() {
 
   const findStudent = async () => {
     const res: any = await fetchDocs('employments')
+    const getAccpetedInterns = res?.docs?.filter((s: any) => s.status === 'Accept')
     console.log(res)
-    setStudents(res?.docs)
+    setStudents(getAccpetedInterns? getAccpetedInterns : [])
     setLoading(false)
   }
 

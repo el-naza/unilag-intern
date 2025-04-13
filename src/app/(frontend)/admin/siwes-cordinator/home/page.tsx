@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Table,
   TableBody,
@@ -24,20 +25,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { getAllCompanies } from '@/services/admin/companies'
 import { getAllReports, getEmployments } from '@/services/admin/reports'
+import { deleteStudent, getAllStudents } from '@/services/admin/students'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Edit2, EllipsisVertical, ListFilter, Plus, Share } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { Edit2, EllipsisVertical, Eye, ListFilter, Plus, Trash } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import { toast } from 'sonner'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from '../students/add-student'
-import { deleteStudent, getAllStudents } from '@/services/admin/students'
-import { getAllCompanies } from '@/services/admin/companies'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import Spinner from '@/components/spinner'
 
 type Report = {
   companyName: string
@@ -64,19 +65,19 @@ export default function HomePage() {
     ],
   })
 
-  const chartData = [
-    { month: 'January', desktop: 186 },
-    { month: 'February', desktop: 305 },
-    { month: 'March', desktop: 237 },
-    { month: 'April', desktop: 73 },
-    { month: 'May', desktop: 209 },
-    { month: 'July', desktop: 214 },
-    { month: 'August', desktop: 394 },
-    { month: 'September', desktop: 120 },
-    { month: 'October', desktop: 201 },
-    { month: 'November', desktop: 112 },
-    { month: 'December', desktop: 200 },
-  ]
+  const [chartData, setChartData] = useState<{ month: string; report: number }[]>([
+    { month: 'January', report: 0 },
+    { month: 'February', report: 0 },
+    { month: 'March', report: 0 },
+    { month: 'April', report: 0 },
+    { month: 'May', report: 0 },
+    { month: 'July', report: 0 },
+    { month: 'August', report: 0 },
+    { month: 'September', report: 0 },
+    { month: 'October', report: 0 },
+    { month: 'November', report: 0 },
+    { month: 'December', report: 0 },
+  ])
 
   const chartConfig = {
     desktop: {
@@ -91,6 +92,9 @@ export default function HomePage() {
 
   // Report Table Configurations
   const [reportLoading, setReportLoading] = useState<boolean>(true)
+  const [chartsLoading, setChartsLoading] = useState<boolean>(true)
+  const [recentEmploymentsLoading, setRecentEmploymentsLoading] = useState<boolean>(true)
+
   const [reportData, setReportData] = useState<Report[]>([])
   const [reportPage, setReportPage] = useState(0)
   const [reportPageSize, setReportPageSize] = useState(0)
@@ -100,62 +104,426 @@ export default function HomePage() {
   const router = useRouter()
   const [openPopover, setOpenPopover] = useState(false)
 
-  const fetchReports = async (params?: string) => {
-    return getAllReports('reports', params).then((res: any) => {
+  const [totalStudents, setTotalStudents] = useState(0)
+  const [totalEmployments, setTotalEmployments] = useState(0)
+
+  const fetchReports = useCallback(async (params?: any) => {
+    setReportLoading(true)
+
+    try {
+      const res: any = await getAllReports('reports', params)
       const { docs, page, totalPages, totalDocs, hasNextPage, hasPrevPage } = res.data
       setReportData(docs)
       setReportPage(page)
       setReportPageSize(totalPages)
+      setReportTotal(totalDocs)
       setReportHasNext(hasNextPage)
       setReportHasPrevious(hasPrevPage)
-      setReportTotal(totalDocs)
-    })
-  }
 
-  const fetchEmployments = async () => {
-    return getEmployments('employments').then((res: any) => {
-      const { docs } = res.data
+      setReportLoading(false)
+    } catch (error) {
+      console.error('Error fetching reports:', error)
+    }
+  }, [])
+
+  const fetchEmployments = useCallback(async () => {
+    setRecentEmploymentsLoading(true)
+
+    try {
+      const query = new URLSearchParams({ sort: '-createdAt' }).toString()
+      const res: any = await getEmployments('employments', query)
+      const { docs, totalDocs } = res.data
+
       setEmployedData(docs)
-    })
-  }
+      setTotalEmployments(totalDocs)
 
-  const fetchTotalStudents = () => {
-    const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
-    return getAllStudents('students', query).then((res: any) => {
-      const { totalDocs } = res.data
-
-      setConfig((prevConfig) => ({
-        ...prevConfig,
-        stats: prevConfig.stats.map((stat, index) =>
-          index === 0 ? { ...stat, count: totalDocs } : stat,
+      setConfig((prev) => ({
+        ...prev,
+        stats: prev.stats.map((stat, index) =>
+          index === 1 ? { ...stat, count: totalDocs } : stat,
         ),
       }))
-    })
-  }
 
-  const fetchTotalCompanies = () => {
-    const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
-    return getAllCompanies('companies', query).then((res: any) => {
+      setRecentEmploymentsLoading(false)
+    } catch (error) {
+      console.error('Error fetching employments:', error)
+    }
+  }, [])
+
+  const fetchCompanies = useCallback(async () => {
+    try {
+      const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+      const res: any = await getAllCompanies('companies', query)
       const { totalDocs } = res.data
-
-      setConfig((prevConfig) => ({
-        ...prevConfig,
-        stats: prevConfig.stats.map((stat, index) =>
+      setConfig((prev) => ({
+        ...prev,
+        stats: prev.stats.map((stat, index) =>
           index === 3 ? { ...stat, count: totalDocs } : stat,
         ),
       }))
-    })
-  }
+    } catch (error) {
+      console.error('Error fetching companies:', error)
+    }
+  }, [])
+
+  const fetchStudents = useCallback(async () => {
+    try {
+      const query = new URLSearchParams({ 'select[none]': 'true' }).toString()
+      const res: any = await getAllStudents('students', query)
+      const { totalDocs } = res.data
+
+      setTotalStudents(totalDocs)
+      setConfig((prev) => ({
+        ...prev,
+        stats: prev.stats.map((stat, index) =>
+          index === 0 ? { ...stat, count: totalDocs } : stat,
+        ),
+      }))
+    } catch (error) {
+      console.error('Error fetching students:', error)
+    }
+  }, [])
+
+  // JAN CHARTS REPORT
+  const fetchJanReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfJanuary = `${currentYear}-01-01T00:00:00.000Z`
+      const endOfJanuary = `${currentYear}-01-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfJanuary,
+        'where[createdAt][less_than]': endOfJanuary,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'January' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching Jan reports:', error)
+    }
+  }, [])
+
+  // FEB CHARTS REPORT
+  const fetchFebReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfFeburary = `${currentYear}-02-01T00:00:00.000Z`
+      const endOfFeburary = `${currentYear}-02-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfFeburary,
+        'where[createdAt][less_than]': endOfFeburary,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'Feburary' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching feb reports:', error)
+    }
+  }, [])
+
+  // MAR CHARTS REPORT
+  const fetchMarReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfMarch = `${currentYear}-03-01T00:00:00.000Z`
+      const endOfMarch = `${currentYear}-03-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfMarch,
+        'where[createdAt][less_than]': endOfMarch,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'March' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching march reports:', error)
+    }
+  }, [])
+
+  // APR CHARTS REPORT
+  const fetchAprilReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfApril = `${currentYear}-04-01T00:00:00.000Z`
+      const endOfApril = `${currentYear}-04-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfApril,
+        'where[createdAt][less_than]': endOfApril,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'April' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching april reports:', error)
+    }
+  }, [])
+
+  // MAY CHARTS REPORT
+  const fetchMayReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfMay = `${currentYear}-05-01T00:00:00.000Z`
+      const endOfMay = `${currentYear}-05-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfMay,
+        'where[createdAt][less_than]': endOfMay,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'May' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching may reports:', error)
+    }
+  }, [])
+
+  // JUNE CHARTS REPORT
+  const fetchJuneReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfJune = `${currentYear}-06-01T00:00:00.000Z`
+      const endOfJune = `${currentYear}-06-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfJune,
+        'where[createdAt][less_than]': endOfJune,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'June' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching june reports:', error)
+    }
+  }, [])
+
+  // JULY CHARTS REPORT
+  const fetchJulyReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfJuly = `${currentYear}-07-01T00:00:00.000Z`
+      const endOfJuly = `${currentYear}-07-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfJuly,
+        'where[createdAt][less_than]': endOfJuly,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'July' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching july reports:', error)
+    }
+  }, [])
+
+  // AUG CHARTS REPORT
+  const fetchAugReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfAug = `${currentYear}-08-01T00:00:00.000Z`
+      const endOfAug = `${currentYear}-08-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfAug,
+        'where[createdAt][less_than]': endOfAug,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'August' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching august reports:', error)
+    }
+  }, [])
+
+  // SEPT CHARTS REPORT
+  const fetchSeptReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfSept = `${currentYear}-09-01T00:00:00.000Z`
+      const endOfSept = `${currentYear}-09-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfSept,
+        'where[createdAt][less_than]': endOfSept,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'September' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching sept reports:', error)
+    }
+  }, [])
+
+  // OCT CHARTS REPORT
+  const fetchOctReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfOct = `${currentYear}-10-01T00:00:00.000Z`
+      const endOfOct = `${currentYear}-10-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfOct,
+        'where[createdAt][less_than]': endOfOct,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'October' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching october reports:', error)
+    }
+  }, [])
+
+  // NOV CHARTS REPORT
+  const fetchNovReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfNov = `${currentYear}-11-01T00:00:00.000Z`
+      const endOfNov = `${currentYear}-11-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfNov,
+        'where[createdAt][less_than]': endOfNov,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'November' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching nov reports:', error)
+    }
+  }, [])
+
+  // DEC CHARTS REPORT
+  const fetchDecReports = useCallback(async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      const startOfDec = `${currentYear}-12-01T00:00:00.000Z`
+      const endOfDec = `${currentYear}-12-31T23:59:59.999Z`
+
+      const query = new URLSearchParams({
+        'where[createdAt][greater_than]': startOfDec,
+        'where[createdAt][less_than]': endOfDec,
+      }).toString()
+
+      const res: any = await getAllReports('reports', query)
+      const { totalDocs } = res.data
+
+      setChartData((prev) =>
+        prev.map((data) => (data.month === 'December' ? { ...data, report: totalDocs } : data)),
+      )
+    } catch (error) {
+      console.error('Error fetching dec reports:', error)
+    }
+  }, [])
 
   useEffect(() => {
-    Promise.allSettled([fetchTotalStudents(), fetchTotalCompanies()]).then(() =>
-      console.log('Analytics data fetched'),
-    )
+    Promise.allSettled([
+      fetchEmployments(),
+      fetchStudents(),
+      fetchReports(),
+      fetchCompanies(),
+    ]).then(() => {
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        stats: prevConfig.stats.map((stat, index) =>
+          index === 2 ? { ...stat, count: totalStudents - totalEmployments } : stat,
+        ),
+      }))
+    })
 
-    Promise.allSettled([fetchReports(), fetchEmployments()]).then(() =>
-      console.log('Reports and employment data fetched'),
-    )
-  }, [])
+    // CHARTs
+    Promise.allSettled([
+      fetchJanReports(),
+      fetchFebReports(),
+      fetchMarReports(),
+      fetchAprilReports(),
+      fetchMayReports(),
+      fetchJuneReports(),
+      fetchJulyReports(),
+      fetchAugReports(),
+      fetchSeptReports(),
+      fetchOctReports(),
+      fetchNovReports(),
+      fetchDecReports(),
+    ]).then((_) => {
+      setChartsLoading(false)
+    })
+  }, [
+    fetchReports,
+    fetchEmployments,
+    fetchCompanies,
+    fetchStudents,
+    totalEmployments,
+    totalStudents,
+    fetchJanReports,
+    fetchFebReports,
+    fetchMarReports,
+    fetchAprilReports,
+    fetchMayReports,
+    fetchJuneReports,
+    fetchJulyReports,
+    fetchAugReports,
+    fetchSeptReports,
+    fetchOctReports,
+    fetchNovReports,
+    fetchDecReports,
+  ])
 
   const reportColumns = useMemo(
     () => [
@@ -166,23 +534,31 @@ export default function HomePage() {
       },
       {
         id: 'reportNumber',
-        header: 'Report Number',
+        header: 'Report Week',
         accessorKey: 'reportNumber',
       },
       {
-        id: 'studentName',
+        id: 'student',
         header: 'Student Name',
-        accessorKey: 'studentName',
+        accessorKey: 'student',
+        cell: ({ _, row }) => {
+          const rowData = row.original
+          return `${rowData.student.firstName} ${rowData.student.lastName}`
+        },
       },
       {
-        id: 'reportMessage',
+        id: 'title',
         header: 'Report Message',
-        accessorKey: 'reportMessage',
+        accessorKey: 'title',
       },
       {
-        id: 'reportDate',
+        id: 'createdAt',
         header: 'Report Date',
-        accessorKey: 'reportDate',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const rawDate = getValue()
+          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+        },
       },
     ],
     [],
@@ -220,7 +596,7 @@ export default function HomePage() {
         id: 'name',
         header: 'Name',
         accessorKey: 'name',
-        cell: ({ _, row }) => {
+        cell: ({ data, row }) => {
           const rowData = row.original
           return `${rowData.student.firstName} ${rowData.student.lastName}`
         },
@@ -229,7 +605,7 @@ export default function HomePage() {
         id: 'department',
         header: 'Department',
         accessorKey: 'department',
-        cell: ({ _, row }) => {
+        cell: ({ data, row }) => {
           const rowData = row.original
           return `${rowData.student.course}`
         },
@@ -293,14 +669,18 @@ export default function HomePage() {
     <div className="p-8">
       <FIlterStats {...config} onEmitFilter={filterStats} onEmitDateFilter={filterStatsbyDate} />
 
-      <div className="grid grid-cols-12 gap-4 mt-8">
+      <div className="grid grid-cols-12 gap-4 mt-8 items-start py-4">
         <div className="col-span-7 p-4 bg-white rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-10">
             <p>Total Reports</p>
 
-            <Button variant="ghost" className="bg-gray-light-2">
+            {chartsLoading && (
+              <Spinner className="border-t-primary border-r-primary border-b-primary" />
+            )}
+
+            {/* <Button variant="ghost" className="bg-gray-light-2">
               <ListFilter /> Month
-            </Button>
+            </Button> */}
           </div>
 
           <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
@@ -315,15 +695,19 @@ export default function HomePage() {
               />
               <ChartTooltip content={<ChartTooltipContent className="bg-white border-none" />} />
               <ChartLegend content={<ChartLegendContent />} />
-              <Bar dataKey="desktop" fill="#195F7E" radius={2} />
-              {/* <Bar dataKey="mobile" fill="#0B7077" radius={2} /> */}
+              <Bar dataKey="report" fill="#195F7E" radius={2} />
             </BarChart>
           </ChartContainer>
         </div>
 
-        <div className="col-span-5 p-4 bg-white rounded-lg shadow-md">
+        <div className="col-span-5 p-4 bg-white rounded-lg shadow-md max-h-[60vh] overflow-auto">
           <div className="flex justify-between items-center">
-            <p>Recently Employed Student</p>
+            <div className="flex gap-2 items-center">
+              <p>Recently Added Student</p>
+              {recentEmploymentsLoading && (
+                <Spinner className="border-t-primary border-r-primary border-b-primary" />
+              )}
+            </div>
 
             <Dialog open={studentOpenDialog} onOpenChange={setStudentOpenDialog}>
               <DialogTrigger asChild>
@@ -421,7 +805,10 @@ export default function HomePage() {
         <div className="flex justify-between items-center">
           <p>All Reports</p>
 
-          <Button>Export Data</Button>
+          {reportLoading && (
+            <Spinner className="border-t-primary border-r-primary border-b-primary" />
+          )}
+          {/* <Button>Export Data</Button> */}
         </div>
 
         <Table>
@@ -450,14 +837,59 @@ export default function HomePage() {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
-                <TableCell className="float-right flex gap-3">
-                  <Button variant="ghost">
-                    <Edit2 className="text-primary" />
-                  </Button>
-
-                  <Button variant="ghost">
-                    <Share className="text-primary" />
-                  </Button>
+                <TableCell className="float-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost">
+                        <EllipsisVertical className="text-primary" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 bg-white border-none">
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            router.push(`students/${row.original?.student?.id}#report`)
+                          }
+                        >
+                          <Eye />
+                          <span>View Student Report</span>
+                        </DropdownMenuItem>
+                        {/* <DropdownMenuItem onClick={() => console.log(row.original)}>
+                          <Eye />
+                          <span>View Company Report</span>
+                        </DropdownMenuItem> */}
+                        {/* <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="text-red-500 px-0 pl-[9px]">
+                              <Trash />
+                              <span>Delete</span>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <p className="text-neutral-400 mb-3">This action cannot be undone!</p>
+                            <div className="flex gap-4 items-center w-full">
+                              <Button
+                                variant="ghost"
+                                className="w-full"
+                                onClick={() => setOpenPopover(false)}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                className="w-full"
+                                onClick={() => {
+                                  deleteReport(row)
+                                  setOpenPopover(false)
+                                }}
+                              >
+                                Continue
+                              </Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover> */}
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}

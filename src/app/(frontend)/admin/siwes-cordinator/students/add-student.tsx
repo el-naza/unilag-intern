@@ -19,7 +19,7 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
   const rowsPerPage = 5
   const [isUploading, setIsUploading] = useState(false)
   const [uploadResult, setUploadResult] = useState<any>(null)
-  const [showUploadArea, setShowUploadArea] = useState(true) // State to toggle the upload area visibility
+  const [showUploadArea, setShowUploadArea] = useState(true)
 
   const onDrop = (acceptedFiles: File[]) => {
     setFiles(acceptedFiles)
@@ -32,7 +32,11 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
           const csv = target.result as string
           Papa.parse(csv, {
             complete: (result) => {
-              setPreviewData(result.data)
+              const data = result.data as string[][]
+              if (data.length > 1) {
+                setPreviewData(data)
+                setShowUploadArea(false) // ✅ Hide upload area
+              }
             },
           })
         }
@@ -59,33 +63,34 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
 
   const handleBatchUpload = async () => {
     setIsUploading(true)
+    setShowUploadArea(false)
     const students: Student[] = previewData.slice(1).map((row) => ({
       id: '',
-      createdAt: new Date().toISOString(), // Add createdAt date
-      updatedAt: new Date().toISOString(), // Add updatedAt date
-      firstName: row[0], // First Name
-      lastName: row[1], // Last Name
-      middleName: row[2], // Middle Name
-      username: row[3], // Username
-      matricNo: row[4], // Matriculation Number
-      dob: row[5], // Date of Birth
-      nationality: row[6], // Nationality
-      stateOfOrigin: row[7], // State of Origin
-      homeAddress: row[8], // Home Address
-      gender: normalizeGender(row[9]), // Gender
-      course: row[10], // Course
-      level: row[11], // Level
-      internshipType: normalizeInternshipType(row[12]), // Internship Type
-      image: row[13], // Image (you might need additional handling here for URLs or paths)
-      bankCode: row[14], // Bank Code
-      bankName: row[15], // Bank Name
-      accountNo: row[16], // Account Number
-      coins: parseFloat(row[17]) || 0, // Coins (ensure it's a number, defaults to 0 if invalid)
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      firstName: row[0],
+      lastName: row[1],
+      middleName: row[2],
+      username: row[3],
+      matricNo: row[4],
+      dob: row[5],
+      nationality: row[6],
+      stateOfOrigin: row[7],
+      homeAddress: row[8],
+      gender: normalizeGender(row[9]),
+      course: row[10],
+      level: row[11],
+      internshipType: normalizeInternshipType(row[12]),
+      image: row[13],
+      bankCode: row[14],
+      bankName: row[15],
+      accountNo: row[16],
+      coins: parseFloat(row[17]) || 0,
       email: row[18],
     }))
 
     try {
-      const result = await batchUploadStudents('students', students) // Assuming 'students' is your collection slug
+      const result = await batchUploadStudents('students', students)
       setUploadResult(result)
     } catch (error) {
       console.error('Error uploading batch:', error)
@@ -107,8 +112,17 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
         Upload a CSV or Excel file with student information.
       </p>
 
-      {/* Button to toggle the visibility of the upload area */}
-      {showUploadArea ? (
+      {/* Toggle button visible only after preview is loaded */}
+      {previewData.length > 1 && (
+        <div className="mb-4 text-center">
+          <Button onClick={() => setShowUploadArea((prev) => !prev)} variant="outline">
+            {showUploadArea ? 'Show Preview' : 'Show Upload Area'}
+          </Button>
+        </div>
+      )}
+
+      {/* Upload Area */}
+      {showUploadArea && (
         <div>
           <div
             {...getRootProps()}
@@ -131,16 +145,10 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
             Only supports .csv, .xls, and .xlsx files (2MB max).
           </p>
         </div>
-      ) : (
-        <div className="mt-4">
-          <Button onClick={() => setShowUploadArea(true)} variant="outline">
-            Show Upload Area
-          </Button>
-        </div>
       )}
 
-      {/* Toggle between file upload and preview */}
-      {files.length > 0 && !showUploadArea && (
+      {/* File Info */}
+      {files.length > 0 && (
         <div className="mt-4">
           <h3 className="font-semibold">Uploaded File:</h3>
           <ul className="mt-2">
@@ -154,8 +162,8 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
         </div>
       )}
 
-      {/* Preview Data */}
-      {previewData.length > 1 && (
+      {/* Preview Table */}
+      {!showUploadArea && previewData.length > 1 && (
         <div className="mt-4 overflow-auto">
           <h3 className="font-semibold">Preview Data:</h3>
           <table className="w-full border border-gray-300 mt-2 text-sm">
@@ -171,7 +179,7 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
             </thead>
             <tbody>
               {displayedData.map((row, rowIndex) => (
-                <tr key={rowIndex} className="border">
+                <tr key={rowIndex}>
                   <td className="border px-2 py-1">
                     {(currentPage - 1) * rowsPerPage + rowIndex + 1}
                   </td>
@@ -185,6 +193,7 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
             </tbody>
           </table>
 
+          {/* Pagination */}
           <div className="flex justify-between mt-4">
             <Button
               variant="outline"
@@ -207,15 +216,17 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
         </div>
       )}
 
+      {/* Action Buttons */}
       <div className="flex gap-4 mt-8">
-        <Button onClick={handleBatchUpload} disabled={isUploading}>
+        <Button onClick={handleBatchUpload} disabled={isUploading || previewData.length <= 1}>
           {isUploading ? 'Uploading...' : 'Upload Students'}
         </Button>
-        <Button variant="outline" onClick={() => closeDialog()}>
+        <Button variant="outline" onClick={closeDialog}>
           Cancel
         </Button>
       </div>
 
+      {/* Upload Result */}
       {uploadResult && (
         <div className="mt-4">
           <h3 className="font-semibold">Upload Result</h3>

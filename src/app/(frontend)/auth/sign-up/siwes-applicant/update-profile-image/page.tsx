@@ -48,7 +48,7 @@ export default function Page() {
           toast.error('Network err; pls try again later')
           return 'Network err; pls try again later'
         }
-        return res
+        // return res
       } catch {
         toast.error('An error occured while saving message; pls try again later')
         return 'An error occured while saving message; pls try again later'

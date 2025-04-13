@@ -16,7 +16,7 @@ export async function getAllAdmins(
   params?: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
-    secureCookie: process.env.NODE_ENV === 'production',
+    secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -46,7 +46,7 @@ export async function createAdmin(
   payload: any,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
-    secureCookie: process.env.NODE_ENV === 'production',
+    secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -80,6 +80,66 @@ export default async function resetPassword(
     .post<Response | ErrorResponse>(`/api/${col}/reset-password`, {
       password,
       token,
+    })
+    .catch((error: AxiosError) => {
+      if (error.response)
+        return {
+          status: error.response.status,
+          data: error.response.data as ErrorResponse,
+        }
+    })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
+}
+
+export async function updateAdmin(
+  col: CollectionSlug,
+  payload: any,
+): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
+    req: { headers: await headers() },
+    secret: process.env.NEXTAUTH_SECRET,
+  })
+
+  return await axiosInstance
+    .patch<Response | ErrorResponse>(`/api/${col}`, payload, {
+      headers: {
+        Authorization: `Bearer ${authResult?.token}`,
+      },
+    })
+    .catch((error: AxiosError) => {
+      if (error.response)
+        return {
+          status: error.response.status,
+          data: error.response.data as ErrorResponse,
+        }
+    })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
+}
+
+export async function deleteAdmin(
+  col: CollectionSlug,
+  adminId: string,
+): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
+    req: { headers: await headers() },
+    secret: process.env.NEXTAUTH_SECRET,
+  })
+
+  return await axiosInstance
+    .delete<Response | ErrorResponse>(`/api/${col}/${adminId}`, {
+      headers: {
+        Authorization: `Bearer ${authResult?.token}`,
+      },
     })
     .catch((error: AxiosError) => {
       if (error.response)

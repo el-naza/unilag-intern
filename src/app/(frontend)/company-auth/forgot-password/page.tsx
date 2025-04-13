@@ -65,7 +65,7 @@ export default function OTPConfirmation() {
           form.handleSubmit()
         }}
       >
-        <Label>Comapany Email</Label>
+        <Label>Company Email</Label>
         <form.Field
           name="email"
           children={(field) => {

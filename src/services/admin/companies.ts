@@ -16,7 +16,7 @@ export async function getAllCompanies(
   params?: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
-    secureCookie: process.env.NODE_ENV === 'production',
+    secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -46,7 +46,7 @@ export async function getCompany(
   companyId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
-    secureCookie: process.env.NODE_ENV === 'production',
+    secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -71,12 +71,42 @@ export async function getCompany(
     }))
 }
 
+export async function updateCompany(
+  col: CollectionSlug,
+  payload: any,
+): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
+    req: { headers: await headers() },
+    secret: process.env.NEXTAUTH_SECRET,
+  })
+
+  return await axiosInstance
+    .patch<Response | ErrorResponse>(`/api/${col}`, payload, {
+      headers: {
+        Authorization: `Bearer ${authResult?.token}`,
+      },
+    })
+    .catch((error: AxiosError) => {
+      if (error.response)
+        return {
+          status: error.response.status,
+          data: error.response.data as ErrorResponse,
+        }
+    })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
+}
+
 export async function deleteCompany(
   col: CollectionSlug,
   companyId: string,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
   const authResult = await getToken({
-    secureCookie: process.env.NODE_ENV === 'production',
+    secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith('https'),
     req: { headers: await headers() },
     secret: process.env.NEXTAUTH_SECRET,
   })

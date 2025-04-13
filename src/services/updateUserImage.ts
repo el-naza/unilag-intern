@@ -26,7 +26,7 @@ export default async function updateUserImage(
   // const mediaUploadRes = await uploadMedia(
   //   file,
   //   authToken ||
-  //     ((await getToken({ secureCookie: process.env.NODE_ENV === 'production', req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
+  //     ((await getToken({ secureCookie: process.env.NEXT_PUBLIC_SERVER_URL.startsWith("https"), req: { headers: await headers() }, secret: process.env.NEXTAUTH_SECRET }))
   //       ?.token! as string),
   // )
   const token =
