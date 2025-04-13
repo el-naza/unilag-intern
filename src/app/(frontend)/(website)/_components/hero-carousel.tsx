@@ -85,6 +85,14 @@ const HeroCarousel = () => {
       <div
         className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[10rem] ${bg2Colors[currentSlide]}`}
       >
+        <Image
+                src="/images/wire-lines.svg"
+                alt="Wirelines"
+                width={3000}
+                height={6000}
+                className="w-[80rem] top-[13rem] -left-[12rem] relative"
+              />
+
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
           <CarouselContent>
             <CarouselItem className="p-8 mx-auto grid place-content-center relative top-[6rem] basis-full">

@@ -166,6 +166,7 @@ const Page = () => {
                     <div className="grid grid-cols-3 mb-3">
                       <div className="flex items-center text-center text-[#FF9500] font-bold">
                         {internships?.length} vacancies
+                        {internships?.length} vacancies
                       </div>
                       <div className="col-span-2">
                         <Dialog open={open} onOpenChange={setOpen}>

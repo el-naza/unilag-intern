@@ -2,10 +2,8 @@
 
 import { Company } from '@/payload-types'
 import axiosInstance from '@/utilities/axiosInstance'
-import { ServiceResponse, ErrorResponse } from '@/utilities/types'
+import { ErrorResponse, ServiceResponse } from '@/utilities/types'
 import { AxiosError } from 'axios'
-import { getToken } from 'next-auth/jwt'
-import { headers } from 'next/headers'
 import { CollectionSlug } from 'payload'
 
 type Response = {
@@ -17,24 +15,8 @@ export async function getPopularCompanies(
   col: CollectionSlug,
   params?: any,
 ): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
-  //   const authResult = await getToken({
-  //     secureCookie: process.env.NODE_ENV === 'production',
-  //     req: { headers: await headers() },
-  //     secret: process.env.NEXTAUTH_SECRET,
-  //   })
-
   return await axiosInstance
-    .get<Response | ErrorResponse>(
-      `/api/${col}`,
-      {
-        params,
-      },
-      //      {
-      //   headers: {
-      //     Authorization: `Bearer ${authResult?.token}`,
-      //   },
-      // }
-    )
+    .get<Response | ErrorResponse>(`/api/${col}/?${params}`)
     .catch((error: AxiosError) => {
       if (error.response)
         return {

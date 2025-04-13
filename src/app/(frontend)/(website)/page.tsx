@@ -1,11 +1,6 @@
 'use client'
-import CompanyCard from './_components/company-card'
-import CourseCard from './_components/course-card'
-import HeroCarousel from './_components/hero-carousel'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import Image from 'next/image'
+import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
-import NewsLetterCard from './_components/news-letter-card'
 import {
   Carousel,
   CarouselContent,
@@ -13,30 +8,42 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import Autoplay from 'embla-carousel-autoplay'
-import { useEffect, useRef, useState } from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getPopularCompanies } from '@/services/website/website'
 import industries from '@/utilities/industries'
-import Spinner from '@/components/spinner'
-import { useQuery } from '@tanstack/react-query'
+import Autoplay from 'embla-carousel-autoplay'
+import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+import CompanyCard from './_components/company-card'
+import CourseCard from './_components/course-card'
+import HeroCarousel from './_components/hero-carousel'
 
 export default function HomePage() {
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }))
 
-  const [selectedIndustry, setSelectedIndustry] = useState<string>('all')
+  const [isLoadingCompany, setIsLoadingCompany] = useState<boolean>(true)
+  const [companies, setCompanies] = useState<any[]>([])
 
-  const popularCompaniesQuery = useQuery({
-    queryKey: ['popularCompanies', selectedIndustry],
-    queryFn: async () =>
-      (
-        await getPopularCompanies(
-          'companies',
-          selectedIndustry === 'all'
-            ? undefined
-            : { where: { industry: { equals: selectedIndustry } } },
-        )
-      )?.data!.docs,
-  })
+  const fetchPopularCompanies = async (params?: string) => {
+    setIsLoadingCompany(true)
+    const res: any = await getPopularCompanies('companies', params)
+    const { docs } = res.data
+
+    setCompanies(docs)
+    setIsLoadingCompany(false)
+  }
+
+  useEffect(() => {
+    fetchPopularCompanies()
+  }, [])
+
+  const companyTabChanged = (value: any) => {
+    if (value === 'all') fetchPopularCompanies()
+    else {
+      const query = new URLSearchParams({ 'where[industry][like]': value }).toString()
+      fetchPopularCompanies(query)
+    }
+  }
 
   return (
     <div>
@@ -56,7 +63,7 @@ export default function HomePage() {
             />
           </div>
         </h2>
-        <Tabs defaultValue="all" className="" onValueChange={setSelectedIndustry}>
+        <Tabs defaultValue="all" className="" onValueChange={companyTabChanged}>
           <TabsList className="w-full bg-transparent gap-4 overflow-x-auto overflow-y-hidden justify-start py-10">
             <TabsTrigger
               value="all"
@@ -76,18 +83,63 @@ export default function HomePage() {
             ))}
           </TabsList>
 
-          <TabsContent value={selectedIndustry}>
-            {popularCompaniesQuery.status === 'pending' && (
-              <Spinner className="mx-auto border-t-primary border-r-primary" />
-            )}
-            <CompanyCard companies={popularCompaniesQuery.data} />
+          <TabsContent value="all">
+            {isLoadingCompany && <Spinner className="mx-auto border-t-primary border-r-primary" />}
+
+            <Carousel
+              opts={{
+                align: 'start',
+                loop: true,
+              }}
+              plugins={[plugin.current]}
+              className="w-full"
+            >
+              <CarouselContent>
+                {companies.map((company: any) => (
+                  <CarouselItem
+                    className="px-4 mx-auto grid place-content-center basis-96"
+                    key={company.id}
+                  >
+                    <CompanyCard company={company} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
           </TabsContent>
 
-          {/* {industy?.map((ind: string, index: number) => (
+          {industries?.map((ind: string, index: number) => (
             <TabsContent value={ind} key={index}>
-              {companies?.map((company: any) => <CompanyCard key={company.id} company={company} />)}
+              {isLoadingCompany ? (
+                <Spinner className="mx-auto border-t-primary border-r-primary" />
+              ) : (
+                <Carousel
+                  opts={{
+                    align: 'start',
+                    loop: true,
+                  }}
+                  plugins={[plugin.current]}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {companies?.map((company: any) => (
+                      <CarouselItem
+                        className="px-4 mx-auto grid place-content-center basis-96"
+                        key={company.id}
+                      >
+                        <CompanyCard company={company} />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
+              )}
             </TabsContent>
-          ))} */}
+          ))}
         </Tabs>
       </div>
 

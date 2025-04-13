@@ -140,7 +140,7 @@ export default function StudentPage() {
         accessorKey: 'firstName',
         cell: ({ getValue, row }) => {
           const rowData = row.original
-          return `${getValue()} ${rowData.lastName}`
+          return `${getValue() || ''} ${rowData?.lastName || ''}`
         },
       },
       {
@@ -174,7 +174,10 @@ export default function StudentPage() {
         accessorKey: 'createdAt',
         cell: ({ getValue }) => {
           const rawDate = getValue()
-          return rawDate ? format(new Date(rawDate), 'MMM dd, yyyy') : 'N/A'
+          const parsedDate = new Date(rawDate)
+          return rawDate && !isNaN(parsedDate.getTime())
+            ? format(parsedDate, 'MMM dd, yyyy')
+            : 'N/A'
         },
       },
     ],
@@ -183,7 +186,7 @@ export default function StudentPage() {
 
   const table = useReactTable({
     columns,
-    data: students,
+    data: Array.isArray(students) ? students : [],
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -320,7 +323,7 @@ export default function StudentPage() {
                 <Plus /> Add Student
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-screen-md overflow-auto bg-white">
+            <DialogContent className="max-w-screen-xl w-full overflow-auto bg-white p-6">
               <AddStudent onCloseEmit={closeDialog} />
             </DialogContent>
           </Dialog>

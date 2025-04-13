@@ -127,7 +127,7 @@ export default function ReportPage() {
 
   const table = useReactTable({
     columns,
-    data: reports,
+    data: Array.isArray(reports) ? reports : [],
     getCoreRowModel: getCoreRowModel(),
   })
 

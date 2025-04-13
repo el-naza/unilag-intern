@@ -1,4 +1,5 @@
 'use client'
+import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import {
   type ChartConfig,
@@ -30,7 +31,7 @@ import { getAllReports, getEmployments } from '@/services/admin/reports'
 import { deleteStudent, getAllStudents } from '@/services/admin/students'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Edit2, EllipsisVertical, Eye, ListFilter, Plus, Trash } from 'lucide-react'
+import { EllipsisVertical, Eye, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
@@ -38,7 +39,6 @@ import { toast } from 'sonner'
 import FIlterStats, { IFIlterConfig } from '../../_components/filter-stats'
 import Pagination from '../../_components/pagination'
 import AddStudent from '../students/add-student'
-import Spinner from '@/components/spinner'
 
 type Report = {
   companyName: string
@@ -476,8 +476,8 @@ export default function HomePage() {
     Promise.allSettled([
       fetchEmployments(),
       fetchStudents(),
-      fetchReports(),
       fetchCompanies(),
+      fetchReports(),
     ]).then(() => {
       setConfig((prevConfig) => ({
         ...prevConfig,
@@ -543,7 +543,8 @@ export default function HomePage() {
         accessorKey: 'student',
         cell: ({ _, row }) => {
           const rowData = row.original
-          return `${rowData.student.firstName} ${rowData.student.lastName}`
+          const student = rowData.student
+          return student ? `${student.firstName} ${student.lastName}` : 'N/A'
         },
       },
       {
@@ -566,7 +567,7 @@ export default function HomePage() {
 
   const reportTable = useReactTable({
     columns: reportColumns,
-    data: reportData,
+    data: Array.isArray(reportData) ? reportData : [],
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -598,7 +599,8 @@ export default function HomePage() {
         accessorKey: 'name',
         cell: ({ data, row }) => {
           const rowData = row.original
-          return `${rowData.student.firstName} ${rowData.student.lastName}`
+          const student = rowData.student
+          return student ? `${student.firstName} ${student.lastName}` : 'N/A'
         },
       },
       {
@@ -616,7 +618,7 @@ export default function HomePage() {
 
   const employedTable = useReactTable({
     columns: employedColumns,
-    data: employedData,
+    data: Array.isArray(employedData) ? employedData : [],
     getCoreRowModel: getCoreRowModel(),
   })
 

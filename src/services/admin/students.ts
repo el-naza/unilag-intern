@@ -1,5 +1,6 @@
 'use server'
 
+import { Student } from '@/payload-types'
 import axiosInstance from '@/utilities/axiosInstance'
 import { ServiceResponse, ErrorResponse } from '@/utilities/types'
 import { AxiosError } from 'axios'
@@ -117,6 +118,40 @@ export async function deleteStudent(
         Authorization: `Bearer ${authResult?.token}`,
       },
     })
+    .catch((error: AxiosError) => {
+      if (error.response)
+        return {
+          status: error.response.status,
+          data: error.response.data as ErrorResponse,
+        }
+    })
+    .then((res) => ({
+      success: true,
+      status: res?.status,
+      data: res?.data,
+    }))
+}
+
+export async function batchUploadStudents(
+  col: CollectionSlug,
+  students: Student[],
+): Promise<ServiceResponse<Response | ErrorResponse> | undefined> {
+  const authResult = await getToken({
+    secureCookie: process.env.NODE_ENV === 'production',
+    req: { headers: await headers() },
+    secret: process.env.NEXTAUTH_SECRET,
+  })
+
+  return await axiosInstance
+    .post<Response | ErrorResponse>(
+      `/api/${col}/batch-upload`,
+      { students },
+      {
+        headers: {
+          Authorization: `Bearer ${authResult?.token}`,
+        },
+      },
+    )
     .catch((error: AxiosError) => {
       if (error.response)
         return {
