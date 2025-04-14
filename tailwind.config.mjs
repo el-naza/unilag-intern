@@ -20,14 +20,15 @@ export default {
         md: '2rem',
         sm: '1rem',
         xl: '2rem',
-      },
-      screens: {
-        '2xl': '96rem',
-        lg: '64rem',
-        md: '48rem',
-        sm: '40rem',
-        xl: '80rem',
-      },
+      }
+    },
+    screens: {
+      xs: '320px',   // extra small phones
+      sm: '480px',   // small phones
+      md: '768px',   // tablets
+      lg: '1024px',  // laptops
+      xl: '1280px',  // desktops
+      '2xl': '1536px', // large desktops / wide screens
     },
     extend: {
       animation: {

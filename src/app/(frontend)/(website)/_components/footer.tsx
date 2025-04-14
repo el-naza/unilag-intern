@@ -193,9 +193,9 @@ const Footer = () => {
           </div>
 
           {/* Links */}
-          <div className="text-center xl:text-left mt-5 xl:mt-0 xl:-ml-10 text-wrap w-[200px]">
+          <div className="text-center xl:text-left mt-5 xl:mt-0 xl:-ml-10 text-wrap">
             <p className="text-black font-semibold">Links</p>
-            <ul className="space-y-2">
+            <ul className="space-y-2 text-sm lg:text-[14px]">
               <li>
                 <Link href="/auth/login">Log in to Students Dashboard</Link>
               </li>
