@@ -1,7 +1,15 @@
 'use client'
 
 import { cn } from 'src/utilities/cn'
-import { Poppins, Inter, Nunito } from 'next/font/google'
+import {
+  Poppins,
+  Inter,
+  Nunito,
+  Oleo_Script_Swash_Caps,
+  Noto_Sans,
+  Manrope,
+  Roboto,
+} from 'next/font/google'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -28,10 +36,42 @@ const inter = Inter({
   fallback: ['sans-serif'],
 })
 
+const manrope = Manrope({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
+  fallback: ['sans-serif'],
+})
+
+const roboto = Roboto({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-roboto',
+  display: 'swap',
+  fallback: ['sans-serif'],
+})
+
 const nunito = Nunito({
   weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
   variable: '--font-nunito',
+  display: 'swap',
+  fallback: ['sans-serif'],
+})
+
+const notoSans = Noto_Sans({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-noto-sans',
+  display: 'swap',
+  fallback: ['sans-serif'],
+})
+
+const oleoScriptSwashCaps = Oleo_Script_Swash_Caps({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-oleo-script-swash-caps',
   display: 'swap',
   fallback: ['sans-serif'],
 })
@@ -47,6 +87,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         inter.variable,
         inter.className,
         nunito.variable,
+        oleoScriptSwashCaps.variable,
+        notoSans.variable,
+        roboto.variable,
+        manrope.variable,
         'tracking-[0.37px]',
       )}
       lang="en"

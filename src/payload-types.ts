@@ -386,6 +386,10 @@ export interface InternshipApplication {
   letter: string;
   status?: ('pending' | 'cancelled' | 'approved' | 'student declined' | 'company declined') | null;
   interviewInvitation?: (string | null) | InterviewInvitation;
+  /**
+   * Upload a supporting document for your application (optional)
+   */
+  document?: (string | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -711,6 +715,7 @@ export interface InternshipApplicationsSelect<T extends boolean = true> {
   letter?: T;
   status?: T;
   interviewInvitation?: T;
+  document?: T;
   updatedAt?: T;
   createdAt?: T;
 }

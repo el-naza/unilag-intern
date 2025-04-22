@@ -20,14 +20,14 @@ export default {
         md: '2rem',
         sm: '1rem',
         xl: '2rem',
-      }
+      },
     },
     screens: {
-      xs: '320px',   // extra small phones
-      sm: '480px',   // small phones
-      md: '768px',   // tablets
-      lg: '1024px',  // laptops
-      xl: '1280px',  // desktops
+      xs: '320px', // extra small phones
+      sm: '480px', // small phones
+      md: '768px', // tablets
+      lg: '1024px', // laptops
+      xl: '1280px', // desktops
       '2xl': '1536px', // large desktops / wide screens
     },
     extend: {
@@ -85,6 +85,10 @@ export default {
         poppins: ['var(--font-poppins)'],
         inter: ['var(--font-inter)'],
         nunito: ['var(--font-nunito)'],
+        'oleo-script-swash-caps': ['var(--font-oleo-script-swash-caps)'],
+        'noto-sans': ['var(--font-noto-sans)'],
+        manrope: ['var(--font-manrope)'],
+        roboto: ['var(--font-roboto)'],
       },
       keyframes: {
         'accordion-down': {

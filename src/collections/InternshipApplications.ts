@@ -85,5 +85,14 @@ export const InternshipApplications: CollectionConfig = {
       type: 'relationship',
       relationTo: 'interview-invitations',
     },
+    {
+      name: 'document',
+      type: 'relationship',
+      relationTo: 'media',
+      label: 'Supporting Document',
+      admin: {
+        description: 'Upload a supporting document for your application (optional)',
+      },
+    },
   ],
 }

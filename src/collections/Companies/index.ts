@@ -68,7 +68,7 @@ export const Companies: CollectionConfig = {
         const { hasSetPassword } = companyFindRes.docs[0]
 
         return Response.json({
-          message: `You password has${hasSetPassword ? ' ' : ' not '}been set`,
+          message: `Your password has${hasSetPassword ? ' ' : ' not '}been set`,
           ready: !!hasSetPassword,
         })
       },

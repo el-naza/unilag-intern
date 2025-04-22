@@ -106,7 +106,7 @@ export const Students: CollectionConfig = {
         const { hasSetPassword } = studentFindRes.docs[0]
 
         return Response.json({
-          message: `You password has${hasSetPassword ? ' ' : ' not '}been set`,
+          message: `Your password has${hasSetPassword ? ' ' : ' not '}been set`,
           ready: !!hasSetPassword,
         })
       },
