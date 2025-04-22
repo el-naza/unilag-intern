@@ -52,6 +52,7 @@ export const Students: CollectionConfig = {
     ],
   },
   auth: {
+    tokenExpiration: 30 * 24 * 60 * 60, // 30 days
     loginWithUsername: {
       requireEmail: true,
     },

@@ -19,6 +19,7 @@ import { stringify } from 'qs-esm'
 import { Where } from 'payload'
 import EmploymentCard from '@/app/(frontend)/components/Cards/EmploymentCard'
 import { useSession } from 'next-auth/react'
+import { add } from 'date-fns'
 
 const Page = () => {
   const [loading, setLoading] = useState<boolean>(true)
@@ -27,7 +28,10 @@ const Page = () => {
   const user = useMemo<any>(() => session?.user, [session])
 
   const fetchemploymentOffers = async () => {
-    const query: Where = { status: { equals: 'pending' } }
+    const query: Where = {
+      // status: { equals: 'pending' },
+      // student: { equals: user.id },
+    }
 
     const stringifiedQuery = stringify(
       {
@@ -174,7 +178,7 @@ const Page = () => {
                   <div className="col-span-4">
                     <div className="p-5">
                       <StudentApplicationHeader />
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid gap-11">
                         {employmentOffers &&
                           employmentOffers.map((offer) => (
                             <EmploymentCard
@@ -182,7 +186,10 @@ const Page = () => {
                               company={{
                                 name: offer.company.name,
                                 phone: offer.company.phone,
+                                address: offer.company.address,
+                                image: offer.company.image,
                               }}
+                              createdAt={offer.createdAt}
                               status={offer.status}
                               student={{
                                 firstName: offer.student.firstName,

@@ -369,7 +369,7 @@ export interface InterviewInvitation {
   company: string | Company;
   message: string;
   dateTime: string;
-  status?: ('pending' | 'accepted' | 'declined' | 'company accepted' | 'company declined') | null;
+  status?: ('pending' | 'declined' | 'company accepted' | 'company declined') | null;
   declineReason?: string | null;
   updatedAt: string;
   createdAt: string;

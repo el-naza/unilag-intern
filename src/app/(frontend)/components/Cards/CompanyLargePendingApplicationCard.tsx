@@ -16,14 +16,29 @@ import {
 } from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { Where } from 'payload'
+import { stringify } from 'qs-esm'
+import { useRouter } from 'next/navigation'
 
 export default function CompanyLargePendingApplicationCard({ application, onDelete }) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
 
   const cancelApplication = async () => {
-    const res = await deleteDoc('internship-applications', application.id)
+    const query: Where = { id: { equals: application.id } }
+
+    const stringifiedQuery = stringify(
+      {
+        where: query,
+      },
+      { addQueryPrefix: true },
+    )
+
+    const res = await deleteDoc('internship-applications', stringifiedQuery)
     console.log(res)
-    toast.success('Deletion successful')
+
+    toast.success('Application cancelled and deleted successfully')
+    router.refresh()
     onDelete()
   }
 
@@ -111,7 +126,8 @@ export default function CompanyLargePendingApplicationCard({ application, onDele
               <div>
                 <AlertDialog open={open} onOpenChange={setOpen}>
                   <AlertDialogTrigger asChild>
-                    <button className="bg-[#9597A7] rounded-lg p-2 w-full">
+                    {/* <button className="bg-[#9597A7] rounded-lg p-2 w-full"> */}
+                    <button className="bg-[#A71C51] rounded-lg p-2 w-full">
                       <span className="text-white text-sm">Cancel</span>
                     </button>
                   </AlertDialogTrigger>

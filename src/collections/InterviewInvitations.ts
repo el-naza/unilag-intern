@@ -54,7 +54,7 @@ export const InterviewInvitations: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      options: ['pending', 'accepted', 'declined', 'company accepted', 'company declined'],
+      options: ['pending', 'declined', 'company accepted', 'company declined'],
       defaultValue: 'pending',
     },
     {

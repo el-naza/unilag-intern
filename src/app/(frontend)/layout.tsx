@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from 'src/utilities/cn'
-import { Poppins, Inter } from 'next/font/google'
+import { Poppins, Inter, Nunito } from 'next/font/google'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -28,6 +28,14 @@ const inter = Inter({
   fallback: ['sans-serif'],
 })
 
+const nunito = Nunito({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-nunito',
+  display: 'swap',
+  fallback: ['sans-serif'],
+})
+
 const queryClient = new QueryClient()
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -38,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         poppins.className,
         inter.variable,
         inter.className,
+        nunito.variable,
         'tracking-[0.37px]',
       )}
       lang="en"

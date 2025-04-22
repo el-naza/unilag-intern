@@ -40,6 +40,7 @@ export const Companies: CollectionConfig = {
     forgotPassword: {
       generateEmailHTML,
     },
+    tokenExpiration: 30 * 24 * 60 * 60, // 30 days
   },
   endpoints: [
     {

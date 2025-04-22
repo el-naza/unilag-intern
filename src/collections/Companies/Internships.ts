@@ -23,6 +23,9 @@ export const companyOrStudent = async ({ req: { user, payload } }) => {
   }
 
   if (isStudent) {
+    // return {
+    //   student: { equals: user.id },
+    // }
     return true
   }
 

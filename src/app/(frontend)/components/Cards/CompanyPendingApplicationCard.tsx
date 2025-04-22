@@ -15,12 +15,23 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
+import { Where } from 'payload'
+import { stringify } from 'qs-esm'
 
 export default function CompanyPendingApplicationCard({ application, onDelete }) {
   const [open, setOpen] = useState(false)
 
   const cancelApplication = async () => {
-    const res = await deleteDoc('internship-applications', application.id)
+    const query: Where = { id: { equals: application.id } }
+
+    const stringifiedQuery = stringify(
+      {
+        where: query,
+      },
+      { addQueryPrefix: true },
+    )
+
+    const res = await deleteDoc('internship-applications', stringifiedQuery)
     console.log(res)
     toast.success('Deletion successful')
     onDelete()

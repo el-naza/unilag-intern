@@ -83,6 +83,7 @@ export default {
         sans: ['var(--font-open-sans)'],
         poppins: ['var(--font-poppins)'],
         inter: ['var(--font-inter)'],
+        nunito: ['var(--font-nunito)'],
       },
       keyframes: {
         'accordion-down': {
