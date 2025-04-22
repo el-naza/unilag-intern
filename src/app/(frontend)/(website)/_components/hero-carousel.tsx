@@ -24,18 +24,18 @@ const HeroCarousel = () => {
   }, [api])
 
   return (
-    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 place-content-center md:h-[90vh] mb-28 transition-all max-md:mt-20 relative">
+    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 place-content-center md:h-[90vh] mb-28 transition-all max-md:mt-20 relative">
       <div
-        className={`grid place-content-center my-auto mx-0 items-center justify-items-start content-center z-10 pl-12 pr-4 py-4 rounded-tr-[50px] rounded-br-[50px] md:h-[80%] ${bgColors[currentSlide]}`}
+        className={`grid place-content-center my-auto mx-0 items-center lg:justify-items-start md:justify-items-start sm:justify-items-center xs:justify-items-center content-center z-10 lg:pl-12 md:pl-12 sm:pl-0 xs:pl-0 pr-4 py-4 rounded-tr-[50px] rounded-br-[50px] md:h-[80%] ${bgColors[currentSlide]}`}
       >
-        <p className="text-sm  mb-8 bg-white px-3 py-2 rounded-md">Never stop learning</p>
+        <p className="text-sm mb-8 bg-white px-3 py-2 rounded-md lg:mx-0 md:mx-0 sm:mx-auto xs:mx-auto">Never stop learning</p>
         <h1
-          className={`scroll-m-20 font-semibold tracking-tight lg:text-[3rem] md:text-[2rem] sm:text-[3rem] md:text-left sm:text-center ${currentSlide === 0 ? 'text-black' : 'text-white'}`}
+          className={`scroll-m-20 font-semibold tracking-tight lg:text-[3rem] md:text-[2rem] sm:text-[2rem] xs:text-[2rem] md:text-left sm:text-center xs:text-center ${currentSlide === 0 ? 'text-black' : 'text-white'}`}
         >
           Industrial Training <br /> Processing Just Got <br /> Easier and Better
         </h1>
 
-        <div className="flex gap-12 mt-12">
+        <div className="flex gap-12 lg:mt-12 sm:m-auto sm:mt-12 xs:m-auto xs:mt-12">
           <Link href="/auth/login">
             {' '}
             <Button className="bg-primary text-white uppercase border-[1px]">
@@ -52,27 +52,8 @@ const HeroCarousel = () => {
       </div>
 
       <div
-        className={`absolute z-10 bottom-[16rem] w-[8rem] right-[45%] rounded-full aspect-square grid place-content-center border-[15px] border-[ #D2E6E4] ${playBgColors[currentSlide]} `}
+        className={`absolute z-10 bottom-[16rem] w-[8rem] right-[45%] rounded-full aspect-square lg:grid md:hidden sm:hidden xs:hidden place-content-center border-[15px] border-[#D2E6E4] ${playBgColors[currentSlide]}`}
       >
-        {/* <svg
-            viewBox="0 0 100 100"
-            xmlns="http://www.w3.org/2000/svg"
-            >
-            <path
-                fill="blue"
-                id="circlePath"
-                d="
-                M 10, 50
-                a 40,40 0 1,1 80,0
-                40,40 0 1,1 -80,0
-                "
-            />
-            <text>
-                <textPath href="#circlePath">
-                    Explore More - Explore More
-                </textPath>
-            </text>
-        </svg> */}
         <Image
           src="/icons/play-icon.svg"
           alt="Play"
@@ -83,14 +64,14 @@ const HeroCarousel = () => {
       </div>
 
       <div
-        className={`lg:grid md:grid sm:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[10rem] ${bg2Colors[currentSlide]}`}
+        className={`lg:grid md:grid sm:hidden xs:hidden place-content-cente my-auto h-[80%] rounded-br-[50px] rounded-bl-[50px] relative -top-[10rem] ${bg2Colors[currentSlide]}`}
       >
         <Image
                 src="/images/wire-lines.svg"
                 alt="Wirelines"
                 width={3000}
                 height={6000}
-                className="w-[80rem] top-[13rem] -left-[12rem] relative"
+                className="w-full lg:top-[8rem] lg:-left-[5rem] md:top-[3rem] relative"
               />
 
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">

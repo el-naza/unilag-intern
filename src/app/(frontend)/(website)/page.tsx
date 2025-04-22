@@ -59,7 +59,7 @@ export default function HomePage() {
               alt="Gift Card"
               width={200}
               height={100}
-              className="ml-36"
+              className="lg:ml-36 xs:ml-0"
             />
           </div>
         </h2>
@@ -97,7 +97,7 @@ export default function HomePage() {
               <CarouselContent>
                 {companies.map((company: any) => (
                   <CarouselItem
-                    className="px-4 mx-auto grid place-content-center basis-96"
+                    className="px-4 grid place-content-center lg:basis-96 md:basis-96 xs:basis-72"
                     key={company.id}
                   >
                     <CompanyCard company={company} />
@@ -126,7 +126,7 @@ export default function HomePage() {
                   <CarouselContent>
                     {companies?.map((company: any) => (
                       <CarouselItem
-                        className="px-4 mx-auto grid place-content-center basis-96"
+                        className="px-4 grid place-content-center basis-96"
                         key={company.id}
                       >
                         <CompanyCard company={company} />
