@@ -1,7 +1,8 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, FieldAccess } from 'payload'
 import { companies } from '@/access/companies'
 import { any } from 'zod'
 import courseAreas from '@/utilities/courseAreas'
+import { students } from '@/access/students'
 
 // Define the access control functions
 const self = ({ req }) => {
@@ -94,6 +95,45 @@ export const Internships: CollectionConfig = {
       type: 'select',
       options: ['open', 'closed'],
       defaultValue: 'open',
+    },
+    {
+      name: 'hasStudentApplied',
+      type: 'checkbox',
+      defaultValue: false,
+      virtual: true,
+      access: {
+        read: students as FieldAccess,
+      },
+      hooks: {
+        afterRead: [
+          async ({ data, req: { user, payload } }) => {
+            if (!user) return false
+
+            if (!data?.id) return false
+
+            const isStudent = user.collection === 'students'
+
+            if (isStudent) {
+              const studentId = user.id
+              const internshipId = data?.id
+
+              const application = await payload.find({
+                collection: 'internship-applications',
+                limit: 1,
+                depth: 0,
+                where: {
+                  student: { equals: studentId },
+                  internship: { equals: internshipId },
+                },
+              })
+
+              return application.docs.length > 0
+            }
+
+            return false
+          },
+        ],
+      },
     },
   ],
 }

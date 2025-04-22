@@ -14,6 +14,41 @@ export const InternshipApplications: CollectionConfig = {
     update: companyOrStudent,
     read: companyOrStudent,
   },
+  hooks: {
+    beforeOperation: [
+      async (args) => {
+        if (args.operation === 'create') {
+          // check if student has already applied to the internship
+          const { args: data, req } = args
+          const { internship, student } = data
+          const internshipId = internship?.id || internship
+          const studentId = student?.id || student
+          if (!internshipId || !studentId) {
+            throw new Error('Internship and student are required')
+          }
+
+          const internshipApplications = await req.payload.find({
+            collection: 'internship-applications',
+            depth: 0,
+            limit: 1,
+            where: {
+              internship: {
+                equals: internshipId,
+              },
+              student: {
+                equals: studentId,
+              },
+            },
+          })
+          if (internshipApplications.docs.length > 0) {
+            throw new Error('Student has already applied to this internship')
+          }
+        }
+
+        return args
+      },
+    ],
+  },
   fields: [
     {
       name: 'student',

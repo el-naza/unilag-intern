@@ -405,6 +405,7 @@ export interface Internship {
   endDate: string;
   image?: (string | null) | Media;
   status?: ('open' | 'closed') | null;
+  hasStudentApplied?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -768,6 +769,7 @@ export interface InternshipsSelect<T extends boolean = true> {
   endDate?: T;
   image?: T;
   status?: T;
+  hasStudentApplied?: T;
   updatedAt?: T;
   createdAt?: T;
 }
