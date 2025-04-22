@@ -10,7 +10,7 @@ const EmploymentCard = ({ company, status, student, onAccept, onCancel, loading,
         src={company?.image?.url || '/company-logo.png'} // Fallback image if company image is not available
         alt="Company Logo"
         width={169}
-        height={160}
+        height={169}
         className="rounded-full absolute top-[42px] left-[-38px] w-[169px] h-[169px] object-cover border-2"
       />
       <h2 className="text-2xl font-bold font-nunito">{company.name}</h2>
