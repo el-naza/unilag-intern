@@ -40,7 +40,7 @@ export const Internships: CollectionConfig = {
   access: {
     create: companies,
     delete: self,
-    read: companyOrStudent,
+    // read: companyOrStudent,
     update: self,
   },
   fields: [
@@ -106,25 +106,27 @@ export const Internships: CollectionConfig = {
       },
       hooks: {
         afterRead: [
-          async ({ data, req: { user, payload } }) => {
-            if (!user) return false
+          async ({ data, req }) => {
+            if (!req?.user) return false
 
             if (!data?.id) return false
 
-            const isStudent = user.collection === 'students'
+            const isStudent = req?.user.collection === 'students'
 
             if (isStudent) {
-              const studentId = user.id
+              const studentId = req?.user.id
               const internshipId = data?.id
 
-              const application = await payload.find({
+              const application = await req.payload.find({
                 collection: 'internship-applications',
+                req,
                 limit: 1,
                 depth: 0,
                 where: {
                   student: { equals: studentId },
                   internship: { equals: internshipId },
                 },
+                overrideAccess: true,
               })
 
               return application.docs.length > 0

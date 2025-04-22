@@ -14,12 +14,13 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import { InternshipApplication } from '@/payload-types'
+import { InternshipApplication, Student } from '@/payload-types'
 import fetchDoc from '@/services/fetchDoc'
+import fetchMe from '@/services/fetchMe'
 import updateDoc from '@/services/updateDoc'
 import { ValidationErrors } from '@/utilities/types'
 import { useForm } from '@tanstack/react-form'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
@@ -28,7 +29,12 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 const Page = () => {
-  const { data: session } = useSession()
+  const meQuery = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => (await fetchMe('students'))?.user as Student | undefined,
+  })
+  const user = useMemo<any>(() => meQuery.data, [meQuery.data])
+
   const { id: applicationId }: { id: string } = useParams()
   const router = useRouter()
   const [pendingApplication, setPendingApplication] = useState<any>({})
@@ -36,8 +42,6 @@ const Page = () => {
   const [loading, setLoading] = useState<boolean>(true)
 
   const attachmentRef = useRef<HTMLInputElement>(null)
-
-  const user = useMemo<any>(() => session?.user, [session])
 
   const fetchPendingApplication = async () => {
     const res: any = await fetchDoc('internship-applications', applicationId)

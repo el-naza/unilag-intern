@@ -16,10 +16,10 @@ export const InternshipApplications: CollectionConfig = {
   },
   hooks: {
     beforeOperation: [
-      async (args) => {
-        if (args.operation === 'create') {
+      async ({ args, operation, req }) => {
+        if (operation === 'create') {
           // check if student has already applied to the internship
-          const { args: data, req } = args
+          const data = args
           const { internship, student } = data
           const internshipId = internship?.id || internship
           const studentId = student?.id || student
@@ -39,6 +39,7 @@ export const InternshipApplications: CollectionConfig = {
                 equals: studentId,
               },
             },
+            overrideAccess: true,
           })
           if (internshipApplications.docs.length > 0) {
             throw new Error('Student has already applied to this internship')
