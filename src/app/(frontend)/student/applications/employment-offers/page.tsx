@@ -34,8 +34,8 @@ const Page = () => {
 
   const fetchemploymentOffers = async () => {
     const query: Where = {
-      // status: { equals: 'pending' },
-      // student: { equals: user.id },
+      status: { equals: 'pending' },
+      student: { equals: user.id },
     }
 
     const stringifiedQuery = stringify(
