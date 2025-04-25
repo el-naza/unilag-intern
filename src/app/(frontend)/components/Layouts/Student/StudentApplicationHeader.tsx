@@ -39,7 +39,7 @@ const StudentApplicationHeader = () => {
           <div
             className={`text-white text-center p-2 ${pathname === '/student/applications/employment-offers' ? 'rounded-xl bg-[#0B7077]' : ''}`}
           >
-            Employment Offers
+            Internship Offers
           </div>
         </Link>
       </div>
