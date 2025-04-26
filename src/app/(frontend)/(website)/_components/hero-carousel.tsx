@@ -35,7 +35,7 @@ const HeroCarousel = () => {
           Industrial Training <br /> Processing Just Got <br /> Easier and Better
         </h1>
 
-        <div className="flex gap-12 lg:mt-12 sm:m-auto sm:mt-12 xs:m-auto xs:mt-12">
+        <div className="flex gap-12 lg:mx-0 md:mx-0 sm:mx-auto xs:mx-auto mt-12">
           <Link href="/auth/login">
             {' '}
             <Button className="bg-primary text-white uppercase border-[1px]">

@@ -14,18 +14,13 @@ const CompanyCard = ({ company }: any) => {
     <div className="shadow-lg rounded-[14px] bg-white">
       <div className="w-full relative">
         <Image
-          src={
-            company.image
-              ? company.image.url
-              : '/images/company-1.png'
-          }
+          src={company?.image?.url}
           onError={(event) => {
             event.currentTarget.src = '/images/company-1.png'
           }}
           alt="Company"
           width={1200}
           height={200}
-          unoptimized
           className="rounded-tl-[14px] rounded-tr-[14px]"
         />
         {/* <div className="w-full grid place-content-center absolute -bottom-[20px]">
