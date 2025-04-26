@@ -125,14 +125,14 @@ export default function CompanyLargeApprovedApplicationCard({
               {pathname === '/student/applications/interviews' ? (
                 <div className="grid grid-cols-2 gap-2">
                   <Dialog open={open2} onOpenChange={setOpen2}>
-                    <DialogTrigger asChild>
+                    {/* <DialogTrigger asChild>
                       <button
                         onClick={() => setAction('Accept')}
                         className="bg-primary rounded-lg p-2 min-w-40"
                       >
                         <span className="text-white text-sm">Accept</span>
                       </button>
-                    </DialogTrigger>
+                    </DialogTrigger> */}
                     <DialogContent className="bg-white rounded-lg gap-2">
                       <DialogTitle className="text-[#0B7077] font-normal">
                         Accept Invitation

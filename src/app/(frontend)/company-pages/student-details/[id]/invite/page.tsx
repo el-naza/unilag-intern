@@ -96,6 +96,10 @@ export default function StudentInvitation() {
     '03:00 pm',
 
     '04:00 pm',
+
+    '05:00 pm',
+
+    '06:00 pm',
   ]
 
   const fetchStudent = async () => {
@@ -320,7 +324,9 @@ export default function StudentInvitation() {
                         </div>
 
                         {attemptedSubmit && !selectedTime && (
-                          <p className="text-[10px] leading-[16.5px] text-error">Please select a time</p>
+                          <p className="text-[10px] leading-[16.5px] text-error">
+                            Please select a time
+                          </p>
                         )}
                       </div>
                     </>

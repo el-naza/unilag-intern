@@ -28,12 +28,13 @@ export default function AwaitingInterview() {
     try {
       const res: any = await fetchDocs('interview-invitations')
       if (res) {
-        const getAcceptedInvitation = res?.docs?.filter((s) => s.status === 'accepted')
+        const invitations = res?.docs
+        // const getAcceptedInvitation = res?.docs?.filter((s) => s.status === 'accepted')
 
         const now = new Date()
 
-        const awaiting = getAcceptedInvitation.filter((inv) => new Date(inv.dateTime) >= now)
-        const completed = getAcceptedInvitation.filter((inv) => new Date(inv.dateTime) < now)
+        const awaiting = invitations.filter((inv) => new Date(inv.dateTime) >= now)
+        const completed = invitations.filter((inv) => new Date(inv.dateTime) < now)
 
         setAwaitingInterviews(awaiting?.length > 0 ? awaiting : [])
         setCompletedInterviews(completed?.length > 0 ? completed : [])
@@ -62,7 +63,7 @@ export default function AwaitingInterview() {
       studentId?: string
     }) => {
       try {
-        console.log("data being sent ", id, status, studentId)
+        console.log('data being sent ', id, status, studentId)
         const res = await updateDoc('interview-invitations', id, { status })
 
         console.log(res)
@@ -77,9 +78,9 @@ export default function AwaitingInterview() {
               student: studentId,
               company: user?.id,
             })
-          
+
             console.log('Employment record created:', createEmployment)
-          
+
             if (!createEmployment) {
               toast.error('Failed to create employment record')
             }
@@ -87,7 +88,6 @@ export default function AwaitingInterview() {
             console.error('Error creating employment:', e)
             toast.error('Something went wrong while creating employment')
           }
-          
         }
         console.log(res)
 

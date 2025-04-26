@@ -11,7 +11,9 @@ export const Admins: CollectionConfig = {
     read: anyone,
     update: self,
   },
-  auth: true,
+  auth: {
+    tokenExpiration: 30 * 24 * 60 * 60, // 30 days
+  },
   fields: [
     {
       name: 'name',

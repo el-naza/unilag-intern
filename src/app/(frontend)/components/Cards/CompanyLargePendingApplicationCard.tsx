@@ -16,22 +16,46 @@ import {
 } from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { Where } from 'payload'
+import { stringify } from 'qs-esm'
+import { useRouter } from 'next/navigation'
+import { Company, InternshipApplication } from '@/payload-types'
 
 export default function CompanyLargePendingApplicationCard({ application, onDelete }) {
+  const company = application.company as Company
+
+  const router = useRouter()
   const [open, setOpen] = useState(false)
 
   const cancelApplication = async () => {
-    const res = await deleteDoc('internship-applications', application.id)
+    const query: Where = { id: { equals: application.id } }
+
+    const stringifiedQuery = stringify(
+      {
+        where: query,
+      },
+      { addQueryPrefix: true },
+    )
+
+    const res = await deleteDoc('internship-applications', stringifiedQuery)
     console.log(res)
-    toast.success('Deletion successful')
+
+    toast.success('Application cancelled and deleted successfully')
+    router.refresh()
     onDelete()
   }
 
   return (
     <div className="bg-[#EBE7E77A] rounded-lg p-10 ps-0">
-      <div className="grid grid-cols-10">
+      <div className="grid grid-cols-10 px-4 gap-4">
         <div>
-          <Image src={companyLogo} alt="company-logo" />
+          <Image
+            src={company?.image?.url || companyLogo}
+            alt="company-logo"
+            width={169}
+            height={169}
+            className="rounded-full object-cover border-2 aspect-square"
+          />
         </div>
         <div className="col-span-6">
           <div>
@@ -39,7 +63,7 @@ export default function CompanyLargePendingApplicationCard({ application, onDele
             <div className="mb-6">
               <h5 className="text-black font-medium mb-3">Application Message</h5>
               <p className="text-[#8E8E93] mb-3">{application.letter}</p>
-              <h5 className="text-black font-bold mb-2">Attachments</h5>
+              {/* <h5 className="text-black font-bold mb-2">Attachments</h5>
               <div className="w-full bg-white p-4 rounded-lg border border-[#F1F1F1] rounded mb-2">
                 <div className="flex justify-between">
                   <div className="flex items-center">
@@ -98,7 +122,7 @@ export default function CompanyLargePendingApplicationCard({ application, onDele
                     <RedCancelIcon />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="grid grid-cols-4 gap-4 text-xs mb-3">
               <div>
@@ -111,7 +135,8 @@ export default function CompanyLargePendingApplicationCard({ application, onDele
               <div>
                 <AlertDialog open={open} onOpenChange={setOpen}>
                   <AlertDialogTrigger asChild>
-                    <button className="bg-[#9597A7] rounded-lg p-2 w-full">
+                    {/* <button className="bg-[#9597A7] rounded-lg p-2 w-full"> */}
+                    <button className="bg-[#A71C51] rounded-lg p-2 w-full">
                       <span className="text-white text-sm">Cancel</span>
                     </button>
                   </AlertDialogTrigger>

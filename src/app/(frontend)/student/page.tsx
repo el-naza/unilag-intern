@@ -285,43 +285,86 @@ const Page = () => {
             />
 
             <div>
-              <div className="container">
-                <nav className="relative grid grid-cols-5 gap-2 py-4 z-10">
-                  <div className="flex items-center">
-                    <Image
-                      width={48}
-                      height={48}
-                      src="/unilag-logo.png"
-                      alt="Logo"
-                      className="h-8 w-8 mr-2"
-                    />
-                  </div>
-                  <div className="flex items-center">
-                    {meQuery.data ? (
-                      <span className="font-oleo text-white text-3xl">
-                        Welcome {user?.firstName}
-                      </span>
-                    ) : (
-                      <Spinner />
-                    )}
-                  </div>
-                  <div className="col-span-2 flex items-center">
-                    <div className="relative w-3/4">
-                      <input
-                        type="text"
-                        placeholder="Search For Companies"
-                        className="w-full outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-black text-sm"
-                      />
-                      <SearchAltIcon className='className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"' />
-                    </div>
-                  </div>
-                </nav>
-              </div>
-              <main>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  form.handleSubmit()
+                }}
+              >
                 <div className="container">
-                  <div className="grid sm:grid-cols-2 mb-4">
+                  <nav className="relative flex gap-16 w-full items-center py-8 z-10">
+                    <div className="flex items-center">
+                      <Image
+                        width={52}
+                        height={52}
+                        src="/unilag-logo.png"
+                        alt="Logo"
+                        className="mr-2"
+                      />
+                    </div>
+                    <div className="flex items-center">
+                      {meQuery.data ? (
+                        <span className="font-oleo-script-swash-caps font-bold text-[#EEEFF4] text-[45px]">
+                          Welcome {user?.firstName}
+                        </span>
+                      ) : (
+                        <Spinner />
+                      )}
+                    </div>
+                    <div className="col-span-2 flex items-center w-full flex-1 max-w-[682px]">
+                      {/* <div className="relative w-3/4"> */}
+                      <form.Field name="name">
+                        {(field) => {
+                          return (
+                            <>
+                              <div className="relative w-3/4">
+                                {/* <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
+                                <input
+                                  name={field.name}
+                                  value={field.state.value || ''}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) => {
+                                    field.handleChange(e.target.value)
+                                  }}
+                                  placeholder="Search For Companies"
+                                  className="w-full font-noto-sans outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-[#1E1E1E] text-sm"
+                                />
+                                <button
+                                  type="submit"
+                                  disabled={loadingMap}
+                                  // size="lg"
+                                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                >
+                                  {loadingMap ? (
+                                    <Spinner className="border-gray-500" />
+                                  ) : (
+                                    <SearchAltIcon />
+                                  )}
+                                </button>
+                              </div>
+
+                              <div className="indent-7">
+                                <FieldError field={field} />
+                              </div>
+                            </>
+                          )
+                        }}
+                      </form.Field>
+                      {/* <input
+                          type="text"
+                          placeholder="Search For Companies"
+                          className="w-full font-noto-sans outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-black text-sm"
+                        />
+                        <SearchAltIcon className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
+                      {/* </div> */}
+                    </div>
+                  </nav>
+                </div>
+                <main>
+                  <div className="container grid sm:grid-cols-2 mb-4">
                     <div>
-                      <div className="grid sm:grid-cols-3 gap-8">
+                      <div className="flex sm:grid-cols-3 gap-[58px]">
                         <div>
                           <Image
                             width={197}
@@ -330,15 +373,17 @@ const Page = () => {
                             alt="smiling woman"
                           />
                         </div>
-                        <div className="col-span-2 flex items-center">
+                        <div className="col-span-2 flex items-center font-roboto">
                           {meQuery.data ? (
-                            <div className="grid grid-rows-4 gap-1">
+                            <div className="flex flex-col gap-6 leading-none text-[32px] font-light">
                               <div>
-                                <span className="text-3xl font-bold">
+                                <span className="text-[45px] font-bold">
                                   {user?.firstName}{' '}
                                   <span className="text-[#FFE75C]">{user?.lastName}</span>
                                 </span>
-                                <span className="ms-4 text-[#FFE75C]">{getAge(user?.dob)}</span>
+                                <span className="ms-8 text-[32px] text-[#FFE75C]">
+                                  {getAge(user?.dob)}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <div>
@@ -370,52 +415,33 @@ const Page = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="grid sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-0">
-                    <div className="col-span-4 self-center">
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <Link href="#" className="relative group block text-center">
-                            <span className="text-xl">Map Search</span>
-                            <NavUnderlineLarge />
-                          </Link>
-                        </div>
-                        {/* <div>
-                          <Link
-                            href="/student/applications/pending"
-                            className="relative group block text-center"
-                          >
-                            <span className="text-xl">Pending</span>
-                            <NavUnderlineLarge />
-                          </Link>
-                        </div> */}
-                        <div>
-                          <Link
-                            href="/student/applications/pending"
-                            className="relative group block text-center"
-                          >
-                            <span className="text-xl">Applications</span>
-                            <NavUnderlineLarge />
-                          </Link>
-                        </div>
-                        {/* <div>
-                          <Link href="/student" className="relative group block text-center">
-                            <span className="text-xl">History</span>
-                            <NavUnderlineLarge />
-                          </Link>
-                        </div> */}
+                  <div className="flex sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-0 font-roboto z-10 relative">
+                    <div className="container flex w-full justify-between">
+                      <div>
+                        <Link href="#" className="relative group block text-center">
+                          <span className="text-xl">Map Search</span>
+                          <NavUnderlineLarge />
+                        </Link>
                       </div>
-                    </div>
-                    <div className="z-10">
+                      <div>
+                        <Link
+                          href="/student/applications/pending"
+                          className="relative group block text-center"
+                        >
+                          <span className="text-xl">Applications</span>
+                          <NavUnderlineLarge />
+                        </Link>
+                      </div>
                       <Link href="/student/reports">
-                        <button className="text-[#0B7077] bg-white rounded px-4 py-2">
+                        <button className="text-[#0B7077] bg-white rounded px-4 py-2 z-10 relative">
                           Reports Page
                         </button>
                       </Link>
                     </div>
                   </div>
-                </div>
-                <div className="grid sm:grid-cols-5 gap-4">
-                  {/* <form
+
+                  <div className="grid sm:grid-cols-5 gap-4">
+                    {/* <form
                     onSubmit={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
@@ -498,21 +524,13 @@ const Page = () => {
                       </div>
                     </div>
                   </form> */}
-                  <div className="col-span-5">
-                    <div className="w-full bg-white text-black py-4 px-8 grid grid-cols-3 gap-2">
-                      <div className="flex self-center">
-                        <h3 className="text-lg">Company Search</h3>
-                      </div>
-                      <div className="col-span-2">
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            form.handleSubmit()
-                          }}
-                        >
-                          <div className="grid grid-cols-3 gap-2">
-                            <div className="relative border rounded">
+                    <div className="col-span-5 font-manrope">
+                      <div className="bg-white text-black py-4 w-full">
+                        <div className="container flex justify-between w-full">
+                          <div className="flex self-center">
+                            <h3 className="font-bold text-2xl text-[#48484A]">Company Search</h3>
+                          </div>
+                          {/* <div className="relative border rounded">
                               <form.Field name="name">
                                 {(field) => {
                                   return (
@@ -537,99 +555,104 @@ const Page = () => {
                                   )
                                 }}
                               </form.Field>
-                            </div>
+                            </div> */}
 
-                            <div className="relative border rounded">
-                              <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">
-                                <LocationIcon className="m-auto" />
-                              </div>
-                              <form.Field name="address">
-                                {(field) => {
-                                  return (
-                                    <>
-                                      <input
-                                        name={field.name}
-                                        value={field.state.value || ''}
-                                        onBlur={field.handleBlur}
-                                        onChange={(e) => {
-                                          field.handleChange(e.target.value)
-                                        }}
-                                        placeholder="Location"
-                                        className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
-                                      />
-                                      <FieldError field={field} />
-                                    </>
-                                  )
-                                }}
-                              </form.Field>
-                              <Button
-                                type="submit"
-                                disabled={loadingMap}
-                                size="lg"
-                                className="bg-[#195F7E] rounded-xl p-4 rounded-none absolute right-0"
-                              >
-                                {loadingMap ? <Spinner /> : <SearchIcon stroke="white" />}
-                              </Button>
+                          <div className="relative border rounded">
+                            <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">
+                              <LocationIcon className="m-auto" />
                             </div>
-                            <div className="bg-white rounded-xl grid grid-cols-12">
-                              <Slider
-                                className="col-span-9"
-                                value={distance}
-                                onValueChange={setDistance}
-                                max={100}
-                                step={1}
-                              />
-                              <div className="col-span-3 flex self-center">
-                                <span className="text-sm border text-black text-right p-2 ms-2 rounded">
-                                  {distance}km
-                                </span>
-                              </div>
+                            <form.Field name="address">
+                              {(field) => {
+                                return (
+                                  <>
+                                    <input
+                                      name={field.name}
+                                      value={field.state.value || ''}
+                                      onBlur={field.handleBlur}
+                                      onChange={(e) => {
+                                        field.handleChange(e.target.value)
+                                      }}
+                                      placeholder="Search Location (Office Address, Cities or Towns)"
+                                      className="indent-7 outline-none text-black min-w-[414px] px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                                    />
+                                    <FieldError field={field} />
+                                  </>
+                                )
+                              }}
+                            </form.Field>
+                            <Button
+                              type="submit"
+                              disabled={loadingMap}
+                              size="lg"
+                              className="bg-[#195F7E] rounded-xl p-4 rounded-none absolute right-0"
+                            >
+                              {loadingMap ? <Spinner /> : <SearchIcon stroke="white" />}
+                            </Button>
+                          </div>
+                          <div className="bg-white rounded-xl flex justify-between">
+                            <Slider
+                              className="col-span-9 min-w-[274px]"
+                              value={distance}
+                              onValueChange={setDistance}
+                              max={100}
+                              step={1}
+                            />
+                            <div className="col-span-3 flex self-center">
+                              <span className="text-sm border text-black text-right p-2 ms-2 rounded">
+                                {distance}km
+                              </span>
                             </div>
                           </div>
-                        </form>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap">
-                      {searchedCompanies.length ? (
-                        <div className="w-1/4 bg-white text-black p-4 relative mt-[-70px]">
-                          <div className="mb-4">
-                            <div className="flex justify-between self-center mb-4">
-                              <h3 className="text-lg">Search Results</h3>
+                          {/* <div className="col-span-2">
+                            <div className="flex gap-8 w-full">
                             </div>
-                            <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide pb-4">
-                              <div
-                                onClick={() => handleCourseAreaChange('')}
-                                className={`${filter.careerArea === '' ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
-                              >
-                                All Career Area
+                          </div> */}
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap">
+                        {searchedCompanies.length ? (
+                          <div className="w-1/4 bg-white text-black p-4 relative mt-[-70px]">
+                            <div className="mb-4">
+                              <div className="flex justify-between self-center mb-4">
+                                <h3 className="text-lg">Search Results</h3>
                               </div>
-                              {courseAreas.map((courseArea) => (
+                              <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide pb-4">
                                 <div
-                                  onClick={() => handleCourseAreaChange(courseArea)}
-                                  key={courseArea}
-                                  className={`${filter.careerArea === courseArea ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
+                                  onClick={() => handleCourseAreaChange('')}
+                                  className={`${filter.careerArea === '' ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
                                 >
-                                  {courseArea}
+                                  All Career Area
                                 </div>
+                                {courseAreas.map((courseArea) => (
+                                  <div
+                                    onClick={() => handleCourseAreaChange(courseArea)}
+                                    key={courseArea}
+                                    className={`${filter.careerArea === courseArea ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
+                                  >
+                                    {courseArea}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div
+                              className={`max-h-[660px] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
+                            >
+                              {filteredCompanies.map((company, companyIndex) => (
+                                <CompanyCard key={`company-${companyIndex}`} company={company} />
                               ))}
                             </div>
                           </div>
-                          <div
-                            className={`max-h-[660px] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
-                          >
-                            {filteredCompanies.map((company, companyIndex) => (
-                              <CompanyCard key={`company-${companyIndex}`} company={company} />
-                            ))}
-                          </div>
+                        ) : null}
+                        <div
+                          className={`h-[740px] ${searchedCompanies.length ? 'w-3/4' : 'w-full'}`}
+                        >
+                          <Map companies={filteredCompanies} />
                         </div>
-                      ) : null}
-                      <div className={`h-[740px] ${searchedCompanies.length ? 'w-3/4' : 'w-full'}`}>
-                        <Map companies={filteredCompanies} />
                       </div>
                     </div>
                   </div>
-                </div>
-              </main>
+                </main>
+              </form>
             </div>
           </div>
 

@@ -15,12 +15,25 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
+import { Where } from 'payload'
+import { stringify } from 'qs-esm'
+import { Company } from '@/payload-types'
 
 export default function CompanyPendingApplicationCard({ application, onDelete }) {
   const [open, setOpen] = useState(false)
+  const company = application.company as Company
 
   const cancelApplication = async () => {
-    const res = await deleteDoc('internship-applications', application.id)
+    const query: Where = { id: { equals: application.id } }
+
+    const stringifiedQuery = stringify(
+      {
+        where: query,
+      },
+      { addQueryPrefix: true },
+    )
+
+    const res = await deleteDoc('internship-applications', stringifiedQuery)
     console.log(res)
     toast.success('Deletion successful')
     onDelete()
@@ -32,7 +45,7 @@ export default function CompanyPendingApplicationCard({ application, onDelete })
         height={150}
         width={100}
         className="rounded-tl-lg rounded-bl-lg h-full w-full"
-        src={companyBanner}
+        src={company?.image?.url || companyBanner}
         alt="company-banner"
       />
       <div className="col-span-3 sm:col-span-5 grid p-1">

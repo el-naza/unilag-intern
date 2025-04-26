@@ -78,7 +78,7 @@ const Page = () => {
         if (!res) return toast.error('Network err; pls try again later')
         return res
       } catch {
-        toast.error('An error occured while saving message; pls try again later')
+        toast.error('An error occured while submitting your application; pls try again later')
       }
     },
   })
