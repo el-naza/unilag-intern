@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import comapnyDefaultImage from '../assets/images/company-default-image.avif'
+import { signOut } from 'next-auth/react'
 
 interface naveBarProps {
   fill?: string
@@ -77,12 +78,20 @@ export default function NavBar({ fill }: naveBarProps) {
           </div>
           <ul className="flex flex-col lg:items-center gap-4 font-[400] text-[14px]">
             {navLinks.map((link, index) => (
-              <li key={index}>
-                <Link href={link.paths[0]} passHref>
-                  {link.label}
-                </Link>
-              </li>
+              <>
+                <li key={index}>
+                  <Link href={link.paths[0]} passHref>
+                    {link.label}
+                  </Link>
+                </li>
+              </>
             ))}
+            <button
+              onClick={() => signOut({ callbackUrl: '/company-auth/login' })}
+              className="text-white bg-red-500 px-4 py-2 rounded"
+            >
+              Logout
+            </button>
           </ul>
         </div>
       )}
@@ -106,6 +115,12 @@ export default function NavBar({ fill }: naveBarProps) {
             <p className="font-[400] text-[12px]">{user?.email}</p>
           </div>
         </div>
+        <button
+          onClick={() => signOut({ callbackUrl: '/company-auth/login' })}
+          className="hidden lg:block text-white bg-red-500 px-4 py-2 rounded"
+        >
+          Logout
+        </button>
       </div>
     </div>
   )
