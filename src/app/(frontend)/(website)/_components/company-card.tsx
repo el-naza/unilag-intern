@@ -15,8 +15,8 @@ const CompanyCard = ({ company }: any) => {
       <div className="w-full relative">
         <Image
           src={
-            company.imageSrc && company.imageSrc.trim() !== ''
-              ? company.imageSrc
+            company.image
+              ? company.image.url
               : '/images/company-1.png'
           }
           onError={(event) => {
@@ -25,6 +25,7 @@ const CompanyCard = ({ company }: any) => {
           alt="Company"
           width={1200}
           height={200}
+          unoptimized
           className="rounded-tl-[14px] rounded-tr-[14px]"
         />
         {/* <div className="w-full grid place-content-center absolute -bottom-[20px]">
