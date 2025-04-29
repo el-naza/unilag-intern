@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import comapnyDefaultImage from '../assets/images/company-default-image.avif'
 import { signOut } from 'next-auth/react'
+import { ChevronDown } from 'lucide-react'
 
 interface naveBarProps {
   fill?: string
@@ -19,6 +20,11 @@ export default function NavBar({ fill }: naveBarProps) {
   const router = useRouter()
   const pathname = usePathname()
   const user = useMemo<any>(() => session?.user, [session])
+  const [open, setOpen] = useState(false)
+
+  const handleSignOut = () => {
+    signOut() // Replace with your actual sign-out logic (e.g., Firebase, Auth0, etc.)
+  }
 
   const navLinks = [
     { label: 'All Interns', paths: ['/company-pages/all-interns'] },
@@ -86,21 +92,14 @@ export default function NavBar({ fill }: naveBarProps) {
                 </li>
               </>
             ))}
-            <button
-              onClick={() => signOut({ callbackUrl: '/company-auth/login' })}
-              className="text-white bg-red-500 px-4 py-2 rounded"
-            >
-              Logout
-            </button>
           </ul>
         </div>
       )}
 
-      <div className="flex items-center gap-[54px]">
-        {/* <BellIcon fill={fill} /> */}
+      <div className="relative">
         <div
           className="flex items-center gap-3 cursor-pointer"
-          onClick={() => router.push('/company-pages/company-profile')}
+          onClick={() => setOpen((prev) => !prev)}
         >
           <Image
             src={user?.image?.url || comapnyDefaultImage}
@@ -114,13 +113,26 @@ export default function NavBar({ fill }: naveBarProps) {
             <p className="font-[700] text-[14px] mb-[4px]">{user?.name}</p>
             <p className="font-[400] text-[12px]">{user?.email}</p>
           </div>
+
+          <ChevronDown />
         </div>
-        <button
-          onClick={() => signOut({ callbackUrl: '/company-auth/login' })}
-          className="hidden lg:block text-white bg-red-500 px-4 py-2 rounded"
-        >
-          Logout
-        </button>
+
+        {open && (
+          <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-50">
+            <button
+              className="block w-full text-left px-4 py-2 text-sm text-black font-[600] hover:bg-gray-100"
+              onClick={() => router.push('/company-pages/company-profile')}
+            >
+              My Account
+            </button>
+            <button
+              className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
+              onClick={() => signOut({ callbackUrl: '/company-auth/login' })}
+            >
+              Log out
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
