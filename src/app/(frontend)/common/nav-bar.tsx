@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import comapnyDefaultImage from '../assets/images/company-default-image.avif'
 import { signOut } from 'next-auth/react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, LogOutIcon } from 'lucide-react'
 
 interface naveBarProps {
   fill?: string
@@ -21,10 +21,6 @@ export default function NavBar({ fill }: naveBarProps) {
   const pathname = usePathname()
   const user = useMemo<any>(() => session?.user, [session])
   const [open, setOpen] = useState(false)
-
-  const handleSignOut = () => {
-    signOut() // Replace with your actual sign-out logic (e.g., Firebase, Auth0, etc.)
-  }
 
   const navLinks = [
     { label: 'All Interns', paths: ['/company-pages/all-interns'] },
@@ -126,10 +122,10 @@ export default function NavBar({ fill }: naveBarProps) {
               My Account
             </button>
             <button
-              className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
+              className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600 flex items-center gap-2 font-[600]"
               onClick={() => signOut({ callbackUrl: '/company-auth/login' })}
             >
-              Log out
+            <LogOutIcon/>  Log out
             </button>
           </div>
         )}
