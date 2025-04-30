@@ -44,8 +44,8 @@ export default function Page() {
       {loading ? (
         <Loader />
       ) : (
-        <div className="min-h-screen relative text-sm text-white bg-white lg:bg-[#195F7E] py-0 lg:py-20">
-          <div className="lg:hidden block">
+        <div className="min-h-screen relative text-sm text-white bg-[#195F7E] py-4 lg:py-20">
+          {/* <div className="lg:hidden block">
             <div className="bg-[#195F7E] container pt-4 pb-1">
               <StudentHeader />
               <StudentNavbar />
@@ -66,8 +66,8 @@ export default function Page() {
                 </div>
               </main>
             </div>
-          </div>
-          <div className="lg:block hidden h-full">
+          </div> */}
+          <div className="block h-full">
             <div className="container">
               <div className="flex mb-2 items-baseline">
                 <Link href={'/student'}>
@@ -87,12 +87,12 @@ export default function Page() {
                     <span>Back</span>
                   </div>
                 </Link>
-                <div className="text-white text-3xl font-bold ms-4">My Applications</div>
+                <div className="text-white text-xl lg:text-3xl font-bold ms-4">My Applications</div>
               </div>
               <div className="text-black bg-white rounded-lg">
                 <div className="grid grid-cols-5 gap-4">
-                  <div className="col-span-4">
-                    <div className="p-5">
+                  <div className="col-span-5 lg:col-span-4">
+                    <div className="p-2 lg:p-5">
                       <StudentApplicationHeader />
                       <div className="grid gap-4">
                         {pendingApplications.map((pendingApplication) => (
@@ -105,7 +105,7 @@ export default function Page() {
                       </div>
                     </div>
                   </div>
-                  <div className="grid grid-rows-2 gap-4">
+                  <div className="hidden lg:grid grid-rows-2 gap-4">
                     <div className="rounded-lg bg-[#EBE7E77A] flex p-5">
                       <Image className="m-auto" src={advertText} alt="advert-text" />
                     </div>
