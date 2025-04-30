@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import ProfilePicture from '../../../assets/icons/profilepicture'
 import Link from 'next/link'
 import { signOut, useSession } from 'next-auth/react'
-import { Loader } from 'lucide-react'
+import { Loader, LogOutIcon } from 'lucide-react'
 
 export default function StudentHeader() {
   const { data: session, status } = useSession()
@@ -30,7 +30,7 @@ export default function StudentHeader() {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-3 gap-2">
         <div className="flex ms-auto my-auto">
           <Link href="/student/reports/create">
             <svg
@@ -62,6 +62,11 @@ export default function StudentHeader() {
               />
             </svg>
           </Link>
+        </div>
+        <div className="flex ms-auto my-auto">
+          <div onClick={() => signOut({ callbackUrl: '/auth/login' })}>
+            <LogOutIcon />
+          </div>
         </div>
       </div>
     </div>

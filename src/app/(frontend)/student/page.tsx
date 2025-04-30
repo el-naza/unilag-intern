@@ -35,6 +35,8 @@ import courseAreas from '@/utilities/courseAreas'
 import CompanyCard from '../components/Cards/CompanyCard'
 import { useRouter } from 'next/navigation'
 import fetchMe from '@/services/fetchMe'
+import { signOut } from 'next-auth/react'
+import { LogOutIcon } from 'lucide-react'
 
 const Page = () => {
   const meQuery = useQuery({
@@ -158,11 +160,11 @@ const Page = () => {
       ) : (
         <div>
           <div className="block lg:hidden min-h-screen relative text-sm text-white">
-            <div className="bg-[#195F7E] container pt-4 pb-1">
+            <div className="bg-[#195F7E] px-2 pt-4 pb-1">
               <StudentHeader />
               <StudentNavbar />
             </div>
-            <div className="container">
+            <div className="px-2">
               <main className="py-1">
                 <div className="mb-1">
                   {/* <iframe
@@ -358,6 +360,14 @@ const Page = () => {
                         />
                         <SearchAltIcon className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
                       {/* </div> */}
+                    </div>
+                    <div className="text-right">
+                      <div
+                        className="cursor-pointer flex"
+                        onClick={() => signOut({ callbackUrl: '/auth/login' })}
+                      >
+                        <span className="me-2">Logout</span> <LogOutIcon />
+                      </div>
                     </div>
                   </nav>
                 </div>
