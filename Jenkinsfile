@@ -57,7 +57,7 @@ pipeline {
                         sh """
                         docker stop ${APPLICATION} || true
                         docker rm ${APPLICATION} || true
-                        docker run -d --name ${APPLICATION} -p 5000:5000 --network unilag-intern-network --restart=unless-stopped \
+                        docker run -d --name ${APPLICATION} -p 3000:3000 --network unilag-intern-network --restart=unless-stopped \
                         -e NODE_ENV='${NODE_ENV}' \
                         -e DATABASE_URI='${DATABASE_URI}' \
                         -e PAYLOAD_SECRET='${PAYLOAD_SECRET}' \
