@@ -95,14 +95,14 @@ export default function HomePage() {
               className="w-full"
             >
               <CarouselContent>
-                {companies.map((company: any) => (
+                {companies?.map((company: any) => (
                   <CarouselItem
                     className="px-4 grid place-content-center lg:basis-96 md:basis-96 xs:basis-72"
                     key={company.id}
                   >
                     <CompanyCard company={company} />
                   </CarouselItem>
-                ))}
+                )) ?? null}
               </CarouselContent>
 
               <CarouselPrevious />
