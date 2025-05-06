@@ -446,7 +446,8 @@ export default function SignUp() {
                     value={field.state.value || ''}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter Address"
+                    placeholder="Search Address"
+                    autoComplete="off"
                     className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2 pr-10 border-[1px] mb-3 placeholder:text-[#969a9b] ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
