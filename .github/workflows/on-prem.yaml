@@ -20,8 +20,11 @@ jobs:
           echo "${{ secrets.ENV_FILE }}" > .env
       - name: Build and Push Image
         run: |
-          docker build -t ${{ secrets.ACR_REGISTRY }}/unilag-intern:${{ github.sha }} .
+          docker build \
+            --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} \
+            -t ${{ secrets.ACR_REGISTRY }}/unilag-intern:${{ github.sha }} .
           docker push ${{ secrets.ACR_REGISTRY }}/unilag-intern:${{ github.sha }}
+
 
   update-helm:
     runs-on: ubuntu-latest
