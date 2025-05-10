@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and Push Image
         run: |
-          docker buildx build \
+          docker build \
             --build-arg AUTH_TRUST_HOST=${{ secrets.AUTH_TRUST_HOST }} \
             --build-arg AUTH_URL=${{ secrets.AUTH_URL }} \
             --build-arg DATABASE_URI=${{ secrets.DATABASE_URI }} \
