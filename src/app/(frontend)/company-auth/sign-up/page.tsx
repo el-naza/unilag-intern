@@ -31,10 +31,6 @@ import Link from 'next/link'
 // Load Google Maps API script dynamically
 const loadGoogleMapsScript = () => {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
-  console.log('=============apiKey===========')
-  console.log(process.env)
-  console.log(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY)
-  console.log('=============apiKey===========')
 
   // Check if script is already loaded
   if (document.querySelector(`script[src*="maps.googleapis.com/maps/api/js"]`)) {
