@@ -8,11 +8,19 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 const nextConfig = {
   output: 'standalone',
   productionBrowserSourceMaps: true,
+  reactStrictMode: true,
+
+  // ✅ This exposes public env variables to the browser
+  env: {
+    NEXT_PUBLIC_SERVER_URL: NEXT_PUBLIC_SERVER_URL,
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    // Add other public vars here
+  },
+
   images: {
     remotePatterns: [
-      ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
+      ...[NEXT_PUBLIC_SERVER_URL].map((item) => {
         const url = new URL(item)
-
         return {
           hostname: url.hostname,
           protocol: url.protocol.replace(':', ''),
@@ -24,7 +32,7 @@ const nextConfig = {
       },
     ],
   },
-  reactStrictMode: true,
+
   typescript: {
     ignoreBuildErrors: true,
   },
