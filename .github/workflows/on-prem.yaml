@@ -1,4 +1,5 @@
 name: build_deploy_aks
+
 on:
   push:
     branches:
@@ -18,9 +19,12 @@ jobs:
       - name: Create .env file from secret
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
-      - name: Build and Push Image
+
+      - name: Build and Push Image with Build Args
         run: |
-          docker build -t ${{ secrets.ACR_REGISTRY }}/unilag-intern:${{ github.sha }} .
+          docker build \
+            --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} \
+            -t ${{ secrets.ACR_REGISTRY }}/unilag-intern:${{ github.sha }} .
           docker push ${{ secrets.ACR_REGISTRY }}/unilag-intern:${{ github.sha }}
 
   update-helm:
