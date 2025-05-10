@@ -250,7 +250,11 @@ export default function InternshipRequest() {
                   <div className="flex items-start flex-col gap-5 lg:flex-row">
                     <div className="max-w-[200px] md:max-w-full ">
                       <Image
-                              src={invitationDetails.student?.image?.url ? invitationDetails.student.image.url : studentImage.src}
+                        src={
+                          invitationDetails.student?.image?.url
+                            ? invitationDetails.student.image.url
+                            : studentImage.src
+                        }
                         // src={invitationDetails?.student?.image?.url || studentImage}
                         // src={studentImage}
                         alt="image"

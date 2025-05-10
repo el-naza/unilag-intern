@@ -1,47 +1,39 @@
 import type { CollectionConfig, FieldAccess } from 'payload'
 import { companies } from '@/access/companies'
-import { any } from 'zod'
-import courseAreas from '@/utilities/courseAreas'
 import { students } from '@/access/students'
+import courseAreas from '@/utilities/courseAreas'
 
-// Define the access control functions
+// Restrict update/delete to the user who created the internship
 const self = ({ req }) => {
   return {
-    id: { equals: req.user?.id }, // Ensures only the user who created the internship can update/delete
+    id: { equals: req.user?.id },
   }
 }
 
-export const companyOrStudent = async ({ req: { user, payload } }) => {
+// Custom read access for companies and students
+export const companyOrStudent = async ({ req: { user } }) => {
   if (!user) return false
 
-  const isCompany = user.collection === 'companies'
-  const isStudent = user.collection === 'students'
-
-  if (isCompany) {
+  if (user.collection === 'companies') {
     return {
       company: { equals: user.id },
     }
   }
 
-  if (isStudent) {
-    // return {
-    //   student: { equals: user.id },
-    // }
+  if (user.collection === 'students') {
     return true
   }
 
   return false
 }
 
-const anyone = () => true // Allows public read access
-
 export const Internships: CollectionConfig = {
   slug: 'internships',
   access: {
     create: companies,
-    delete: self,
-    // read: companyOrStudent,
+    read: companyOrStudent,
     update: self,
+    delete: self,
   },
   fields: [
     {
@@ -76,9 +68,12 @@ export const Internships: CollectionConfig = {
     {
       name: 'deadline',
       type: 'date',
-      //   required: true,
     },
-    { name: 'startDate', type: 'date', required: true },
+    {
+      name: 'startDate',
+      type: 'date',
+      required: true,
+    },
     {
       name: 'endDate',
       type: 'date',
@@ -88,7 +83,6 @@ export const Internships: CollectionConfig = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
-      // required: true,
     },
     {
       name: 'status',
@@ -107,32 +101,22 @@ export const Internships: CollectionConfig = {
       hooks: {
         afterRead: [
           async ({ data, req }) => {
-            if (!req?.user) return false
-
+            if (!req?.user || req.user.collection !== 'students') return false
             if (!data?.id) return false
 
-            const isStudent = req?.user.collection === 'students'
+            const application = await req.payload.find({
+              collection: 'internship-applications',
+              req,
+              limit: 1,
+              depth: 0,
+              where: {
+                student: { equals: req.user.id },
+                internship: { equals: data.id },
+              },
+              overrideAccess: true,
+            })
 
-            if (isStudent) {
-              const studentId = req?.user.id
-              const internshipId = data?.id
-
-              const application = await req.payload.find({
-                collection: 'internship-applications',
-                req,
-                limit: 1,
-                depth: 0,
-                where: {
-                  student: { equals: studentId },
-                  internship: { equals: internshipId },
-                },
-                overrideAccess: true,
-              })
-
-              return application.docs.length > 0
-            }
-
-            return false
+            return application.docs.length > 0
           },
         ],
       },

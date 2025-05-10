@@ -19,6 +19,9 @@ export default function Interviews() {
     try {
       const res: any = await fetchDocs('internships')
       console.log('res', res)
+      const companyEmail =
+        typeof window !== 'undefined' ? localStorage.getItem('companyEmail') : null
+      console.log(companyEmail)
 
       if (res?.docs) {
         setInternshipPosts(res.docs)
