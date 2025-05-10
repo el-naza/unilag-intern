@@ -15,7 +15,7 @@ jobs:
       - name: Log in to ACR
         run: |
           echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_REGISTRY }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
-          
+
       - name: Create .env file from secret
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
@@ -39,7 +39,6 @@ jobs:
             --build-arg S3_SECRET_ACCESS_KEY=${{ secrets.S3_SECRET_ACCESS_KEY }} \
             -t ${{ secrets.ACR_REGISTRY }}/unilag-intern:${{ github.sha }} .
           docker push ${{ secrets.ACR_REGISTRY }}/unilag-intern:${{ github.sha }}
-
 
   update-helm:
     runs-on: ubuntu-latest
