@@ -23,26 +23,24 @@ const Page = () => {
   const [interviewInvitations, setInterviewInvitations] = useState<InterviewInvitation[]>([])
 
   const fetchInterviewInvitations = async () => {
-    // const query: Where = { status: { equals: 'pending' } }
+    const query: Where = { status: { equals: 'pending' } }
 
-    // const stringifiedQuery = stringify(
-    //   {
-    //     where: query,
-    //   },
-    //   { addQueryPrefix: true },
-    // )
-
-    const query: Where = {
-      status: {
-        equals: 'pending',
+    const stringifiedQuery = stringify(
+      {
+        where: query,
       },
-    }
-
-    const stringifiedQuery = stringify({ where: query }, { addQueryPrefix: true })
+      { addQueryPrefix: true },
+    )
 
     const res: any = await fetchDocs('interview-invitations', stringifiedQuery)
-    console.log(res)
-    setInterviewInvitations(res.docs)
+    // console.log(res)
+    // setInterviewInvitations(res.docs)
+
+    // Filter locally just in case the backend returns other statuses
+    const filtered =
+      res?.docs?.filter((invitation: InterviewInvitation) => invitation.status === 'pending') || []
+
+    setInterviewInvitations(filtered)
     setLoading(false)
   }
 
