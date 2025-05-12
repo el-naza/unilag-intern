@@ -64,7 +64,7 @@ async function geocodeAddress(address: string): Promise<{ latitude: number; long
           })
         } else {
           console.warn(`Geocoding failed: ${status}`)
-          resolve({ latitude: 0, longitude: 0 }) // Fallback with default values
+          resolve({ latitude: 6.5244, longitude: 3.3792 }) // Fallback with default values
         }
       })
     } catch (error) {
@@ -386,47 +386,32 @@ export default function SignUp() {
           }}
         />
 
-        {/* Updated Industry field with custom dropdown */}
+        {/* Updated Industry field with simple dropdown */}
         <form.Field
           name="industry"
           children={(field) => {
             return (
               <>
                 <Label>Company Industry</Label>
-                <div className="relative">
-                  <Input
-                    ref={industryInputRef}
-                    placeholder="Select Industry"
-                    value={industryQuery}
-                    onChange={handleIndustryInputChange}
-                    onFocus={() => setShowIndustryOptions(true)}
+                <Select
+                  onValueChange={(value) => {
+                    field.handleChange(value)
+                  }}
+                  value={field.state.value || ''}
+                >
+                  <SelectTrigger
                     className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2 border-[1px] mb-3 placeholder:text-[#969a9b] ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <Search className="h-4 w-4 text-gray-500" />
-                  </div>
-                </div>
-
-                {showIndustryOptions && (
-                  <div
-                    ref={industryOptionsRef}
-                    className="absolute z-10 mt-1 w-full max-h-60 overflow-auto bg-white border border-gray-200 rounded-md shadow-lg"
                   >
-                    {filteredIndustries.length > 0 ? (
-                      filteredIndustries.map((industry) => (
-                        <div
-                          key={industry}
-                          className="px-4 py-2 cursor-pointer hover:bg-blue-50"
-                          onClick={() => handleIndustrySelect(industry)}
-                        >
-                          {industry}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="px-4 py-2 text-xs text-error">No matching industries</div>
-                    )}
-                  </div>
-                )}
+                    <SelectValue placeholder="Select Industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {industries.map((industry) => (
+                      <SelectItem key={industry} value={industry}>
+                        {industry}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FieldError field={field} />
               </>
             )
@@ -446,7 +431,8 @@ export default function SignUp() {
                     value={field.state.value || ''}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter Address"
+                    placeholder="Search Address"
+                    autoComplete="off"
                     className={`bg-white/40 backdrop-blur-[70px] text-gray-dark-2 pr-10 border-[1px] mb-3 placeholder:text-[#969a9b] ${field.state.meta.isTouched && field.state.meta.errors.length ? 'border-error' : ''}`}
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">

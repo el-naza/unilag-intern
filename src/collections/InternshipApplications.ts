@@ -19,7 +19,7 @@ export const InternshipApplications: CollectionConfig = {
       async ({ args, operation, req }) => {
         if (operation === 'create') {
           // check if student has already applied to the internship
-          const data = args
+          const { data } = args
           const { internship, student } = data
           const internshipId = internship?.id || internship
           const studentId = student?.id || student
