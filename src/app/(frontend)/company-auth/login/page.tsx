@@ -177,10 +177,6 @@ export default function Login() {
         // success here so naviagate or toast to success !!
         form.reset()
         toast.success('Sign in successful')
-        // ✅ Save email to localStorage or sessionStorage
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('companyEmail', value.email) // or use sessionStorage
-        }
 
         router.push('/company-pages/home')
 
