@@ -28,6 +28,8 @@ export default function HomePage() {
     setIsLoadingCompany(true)
     const res: any = await getPopularCompanies('companies', params)
     const { docs } = res.data
+    console.log('companies', docs);
+    
 
     setCompanies(docs)
     setIsLoadingCompany(false)
@@ -49,7 +51,7 @@ export default function HomePage() {
     <div>
       <HeroCarousel />
 
-      <div className="container mx-auto mb-32 relative">
+      <div className="max-w-full px-16 mx-auto mb-32 relative">
         <div id="companies" className="absolute -top-20" />
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-[#FD661F] text-center mb-[45px]">
           Popular Companies
@@ -97,7 +99,7 @@ export default function HomePage() {
               <CarouselContent>
                 {companies?.map((company: any) => (
                   <CarouselItem
-                    className="px-4 grid place-content-center lg:basis-96 md:basis-96 xs:basis-72"
+                    className="grid gap-4 place-content-center px-4 basis-auto"
                     key={company.id}
                   >
                     <CompanyCard company={company} />
@@ -143,7 +145,7 @@ export default function HomePage() {
         </Tabs>
       </div>
 
-      <div className="container mx-auto mb-32 relative">
+      <div className="max-w-full px-16 mx-auto mb-32 relative">
         <div id="interns" className="absolute -top-20" />
 
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
@@ -167,7 +169,7 @@ export default function HomePage() {
       </div>
 
       {/* STUDENT ID CARD */}
-      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 container mx-auto mb-32">
+      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 md:gap-8 sm:gap-16 xs:gap-16 max-w-full px-16 mx-auto mb-32">
         <div>
           <span className="rounded-[10px] bg-[#f5f5f5] text-primary px-4 py-2 font-medium">
             Benefit
@@ -211,7 +213,7 @@ export default function HomePage() {
       </div>
 
       {/* STAFF TRAINING */}
-      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 container mx-auto mb-48">
+      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 max-w-full px-16 mx-auto mb-48">
         <div className="grid place-content-center py-10">
           <Image src="/images/staff.png" alt="Staff" width={500} height={10} />
         </div>
@@ -256,21 +258,21 @@ export default function HomePage() {
       </div>
 
       {/* GIFT CARDS */}
-      <div className="container mx-auto  bg-[#DF1C25] text-white rounded-[16px] flex relative mb-32">
-        <div className="p-12 z-10">
+      <div className="max-w-full mx-16 bg-[#DF1C25] text-white rounded-[16px] flex relative mb-32">
+        <div className="lg:p-8 md:p-8 sm:p-4 xs:p-4 z-10">
           <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 mb-[20px]">
             Why you should buy <br /> gift cards?
           </h2>
           <ul className="leading-[2.3rem] mb-8">
-            <li className="flex gap-3 items-center">
+            <li className="flex gap-3 items-start mb-4">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
               You can give the perfect present easily with our flexible gift cards.
             </li>
-            <li className="flex gap-3 items-center">
+            <li className="flex gap-3 items-start  mb-4">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
               Our gift cards unlock access to many desired products and services across the web.
             </li>
-            <li className="flex gap-3 items-center">
+            <li className="flex gap-3 items-start">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
               Trust us for a safe and reliable way to purchase your gift cards.
             </li>
@@ -285,7 +287,7 @@ export default function HomePage() {
       </div>
 
       {/* NEWS LETTER */}
-      {/* <div className="lg:px-24 lg:pb-24 container mx-auto">
+      {/* <div className="lg:px-24 lg:pb-24 max-w-full px-16 mx-auto">
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-secondary text-center mb-[45px] relative">
           News Letter
           <Image
