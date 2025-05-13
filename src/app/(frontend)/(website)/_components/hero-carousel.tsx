@@ -24,7 +24,7 @@ const HeroCarousel = () => {
   }, [api])
 
   return (
-    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 place-content-center md:h-[90vh] mb-28 transition-all max-md:mt-20 relative">
+    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 place-content-center lg:h-[100dvh] md:h-[90dvh] mb-28 transition-all max-md:mt-20 relative">
       <div
         className={`grid place-content-center my-auto mx-0 items-center lg:justify-items-start md:justify-items-start sm:justify-items-center xs:justify-items-center content-center z-10 lg:pl-12 md:pl-12 sm:pl-0 xs:pl-0 pr-4 py-4 rounded-tr-[50px] rounded-br-[50px] md:h-[80%] ${bgColors[currentSlide]}`}
       >
@@ -35,7 +35,7 @@ const HeroCarousel = () => {
           Industrial Training <br /> Processing Just Got <br /> Easier and Better
         </h1>
 
-        <div className="flex gap-12 lg:mt-12 sm:m-auto sm:mt-12 xs:m-auto xs:mt-12">
+        <div className="flex gap-12 lg:mx-0 md:mx-0 sm:mx-auto xs:mx-auto mt-12">
           <Link href="/auth/login">
             {' '}
             <Button className="bg-primary text-white uppercase border-[1px]">

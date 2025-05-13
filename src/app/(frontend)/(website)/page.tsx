@@ -28,6 +28,8 @@ export default function HomePage() {
     setIsLoadingCompany(true)
     const res: any = await getPopularCompanies('companies', params)
     const { docs } = res.data
+    console.log('companies', docs);
+    
 
     setCompanies(docs)
     setIsLoadingCompany(false)
@@ -167,7 +169,7 @@ export default function HomePage() {
       </div>
 
       {/* STUDENT ID CARD */}
-      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 sm:gap-16 container mx-auto mb-32">
+      <div className="grid lg:grid-cols-2 sm:grid-cols-1 lg:gap-8 md:gap-8 sm:gap-16 xs:gap-16 container mx-auto mb-32">
         <div>
           <span className="rounded-[10px] bg-[#f5f5f5] text-primary px-4 py-2 font-medium">
             Benefit
@@ -257,20 +259,20 @@ export default function HomePage() {
 
       {/* GIFT CARDS */}
       <div className="container mx-auto  bg-[#DF1C25] text-white rounded-[16px] flex relative mb-32">
-        <div className="p-12 z-10">
+        <div className="lg:p-8 md:p-8 sm:p-4 xs:p-4 z-10">
           <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 mb-[20px]">
             Why you should buy <br /> gift cards?
           </h2>
           <ul className="leading-[2.3rem] mb-8">
-            <li className="flex gap-3 items-center">
+            <li className="flex gap-3 items-start mb-4">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
               You can give the perfect present easily with our flexible gift cards.
             </li>
-            <li className="flex gap-3 items-center">
+            <li className="flex gap-3 items-start  mb-4">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
               Our gift cards unlock access to many desired products and services across the web.
             </li>
-            <li className="flex gap-3 items-center">
+            <li className="flex gap-3 items-start">
               <Image src="/icons/gift-card-list-icon.png" alt="Star Icon" width={20} height={20} />{' '}
               Trust us for a safe and reliable way to purchase your gift cards.
             </li>

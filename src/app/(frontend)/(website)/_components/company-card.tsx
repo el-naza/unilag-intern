@@ -14,14 +14,7 @@ const CompanyCard = ({ company }: any) => {
     <div className="shadow-lg rounded-[14px] bg-white">
       <div className="w-full relative">
         <Image
-          src={
-            company.imageSrc && company.imageSrc.trim() !== ''
-              ? company.imageSrc
-              : '/images/company-1.png'
-          }
-          onError={(event) => {
-            event.currentTarget.src = '/images/company-1.png'
-          }}
+          src={company?.image?.url ?? '/images/company-1.png'}
           alt="Company"
           width={1200}
           height={200}
