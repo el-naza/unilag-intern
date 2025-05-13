@@ -85,7 +85,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#D2E6E4] text-primary w-full curved-top px-4 sm:px-6 xl:px-8 lg:px-24 py-12 xl:pt-24 xl:pb-16">
-      <div className="container mx-auto">
+      <div className="max-w-full mx-auto">
         <div className="grid grid-cols-1 xl:grid-cols-5 gap-2 xl:mx-5">
           {/* Logo */}
           <div className="flex justify-center xl:justify-start xl:ml-5">

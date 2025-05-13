@@ -8,7 +8,7 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <nav className="flex justify-between items-center px-4 py-2 absolute top-0 z-20 right-0 left-0">
+    <nav className="flex justify-between items-center lg:px-8 sm:px-4 py-2 absolute top-0 z-20 right-0 left-0">
       <Image src="/images/unilag-logo.png" alt="Logo" width={60} height={100} />
 
       <ul className="list-none lg:flex md:flex sm:hidden items-center lg:gap-40 md:gap-16 transition-all max-md:hidden">
