@@ -255,9 +255,9 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
           <div className="mt-4">
             {activeTab === 'success' && (
               <>
-                <h3 className="font-medium mb-2">Created Companies</h3>
+                <h3 className="font-medium mb-2">Created Students</h3>
                 <ul className="list-disc pl-6 text-sm text-green-700">
-                  {uploadResult.data.createdCompanies.map((matricNo: string) => (
+                  {uploadResult.data.createdStudents.map((matricNo: string) => (
                     <li key={matricNo}>{matricNo}</li>
                   ))}
                 </ul>
@@ -266,9 +266,9 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
 
             {activeTab === 'skipped' && (
               <>
-                <h3 className="font-medium mb-2">Skipped Companies</h3>
+                <h3 className="font-medium mb-2">Skipped Students</h3>
                 <ul className="list-disc pl-6 text-sm text-yellow-700">
-                  {uploadResult.data.skippedCompanies.map((c: any, idx: number) => (
+                  {uploadResult.data.skippedStudents.map((c: any, idx: number) => (
                     <li key={idx}>
                       {c.matricNo} – {c.reason}
                     </li>
@@ -283,7 +283,7 @@ const AddStudent = ({ onCloseEmit }: IStudentProp) => {
                 <ul className="list-disc pl-6 text-sm text-red-700">
                   {uploadResult.data.errors.map((e: any, idx: number) => (
                     <li key={idx}>
-                      {e.email} – {e.error}
+                      {e.matricNo} – {e.error}
                     </li>
                   ))}
                 </ul>
