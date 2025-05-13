@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
@@ -9,13 +8,18 @@ import { batchUploadStudents } from '@/services/admin/students'
 import { Student } from '@/payload-types'
 import { normalizeGender, normalizeInternshipType } from '@/app/(frontend)/utils/normalizer'
 
-const AddStudent = () => {
+interface IStudentProp {
+  onCloseEmit: () => void
+}
+
+const AddStudent = ({ onCloseEmit }: IStudentProp) => {
   const [files, setFiles] = useState<File[]>([])
   const [previewData, setPreviewData] = useState<string[][]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 5
   const [isUploading, setIsUploading] = useState(false)
   const [uploadResult, setUploadResult] = useState<any>(null)
+  const [showUploadArea, setShowUploadArea] = useState(true)
   const [activeTab, setActiveTab] = useState<'success' | 'skipped' | 'errors' | null>(null)
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -32,6 +36,7 @@ const AddStudent = () => {
               const data = result.data as string[][]
               if (data.length > 1) {
                 setPreviewData(data)
+                setShowUploadArea(false) // ✅ Hide upload area
               }
             },
           })
@@ -47,12 +52,19 @@ const AddStudent = () => {
       'text/csv': ['.csv'],
       'application/vnd.ms-excel': ['.xls', '.xlsx'],
     },
-    maxSize: 2 * 1024 * 1024, // 2MB
+    maxSize: 2 * 1024 * 1024, // 2MB limit
   })
+
+  const closeDialog = () => {
+    setFiles([])
+    setPreviewData([])
+    setCurrentPage(1)
+    onCloseEmit()
+  }
 
   const handleBatchUpload = async () => {
     setIsUploading(true)
-
+    setShowUploadArea(false)
     const students: Student[] = previewData.slice(1).map((row) => ({
       id: '',
       createdAt: new Date().toISOString(),
@@ -80,22 +92,12 @@ const AddStudent = () => {
 
     try {
       const result = await batchUploadStudents('students', students)
-      console.log('Upload result:', result)
       setUploadResult(result)
-      setActiveTab('success') // Default tab
     } catch (error) {
-      console.error('Batch upload failed:', error)
+      console.error('Error uploading batch:', error)
     } finally {
       setIsUploading(false)
     }
-  }
-
-  const handleRestart = () => {
-    setFiles([])
-    setPreviewData([])
-    setUploadResult(null)
-    setCurrentPage(1)
-    setActiveTab(null)
   }
 
   const totalPages = Math.ceil((previewData.length - 1) / rowsPerPage)
@@ -104,66 +106,6 @@ const AddStudent = () => {
     1 + currentPage * rowsPerPage,
   )
 
-  if (uploadResult) {
-    return (
-      <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4 text-center">Batch Upload Summary</h2>
-        <div className="flex gap-4 justify-center mb-4">
-          <Button
-            variant={activeTab === 'success' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('success')}
-          >
-            Success ({uploadResult.data.successCount})
-          </Button>
-          <Button
-            variant={activeTab === 'skipped' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('skipped')}
-          >
-            Skipped ({uploadResult.data.skippedCount})
-          </Button>
-          <Button
-            variant={activeTab === 'errors' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('errors')}
-          >
-            Errors ({uploadResult.data.errorCount})
-          </Button>
-        </div>
-
-        <div className="max-h-[300px] overflow-y-auto px-4">
-          {activeTab === 'success' && (
-            <ul className="list-disc pl-6 text-sm text-green-700">
-              {uploadResult.data.createdStudents.map((email: string) => (
-                <li key={email}>{email}</li>
-              ))}
-            </ul>
-          )}
-          {activeTab === 'skipped' && (
-            <ul className="list-disc pl-6 text-sm text-yellow-700">
-              {uploadResult.data.skippedStudents.map((s: any, idx: number) => (
-                <li key={idx}>
-                  {s.matricNo || s.email} – {s.reason}
-                </li>
-              ))}
-            </ul>
-          )}
-          {activeTab === 'errors' && (
-            <ul className="list-disc pl-6 text-sm text-red-700">
-              {uploadResult.data.errors.map((e: any, idx: number) => (
-                <li key={idx}>
-                  {e.matricNo || e.email} – {e.error}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="flex justify-center mt-6">
-          <Button onClick={handleRestart}>Start New Upload</Button>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div>
       <h1 className="text-[2rem] font-bold text-center">Add Student</h1>
@@ -171,68 +113,92 @@ const AddStudent = () => {
         Upload a CSV or Excel file with student information.
       </p>
 
-      <div
-        {...getRootProps()}
-        className="border border-dashed border-primary rounded-lg py-8 text-center cursor-pointer"
-      >
-        <input {...getInputProps()} />
-        <Image
-          src="/icons/upload.svg"
-          width={50}
-          height={40}
-          alt="Upload Icon"
-          className="mx-auto"
-        />
-        <p>Drag & drop your file here</p>
-        <p className="text-neutral-500">or click to select</p>
-        <p className="text-neutral-400 mt-2">Only .csv, .xls, .xlsx files (max 2MB)</p>
-      </div>
+      {/* Toggle button visible only after preview is loaded */}
+      {previewData.length > 1 && (
+        <div className="mb-4 text-center">
+          <Button onClick={() => setShowUploadArea((prev) => !prev)} variant="outline">
+            {showUploadArea ? 'Show Preview' : 'Show Upload Area'}
+          </Button>
+        </div>
+      )}
 
-      {files.length > 0 && (
-        <div className="mt-4">
-          <h3 className="font-semibold">Uploaded File:</h3>
-          <p>
-            {files[0].name} ({(files[0].size / 1024).toFixed(2)} KB)
+      {/* Upload Area */}
+      {showUploadArea && (
+        <div>
+          <div
+            {...getRootProps()}
+            className="border-[1px] border-dashed border-primary rounded-lg py-8 grid place-content-center text-center gap-4 cursor-pointer"
+          >
+            <input {...getInputProps()} />
+            <Image
+              src="/icons/upload.svg"
+              width={50}
+              height={40}
+              alt="Upload Icon"
+              className="mx-auto"
+            />
+            <p>Drag & drop your file(s) here</p>
+            <p className="text-neutral-500">OR</p>
+            <Button variant="outline">Browse Files</Button>
+          </div>
+
+          <p className="text-neutral-500 mt-2">
+            Only supports .csv, .xls, and .xlsx files (2MB max).
           </p>
         </div>
       )}
 
-      {previewData.length > 1 && (
-        <>
-          <div className="mt-6 overflow-auto">
-            <h3 className="font-semibold mb-2">Preview</h3>
-            <table className="w-full border border-gray-300 text-sm">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border px-2 py-1">#</th>
-                  {previewData[0].map((header, idx) => (
-                    <th key={idx} className="border px-2 py-1">
-                      {header}
-                    </th>
+      {/* File Info */}
+      {files.length > 0 && (
+        <div className="mt-4">
+          <h3 className="font-semibold">Uploaded File:</h3>
+          <ul className="mt-2">
+            {files.map((file) => (
+              <li key={file.name} className="text-sm text-gray-600">
+                {file.name} ({(file.size / 1024).toFixed(2)} KB)
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 font-medium">Total Items Uploaded: {previewData.length - 1}</p>
+        </div>
+      )}
+
+      {/* Preview Table */}
+      {!showUploadArea && previewData.length > 1 && (
+        <div className="mt-4 overflow-auto">
+          <h3 className="font-semibold">Preview Data:</h3>
+          <table className="w-full border border-gray-300 mt-2 text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border px-2 py-1">#</th>
+                {previewData[0].map((header, index) => (
+                  <th key={index} className="border px-2 py-1">
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {displayedData.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  <td className="border px-2 py-1">
+                    {(currentPage - 1) * rowsPerPage + rowIndex + 1}
+                  </td>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex} className="border px-2 py-1">
+                      {cell}
+                    </td>
                   ))}
                 </tr>
-              </thead>
-              <tbody>
-                {displayedData.map((row, idx) => (
-                  <tr key={idx}>
-                    <td className="border px-2 py-1">
-                      {(currentPage - 1) * rowsPerPage + idx + 1}
-                    </td>
-                    {row.map((cell, i) => (
-                      <td key={i} className="border px-2 py-1">
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
 
+          {/* Pagination */}
           <div className="flex justify-between mt-4">
             <Button
               variant="outline"
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
               Previous
@@ -242,22 +208,89 @@ const AddStudent = () => {
             </span>
             <Button
               variant="outline"
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
               Next
             </Button>
           </div>
+        </div>
+      )}
 
-          <div className="flex gap-4 mt-6">
-            <Button onClick={handleBatchUpload} disabled={isUploading}>
-              {isUploading ? 'Uploading...' : 'Upload Students'}
+      {/* Action Buttons */}
+      <div className="flex gap-4 mt-8">
+        <Button onClick={handleBatchUpload} disabled={isUploading || previewData.length <= 1}>
+          {isUploading ? 'Uploading...' : 'Upload Students'}
+        </Button>
+        <Button variant="outline" onClick={closeDialog}>
+          Cancel
+        </Button>
+      </div>
+
+      {/* Upload Result */}
+      {uploadResult && (
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold mb-4">Batch Upload Summary</h2>
+          <div className="flex gap-4">
+            <Button
+              variant={activeTab === 'success' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('success')}
+            >
+              Success ({uploadResult.data.successCount})
             </Button>
-            <Button variant="outline" onClick={handleRestart}>
-              Cancel
+            <Button
+              variant={activeTab === 'skipped' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('skipped')}
+            >
+              Skipped ({uploadResult.data.skippedCount})
+            </Button>
+            <Button
+              variant={activeTab === 'errors' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('errors')}
+            >
+              Errors ({uploadResult.data.errorCount})
             </Button>
           </div>
-        </>
+
+          <div className="mt-4">
+            {activeTab === 'success' && (
+              <>
+                <h3 className="font-medium mb-2">Created Companies</h3>
+                <ul className="list-disc pl-6 text-sm text-green-700">
+                  {uploadResult.data.createdCompanies.map((matricNo: string) => (
+                    <li key={matricNo}>{matricNo}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {activeTab === 'skipped' && (
+              <>
+                <h3 className="font-medium mb-2">Skipped Companies</h3>
+                <ul className="list-disc pl-6 text-sm text-yellow-700">
+                  {uploadResult.data.skippedCompanies.map((c: any, idx: number) => (
+                    <li key={idx}>
+                      {c.matricNo} – {c.reason}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {activeTab === 'errors' && (
+              <>
+                <h3 className="font-medium mb-2">Errors</h3>
+                <ul className="list-disc pl-6 text-sm text-red-700">
+                  {uploadResult.data.errors.map((e: any, idx: number) => (
+                    <li key={idx}>
+                      {e.email} – {e.error}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   )
