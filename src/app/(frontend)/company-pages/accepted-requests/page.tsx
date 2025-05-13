@@ -124,7 +124,7 @@ export default function InternshipRequest() {
           Accept
         </button> */}
         <button
-          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
+          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px] text-nowrap"
           onClick={() => handleRespond(item.id, 'company declined')}
           disabled={respondToInterviewMtn.isPending}
         >

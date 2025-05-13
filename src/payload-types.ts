@@ -246,21 +246,28 @@ export interface Company {
   industry:
     | 'Agriculture'
     | 'Banking/Finance'
-    | 'Construction/Real Estate'
-    | 'Consumer services'
-    | 'Consumer goods'
+    | 'Construction / Real Estate'
+    | 'Consumer Services'
+    | 'Consumer Products'
     | 'Conglomerates'
     | 'Entertainment'
     | 'Health Care'
-    | 'Hospitality'
+    | 'Hospitality / Leisure'
     | 'ICT'
     | 'Natural Resources'
     | 'Media'
-    | 'Oil & gas'
+    | 'Oil & Gas'
     | 'Retail'
     | 'Technology'
-    | 'Telecommunications'
-    | 'Utilities';
+    | 'Telecommunications / Networking'
+    | 'Utilities'
+    | 'Transportation'
+    | 'Education / Training'
+    | 'Legal Services'
+    | 'Manufacturing & Industrial'
+    | 'Nonprofit & Social Services'
+    | 'Travel / Tourism'
+    | 'Others';
   location: {
     longitude: number;
     latitude: number;

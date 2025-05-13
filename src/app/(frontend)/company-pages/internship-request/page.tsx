@@ -140,22 +140,8 @@ export default function InternshipRequest() {
       <p key={`${item.id}-date`} className="text-[12px] font-[400]">
         {new Date(item.createdAt).toLocaleDateString()}
       </p>,
-      <div key={`${item.id}-actions`}>
-        {/* <button
-          className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
-          onClick={() => handleRespond(item.id, 'approved', item.student.id)}
-          disabled={respondToInterviewMtn.isPending}
-        >
-          {respondToInterviewMtn.isPending ? 'Processing...' : 'Accept'}
-        </button>
-
-        <button
-          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
-          onClick={() => handleRespond(item.id, 'company declined')}
-          disabled={respondToInterviewMtn.isPending}
-        >
-          {respondToInterviewMtn.isPending ? 'Processing...' : '✘ Decline'}
-        </button> */}
+      <div key={`${item.id}-actions`} className="flex items-center gap-2 ">
+    
         <button
           className="text-green-500 hover:underline p-1 lg:mr-2 bg-white rounded-[100px] lg:py-[4px] px-[8px] w-[fit-content] text-nowrap"
           onClick={() => handleRespond(item.id, 'approved', item.student.id)}
@@ -165,7 +151,7 @@ export default function InternshipRequest() {
         </button>
 
         <button
-          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px]"
+          className="text-red-500 hover:underline p-1 bg-white rounded-[100px] lg:py-[4px] lg:px-[8px] text-nowrap"
           onClick={() => handleRespond(item.id, 'company declined')}
           disabled={loadingId === item.id} // Disable only the clicked button
         >
