@@ -11,19 +11,20 @@ const CompanyCard = ({ company }: any) => {
   }
 
   return (
-    <div className="shadow-lg rounded-[14px] bg-white">
-      <div className="w-full relative">
+    <div className="shadow-lg rounded-[14px] bg-white lg:w-[25vw] md:w-[35vw] sm:w-[40vw] xs:w-[58vw]">
+      <div className="relative h-[12.5rem]">
         <Image
           src={company?.image?.url ?? '/images/company-1.png'}
           alt="Company"
-          width={1200}
+          width={500}
           height={200}
-          className="rounded-tl-[14px] rounded-tr-[14px]"
+          className="rounded-tl-[14px] rounded-tr-[14px] w-full h-full"
         />
         {/* <div className="w-full grid place-content-center absolute -bottom-[20px]">
               <AvatarGroup />
             </div> */}
       </div>
+
       <div className="pt-12 px-4 pb-16">
         <p className="mb-3">{format(new Date(company.createdAt), 'do MMMM yyyy')}</p>
         <h3 className="scroll-m-20 text-[1rem] font-bold tracking-tight text-secondary mb-3">
