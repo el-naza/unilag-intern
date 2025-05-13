@@ -13,13 +13,19 @@ import SearchAltIcon from '../../assets/icons/searchAltIcon'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import getAge from '@/utilities/getAge'
+import { useQuery } from '@tanstack/react-query'
+import fetchMe from '@/services/fetchMe'
+import { Student } from '@/payload-types'
 
 const Page = () => {
-  const { data: session } = useSession()
+  const meQuery = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => (await fetchMe('students'))?.user as Student | undefined,
+  })
+
+  const user = useMemo<any>(() => meQuery.data, [meQuery.data])
 
   const [coins, setCoins] = useState<number[]>([20])
-
-  const user = useMemo<any>(() => session?.user, [session])
 
   const coinsCount = useMemo<number>(() => (coins.length ? coins[0] : 0), [coins])
   return (

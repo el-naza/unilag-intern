@@ -21,15 +21,31 @@ export default async function saveDoc<T>(
   )?.token! as string
 
   // console.log('save doc', col, data)
+  // for (let key in data) {
+  //   if (data[key] instanceof File) {
+  //     // console.log('File found', key, data[key])
+  //     const mediaUploadRes = await uploadMedia(data[key], authToken)
+  //     // console.log('media upload res', mediaUploadRes)
+
+  //     if (!mediaUploadRes?.data?.doc?.id) return mediaUploadRes
+
+  //     data[key] = mediaUploadRes?.data?.doc?.id!
+  //   }
+  // }
   for (let key in data) {
-    if (data[key] instanceof File) {
-      // console.log('File found', key, data[key])
-      const mediaUploadRes = await uploadMedia(data[key], authToken)
-      // console.log('media upload res', mediaUploadRes)
+    const maybeFile = data[key] as any
+
+    if (
+      maybeFile &&
+      typeof maybeFile === 'object' &&
+      typeof maybeFile.arrayBuffer === 'function' &&
+      typeof maybeFile.name === 'string'
+    ) {
+      const mediaUploadRes = await uploadMedia(maybeFile, authToken)
 
       if (!mediaUploadRes?.data?.doc?.id) return mediaUploadRes
 
-      data[key] = mediaUploadRes?.data?.doc?.id!
+      data[key] = mediaUploadRes.data.doc.id as any
     }
   }
 

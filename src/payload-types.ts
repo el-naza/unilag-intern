@@ -246,21 +246,28 @@ export interface Company {
   industry:
     | 'Agriculture'
     | 'Banking/Finance'
-    | 'Construction/Real Estate'
-    | 'Consumer services'
-    | 'Consumer goods'
+    | 'Construction / Real Estate'
+    | 'Consumer Services'
+    | 'Consumer Products'
     | 'Conglomerates'
     | 'Entertainment'
     | 'Health Care'
-    | 'Hospitality'
+    | 'Hospitality / Leisure'
     | 'ICT'
     | 'Natural Resources'
     | 'Media'
-    | 'Oil & gas'
+    | 'Oil & Gas'
     | 'Retail'
     | 'Technology'
-    | 'Telecommunications'
-    | 'Utilities';
+    | 'Telecommunications / Networking'
+    | 'Utilities'
+    | 'Transportation'
+    | 'Education / Training'
+    | 'Legal Services'
+    | 'Manufacturing & Industrial'
+    | 'Nonprofit & Social Services'
+    | 'Travel / Tourism'
+    | 'Others';
   location: {
     longitude: number;
     latitude: number;
@@ -369,7 +376,7 @@ export interface InterviewInvitation {
   company: string | Company;
   message: string;
   dateTime: string;
-  status?: ('pending' | 'accepted' | 'declined' | 'company accepted' | 'company declined') | null;
+  status?: ('pending' | 'declined' | 'company accepted' | 'company declined') | null;
   declineReason?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -386,6 +393,10 @@ export interface InternshipApplication {
   letter: string;
   status?: ('pending' | 'cancelled' | 'approved' | 'student declined' | 'company declined') | null;
   interviewInvitation?: (string | null) | InterviewInvitation;
+  /**
+   * Upload a supporting document for your application (optional)
+   */
+  document?: (string | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -405,6 +416,7 @@ export interface Internship {
   endDate: string;
   image?: (string | null) | Media;
   status?: ('open' | 'closed') | null;
+  hasStudentApplied?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -710,6 +722,7 @@ export interface InternshipApplicationsSelect<T extends boolean = true> {
   letter?: T;
   status?: T;
   interviewInvitation?: T;
+  document?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -768,6 +781,7 @@ export interface InternshipsSelect<T extends boolean = true> {
   endDate?: T;
   image?: T;
   status?: T;
+  hasStudentApplied?: T;
   updatedAt?: T;
   createdAt?: T;
 }

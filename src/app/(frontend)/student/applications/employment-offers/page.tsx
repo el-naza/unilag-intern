@@ -8,26 +8,35 @@ import advertText from '../../../assets/images/adverts.png'
 import Image from 'next/image'
 import CompanyLargeApprovedApplicationCard from '@/app/(frontend)/components/Cards/CompanyLargeApprovedApplicationCard'
 import Link from 'next/link'
-import { InterviewInvitation } from '@/payload-types'
+import { InterviewInvitation, Student } from '@/payload-types'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '@/app/(frontend)/components/Layouts/Loader'
 import updateDoc from '@/services/updateDoc'
 import { toast } from 'sonner'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import StudentApplicationHeader from '@/app/(frontend)/components/Layouts/Student/StudentApplicationHeader'
 import { stringify } from 'qs-esm'
 import { Where } from 'payload'
 import EmploymentCard from '@/app/(frontend)/components/Cards/EmploymentCard'
 import { useSession } from 'next-auth/react'
+import { add } from 'date-fns'
+import fetchMe from '@/services/fetchMe'
 
 const Page = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [employmentOffers, setEmploymentsOffers] = useState<any[]>([])
-  const { data: session } = useSession()
-  const user = useMemo<any>(() => session?.user, [session])
+  const meQuery = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => (await fetchMe('students'))?.user as Student | undefined,
+  })
+
+  const user = useMemo<any>(() => meQuery.data, [meQuery.data])
 
   const fetchemploymentOffers = async () => {
-    const query: Where = { status: { equals: 'pending' } }
+    const query: Where = {
+      status: { equals: 'pending' },
+      student: { equals: user.id },
+    }
 
     const stringifiedQuery = stringify(
       {
@@ -174,7 +183,7 @@ const Page = () => {
                   <div className="col-span-4">
                     <div className="p-5">
                       <StudentApplicationHeader />
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid gap-11">
                         {employmentOffers &&
                           employmentOffers.map((offer) => (
                             <EmploymentCard
@@ -182,7 +191,10 @@ const Page = () => {
                               company={{
                                 name: offer.company.name,
                                 phone: offer.company.phone,
+                                address: offer.company.address,
+                                image: offer.company.image,
                               }}
+                              createdAt={offer.createdAt}
                               status={offer.status}
                               student={{
                                 firstName: offer.student.firstName,

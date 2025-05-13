@@ -12,6 +12,7 @@ import fetchCompanyInternships from '@/services/fetchCompanyInternships'
 import { Dialog, DialogTrigger, DialogContent, DialogDescription } from '@/components/ui/dialog'
 import truncateText from '@/utilities/truncateText'
 import fetchCompanySuggestions from '@/services/fetchCompanySuggestions'
+import { Internship } from '@/payload-types'
 
 const Page = () => {
   const { id }: { id: string } = useParams()
@@ -166,7 +167,6 @@ const Page = () => {
                     <div className="grid grid-cols-3 mb-3">
                       <div className="flex items-center text-center text-[#FF9500] font-bold">
                         {internships?.length} vacancies
-                        {internships?.length} vacancies
                       </div>
                       <div className="col-span-2">
                         <Dialog open={open} onOpenChange={setOpen}>
@@ -177,31 +177,39 @@ const Page = () => {
                           </DialogTrigger>
                           <DialogContent className="bg-white rounded-lg gap-2">
                             <DialogDescription className="grid gap-4 p-2 text-[#8E8E93]">
-                              {internships &&internships.map((internship: any) => (
-                                <div key={internship.id} className="justify-between flex">
-                                  <div>
-                                    <div className="text-black font-bold text-sm">
-                                      {internship?.postDescription
-                                        ? truncateText(internship?.postDescription, 40)
-                                        : ''}
+                              {internships &&
+                                internships.map((internship: Internship) => (
+                                  <div key={internship.id} className="justify-between flex">
+                                    <div>
+                                      <div className="text-black font-bold text-sm">
+                                        {internship?.postDescription
+                                          ? truncateText(internship?.postDescription, 40)
+                                          : ''}
+                                      </div>
+                                      <div className="text-xs text-[#878787]">
+                                        {internship?.jobDescription
+                                          ? truncateText(internship?.jobDescription, 20)
+                                          : ''}
+                                      </div>
                                     </div>
-                                    <div className="text-xs text-[#878787]">
-                                      {internship?.jobDescription
-                                        ? truncateText(internship?.jobDescription, 20)
-                                        : ''}
+                                    <div>
+                                      <Link
+                                        href={
+                                          internship.hasStudentApplied
+                                            ? '#'
+                                            : `/student/companies/${company.id}/apply/${internship.id}`
+                                        }
+                                      >
+                                        <button
+                                          disabled={!!internship.hasStudentApplied}
+                                          className={`w-full min-w-20 p-2 rounded-full ${internship.hasStudentApplied ? 'bg-white text-[#0B7077] border-[#0B7077] border-2' : 'bg-[#0B7077] text-white'} text-center`}
+                                        >
+                                          {internship.hasStudentApplied ? 'Applied' : 'Apply'}
+                                        </button>
+                                      </Link>
                                     </div>
                                   </div>
-                                  <div>
-                                    <Link
-                                      href={`/student/companies/${company.id}/apply/${internship.id}`}
-                                    >
-                                      <button className="w-full min-w-20 p-2 rounded-full bg-[#0B7077] text-white text-center">
-                                        Apply
-                                      </button>
-                                    </Link>
-                                  </div>
-                                </div>
-                              ))}
+                                ))}
                             </DialogDescription>
                           </DialogContent>
                         </Dialog>

@@ -21,13 +21,14 @@ export default {
         sm: '1rem',
         xl: '2rem',
       },
-      screens: {
-        '2xl': '96rem',
-        lg: '64rem',
-        md: '48rem',
-        sm: '40rem',
-        xl: '80rem',
-      },
+    },
+    screens: {
+      xs: '320px', // extra small phones
+      sm: '480px', // small phones
+      md: '768px', // tablets
+      lg: '1024px', // laptops
+      xl: '1280px', // desktops
+      '2xl': '1536px', // large desktops / wide screens
     },
     extend: {
       animation: {
@@ -83,6 +84,11 @@ export default {
         sans: ['var(--font-open-sans)'],
         poppins: ['var(--font-poppins)'],
         inter: ['var(--font-inter)'],
+        nunito: ['var(--font-nunito)'],
+        'oleo-script-swash-caps': ['var(--font-oleo-script-swash-caps)'],
+        'noto-sans': ['var(--font-noto-sans)'],
+        manrope: ['var(--font-manrope)'],
+        roboto: ['var(--font-roboto)'],
       },
       keyframes: {
         'accordion-down': {

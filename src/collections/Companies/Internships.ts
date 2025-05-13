@@ -1,7 +1,8 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, FieldAccess } from 'payload'
 import { companies } from '@/access/companies'
 import { any } from 'zod'
 import courseAreas from '@/utilities/courseAreas'
+import { students } from '@/access/students'
 
 // Define the access control functions
 const self = ({ req }) => {
@@ -23,6 +24,9 @@ export const companyOrStudent = async ({ req: { user, payload } }) => {
   }
 
   if (isStudent) {
+    // return {
+    //   student: { equals: user.id },
+    // }
     return true
   }
 
@@ -36,7 +40,7 @@ export const Internships: CollectionConfig = {
   access: {
     create: companies,
     delete: self,
-    read: companyOrStudent,
+    // read: companyOrStudent,
     update: self,
   },
   fields: [
@@ -91,6 +95,47 @@ export const Internships: CollectionConfig = {
       type: 'select',
       options: ['open', 'closed'],
       defaultValue: 'open',
+    },
+    {
+      name: 'hasStudentApplied',
+      type: 'checkbox',
+      defaultValue: false,
+      virtual: true,
+      access: {
+        read: students as FieldAccess,
+      },
+      hooks: {
+        afterRead: [
+          async ({ data, req }) => {
+            if (!req?.user) return false
+
+            if (!data?.id) return false
+
+            const isStudent = req?.user.collection === 'students'
+
+            if (isStudent) {
+              const studentId = req?.user.id
+              const internshipId = data?.id
+
+              const application = await req.payload.find({
+                collection: 'internship-applications',
+                req,
+                limit: 1,
+                depth: 0,
+                where: {
+                  student: { equals: studentId },
+                  internship: { equals: internshipId },
+                },
+                overrideAccess: true,
+              })
+
+              return application.docs.length > 0
+            }
+
+            return false
+          },
+        ],
+      },
     },
   ],
 }

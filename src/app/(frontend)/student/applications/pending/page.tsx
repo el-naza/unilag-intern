@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNavbar'
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
 import CompanyPendingApplicationCard from '@/app/(frontend)/components/Cards/CompanyPendingApplicationCard'
@@ -8,19 +8,29 @@ import Image from 'next/image'
 import advertText from '../../../assets/images/adverts.png'
 import Link from 'next/link'
 import CompanyLargePendingApplicationCard from '@/app/(frontend)/components/Cards/CompanyLargePendingApplicationCard'
-import { InternshipApplication } from '@/payload-types'
+import { InternshipApplication, Student } from '@/payload-types'
 import fetchDocs from '@/services/fetchDocs'
 import Loader from '@/app/(frontend)/components/Layouts/Loader'
 import StudentApplicationHeader from '@/app/(frontend)/components/Layouts/Student/StudentApplicationHeader'
+import { useQuery } from '@tanstack/react-query'
+import fetchMe from '@/services/fetchMe'
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(true)
   const [pendingApplications, setPendingApplications] = useState<InternshipApplication[]>([])
+  const meQuery = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => (await fetchMe('students'))?.user as Student | undefined,
+  })
+
+  const user = useMemo<any>(() => meQuery.data, [meQuery.data])
 
   const fetchPendingApplications = async () => {
     const res: any = await fetchDocs('internship-applications')
     console.log(res)
-    const getPending =  res.docs.filter((p)=> p.status === "pending")
+    const getPending = res.docs.filter(
+      (p) => p.status === 'pending' && (p.student?.id === user?.id || p.student === user?.id),
+    )
 
     setPendingApplications(getPending)
     setLoading(false)
@@ -28,7 +38,7 @@ export default function Page() {
 
   useEffect(() => {
     fetchPendingApplications()
-  }, [])
+  }, [user])
   return (
     <>
       {loading ? (

@@ -40,6 +40,7 @@ export const Companies: CollectionConfig = {
     forgotPassword: {
       generateEmailHTML,
     },
+    tokenExpiration: 30 * 24 * 60 * 60, // 30 days
   },
   endpoints: [
     {
@@ -67,7 +68,7 @@ export const Companies: CollectionConfig = {
         const { hasSetPassword } = companyFindRes.docs[0]
 
         return Response.json({
-          message: `You password has${hasSetPassword ? ' ' : ' not '}been set`,
+          message: `Your password has${hasSetPassword ? ' ' : ' not '}been set`,
           ready: !!hasSetPassword,
         })
       },

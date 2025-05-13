@@ -8,7 +8,7 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <nav className="flex justify-between items-center py-2 container absolute top-0 z-20 right-0 left-0">
+    <nav className="flex justify-between items-center py-2 absolute top-0 z-20 right-0 left-0">
       <Image src="/images/unilag-logo.png" alt="Logo" width={60} height={100} />
 
       <ul className="list-none lg:flex md:flex sm:hidden items-center lg:gap-40 md:gap-16 transition-all max-md:hidden">
@@ -38,12 +38,12 @@ const Navbar = () => {
 
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" className="lg:hidden md:hidden sm:block">
-              <Image src="/icons/hamburger.png" alt="Logo" width={30} height={5} />
+            <Button variant="ghost" className="lg:hidden md:hidden sm:block xs:block text-[2.3rem] p-2">
+              <Image src="/icons/hamburger.png" alt="Logo" width={100} height={100} />
             </Button>
           </SheetTrigger>
 
-          <SheetContent>
+          <SheetContent className='bg-white'>
             <div>
               <ul className="list-none items-center lg:gap-40 md:gap-16 transition-all leading-[2rem] my-4">
                 <li className="hover:text-[#A71C51] hover:font-semibold hover:bg-slate-300 p-2 rounded-xl mb-4 cursor-pointer">
