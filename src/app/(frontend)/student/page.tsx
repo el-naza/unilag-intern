@@ -365,13 +365,16 @@ const Page = () => {
                   <div className="container grid sm:grid-cols-2 mb-4">
                     <div>
                       <div className="flex sm:grid-cols-3 gap-[58px]">
-                        <div>
+                        <div className="relative">
                           <Image
                             width={197}
                             height={235}
                             src="/smiling-woman.png"
                             alt="smiling woman"
                           />
+                          <div className="absolute bottom-3 right-[-34px] bg-[#263238] text-[#FFD836] rounded-[15px] px-4 py-[10px] text-[24px] font-roboto font-bold leading-none">
+                            0/3
+                          </div>
                         </div>
                         <div className="col-span-2 flex items-center font-roboto">
                           {meQuery.data ? (
@@ -396,17 +399,19 @@ const Page = () => {
                               <div>
                                 <span>{user?.homeAddress}</span>
                               </div>
-                              {/* <div className="flex gap-2">
-                                <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
+                              <div className="flex gap-2">
+                                {/* <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                                   <span>0 Duration</span>
-                                </div>
+                                </div> */}
                                 <Link
                                   href={'/student/pricing'}
-                                  className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl"
+                                  className="bg-[#FFD836] text-[#195F7E] px-5 py-3 rounded-[20px] flex justify-center items-center"
                                 >
-                                  <span>Upgrade</span>
+                                  <span className="font-roboto text-[24px] font-light leading-none ">
+                                    Buy Coins
+                                  </span>
                                 </Link>
-                              </div> */}
+                              </div>
                             </div>
                           ) : (
                             <Spinner />
