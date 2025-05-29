@@ -76,9 +76,12 @@ const Page = () => {
         })
         console.log('res', res)
         if (!res) return toast.error('Network err; pls try again later')
+        if (res.status && (res.status < 200 || res.status > 299))
+          return toast.error('An error occured; pls try again later')
         return res
-      } catch {
+      } catch (err) {
         toast.error('An error occured while submitting your application; pls try again later')
+        return err.message || ''
       }
     },
   })
@@ -116,6 +119,12 @@ const Page = () => {
               }),
               {},
             ),
+          }
+        }
+
+        if (typeof res === 'string' || typeof res === 'number') {
+          return {
+            form: 'An error occurred while submitting your application.',
           }
         }
 

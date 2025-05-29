@@ -35,6 +35,8 @@ import courseAreas from '@/utilities/courseAreas'
 import CompanyCard from '../components/Cards/CompanyCard'
 import { useRouter } from 'next/navigation'
 import fetchMe from '@/services/fetchMe'
+import { useCoinPurchaseModal } from '@/context/coin-purchase-modal-context'
+import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
 
 const Page = () => {
   const meQuery = useQuery({
@@ -43,6 +45,15 @@ const Page = () => {
   })
 
   const user = useMemo<any>(() => meQuery.data, [meQuery.data])
+
+  const coinsAndApplicationsCountsQuery = useQuery({
+    queryKey: ['coinsAndApplicationsCounts', user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => await fetchCoinsAndApplicationsCount(user?.id),
+  })
+
+  const router = useRouter()
+  const { openCoinModal } = useCoinPurchaseModal()
 
   const [loading, setLoading] = useState<boolean>(true)
   const [employments, setEmployments] = useState<any[]>([])
@@ -362,16 +373,21 @@ const Page = () => {
                   </nav>
                 </div>
                 <main>
-                  <div className="container grid sm:grid-cols-2 mb-4">
+                  <div className="container mb-4">
                     <div>
                       <div className="flex sm:grid-cols-3 gap-[58px]">
-                        <div>
+                        <div className="relative">
                           <Image
                             width={197}
                             height={235}
                             src="/smiling-woman.png"
                             alt="smiling woman"
                           />
+                          <div className="absolute bottom-3 right-[-34px] bg-[#263238] text-[#FFD836] rounded-[15px] px-2 py-[5px] flex items-center text-[24px] font-roboto font-bold leading-none">
+                            {coinsAndApplicationsCountsQuery.data?.applications}
+                            <span className="text-[38px] leading-none font-extralight">/</span>
+                            {coinsAndApplicationsCountsQuery.data?.coins}
+                          </div>
                         </div>
                         <div className="col-span-2 flex items-center font-roboto">
                           {meQuery.data ? (
@@ -396,17 +412,20 @@ const Page = () => {
                               <div>
                                 <span>{user?.homeAddress}</span>
                               </div>
-                              {/* <div className="flex gap-2">
-                                <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
+                              <div className="flex gap-2">
+                                {/* <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                                   <span>0 Duration</span>
-                                </div>
-                                <Link
-                                  href={'/student/pricing'}
-                                  className="bg-[#FFD836] text-[#195F7E] px-4 py-2 rounded-2xl"
+                                </div> */}
+                                <div
+                                  // href={'/student/pricing'}
+                                  onClick={openCoinModal}
+                                  className="bg-[#FFD836] text-[#195F7E] px-5 py-3 rounded-[20px] flex justify-center items-center cursor-pointer"
                                 >
-                                  <span>Upgrade</span>
-                                </Link>
-                              </div> */}
+                                  <span className="font-roboto text-[24px] font-light leading-none ">
+                                    Buy Coins
+                                  </span>
+                                </div>
+                              </div>
                             </div>
                           ) : (
                             <Spinner />
