@@ -70,6 +70,11 @@ export function CoinModal({ open, onOpenChange }: CoinModalProps) {
         metadata: {
           custom_fields: [
             {
+              display_name: 'APPLICATION ID',
+              variable_name: 'APP_ID',
+              value: 'INTRNS',
+            },
+            {
               display_name: 'Student ID',
               variable_name: 'student_id',
               value: user?.id,

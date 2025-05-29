@@ -6,6 +6,12 @@ import config from '@/payload.config'
 // Paystack webhook IP whitelist
 const PAYSTACK_IP_WHITELIST = ['52.31.139.75', '52.49.173.169', '52.214.14.220']
 
+// // add the central amplify server ip - from the env var - that receives the webhook and resends to other servers
+// if (process.env.AMPLIFY_SERVER_IPS) {
+//   PAYSTACK_IP_WHITELIST.push(...process.env.AMPLIFY_SERVER_IPS.split(','))
+//   console.log('Added Amplify server IP to Paystack IP whitelist:', process.env.AMPLIFY_SERVER_IP)
+// }
+
 /**
  * Verifies that the webhook request came from Paystack
  */
@@ -58,13 +64,13 @@ export async function POST(req: NextRequest) {
   let event: any = null
 
   try {
-    // Verify the request is coming from a Paystack IP
-    const sourceIP = getClientIP(req)
+    // // Verify the request is coming from a Paystack IP
+    // const sourceIP = getClientIP(req)
 
-    if (!sourceIP || !PAYSTACK_IP_WHITELIST.includes(sourceIP)) {
-      console.error(`Unauthorized webhook request from IP: ${sourceIP}`)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-    }
+    // if (!sourceIP || !PAYSTACK_IP_WHITELIST.includes(sourceIP)) {
+    //   console.error(`Unauthorized webhook request from IP: ${sourceIP}`)
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    // }
 
     // Get the raw request body as text
     const requestBody = await req.text()
