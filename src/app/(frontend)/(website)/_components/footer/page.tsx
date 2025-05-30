@@ -10,14 +10,18 @@ const jost = Jost({
 
 export default function Footer() {
   return (
-    <div className="flex justify-between items-center py-[51px] px-16">
+    <div className="md:flex md:justify-between items-center py-[51px] px-16 md:flex-row flex flex-col gap-y-6 text-center md:text-left">
       <a href="/">
         {' '}
         <Image src="/images/logo.png" alt="Logo of Koonage" width={71} height={20} />
       </a>
-      <div className={`flex gap-x-6 ${jost.className} text-xl font-normal leading-[1.5] pt-[21px]`}>
+      <div
+        className={`md:flex gap-x-6 ${jost.className} text-xl font-normal leading-[1.5] pt-[21px] md:flex-row flex flex-col gap-y-6`}
+      >
         <p className="#0B0B00">&copy; 2025 Intrns.com All rights reserved.</p>
-        <ul className={`flex gap-x-6 text-[#1E2763] underline`}>
+        <ul
+          className={`md:flex md:gap-x-6 md:flex-row flex flex-col gap-y-6 text-[#1E2763] underline`}
+        >
           <li>
             <a href="#">Privacy Policy</a>
           </li>

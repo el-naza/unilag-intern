@@ -39,7 +39,7 @@ export default function Faq({ question, answer }) {
           />
         </div>
         <p
-          className={`text-xl font-normal leading-[1.5] pt-[21px] text-[#525252] ${displayText ? 'block' : 'hidden'}`}
+          className={`text-xl font-normal leading-[1.5] pt-[21px] text-[#525252] portrait:text-justify ${displayText ? 'block' : 'hidden'}`}
         >
           {answer}
         </p>

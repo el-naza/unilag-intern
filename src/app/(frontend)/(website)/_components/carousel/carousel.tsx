@@ -21,7 +21,7 @@ export default function Carousel() {
   }, [])
 
   return (
-    <div className="relative w-full h-[700px] overflow-hidden">
+    <div className="relative w-full md:h-[700px] h-[150px] overflow-hidden">
       {images.map((image, index) => {
         const isActive = index === currentIndex
         return (
@@ -31,7 +31,7 @@ export default function Carousel() {
             alt={image.alt}
             width={1440}
             height={500}
-            className={`absolute top-0 left-0 w-full h-full object-cover ${
+            className={`absolute top-0 left-0 w-full h-full md:object-cover object-contain ${
               isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'
             }`}
             style={{

@@ -17,9 +17,9 @@ const schibstedGrotesk = Schibsted_Grotesk({
 export default function Join({ headingText, normalText }) {
   return (
     <div className="bg-gradient-to-r from-[#1E2763] to-[#3D4FC9] ">
-      <div className="py-[100px] px-20 flex flex-col gap-y-8 w-[50%]">
+      <div className="py-[100px] md:px-20 flex flex-col gap-y-8 md:w-[50%] w-[100%] px-5">
         <h2
-          className={`text-white text-[3rem] leading-[1.5] font-[700] ${schibstedGrotesk.className}`}
+          className={`text-white md:text-[3rem] text-[2rem] leading-[1.5] font-[700] ${schibstedGrotesk.className}`}
         >
           {headingText}
         </h2>
