@@ -441,7 +441,7 @@ export default function SignUp() {
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Start typing to see address suggestions
+                  Start typing to see address suggestions to select from
                 </p>
                 <FieldError field={field} />
               </>

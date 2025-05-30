@@ -465,10 +465,5 @@ export const Students: CollectionConfig = {
     //   relationTo: 'employments',
     //   defaultValue: () => null,
     // },
-    {
-      name: 'coins',
-      type: 'number',
-      defaultValue: 3,
-    },
   ],
 }

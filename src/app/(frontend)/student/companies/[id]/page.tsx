@@ -3,7 +3,7 @@
 import CompanySuggestionCard from '@/app/(frontend)/components/Cards/CompanySuggestionCard'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import advertText from '../../../assets/images/adverts.png'
 import { useParams } from 'next/navigation'
 import fetchDoc from '@/services/fetchDoc'
@@ -12,7 +12,10 @@ import fetchCompanyInternships from '@/services/fetchCompanyInternships'
 import { Dialog, DialogTrigger, DialogContent, DialogDescription } from '@/components/ui/dialog'
 import truncateText from '@/utilities/truncateText'
 import fetchCompanySuggestions from '@/services/fetchCompanySuggestions'
-import { Internship } from '@/payload-types'
+import { Internship, Student } from '@/payload-types'
+import { useQuery } from '@tanstack/react-query'
+import fetchMe from '@/services/fetchMe'
+import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
 
 const Page = () => {
   const { id }: { id: string } = useParams()
@@ -21,6 +24,26 @@ const Page = () => {
   const [company, setCompany] = useState<any>({})
   const [internships, setInternships] = useState<any>([])
   const [suggestedCompanies, setSuggestedCompanies] = useState<any[]>([])
+
+  const meQuery = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => (await fetchMe('students'))?.user as Student | undefined,
+  })
+
+  const user = useMemo<any>(() => meQuery.data, [meQuery.data])
+
+  const coinsAndApplicationsCountsQuery = useQuery({
+    queryKey: ['coinsAndApplicationsCounts', user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => await fetchCoinsAndApplicationsCount(user?.id),
+  })
+
+  const isCoinsExhausted = useMemo<any>(
+    () =>
+      (coinsAndApplicationsCountsQuery.data?.coins || 0) <=
+      (coinsAndApplicationsCountsQuery.data?.applications || 0),
+    [coinsAndApplicationsCountsQuery.data],
+  )
 
   const fetchCompany = async () => {
     const companyRes: any = await fetchDoc('companies', id)
@@ -171,12 +194,16 @@ const Page = () => {
                       <div className="col-span-2">
                         <Dialog open={open} onOpenChange={setOpen}>
                           <DialogTrigger asChild>
-                            <button className="w-full rounded p-3 bg-[#0B7077] text-white text-center">
-                              Apply Now
+                            <button
+                              disabled={isCoinsExhausted}
+                              className={`w-full rounded p-3 bg-[#0B7077] text-white text-center ${isCoinsExhausted ? 'cursor-not-allowed outline-dashed outline-red-600 outline-offset-2 outline-2' : ''}`}
+                            >
+                              {isCoinsExhausted && "Can't"} Apply {!isCoinsExhausted && 'Now'}
+                              {isCoinsExhausted && '(Coins Exhausted)'}
                             </button>
                           </DialogTrigger>
                           <DialogContent className="bg-white rounded-lg gap-2">
-                            <DialogDescription className="grid gap-4 p-2 text-[#8E8E93]">
+                            <div className="grid gap-4 p-2 text-[#8E8E93]">
                               {internships &&
                                 internships.map((internship: Internship) => (
                                   <div key={internship.id} className="justify-between flex">
@@ -210,7 +237,7 @@ const Page = () => {
                                     </div>
                                   </div>
                                 ))}
-                            </DialogDescription>
+                            </div>
                           </DialogContent>
                         </Dialog>
                       </div>
