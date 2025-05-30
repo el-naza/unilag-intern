@@ -86,6 +86,7 @@ export default function SchoolPortals() {
             schoolName={school.schoolName}
             motto={school.motto}
             availability={school.availability}
+            portal={school.portal}
           />
         ))}
       </div>

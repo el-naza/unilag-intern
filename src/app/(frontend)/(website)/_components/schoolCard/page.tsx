@@ -15,7 +15,7 @@ const schibstedGrotesk = Schibsted_Grotesk({
   variable: '--font-schibstedGrotesk',
 })
 
-export default function SchoolCard({ id, schoolLogo, schoolName, motto, availability }) {
+export default function SchoolCard({ id, schoolLogo, schoolName, motto, portal, availability }) {
   return (
     <div className="flex flex-col gap-y-6 py-5 px-[15px] bg-[#F5F9FF] border-solid border-[1px] border-[#DCDCDC] rounded-[6px] relative">
       <Image
@@ -35,7 +35,7 @@ export default function SchoolCard({ id, schoolLogo, schoolName, motto, availabi
         </p>
       </div>
       <a
-        href="#"
+        href={portal}
         className={`bg-[#1E2763] py-3 px-5 rounded-[100px] text-white  text-xl font-normal leading-[1.5] ${jost.className} md:w-[30%] w-[50%] text-center`}
       >
         Go-to Portal

@@ -47,7 +47,7 @@ export default function Navigation() {
           <a href="/schoolPortals">School Portals</a>
         </li>
         <li>
-          <a href="/companies">Companies</a>
+          <a href="https://intrns.com/company-auth/login">Companies</a>
         </li>
         <li>
           <a href="/aboutUs">About Us</a>

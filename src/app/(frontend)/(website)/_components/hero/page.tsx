@@ -58,7 +58,7 @@ export default function Hero() {
             className="w-[134px] h-[32px]"
           />
           <Image
-            src="/images/unilagLogo.png"
+            src="/images/unilag-full-logo.png"
             alt="The logo of UNILAG"
             width={176}
             height={44}
