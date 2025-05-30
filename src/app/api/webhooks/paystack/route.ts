@@ -79,7 +79,10 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get('x-paystack-signature')
 
     // Verify the webhook signature in production
-    if (process.env.NODE_ENV === 'production' && !verifyWebhookSignature(requestBody, signature)) {
+    if (
+      // process.env.NODE_ENV === 'production' &&
+      !verifyWebhookSignature(requestBody, signature)
+    ) {
       console.error('Invalid webhook signature')
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
