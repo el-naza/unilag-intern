@@ -21,11 +21,13 @@ export default function Hero() {
     <div className="">
       <div className=" pt-[100px] pb-16 px-5 md:px-0">
         <h1
-          className={`${schibstedGrotesk.className} md:text-[85px] font-[900] text-center max-w-[1000px] mx-auto leading-[1.5] text-[2.5rem]`}
+          className={`${schibstedGrotesk.className} md:text-[85px] font-[900] text-center max-w-[1000px] mx-auto leading-[1.5] text-[2.5rem] text-[#292929]`}
         >
           Launch Your Career with Intrn Today!
         </h1>
-        <p className={`${jost.className} text-xl text-center max-w-[650px] mx-auto leading-[1.5]`}>
+        <p
+          className={`${jost.className} text-xl text-center max-w-[650px] mx-auto leading-[1.5] text-[#525252]`}
+        >
           Discover exciting internship opportunities tailored for you. Join intrn and take the first
           step towards your dream career!
         </p>
@@ -45,11 +47,11 @@ export default function Hero() {
         </div>
       </div>
       <Carousel />
-      <div className="md:flex md:justify-between md:gap-x-32 md:px-16 px-5 py-5 bg-[#EFFEFC] items-center">
-        <p className={`${jost.className} text-xl leading-[1.5] w-[250px] text-[#1E2763] pb-8`}>
+      <div className="md:flex md:justify-between md:items-center md:gap-x-32 md:px-16  px-5 py-10 bg-[#EFFEFC] items-center">
+        <p className={`${jost.className} text-xl leading-[1.5] w-[250px] py-auto text-[#1E2763] `}>
           Trusted by top companies for internships
         </p>
-        <div className="md:flex md:gap-x-8 grid grid-cols-2 gap-8">
+        <div className="md:flex md:gap-x-8 md:items-center grid grid-cols-2 gap-8">
           <Image
             src="/images/koonageLogo.png"
             alt="The logo of Koonage"

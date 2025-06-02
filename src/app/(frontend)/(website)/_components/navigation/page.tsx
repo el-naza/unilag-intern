@@ -41,7 +41,7 @@ export default function Navigation() {
         />
       </div>
       <ul
-        className={`text-base md:flex md:flex-row flex flex-col md:gap-x-8 text-[#525252] text-[16px] ${display ? 'block gap-y-8 pt-8' : 'hidden'}`}
+        className={`text-base md:flex md:flex-row flex flex-col md:gap-x-8 md:pt-0 md:gap-y-0 text-[#525252] ${display ? 'block gap-y-8 pt-8' : 'hidden'}`}
       >
         <li>
           <a href="/schoolPortals">School Portals</a>

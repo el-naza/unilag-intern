@@ -17,11 +17,11 @@ const schibstedGrotesk = Schibsted_Grotesk({
 
 export default function Empower() {
   return (
-    <div className="md:px-16 px-5 py-[100px] md:flex items-center">
+    <div className="md:px-16 px-5 py-[100px] md:flex items-center text-[#292929]">
       <div className="flex-1">
         <div className="flex flex-col gap-y-8">
           <h2
-            className={`${schibstedGrotesk.className} font-[700] md:text-[48px] text-[2rem] leading-[1.5]`}
+            className={`${schibstedGrotesk.className} font-[700] md:text-[48px] text-[2rem] leading-[1.5] `}
           >
             Empower Your Business: Connect with Talented Interns Today!
           </h2>

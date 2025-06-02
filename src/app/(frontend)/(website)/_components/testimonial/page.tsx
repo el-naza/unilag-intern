@@ -17,7 +17,7 @@ const schibstedGrotesk = Schibsted_Grotesk({
 
 export default function Testimonial() {
   return (
-    <div className="bg-[#53F5EC] md:p-[64px] p-5 md:flex md:flex-row items-center justify-between md:gap-[80px] flex flex-col gap-y-5">
+    <div className="bg-[#53F5EC] md:p-[64px] p-5 md:flex md:flex-row items-center justify-between md:gap-x-[80px] flex flex-col gap-y-5">
       <div className="flex-1 relative">
         <video src="/videos/testimonial.mp4" className="" controls></video>
         <div className="bg-[rgba(57,57,57,0.4)] py-6 px-3 absolute bottom-[0px] z-10 w-[100%]">
@@ -29,9 +29,9 @@ export default function Testimonial() {
           </p>
         </div>
       </div>
-      <div className="flex-1 md:w-[616px] h-[168px] md:text-left text-justify">
+      <div className="flex-1 md:w-[616px] md:text-left text-justify">
         <p
-          className={`${schibstedGrotesk.className} font-[700] md:text-[32px] text-xl leading-[1.3]`}
+          className={`${schibstedGrotesk.className} font-[700] md:text-[32px] text-xl leading-[1.3] text-[#292929]`}
         >
           "My internship experience with Intrn opened doors I never thought possible. The guidance
           and opportunities were invaluable in shaping my career path."

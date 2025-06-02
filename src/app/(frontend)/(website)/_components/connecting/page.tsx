@@ -25,12 +25,12 @@ export default function Connecting() {
           Our Mission
         </h6>
         <h2
-          className={`text-[#292929] md:text-[3rem] text-[2rem] leading-[1.5] font-[700] text-center md:w-[800px] mx-auto`}
+          className={`${schibstedGrotesk.className} text-[#292929] md:text-[3rem] text-[2rem] leading-[1.5] font-[700] text-center md:w-[800px] mx-auto`}
         >
           Connecting Talent with Opportunity
         </h2>
         <p
-          className={`font-normal leading-[1.5] text-xl ${jost.className} md:w-[700px] text-center mx-auto`}
+          className={`font-normal leading-[1.5] text-xl ${jost.className} md:w-[700px] text-center mx-auto text-[#525252]`}
         >
           At Intrn, we aim to bridge the gap between aspiring professionals and valuable internship
           opportunities. Backed by Koonage Infotech, we are dedicated to empowering Nigeria's youth
