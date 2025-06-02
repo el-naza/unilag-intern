@@ -19,9 +19,10 @@ export default function Footer() {
         className={`md:flex gap-x-6 ${jost.className} text-xl font-normal leading-[1.5] pt-[21px] md:pt-0 md:flex-row flex flex-col gap-y-6 md:gap-y-0`}
       >
         <p className="#0B0B00">&copy; 2025 Intrns.com All rights reserved.</p>
-        <ul
-          className={`md:flex md:gap-x-6 md:flex-row flex flex-col gap-y-6 text-[#1E2763] underline`}
-        >
+        {/* <ul
+          className={`md:flex md:gap-x-6 md:flex-row flex flex-col gap-y-6 text-[#1E2763] underline hidden`}
+        > */}
+        <ul className={`hidden`}>
           <li>
             <a href="#">Privacy Policy</a>
           </li>
