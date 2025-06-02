@@ -4,8 +4,8 @@ import React, { useState } from 'react'
 import { Jost } from 'next/font/google'
 import { Schibsted_Grotesk } from 'next/font/google'
 import Image from 'next/image'
-import SchoolCard from '../_components/schoolCard/page'
-import { schoolData } from '../_components/schoolData/page'
+import SchoolCard from '../_components/school-card/page'
+import { schoolData } from '../_components/school-data/page'
 import Join from '../_components/join/page'
 
 const jost = Jost({
@@ -147,6 +147,7 @@ export default function SchoolPortals() {
       <Join
         headingText="Not in School? Still Hungry to Learn?"
         normalText="Kickstart your career journey with hands-on experience, even if you're not enrolled in a university."
+        signingLink="https://cilpu.unilag.edu.ng/auth/sign-up/siwes-applicant"
       />
     </div>
   )

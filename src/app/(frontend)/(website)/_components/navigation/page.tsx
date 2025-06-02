@@ -44,22 +44,28 @@ export default function Navigation() {
         className={`text-base md:flex md:flex-row flex flex-col md:gap-x-8 md:pt-0 md:gap-y-0 text-[#525252] ${display ? 'block gap-y-8 pt-8' : 'hidden'}`}
       >
         <li>
-          <a href="/schoolPortals">School Portals</a>
+          <a href="/school-portals">School Portals</a>
         </li>
         <li>
           <a href="https://intrns.com/company-auth/login">Companies</a>
         </li>
         <li>
-          <a href="/aboutUs">About Us</a>
+          <a href="/about-us">About Us</a>
         </li>
-        <button className="bg-[#1E2763] py-2 px-5 rounded-[100px] text-white md:hidden block w-[40%]">
+        <a
+          href="/#signup"
+          className="bg-[#1E2763] py-2 px-5 rounded-[100px] text-white md:hidden block w-[40%]"
+        >
           Sign Up
-        </button>
+        </a>
       </ul>
       <div>
-        <button className="bg-[#1E2763] py-2 px-5 rounded-[100px] text-white md:block hidden">
+        <a
+          href="/#signup"
+          className="bg-[#1E2763] py-2 px-5 rounded-[100px] text-white md:block hidden"
+        >
           Sign Up
-        </button>
+        </a>
       </div>
     </div>
   )
