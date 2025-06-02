@@ -5,6 +5,7 @@ import { relatedStudentOrCompany } from '@/access/interview-invitations/relatedS
 import { anyone } from '@/access/anyone'
 import { companyOrStudent } from './Companies/Internships'
 import { students } from '@/access/students'
+import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
 
 export const InternshipApplications: CollectionConfig = {
   slug: 'internship-applications',
@@ -25,6 +26,13 @@ export const InternshipApplications: CollectionConfig = {
           const studentId = student?.id || student
           if (!internshipId || !studentId) {
             throw new Error('Internship and student are required')
+          }
+
+          // Check if the student has enough coins to apply for the internship
+          // Fetch the coins and applications count for the student
+          const coinsAndApplicationsCount = await fetchCoinsAndApplicationsCount(studentId)
+          if (coinsAndApplicationsCount.coins <= coinsAndApplicationsCount.applications) {
+            throw new Error('Not enough coins to apply for internship. Pls buy more coins')
           }
 
           const internshipApplications = await req.payload.find({

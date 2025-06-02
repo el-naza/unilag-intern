@@ -43,7 +43,7 @@ export default function InvitationTabs() {
         {careers.map((c) => (
           <button
             key={c.title}
-            className={`py-[6px] px-[20px] rounded-[32px] font-[400] text-[12px] text-[#FFFFFF] flex items-center gap-[8px] ${
+            className={`py-[4px] px-[8px] sm:px-[10px] md:px-[10px] lg:px-[20px] rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] font-[400] text-[10px] sm:text-[11px] md:text-[12px] text-[#FFFFFF] flex items-center gap-[6px] sm:gap-[8px] ${
               active === c.title ? 'bg-[#0B7077]' : ''
             }`}
             onClick={() => handleTabClick(c.path, c.title)}
@@ -51,7 +51,7 @@ export default function InvitationTabs() {
             {c.title}
 
             {c.total && (
-              <span className="h-[17px] w-[17px] rounded-full bg-[#FF3B30] font-[10px] text-[10px] flex items-center justify-center">
+              <span className="h-[14px] w-[14px] sm:h-[15px] sm:w-[15px] md:h-[17px] md:w-[17px] rounded-full bg-[#FF3B30] font-[10px] text-[10px] flex items-center justify-center">
                 {c.total}
               </span>
             )}

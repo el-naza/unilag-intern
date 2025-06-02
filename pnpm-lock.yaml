@@ -41,6 +41,9 @@ importers:
       '@payloadcms/storage-s3':
         specifier: 3.28.1
         version: 3.28.1(@types/react@19.0.1)(monaco-editor@0.52.2)(next@15.2.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.77.4))(payload@3.28.1(graphql@16.10.0)(typescript@5.7.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
+      '@paystack/inline-js':
+        specifier: ^2.22.2
+        version: 2.22.2
       '@radix-ui/react-accordion':
         specifier: ^1.2.3
         version: 1.2.3(@types/react-dom@19.0.1)(@types/react@19.0.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -146,6 +149,9 @@ importers:
       lucide-react:
         specifier: ^0.378.0
         version: 0.378.0(react@19.0.0)
+      mongodb:
+        specifier: ^6.16.0
+        version: 6.16.0(@aws-sdk/credential-providers@3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0)))
       mui:
         specifier: ^0.0.1
         version: 0.0.1
@@ -240,6 +246,9 @@ importers:
       '@types/node':
         specifier: 22.5.4
         version: 22.5.4
+      '@types/paystack__inline-js':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@types/react':
         specifier: 19.0.1
         version: 19.0.1
@@ -1445,6 +1454,10 @@ packages:
       react: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
       react-dom: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
 
+  '@paystack/inline-js@2.22.2':
+    resolution: {integrity: sha512-/yiK/ehUgIWNmShdSbaiAZFzACGqNMLPzC8kdNN4Pgmus5TWaMewmkl2Se9BgCzgHNEEMh7uwIBr0ZSbzQTZDQ==}
+    engines: {node: '>= 18.0.0', npm: '>= 10.0.0'}
+
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -2496,6 +2509,9 @@ packages:
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
 
+  '@types/paystack__inline-js@1.0.1':
+    resolution: {integrity: sha512-uAXk9EJobC/0v5zetSULTU8+3lIE3Y0Q0KwpR0lF7KRf+tj4AcE87kr6b8tpRkrr6uo9qXKgyjma+bmGDhwxbQ==}
+
   '@types/prop-types@15.7.14':
     resolution: {integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==}
 
@@ -2795,6 +2811,10 @@ packages:
     resolution: {integrity: sha512-5afhLTjqDSA3akH56E+/2J6kTDuSIlBxyXPdQslj9hcIgOUE378xdOfZvC/9q3LifJNI6KR/juZ+d0NRNYBwXg==}
     engines: {node: '>=16.20.1'}
     deprecated: a critical bug affecting only useBigInt64=true deserialization usage is fixed in bson@6.10.3
+
+  bson@6.10.3:
+    resolution: {integrity: sha512-MTxGsqgYTwfshYWTRdmZRC+M7FnG1b4y7RO7p2k3X24Wq0yv1m77Wsj0BzlPzd/IowgESfsruQCUToa7vbOpPQ==}
+    engines: {node: '>=16.20.1'}
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
@@ -4143,6 +4163,33 @@ packages:
 
   mongodb@6.12.0:
     resolution: {integrity: sha512-RM7AHlvYfS7jv7+BXund/kR64DryVI+cHbVAy9P61fnb1RcWZqOW1/Wj2YhqMCx+MuYhqTRGv7AwHBzmsCKBfA==}
+    engines: {node: '>=16.20.1'}
+    peerDependencies:
+      '@aws-sdk/credential-providers': ^3.188.0
+      '@mongodb-js/zstd': ^1.1.0 || ^2.0.0
+      gcp-metadata: ^5.2.0
+      kerberos: ^2.0.1
+      mongodb-client-encryption: '>=6.0.0 <7'
+      snappy: ^7.2.2
+      socks: ^2.7.1
+    peerDependenciesMeta:
+      '@aws-sdk/credential-providers':
+        optional: true
+      '@mongodb-js/zstd':
+        optional: true
+      gcp-metadata:
+        optional: true
+      kerberos:
+        optional: true
+      mongodb-client-encryption:
+        optional: true
+      snappy:
+        optional: true
+      socks:
+        optional: true
+
+  mongodb@6.16.0:
+    resolution: {integrity: sha512-D1PNcdT0y4Grhou5Zi/qgipZOYeWrhLEpk33n3nm6LGtz61jvO88WlrWCK/bigMjpnOdAUKKQwsGIl0NtWMyYw==}
     engines: {node: '>=16.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -7337,6 +7384,8 @@ snapshots:
       - supports-color
       - typescript
 
+  '@paystack/inline-js@2.22.2': {}
+
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
@@ -8710,6 +8759,8 @@ snapshots:
 
   '@types/parse-json@4.0.2': {}
 
+  '@types/paystack__inline-js@1.0.1': {}
+
   '@types/prop-types@15.7.14': {}
 
   '@types/react-dom@19.0.1':
@@ -9057,6 +9108,8 @@ snapshots:
   bson-objectid@2.0.4: {}
 
   bson@6.10.2: {}
+
+  bson@6.10.3: {}
 
   buffer-from@1.1.2: {}
 
@@ -10636,6 +10689,14 @@ snapshots:
     dependencies:
       '@mongodb-js/saslprep': 1.1.9
       bson: 6.10.2
+      mongodb-connection-string-url: 3.0.2
+    optionalDependencies:
+      '@aws-sdk/credential-providers': 3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0))
+
+  mongodb@6.16.0(@aws-sdk/credential-providers@3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0))):
+    dependencies:
+      '@mongodb-js/saslprep': 1.1.9
+      bson: 6.10.3
       mongodb-connection-string-url: 3.0.2
     optionalDependencies:
       '@aws-sdk/credential-providers': 3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0))
