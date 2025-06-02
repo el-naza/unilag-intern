@@ -14,7 +14,7 @@ const schibstedGrotesk = Schibsted_Grotesk({
   variable: '--font-schibstedGrotesk',
 })
 
-export default function Join({ headingText, normalText }) {
+export default function Join({ headingText, normalText, signingLink }) {
   return (
     <div className="bg-gradient-to-r from-[#1E2763] to-[#3D4FC9] ">
       <div className="py-[100px] md:px-20 flex flex-col gap-y-8 md:w-[50%] w-[100%] px-5">
@@ -27,7 +27,7 @@ export default function Join({ headingText, normalText }) {
           {normalText}
         </p>
         <a
-          href="#"
+          href={signingLink}
           className={`bg-[#07CBC9] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal leading-[1.5] ${jost.className} w-[155px] text-center`}
         >
           Signup Now

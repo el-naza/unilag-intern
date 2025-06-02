@@ -36,7 +36,7 @@ export default function SchoolCard({ id, schoolLogo, schoolName, motto, portal, 
       </div>
       <a
         href={portal}
-        className={`bg-[#1E2763] py-3 px-5 rounded-[100px] text-white  text-xl font-normal leading-[1.5] ${jost.className} md:w-[30%] w-[50%] text-center`}
+        className={`bg-[#1E2763] py-3 px-5 rounded-[100px] text-white  text-xl font-normal leading-[1.5] ${jost.className} md:w-[40%] w-[50%] text-center`}
       >
         Go-to Portal
       </a>

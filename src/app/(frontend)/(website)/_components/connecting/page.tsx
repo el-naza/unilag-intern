@@ -44,15 +44,18 @@ export default function Connecting() {
         height={400}
         className="w-[100%] py-20"
       />
-      <div className="md:flex md:flex-row md:gap-x-5 md:justify-center md:px-16 px-5 flex flex-col gap-y-5 md:gap-y-0">
+      <div
+        className="md:flex md:flex-row md:gap-x-5 md:justify-center md:px-16 px-5 flex flex-col gap-y-5 md:gap-y-0"
+        id="signup"
+      >
         <a
-          href="/companies"
+          href="https://intrns.com/company-auth/login"
           className={`bg-[#1E2763] py-3 px-5 rounded-[100px] text-white  text-xl font-normal leading-[1.5] ${jost.className} text-center`}
         >
           Signup As a Company
         </a>
         <a
-          href="#"
+          href="https://cilpu.unilag.edu.ng/auth/sign-up/siwes-applicant"
           className={`bg-[#53F5EC] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal leading-[1.5] ${jost.className} text-center`}
         >
           Talent Signup

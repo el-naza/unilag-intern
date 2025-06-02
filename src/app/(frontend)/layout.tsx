@@ -89,7 +89,10 @@ function DynamicFavicon() {
     const link = document.createElement('link')
     link.rel = 'icon'
     link.type = 'image/png'
-    link.href = pathname.startsWith('/unilag') ? '/images/unilag-logo.png' : '/icons/intrn-icon.png'
+    link.href =
+      pathname.startsWith('/unilag') || location.href.startsWith('https://cilpu.unilag.edu.ng')
+        ? '/images/unilag-logo.png'
+        : '/icons/intrn-icon.png'
     head.appendChild(link)
   }, [pathname])
 
