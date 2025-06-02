@@ -26,7 +26,7 @@ const HeroCarousel = () => {
   return (
     <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 place-content-center h-[100vh] mb-40 transition-all max-md:mt-20 relative">
       <div
-        className={`grid place-content-center my-auto mx-0 items-center lg:justify-items-start md:justify-items-start sm:justify-items-center xs:justify-items-center content-center z-10 lg:pl-12 md:pl-12 sm:pl-0 xs:pl-0 pr-4 pt-52 pb-28 rounded-tr-[50px] rounded-br-[50px] ${bgColors[currentSlide]}`}
+        className={`grid place-content-center my-auto mx-0 items-center lg:justify-items-start md:justify-items-start sm:justify-items-center xs:justify-items-center content-center h-[85vh] z-10 rounded-tr-[50px] rounded-br-[50px] ${bgColors[currentSlide]}`}
       >
         <p className="text-sm mb-8 bg-white px-3 py-2 rounded-md lg:mx-0 md:mx-0 sm:mx-auto xs:mx-auto">
           Never stop learning
@@ -54,7 +54,7 @@ const HeroCarousel = () => {
       </div>
 
       <div
-        className={`absolute z-10 xl:bottom-[14rem] lg:bottom-[10rem] w-[8rem] xl:right-[47%] right-[45%] rounded-full aspect-square lg:grid md:hidden sm:hidden xs:hidden place-content-center border-[15px] border-[#D2E6E4] ${playBgColors[currentSlide]}`}
+        className={`absolute top-[50%] left-[50%] -translate-x-1/2 translate-y-1/2 z-10 xl:w-[10rem] w-[8rem] rounded-full aspect-square lg:grid md:hidden sm:hidden xs:hidden place-content-center border-[15px] border-[#D2E6E4] ${playBgColors[currentSlide]}`}
       >
         <Image
           src="/icons/play-icon.svg"
@@ -73,7 +73,7 @@ const HeroCarousel = () => {
           alt="Wirelines"
           width={3000}
           height={6000}
-          className="w-full -left-[5rem] relative"
+          className="w-full -left-[15rem] relative"
         />
 
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
