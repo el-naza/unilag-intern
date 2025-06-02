@@ -26,9 +26,11 @@ const HeroCarousel = () => {
   return (
     <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 place-content-center h-[100vh] mb-40 transition-all max-md:mt-20 relative">
       <div
-        className={`grid place-content-center my-auto mx-0 items-center lg:justify-items-start md:justify-items-start sm:justify-items-center xs:justify-items-center content-center z-10 lg:pl-12 md:pl-12 sm:pl-0 xs:pl-0 pr-4 py-[7rem] rounded-tr-[50px] rounded-br-[50px] ${bgColors[currentSlide]}`}
+        className={`grid place-content-center my-auto mx-0 items-center lg:justify-items-start md:justify-items-start sm:justify-items-center xs:justify-items-center content-center z-10 lg:pl-12 md:pl-12 sm:pl-0 xs:pl-0 pr-4 pt-52 pb-28 rounded-tr-[50px] rounded-br-[50px] ${bgColors[currentSlide]}`}
       >
-        <p className="text-sm mb-8 bg-white px-3 py-2 rounded-md lg:mx-0 md:mx-0 sm:mx-auto xs:mx-auto">Never stop learning</p>
+        <p className="text-sm mb-8 bg-white px-3 py-2 rounded-md lg:mx-0 md:mx-0 sm:mx-auto xs:mx-auto">
+          Never stop learning
+        </p>
         <h1
           className={`scroll-m-20 font-semibold tracking-tight 2xl:text-[4rem] xl:text-[4rem] lg:text-[3rem] md:text-[2rem] sm:text-[2rem] xs:text-[2rem] md:text-left sm:text-center xs:text-center ${currentSlide === 0 ? 'text-black' : 'text-white'}`}
         >
@@ -67,22 +69,17 @@ const HeroCarousel = () => {
         className={`lg:grid md:grid sm:hidden xs:hidden place-content-cente my-auto h-[70%] rounded-br-[50px] absolute w-[50%] right-0  ${bg2Colors[currentSlide]}`}
       >
         <Image
-                src="/images/wire-lines.svg"
-                alt="Wirelines"
-                width={3000}
-                height={6000}
-                className="w-full -left-[5rem] relative"
-              />
+          src="/images/wire-lines.svg"
+          alt="Wirelines"
+          width={3000}
+          height={6000}
+          className="w-full -left-[5rem] relative"
+        />
 
         <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
           <CarouselContent>
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
-              <Image
-                src="/images/hero-1.png"
-                alt="Hero 1"
-                width={500}
-                height={200}
-              />
+              <Image src="/images/hero-1.png" alt="Hero 1" width={500} height={200} />
 
               <div className="absolute top-[14rem] left-[8rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
