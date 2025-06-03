@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { pricePerCoin } from '@/utilities'
 
 // Paystack webhook IP whitelist
 const PAYSTACK_IP_WHITELIST = ['52.31.139.75', '52.49.173.169', '52.214.14.220']
@@ -122,7 +123,7 @@ export async function POST(req: NextRequest) {
       data: {
         student: customData.student_id!,
         amount: amount / 100, // Convert to Naira
-        rate: 0.01, // Current rate at the time of writing is 1% (0.01)
+        rate: 1 / pricePerCoin,
         metadata: customData as any,
 
         // Payment information
