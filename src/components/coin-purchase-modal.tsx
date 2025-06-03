@@ -14,6 +14,7 @@ import { useQuery } from '@tanstack/react-query'
 import fetchMe from '@/services/fetchMe'
 import { Student } from '@/payload-types'
 import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
+import { pricePerCoin } from '@/utilities'
 
 // const paystackInstance = new PaystackPop()
 
@@ -162,12 +163,12 @@ export function CoinModal({ open, onOpenChange }: CoinModalProps) {
                   <div className="p-8">
                     <div className="mb-4 flex">
                       <Image src={stackedCoinsVector} alt="stacked-coins" className="me-2" />1 Coin
-                      = ₦100
+                      = ₦{pricePerCoin}
                     </div>
                     <div className="flex justify-between items-center">
                       <div>Calculated Price</div>
                       <div className="p-2 border rounded-lg border-gray-300 text-center">
-                        ₦{coinsCount * 100}
+                        ₦{coinsCount * pricePerCoin}
                       </div>
                     </div>
                   </div>
