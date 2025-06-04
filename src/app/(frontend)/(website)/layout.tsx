@@ -7,10 +7,8 @@ import { getSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
-  
   const [sessionData, setSessionData] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
-
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -31,12 +29,12 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
 
   const pathname = usePathname()
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading ...</div>
 
   return (
     <>
       <Navbar />
-        <main>{children}</main>
+      <main>{children}</main>
       <Footer />
     </>
   )
