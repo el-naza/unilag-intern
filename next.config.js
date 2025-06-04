@@ -26,6 +26,24 @@ const nextConfig = {
   },
   reactStrictMode: true,
 
+  async rewrites() {
+    // Setup nextjs rewrite for cilpu.unilag.edu.ng root ("/") to go to /unilag
+    return {
+      beforeFiles: [
+        {
+          source: '/',
+          has: [
+            {
+              type: 'host',
+              value: 'cilpu.unilag.edu.ng',
+            },
+          ],
+          destination: '/unilag',
+        },
+      ],
+    }
+  },
+
   typescript: {
     ignoreBuildErrors: true,
   },
