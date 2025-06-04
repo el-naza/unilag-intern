@@ -19,7 +19,7 @@ const schibstedGrotesk = Schibsted_Grotesk({
 export default function Hero() {
   return (
     <div className="">
-      <div className=" pt-[100px] pb-16 px-5 md:px-0">
+      <div className=" md:pt-[100px] pt-16 pb-16 px-5 md:px-0">
         <h1
           className={`${schibstedGrotesk.className} md:text-[85px] font-[900] text-center max-w-[1000px] mx-auto leading-[1.5] text-[2.5rem] text-[#292929]`}
         >
@@ -42,13 +42,15 @@ export default function Hero() {
             href="https://intrns.com/company-auth/login"
             className={`bg-[#53F5EC] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal leading-[1.5] ${jost.className} text-center`}
           >
-            For Companies - Reserve a Spot
+            Companies - Reserve a Spot
           </a>
         </div>
       </div>
       <Carousel />
-      <div className="md:flex md:justify-between md:items-center md:gap-x-32 md:px-16  px-5 py-10 bg-[#EFFEFC] items-center">
-        <p className={`${jost.className} text-xl leading-[1.5] w-[250px] py-auto text-[#1E2763] `}>
+      <div className="md:flex md:justify-between md:items-center md:gap-x-32 md:px-16 px-5 py-10 bg-[#EFFEFC] items-center">
+        <p
+          className={`${jost.className} text-xl leading-[1.5] w-[250px] py-auto text-[#1E2763] pb-8 md:pb-0`}
+        >
           Trusted by top companies for internships
         </p>
         <div className="md:flex md:gap-x-8 md:items-center grid grid-cols-2 gap-8">
