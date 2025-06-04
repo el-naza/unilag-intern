@@ -19,13 +19,13 @@ export default function Testimonial() {
   return (
     <div className="bg-[#53F5EC] md:p-[64px] p-5 md:flex md:flex-row items-center justify-between md:gap-x-[80px] flex flex-col gap-y-5">
       <div className="flex-1 relative group">
-        <video src="/videos/testimonial.mp4" className="" controls></video>
+        <video src="/videos/video-2.mp4" className="" controls></video>
         <div className="bg-[rgba(57,57,57,0.4)] py-6 px-3 absolute bottom-[0px] z-10 w-[100%] duration-300 ease-in group-hover:hidden">
           <p className={`text-xl font-[700] ${jost.className} leading-[1.5] text-white`}>
-            Chinonso Okeke
+            Vivian Asogwa
           </p>
           <p className={`text-[16px] font-normal ${jost.className} leading-[1.5] text-white`}>
-            Intern, TechCorp
+            Intern, Koonage
           </p>
         </div>
       </div>
