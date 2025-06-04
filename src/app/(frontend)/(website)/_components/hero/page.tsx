@@ -33,13 +33,13 @@ export default function Hero() {
         </p>
         <div className="gap-y-4 md:flex md:flex-row md:gap-x-4 md:justify-center flex flex-col pt-8">
           <a
-            href="https://cilpu.unilag.edu.ng/auth/sign-up/siwes-applicant"
+            href="/auth/sign-up/siwes-applicant"
             className={`bg-[#1E2763] py-3 px-5 rounded-[100px] text-white  text-xl font-normal leading-[1.5] ${jost.className} text-center`}
           >
             Join as Intern
           </a>
           <a
-            href="https://intrns.com/company-auth/login"
+            href="/company-auth/sign-up"
             className={`bg-[#53F5EC] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal leading-[1.5] ${jost.className} text-center`}
           >
             Companies - Reserve a Spot

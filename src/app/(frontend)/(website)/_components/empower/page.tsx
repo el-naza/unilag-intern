@@ -62,10 +62,10 @@ export default function Empower() {
             </div>
           </div>
           <a
-            href="https://intrns.com/company-auth/login"
-            className={`bg-[#1E2763] py-3 px-5 rounded-[100px] text-white  text-xl font-normal leading-[1.5] ${jost.className} md:w-[30%] w-[100%] text-center mb-8 md:mb-0`}
+            href="/company-auth/login"
+            className={`bg-[#1E2763] py-3 px-5 rounded-[100px] text-white  text-xl font-normal leading-[1.5] ${jost.className} self-start text-center mb-8 md:mb-0`}
           >
-            Company Signup
+            Company Sign Up
           </a>
         </div>
       </div>
