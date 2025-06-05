@@ -31,6 +31,7 @@ import Link from 'next/link'
 // Load Google Maps API script dynamically
 const loadGoogleMapsScript = () => {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
+  console.log(apiKey, 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY')
 
   // Check if script is already loaded
   if (document.querySelector(`script[src*="maps.googleapis.com/maps/api/js"]`)) {
@@ -440,7 +441,7 @@ export default function SignUp() {
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Start typing to see address suggestions
+                  Start typing to see address suggestions to select from
                 </p>
                 <FieldError field={field} />
               </>

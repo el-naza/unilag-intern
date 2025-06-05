@@ -28,9 +28,9 @@ export default function Join({ headingText, normalText, signingLink }) {
         </p>
         <a
           href={signingLink}
-          className={`bg-[#07CBC9] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal leading-[1.5] ${jost.className} w-[155px] text-center`}
+          className={`bg-[#07CBC9] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal self-start leading-[1.5] ${jost.className} text-center`}
         >
-          Signup Now
+          Sign Up Now
         </a>
       </div>
     </div>

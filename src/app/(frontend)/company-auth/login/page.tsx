@@ -177,6 +177,7 @@ export default function Login() {
         // success here so naviagate or toast to success !!
         form.reset()
         toast.success('Sign in successful')
+
         router.push('/company-pages/home')
 
         return null

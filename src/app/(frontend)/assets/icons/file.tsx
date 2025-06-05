@@ -1,7 +1,7 @@
 export default function FileIcon() {
   return (
     <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_1448_20945)">
+      <g clipPath="url(#clip0_1448_20945)">
         <path
           d="M33.4417 3.12061H14.1743V11.1106H37.5567V7.23402C37.5567 4.96567 35.7107 3.12061 33.4417 3.12061Z"
           fill="#CED9F9"

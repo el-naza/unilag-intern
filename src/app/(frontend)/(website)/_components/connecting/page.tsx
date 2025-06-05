@@ -58,7 +58,7 @@ export default function Connecting() {
           href="/auth/sign-up/siwes-applicant"
           className={`bg-[#53F5EC] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal leading-[1.5] ${jost.className} text-center`}
         >
-          Talent Signup
+          Talent Sign Up
         </a>
       </div>
     </div>

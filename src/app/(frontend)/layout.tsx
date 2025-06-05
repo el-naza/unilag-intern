@@ -20,6 +20,7 @@ import { usePathname } from 'next/navigation'
 import { Toaster } from '@/components/ui/sonner'
 import 'animate.css'
 import './globals.css'
+import { CoinPurchaseModalProvider } from '@/context/coin-purchase-modal-context'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
@@ -132,7 +133,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <QueryClientProvider client={queryClient}>
               <DynamicFavicon />
-              <div className="tracking-[0.37px]">{children}</div>
+              <div className="tracking-[0.37px]">
+                <CoinPurchaseModalProvider>{children}</CoinPurchaseModalProvider>
+              </div>
             </QueryClientProvider>
           </LocalizationProvider>
           <Toaster />

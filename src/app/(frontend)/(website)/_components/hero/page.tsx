@@ -39,7 +39,7 @@ export default function Hero() {
             Join as Intern
           </a>
           <a
-            href="/company-auth/login"
+            href="/company-auth/sign-up"
             className={`bg-[#53F5EC] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal leading-[1.5] ${jost.className} text-center`}
           >
             Companies - Reserve a Spot

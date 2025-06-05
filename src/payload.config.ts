@@ -20,6 +20,7 @@ import { InternshipApplications } from './collections/InternshipApplications'
 import { Employments } from './collections/Employments'
 import { Reports } from './collections/Reports'
 import { EmailSubscribers } from './collections/EmailSubscribers'
+import { Payments } from './collections/Payments'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -41,6 +42,7 @@ export default buildConfig({
     EmailSubscribers,
     Reports,
     Internships,
+    Payments,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   // email: nodemailerAdapter({

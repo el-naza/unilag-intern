@@ -40,7 +40,7 @@ export const Internships: CollectionConfig = {
   access: {
     create: companies,
     delete: self,
-    // read: companyOrStudent,
+    read: companyOrStudent,
     update: self,
   },
   fields: [
