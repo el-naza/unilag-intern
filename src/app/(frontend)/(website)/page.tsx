@@ -17,7 +17,7 @@ export default function Home() {
       <Join
         headingText="Join the Internship Revolution"
         normalText="Sign up now to secure your spot and start your journey towards an exciting internship!"
-        signingLink="https://cilpu.unilag.edu.ng/auth/sign-up/siwes-applicant"
+        signingLink="/auth/sign-up/siwes-applicant"
       />
     </>
   )

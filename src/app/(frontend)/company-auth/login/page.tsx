@@ -196,7 +196,7 @@ export default function Login() {
         {step === 'company'
           ? 'Login into your Siwes Company Profile'
           : step === 'showEmail' || step === 'showOTP'
-            ? 'Company Login Confirmation'
+            ? 'Login Into Your Siwes Company Profile'
             : signUp === 'formField' || signUp === 'file'
               ? 'Sign up as a Siwes Company'
               : ''}
@@ -215,7 +215,7 @@ export default function Login() {
           form.handleSubmit()
         }}
       >
-        <Label>Company Email</Label>
+        <Label>Enter Email Address</Label>
         <form.Field name="email">
           {(field) => {
             return (
@@ -227,7 +227,7 @@ export default function Login() {
                   value={field.state.value || ''}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Email"
+                  placeholder="example123456@gmail.com"
                   className="bg-white/40 backdrop-blur-[70px] placeholder:text-[#8E8E93] border"
                 />
                 <FieldError field={field} />
@@ -273,11 +273,28 @@ export default function Login() {
                 type="submit"
                 disabled={!canSubmit}
                 size="lg"
-                className="w-full mt-8"
+                className="w-full mt-4 mb-3 rounded-xl"
                 variant="secondary"
                 color="white"
               >
-                {hasPassword ? 'Login' : 'Continue'} {isSubmitting && <Spinner />}
+                {hasPassword ? 'Login' : 'Continue to Login'} {isSubmitting && <Spinner />}
+              </Button>
+              <div className="flex gap-x-5 items-center">
+                <div className="bg-[#ECECEC] w-full h-[1px]"></div>
+                <p>OR</p>
+                <div className="bg-[#ECECEC] w-full h-[1px]"></div>
+              </div>
+              <Button
+                type="button"
+                onClick={() => {
+                  window.location.href = '/company-auth/sign-up'
+                }}
+                size="lg"
+                className="w-full mt-3 rounded-xl border-solid border-[1px] border-[#8E8E93] p-3 bg-transparent text-[#1A1A1A] hover:text-white hover:border-none"
+                // variant="secondary"
+                color="white"
+              >
+                Create a Company Account
               </Button>
               <FormError form={form} />
             </>
@@ -286,11 +303,7 @@ export default function Login() {
       </form>
 
       <p className="font-[400] text-[12px] text-[#8E8E93] leading-[16px] mt-[12px] text-center">
-        Not registered yet?
-        <Link href={'/company-auth/sign-up'}>
-          <span className="text-[#007AFF] cursor-pointer mx-1">Sign up as a company</span>
-        </Link>
-        now to connect with top talents effortlessly!
+        Sign up now to connect with top talents effortlessly!
       </p>
       {/* )} */}
     </div>

@@ -147,7 +147,7 @@ export default function SchoolPortals() {
       <Join
         headingText="Not in School? Still Hungry to Learn?"
         normalText="Kickstart your career journey with hands-on experience, even if you're not enrolled in a university."
-        signingLink="https://cilpu.unilag.edu.ng/auth/sign-up/siwes-applicant"
+        signingLink="/auth/sign-up/siwes-applicant"
       />
     </div>
   )
