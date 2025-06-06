@@ -291,7 +291,7 @@ export default function Login() {
                   window.location.href = '/company-auth/sign-up'
                 }}
                 size="lg"
-                className="w-full mt-3 rounded-xl border-solid border-[1px] border-[#8E8E93] p-3 bg-transparent text-[#1A1A1A] hover:text-white hover:border-none"
+                className="w-full mt-3 rounded-xl border-solid border-[1px] border-[#8E8E93] p-3 bg-transparent text-[#1A1A1A] hover:text-white hover:border-none hover:bg-[#195F7E]"
                 // variant="secondary"
                 color="white"
               >
