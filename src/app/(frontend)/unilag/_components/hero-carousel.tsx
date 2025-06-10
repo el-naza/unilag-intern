@@ -21,6 +21,7 @@ const HeroCarousel = () => {
     api.on('select', (ev) => {
       setCurrentSlide(ev.selectedScrollSnap())
     })
+
   }, [api])
 
   return (
@@ -121,6 +122,7 @@ const HeroCarousel = () => {
             </CarouselItem>
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
+
               <Image
                 src="/images/hero-2.png"
                 alt="Hero 2"
@@ -166,9 +168,11 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
               </div>
+
             </CarouselItem>
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
+
               <Image
                 src="/images/hero-3.png"
                 alt="Hero 3"
@@ -214,6 +218,7 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
               </div>
+              
             </CarouselItem>
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
