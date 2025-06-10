@@ -80,6 +80,7 @@ export interface Config {
     'email-subscribers': EmailSubscriber;
     reports: Report;
     internships: Internship;
+    payments: Payment;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -97,6 +98,7 @@ export interface Config {
     'email-subscribers': EmailSubscribersSelect<false> | EmailSubscribersSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
     internships: InternshipsSelect<false> | InternshipsSelect<true>;
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -340,7 +342,6 @@ export interface Student {
     employment?: (string | null) | Employment;
     dateEmployed?: string | null;
   };
-  coins?: number | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -452,6 +453,33 @@ export interface Report {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: string;
+  student: string | Student;
+  amount: number;
+  rate: number;
+  metadata: {
+    student_id: string;
+    matriculation_number?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+  };
+  /**
+   * The payment provider used (e.g., Paystack)
+   */
+  paymentProvider: string;
+  /**
+   * Payment transaction reference number
+   */
+  transactionReference: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -500,6 +528,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'internships';
         value: string | Internship;
+      } | null)
+    | ({
+        relationTo: 'payments';
+        value: string | Payment;
       } | null);
   globalSlug?: string | null;
   user:
@@ -685,7 +717,6 @@ export interface StudentsSelect<T extends boolean = true> {
         employment?: T;
         dateEmployed?: T;
       };
-  coins?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -782,6 +813,28 @@ export interface InternshipsSelect<T extends boolean = true> {
   image?: T;
   status?: T;
   hasStudentApplied?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  student?: T;
+  amount?: T;
+  rate?: T;
+  metadata?:
+    | T
+    | {
+        student_id?: T;
+        matriculation_number?: T;
+        firstName?: T;
+        lastName?: T;
+        email?: T;
+      };
+  paymentProvider?: T;
+  transactionReference?: T;
   updatedAt?: T;
   createdAt?: T;
 }
