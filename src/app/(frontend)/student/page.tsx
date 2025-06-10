@@ -101,6 +101,7 @@ const Page = () => {
         const res = await searchJobs({
           name: company.name,
           ...(company.address ? { address: company.address } : {}),
+          distance: distance[0],
         })
         console.log('res', res)
         setPage(1)
