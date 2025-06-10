@@ -33,8 +33,14 @@ const Page = () => {
     )
 
     const res: any = await fetchDocs('interview-invitations', stringifiedQuery)
-    console.log(res)
-    setInterviewInvitations(res.docs)
+    // console.log(res)
+    // setInterviewInvitations(res.docs)
+
+    // Filter locally just in case the backend returns other statuses
+    const filtered =
+      res?.docs?.filter((invitation: InterviewInvitation) => invitation.status === 'declined') || []
+
+    setInterviewInvitations(filtered)
     setLoading(false)
   }
 

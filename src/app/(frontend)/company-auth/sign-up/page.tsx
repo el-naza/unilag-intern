@@ -31,6 +31,7 @@ import Link from 'next/link'
 // Load Google Maps API script dynamically
 const loadGoogleMapsScript = () => {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
+  console.log(apiKey, 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY')
 
   // Check if script is already loaded
   if (document.querySelector(`script[src*="maps.googleapis.com/maps/api/js"]`)) {
@@ -494,12 +495,25 @@ export default function SignUp() {
         </form.Subscribe>
       </form>
 
-      <p className="font-[400] text-[12px] text-gray-dark-2 leading-[16px] mt-[12px] text-center">
+      {/* <p className="font-[400] text-[12px] text-gray-dark-2 leading-[16px] mt-[12px] text-center">
         Already have an account?
         <Link href={'/company-auth/login'}>
           <span className="text-[#007AFF] cursor-pointer"> Login as a company</span>
         </Link>
-      </p>
+      </p> */}
+      <p className="text-center text-[#8E8E93] text-[12px] pt-4 pb-1">Already registered?</p>
+      <Button
+        type="button"
+        onClick={() => {
+          window.location.href = '/company-auth/login'
+        }}
+        size="lg"
+        className="w-full rounded-xl border-solid border-[1px] border-[#8E8E93] text-[#8E8E93] p-3 bg-transparent hover:text-white hover:border-none hover:bg-[#195F7E]"
+        // variant="secondary"
+        color="white"
+      >
+        Login as a company
+      </Button>
     </div>
   )
 }

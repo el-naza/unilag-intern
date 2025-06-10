@@ -1,5 +1,5 @@
-import Footer from '../../(website)/_components/waitlist-footer'
-import Navbar from '../../(website)/_components/waitlist-navbar'
+import Footer from '../../unilag/_components/waitlist-footer'
+import Navbar from '../../unilag/_components/waitlist-navbar'
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -6,7 +6,7 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // output: 'standalone',
   productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
@@ -25,6 +25,25 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
+
+  async rewrites() {
+    // Setup nextjs rewrite for cilpu.unilag.edu.ng root ("/") to go to /unilag
+    return {
+      beforeFiles: [
+        {
+          source: '/',
+          has: [
+            {
+              type: 'host',
+              value: 'cilpu.unilag.edu.ng',
+            },
+          ],
+          destination: '/unilag',
+        },
+      ],
+    }
+  },
+
   typescript: {
     ignoreBuildErrors: true,
   },

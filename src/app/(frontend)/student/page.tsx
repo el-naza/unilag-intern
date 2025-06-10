@@ -169,7 +169,7 @@ const Page = () => {
       ) : (
         <div>
           <div className="block lg:hidden min-h-screen relative text-sm text-white">
-            <div className="bg-[#195F7E] container pt-4 pb-1">
+            <div className="bg-[#195F7E] container 2xl:max-w-[1736px] pt-4 pb-1">
               <StudentHeader />
               <StudentNavbar />
             </div>
@@ -303,8 +303,8 @@ const Page = () => {
                   form.handleSubmit()
                 }}
               >
-                <div className="container">
-                  <nav className="relative flex gap-16 w-full items-center py-8 z-10">
+                <div className="container 2xl:max-w-[1736px]">
+                  <nav className="relative flex w-full justify-between items-center py-8 z-10">
                     <div className="flex items-center">
                       <Image
                         width={52}
@@ -314,7 +314,7 @@ const Page = () => {
                         className="mr-2"
                       />
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center ml-[195px]">
                       {meQuery.data ? (
                         <span className="font-oleo-script-swash-caps font-bold text-[#EEEFF4] text-[45px]">
                           Welcome {user?.firstName}
@@ -323,13 +323,13 @@ const Page = () => {
                         <Spinner />
                       )}
                     </div>
-                    <div className="col-span-2 flex items-center w-full flex-1 max-w-[682px]">
+                    <div className="flex items-center min-w-[582px] ml-auto">
                       {/* <div className="relative w-3/4"> */}
                       <form.Field name="name">
                         {(field) => {
                           return (
                             <>
-                              <div className="relative w-3/4">
+                              <div className="relative w-full">
                                 {/* <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
                                 <input
                                   name={field.name}
@@ -339,7 +339,7 @@ const Page = () => {
                                     field.handleChange(e.target.value)
                                   }}
                                   placeholder="Search For Companies"
-                                  className="w-full font-noto-sans outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-[#1E1E1E] text-sm"
+                                  className="w-full font-noto-sans outline-none text-black px-4 py-3 rounded border border-black placeholder:text-[#1E1E1E] text-sm"
                                 />
                                 <button
                                   type="submit"
@@ -373,7 +373,7 @@ const Page = () => {
                   </nav>
                 </div>
                 <main>
-                  <div className="container mb-4">
+                  <div className="container 2xl:max-w-[1736px] mb-4">
                     <div>
                       <div className="flex sm:grid-cols-3 gap-[58px]">
                         <div className="relative">
@@ -434,8 +434,8 @@ const Page = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-0 font-roboto z-10 relative">
-                    <div className="container flex w-full justify-between">
+                  <div className="flex sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 py-5 mb-0 font-roboto z-10 relative">
+                    <div className="container 2xl:rounded max-w-[1736px] flex w-full justify-between">
                       <div>
                         <Link href="#" className="relative group block text-center">
                           <span className="text-xl">Map Search</span>
@@ -545,7 +545,7 @@ const Page = () => {
                   </form> */}
                     <div className="col-span-5 font-manrope">
                       <div className="bg-white text-black py-4 w-full">
-                        <div className="container flex justify-between w-full">
+                        <div className="container 2xl:max-w-[1736px] flex justify-between w-full">
                           <div className="flex self-center">
                             <h3 className="font-bold text-2xl text-[#48484A]">Company Search</h3>
                           </div>
@@ -675,7 +675,7 @@ const Page = () => {
             </div>
           </div>
 
-          {/* <div className="container my-10 lg:my-24">
+          {/* <div className="container 2xl:max-w-[1736px] my-10 lg:my-24">
             <div className="grid gap-4 lg:gap-10">
               <div className="text-center">
                 <h4 className="text-xl lg:text-4xl text-[#FD661F] font-medium relative">
