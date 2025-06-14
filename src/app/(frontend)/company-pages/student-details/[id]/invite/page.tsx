@@ -20,7 +20,7 @@ import ArrowIcon from '../../../../assets/icons/arrow'
 
 import NavBar from '../../../../common/nav-bar'
 
-import studentImage from '../../../../assets/images/student-image.png'
+import studentImage from '../../../../assets/images/profile-image.webp'
 
 import MailIcon from '../../../../assets/icons/mail'
 
