@@ -82,7 +82,7 @@ const HeroCarousel = () => {
           <CarouselContent>
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
               <Image
-                src="/images/hero-1.png"
+                src="/images/new-hero-4.png"
                 alt="Hero 1"
                 width={500}
                 height={200}
@@ -130,11 +130,11 @@ const HeroCarousel = () => {
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
               <Image
-                src="/images/hero-2.png"
+                src="/images/new-hero-2.png"
                 alt="Hero 2"
                 width={500}
                 height={200}
-                className="mx-auto h-[inherit] w-full"
+                className="mx-auto h-[inherit] w-auto scale-[1.5]"
               />
 
               <div className="absolute top-[39rem] right-[12rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
@@ -178,11 +178,11 @@ const HeroCarousel = () => {
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
               <Image
-                src="/images/hero-3.png"
+                src="/images/new-hero-3.png"
                 alt="Hero 3"
                 width={500}
                 height={200}
-                className="scale-x-[2] mx-auto h-[inherit] w-[80%]"
+                className="mx-auto h-[inherit] w-auto"
               />
 
               <div className="absolute top-[27rem] left-[16rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
@@ -226,11 +226,11 @@ const HeroCarousel = () => {
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
               <Image
-                src="/images/hero-4.png"
+                src="/images/new-hero-1.png"
                 alt="Hero 4"
                 width={1200}
                 height={500}
-                className="mx-auto h-[inherit] w-full"
+                className="mx-auto h-[inherit] w-auto"
               />
 
               <div className="absolute top-[27rem] left-[16rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
