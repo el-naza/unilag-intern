@@ -21,11 +21,10 @@ const HeroCarousel = () => {
     api.on('select', (ev) => {
       setCurrentSlide(ev.selectedScrollSnap())
     })
-
   }, [api])
 
   return (
-    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 place-content-center h-[100vh] mb-40 transition-all max-md:mt-20 relative">
+    <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 place-content-center h-[100vh] mb-40 transition-all max-md:mt-20 relative overflow-hidden">
       <div
         className={`grid place-content-center my-auto mx-0 items-center lg:justify-items-start md:justify-items-start sm:justify-items-center xs:justify-items-center content-center h-[85vh] z-10 rounded-tr-[50px] rounded-br-[50px] ${bgColors[currentSlide]}`}
       >
@@ -54,20 +53,22 @@ const HeroCarousel = () => {
         </div>
       </div>
 
-      <div
-        className={`absolute top-[50%] left-[50%] -translate-x-1/2 translate-y-1/2 z-10 xl:w-[10rem] w-[8rem] rounded-full aspect-square lg:grid md:hidden sm:hidden xs:hidden place-content-center border-[15px] border-[#D2E6E4] ${playBgColors[currentSlide]}`}
-      >
-        <Image
-          src="/icons/play-icon.svg"
-          alt="Play"
-          width={50}
-          height={50}
-          className="w-[3rem] mx-auto ml-2"
-        />
+      <div className="bg-[#D2E6E4] absolute top-[50%] left-[50%] -translate-x-1/2 translate-y-1/2 z-10 w-36 rounded-full aspect-square place-content-center lg:grid md:hidden sm:hidden xs:hidden">
+        <div
+          className={`${playBgColors[currentSlide]} rounded-full w-24 h-24 grid place-content-center absolute bottom-[0.6rem] right-[16%]`}
+        >
+          <Image
+            src="/icons/play-icon.svg"
+            alt="Play"
+            width={50}
+            height={50}
+            className="w-[3rem] mx-auto ml-2"
+          />
+        </div>
       </div>
 
       <div
-        className={`lg:grid md:grid sm:hidden xs:hidden place-content-cente my-auto h-[70%] rounded-br-[50px] absolute w-[50%] right-0  ${bg2Colors[currentSlide]}`}
+        className={`lg:grid md:grid sm:hidden xs:hidden place-content-cente my-auto h-[70%] rounded-br-[50px] absolute w-[50%] right-0 ${bg2Colors[currentSlide]}`}
       >
         <Image
           src="/images/wire-lines.svg"
@@ -77,12 +78,18 @@ const HeroCarousel = () => {
           className="w-full -left-[15rem] relative"
         />
 
-        <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full">
+        <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full -top-28">
           <CarouselContent>
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
-              <Image src="/images/hero-1.png" alt="Hero 1" width={500} height={200} />
+              <Image
+                src="/images/hero-1.png"
+                alt="Hero 1"
+                width={500}
+                height={200}
+                className="mx-auto h-[inherit] w-full"
+              />
 
-              <div className="absolute top-[14rem] left-[8rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[16rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -96,7 +103,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[26rem] right-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
+              <div className="absolute top-[39rem] right-[12rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -110,7 +117,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[9rem] right-[10rem] animate-[bounce_9.5s_ease-in-out_infinite]">
+              <div className="absolute top-[20rem] right-[10rem] animate-[bounce_9.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/statistics-icon.svg"
                   alt="Icon"
@@ -122,16 +129,15 @@ const HeroCarousel = () => {
             </CarouselItem>
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
-
               <Image
                 src="/images/hero-2.png"
                 alt="Hero 2"
                 width={500}
                 height={200}
-                className="w-[24rem]"
+                className="mx-auto h-[inherit] w-full"
               />
 
-              <div className="absolute top-[24rem] right-[12rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
+              <div className="absolute top-[39rem] right-[12rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -145,7 +151,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[13rem] right-[5rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
+              <div className="absolute top-[20rem] right-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -159,7 +165,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div className="absolute top-[8rem] left-[8rem] animate-[bounce_9.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[16rem] animate-[bounce_9.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/statistics-icon.svg"
                   alt="Icon"
@@ -168,20 +174,18 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
               </div>
-
             </CarouselItem>
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
-
               <Image
                 src="/images/hero-3.png"
                 alt="Hero 3"
                 width={500}
                 height={200}
-                className="w-full scale-[1.5]"
+                className="scale-x-[2] mx-auto h-[inherit] w-[80%]"
               />
 
-              <div className="absolute top-[10rem] right-[8rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[16rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -191,11 +195,11 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="font-semibold">99+</p>
-                  <p className="text-sm">Companies Listed</p>
+                  <p className="text-xs">Companies Listed</p>
                 </div>
               </div>
 
-              <div className="absolute top-[15rem] left-[11rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
+              <div className="absolute  top-[20rem] right-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -204,12 +208,12 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Interns</p>
+                  <p className="text-xs">Interns</p>
                   <p className="font-semibold">999+</p>
                 </div>
               </div>
 
-              <div className="absolute top-[29rem] right-[20rem] animate-[bounce_9.5s_ease-in-out_infinite]">
+              <div className="absolute top-[39rem] right-[12rem] animate-[bounce_9.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/statistics-icon.svg"
                   alt="Icon"
@@ -218,7 +222,6 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
               </div>
-              
             </CarouselItem>
 
             <CarouselItem className="grid place-content-center relative basis-full h-[100vh]">
@@ -227,10 +230,10 @@ const HeroCarousel = () => {
                 alt="Hero 4"
                 width={1200}
                 height={500}
-                className="w-[33rem]"
+                className="mx-auto h-[inherit] w-full"
               />
 
-              <div className="absolute top-[13rem] left-[4rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
+              <div className="absolute top-[27rem] left-[16rem] flex gap-2 items-center p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/calendar-icon.svg"
                   alt="Icon"
@@ -240,11 +243,11 @@ const HeroCarousel = () => {
                 />
                 <div>
                   <p className="font-semibold">99+</p>
-                  <p className="text-sm">Companies Listed</p>
+                  <p className="text-xs">Companies Listed</p>
                 </div>
               </div>
 
-              <div className="absolute top-[22rem] right-[10rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
+              <div className="absolute top-[39rem] right-[12rem] flex gap-2 items-center  p-[.7rem] bg-[#ffffff73] rounded-[15px] backdrop-blur-[5px] animate-[bounce_10s_ease-in-out_infinite]">
                 <Image
                   src="/icons/certified-tutors-icon.svg"
                   alt="Icon"
@@ -253,12 +256,12 @@ const HeroCarousel = () => {
                   className="w-[2rem]"
                 />
                 <div>
-                  <p className="text-sm">Interns</p>
+                  <p className="text-xs">Interns</p>
                   <p className="font-semibold">999+</p>
                 </div>
               </div>
 
-              <div className="absolute top-[9rem] right-[6rem] animate-[bounce_9.5s_ease-in-out_infinite]">
+              <div className="absolute top-[20rem] right-[10rem] animate-[bounce_9.5s_ease-in-out_infinite]">
                 <Image
                   src="/icons/statistics-icon.svg"
                   alt="Icon"
