@@ -64,7 +64,7 @@ export default function Interviews() {
                   className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-[14px] max-h-[500px] overflow-y-auto scrollbar-hide "
                   style={{ scrollbarWidth: 'none' }}
                 >
-                  {internshipPosts &&
+                  {internshipPosts?.length > 0 ? (
                     internshipPosts.map((post) => (
                       <InvitationCard
                         key={post.id}
@@ -76,7 +76,10 @@ export default function Interviews() {
                           date: new Date(post.startDate).toLocaleDateString(),
                         }}
                       />
-                    ))}
+                    ))
+                  ) : (
+                    <p>No internship data found</p>
+                  )}
                 </div>
               )}
             </BlurBackground>
