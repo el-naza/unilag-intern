@@ -28,8 +28,10 @@ export default function AwaitingInterview() {
     try {
       const res: any = await fetchDocs('interview-invitations')
       if (res) {
-        const invitations = res?.docs
-        // const getAcceptedInvitation = res?.docs?.filter((s) => s.status === 'accepted')
+
+        const invitations = res?.docs?.filter(
+          (s) => s.status !== 'company accepted' && s.status !== 'company declined',
+        )
 
         const now = new Date()
 
@@ -97,11 +99,17 @@ export default function AwaitingInterview() {
         toast.error('An error occurred while updating; please try again later')
       }
     },
+    
   })
 
   const handleRespond = async (id: string, status: string, studentId?: string) => {
-    await respondToInterviewMtn.mutateAsync({ id, status, studentId })
-  }
+  setAwaitingInterviews(prev => prev.filter(inv => inv.id !== id));
+  setCompletedInterviews(prev => prev.filter(inv => inv.id !== id));
+  
+  await respondToInterviewMtn.mutateAsync({ id, status, studentId });
+  
+  await fetchInternshipApplicants();
+}
 
   return (
     <div className="pb-[600px]">
@@ -133,62 +141,74 @@ export default function AwaitingInterview() {
                     <h3 className="font-[400] text-[16px] text-[#48484A]">Awaiting interview</h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-end gap-[14px] mt-[12px]">
-                    {awaitingInterviews.map((invitation) => (
-                      <AwaitingInterviewCard
-                        key={invitation.id}
-                        awaitingInterview={{
-                          image: invitation.student?.image?.url || studentImage,
-                          firstName: invitation.student.firstName,
-                          lastName: invitation.student.lastName,
-                          dateTime: invitation.dateTime,
-                          status: invitation.status,
-                          clickAccept: () =>
-                            handleRespond(
-                              invitation.id,
-                              'company accepted',
-                              invitation?.student?.id,
-                            ),
-                          clickDecline: () => handleRespond(invitation.id, 'company declined'),
-                          viewClick: () =>
-                            router.push(`/company-pages/student-details/${invitation.student.id}`),
-                          rescheduleClick: () =>
-                            router.push(
-                              `/company-pages/student-details/${invitation.student.id}/invite`,
-                            ),
-                        }}
-                      />
-                    ))}
+                    {awaitingInterviews.length > 0 ? (
+                      awaitingInterviews.map((invitation) => (
+                        <AwaitingInterviewCard
+                          key={invitation.id}
+                          awaitingInterview={{
+                            image: invitation.student?.image?.url || studentImage,
+                            firstName: invitation.student.firstName,
+                            lastName: invitation.student.lastName,
+                            dateTime: invitation.dateTime,
+                            status: invitation.status,
+                            clickAccept: () =>
+                              handleRespond(
+                                invitation.id,
+                                'company accepted',
+                                invitation?.student?.id,
+                              ),
+                            clickDecline: () => handleRespond(invitation.id, 'company declined'),
+                            viewClick: () =>
+                              router.push(
+                                `/company-pages/student-details/${invitation.student.id}`,
+                              ),
+                            rescheduleClick: () =>
+                              router.push(
+                                `/company-pages/student-details/${invitation.student.id}/invite`,
+                              ),
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <p>No awaiting interview</p>
+                    )}
                   </div>
 
                   <div className="bg-white p-[6px] m-auto mt-[12px]">
                     <h3 className="font-[400] text-[16px] text-[#48484A]">Completed interview</h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-end gap-[14px] mt-[12px]">
-                    {completedInterviews.map((invitation) => (
-                      <AwaitingInterviewCard
-                        key={invitation.id}
-                        awaitingInterview={{
-                          image: invitation.student?.image?.url || studentImage,
-                          firstName: invitation.student.firstName,
-                          lastName: invitation.student.lastName,
-                          dateTime: invitation.dateTime,
-                          status: invitation.status,
-                          clickAccept: () =>
-                            handleRespond(
-                              invitation.id,
-                              'company accepted',
-                              invitation?.student?.id,
-                            ),
-                          clickDecline: () => handleRespond(invitation.id, 'company declined'),
-                          viewClick: () =>
-                            router.push(`/company-pages/student-details/${invitation.student.id}`),
-                          rescheduleClick: () =>
-                            router.push(
-                              `/company-pages/student-details/${invitation.student.id}/invite`,
-                            ),
-                        }}
-                      />
-                    ))}
+                    {completedInterviews.length > 0 ? (
+                      completedInterviews.map((invitation) => (
+                        <AwaitingInterviewCard
+                          key={invitation.id}
+                          awaitingInterview={{
+                            image: invitation.student?.image?.url || studentImage,
+                            firstName: invitation.student.firstName,
+                            lastName: invitation.student.lastName,
+                            dateTime: invitation.dateTime,
+                            status: invitation.status,
+                            clickAccept: () =>
+                              handleRespond(
+                                invitation.id,
+                                'company accepted',
+                                invitation?.student?.id,
+                              ),
+                            clickDecline: () => handleRespond(invitation.id, 'company declined'),
+                            viewClick: () =>
+                              router.push(
+                                `/company-pages/student-details/${invitation.student.id}`,
+                              ),
+                            rescheduleClick: () =>
+                              router.push(
+                                `/company-pages/student-details/${invitation.student.id}/invite`,
+                              ),
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <p>No completed interview</p>
+                    )}
                   </div>
                 </div>
               )}

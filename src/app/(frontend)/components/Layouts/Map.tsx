@@ -10,7 +10,7 @@ interface MapProps {
 }
 
 const defaults = {
-  center: { lat: 9.0563, lng: 7.4985 },
+  center: { lat: 6.5244, lng: 3.3792 },
 }
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string
@@ -19,6 +19,13 @@ const Map = ({ companies }: MapProps) => {
   const mapRef = useRef<google.maps.Map | null>(null)
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [zoom, setZoom] = useState<number>(14) // Default zoom level
+  const [defaultCenter, setDefaultCenter] = useState(
+    // set default to center of Lagos, Nigeria
+    { lat: 6.5244, lng: 3.3792 },
+
+    // // set defaults to center of Abuja, Nigeria
+    // { lat: 9.0563, lng: 7.4985 },
+  )
 
   const companiesWithLocation = useMemo(
     () => companies.filter((company) => company.location.latitude && company.location.longitude),
@@ -34,7 +41,30 @@ const Map = ({ companies }: MapProps) => {
     [companiesWithLocation],
   )
 
-  const center = useMemo(() => (positions.length ? positions[0] : defaults.center), [positions])
+  // the default center should be the user's current location if available, otherwise use the defaults
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log('User current postion:', position)
+          const { latitude, longitude } = position.coords
+          setDefaultCenter({ lat: latitude, lng: longitude })
+          console.log('User current location:', { lat: latitude, lng: longitude })
+        },
+        () => {
+          // If geolocation fails, use the default center
+          console.warn('Geolocation failed, using default center:', defaultCenter)
+        },
+      )
+    } else {
+      console.warn(
+        'Geolocation is not supported by this browser, using default center:',
+        defaultCenter,
+      )
+    }
+  }, [])
+
+  const center = useMemo(() => (positions.length ? positions[0] : defaultCenter), [positions])
 
   const handleMapLoad = (map: google.maps.Map) => {
     mapRef.current = map
