@@ -195,8 +195,8 @@ const Page = () => {
                         <Dialog open={open} onOpenChange={setOpen}>
                           <DialogTrigger asChild>
                             <button
-                              disabled={isCoinsExhausted}
-                              className={`w-full rounded p-3 bg-[#0B7077] text-white text-center ${isCoinsExhausted ? 'cursor-not-allowed outline-dashed outline-red-600 outline-offset-2 outline-2' : ''}`}
+                              disabled={isCoinsExhausted || internships?.length === 0}
+                              className={`w-full rounded p-3 bg-[#0B7077] text-white text-center ${isCoinsExhausted || internships?.length === 0 ? 'cursor-not-allowed outline-dashed outline-red-600 outline-offset-2 outline-2' : ''}`}
                             >
                               {isCoinsExhausted && "Can't"} Apply {!isCoinsExhausted && 'Now'}
                               {isCoinsExhausted && '(Coins Exhausted)'}
