@@ -23,7 +23,9 @@ export async function middleware(request: NextRequest) {
   const isAuthenticated = !!authToken
 
   if (!isAuthenticated) {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
+    return NextResponse.redirect(
+      new URL(`/auth/login?redirect=${request.nextUrl.pathname}`, request.url),
+    )
   }
 
   const authRole = authUser?.user.collection
