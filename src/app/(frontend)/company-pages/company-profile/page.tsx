@@ -18,7 +18,6 @@ import updateDoc from '@/services/updateDoc'
 import { toast } from 'sonner'
 import comapnyDefaultImage from '../../assets/images/company-default-image.avif'
 
-
 export default function CompanyProfile() {
   const { data: session } = useSession()
   const user = useMemo<any>(() => session?.user, [session])
@@ -189,6 +188,7 @@ export default function CompanyProfile() {
                     firstName: student.student.firstName,
                     lastName: student.student.lastName,
                     course: student.student.course,
+                    ...student.student,
                   }}
                 />
               ))}
