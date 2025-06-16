@@ -352,7 +352,7 @@ export const Companies: CollectionConfig = {
               subject: 'Welcome',
               text: `Dear ${company.name}
 
-We are glad to have you as part of our corporate community and we cannot wait to introduce you to the best and the brightest minds from our network of students. 
+We are glad to have you as part of our corporate community and we cannot wait to introduce you to the best and the brightest minds from our network of students.
 
 You would be notified as soon as your company begins to receive applications from suitable applicants.
 
@@ -369,6 +369,36 @@ INTRNS Team`,
                 error,
               )
             })
+        }
+      },
+    ],
+    afterRead: [
+      async ({ doc, req }) => {
+        const employments = await req.payload.find({
+          collection: 'employments',
+          req,
+          depth: 0,
+          where: {
+            company: { equals: doc.id },
+          },
+          overrideAccess: true,
+        })
+        const internships = await req.payload.find({
+          collection: 'internships',
+          req,
+          limit: 1,
+          depth: 0,
+          where: {
+            company: { equals: doc.id },
+          },
+          overrideAccess: true,
+        })
+
+        const firstInternship = internships.docs.length ? internships.docs[0] : null
+        return {
+          ...doc,
+          employmentCount: employments.docs.length,
+          firstInternship,
         }
       },
     ],

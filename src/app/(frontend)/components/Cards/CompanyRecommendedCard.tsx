@@ -8,6 +8,7 @@ import enrolledStudent4 from '../../assets/images/enrolled-student-4.svg'
 import enrolledStudent5 from '../../assets/images/enrolled-student-5.svg'
 import Link from 'next/link'
 import fetchCompanyInternships from '@/services/fetchCompanyInternships'
+import formatDate, { altFormatDate } from '@/utilities/formatDate'
 
 export default function CompanyRecommendedCard({ company }) {
   const [internshipCount, setInternshipCount] = useState<number>(0)
@@ -28,8 +29,8 @@ export default function CompanyRecommendedCard({ company }) {
       <div className="rounded-t-lg relative flex flex-col">
         <Image className="rounded-t-lg w-full" src={companyBanner} alt="company-banner" />
         <div className="-bottom-5 absolute flex w-full">
-          <div className="bg-[#FAFAFA] px-2 py-3 mx-auto w-[90%] rounded-full text-sm m-auto block grid grid-cols-1">
-            <div className="relative">
+          <div className="bg-[#FAFAFA] px-2 py-3 mx-auto w-[90%] rounded-full text-sm m-auto block">
+            {/* <div className="relative">
               <Image
                 className="absolute -top-1.5 right-[130px] z-50"
                 src={enrolledStudent1}
@@ -65,16 +66,26 @@ export default function CompanyRecommendedCard({ company }) {
                 height={29}
                 width={29}
               />
-            </div>
-            <div className="flex">
-              <span>+40 students</span>
+            </div> */}
+            <div className="text-center text-[#777795]">
+              <span>
+                {company.employmentCount !== 0 ? '+' : ''}
+                {company.employmentCount} students
+              </span>
             </div>
           </div>
         </div>
       </div>
       <div className="bg-white rounded-b-lg p-4 mt-4 grid gap-5">
         <div className="grid gap-2">
-          <span className="text-xs text-[#777795]">1 - 28 July 2022</span>
+          {company.firstInternship ? (
+            <span className="text-xs text-[#777795]">
+              {altFormatDate(company.firstInternship.startDate)} -{' '}
+              {altFormatDate(company.firstInternship.endDate)}
+            </span>
+          ) : (
+            ''
+          )}
           <h5 className="text-[#195F7E] text-md font-bold">{company.name}</h5>
           <p className="text-xs text-[#4D4D4D]">{company.description}</p>
           <p className="text-xs text-[#4D4D4D]">{company.address}</p>
