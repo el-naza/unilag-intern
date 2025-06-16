@@ -69,7 +69,14 @@ export default function CompanyLargeApprovedApplicationCard({
     <div className="bg-[#EBE7E77A] rounded-lg p-10 ps-0">
       <div className="grid grid-cols-10">
         <div>
-          <Image src={companyLogo} alt="company-logo" />
+          <Image
+            src={
+              interviewInvitation.company?.image
+                ? interviewInvitation.company?.image?.url
+                : companyLogo
+            }
+            alt="company-logo"
+          />
         </div>
         <div className="col-span-6">
           <div>

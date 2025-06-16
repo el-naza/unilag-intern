@@ -27,7 +27,11 @@ export default function CompanyRecommendedCard({ company }) {
   return (
     <div className="shadow rounded-lg">
       <div className="rounded-t-lg relative flex flex-col">
-        <Image className="rounded-t-lg w-full" src={companyBanner} alt="company-banner" />
+        <Image
+          className="rounded-t-lg w-full"
+          src={company?.image?.url || companyBanner}
+          alt="company-banner"
+        />
         <div className="-bottom-5 absolute flex w-full">
           <div className="bg-[#FAFAFA] px-2 py-3 mx-auto w-[90%] rounded-full text-sm m-auto block">
             {/* <div className="relative">

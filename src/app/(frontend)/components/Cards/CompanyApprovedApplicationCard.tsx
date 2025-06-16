@@ -67,7 +67,7 @@ export default function CompanyApprovedApplicationCard({ interviewInvitation, on
         height={150}
         width={100}
         className="rounded-tl-lg rounded-bl-lg h-full w-full"
-        src={companyBanner}
+        src={interviewInvitation.company?.image ? interviewInvitation.company?.image?.url || companyBanner}
         alt="company-banner"
       />
       <div className="col-span-3 grid sm:col-span-5 p-1">
