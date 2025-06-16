@@ -11,6 +11,7 @@ import SearchIcon from '../assets/icons/search'
 import LocationIcon from '../assets/icons/location'
 import LocationPointerIcon from '../assets/icons/locationPointerIcon'
 import studentAbstractVector from '../assets/images/student-abstract-vector.svg'
+import defaultProfileImage from '../assets/images/profile-image.webp'
 import SearchAltIcon from '../assets/icons/searchAltIcon'
 import MenuIcon from '../assets/icons/menu'
 import NotificationBellIcon from '../assets/icons/notificationBell'
@@ -379,10 +380,11 @@ const Page = () => {
                       <div className="flex sm:grid-cols-3 gap-[58px]">
                         <div className="relative">
                           <Image
+                            className="rounded-lg"
                             width={197}
                             height={235}
-                            src="/smiling-woman.png"
-                            alt="smiling woman"
+                            src={defaultProfileImage}
+                            alt="student-profile-picture"
                           />
                           <div className="absolute bottom-3 right-[-34px] bg-[#263238] text-[#FFD836] rounded-[15px] px-2 py-[5px] flex items-center text-[24px] font-roboto font-bold leading-none">
                             {coinsAndApplicationsCountsQuery.data?.applications}
