@@ -67,7 +67,7 @@ export default function CompanyRecommendedCard({ company }) {
                 width={29}
               />
             </div> */}
-            <div className="text-center text-[#777795]">
+            <div className="text-center text-[#4D4D4D]">
               <span>
                 {company.employmentCount !== 0 ? '+' : ''}
                 {company.employmentCount} students

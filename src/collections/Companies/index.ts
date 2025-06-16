@@ -393,12 +393,22 @@ INTRNS Team`,
           },
           overrideAccess: true,
         })
+        const internshipApplications = await req.payload.find({
+          collection: 'internship-applications',
+          req,
+          depth: 0,
+          where: {
+            company: { equals: doc.id },
+          },
+          overrideAccess: true,
+        })
 
         const firstInternship = internships.docs.length ? internships.docs[0] : null
         return {
           ...doc,
           employmentCount: employments.docs.length,
           firstInternship,
+          internshipApplicationCount: internshipApplications.docs.length,
         }
       },
     ],

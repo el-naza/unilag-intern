@@ -107,10 +107,10 @@ export default function Page() {
                   </div>
                   <div className="grid grid-rows-2 gap-4">
                     <div className="rounded-lg bg-[#EBE7E77A] flex p-5">
-                      <Image className="m-auto" src={advertText} alt="advert-text" />
+                      {/*<Image className="m-auto" src={advertText} alt="advert-text" />*/}
                     </div>
                     <div className="rounded-lg bg-[#EBE7E77A] flex p-5">
-                      <Image className="m-auto" src={advertText} alt="advert-text" />
+                      {/*<Image className="m-auto" src={advertText} alt="advert-text" />*/}
                     </div>
                   </div>
                 </div>
