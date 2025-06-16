@@ -244,7 +244,7 @@ export interface Admin {
 export interface Company {
   id: string;
   name: string;
-  cac?: string | null;
+  cac: string;
   industry:
     | 'Agriculture'
     | 'Banking/Finance'
