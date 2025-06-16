@@ -401,7 +401,7 @@ const Page = () => {
                                   <span className="text-[#FFE75C]">{user?.lastName}</span>
                                 </span>
                                 <span className="ms-8 text-[32px] text-[#FFE75C]">
-                                  {getAge(user?.dob)}
+                                  Age: {getAge(user?.dob)}
                                 </span>
                               </div>
                               <div className="flex justify-between">
