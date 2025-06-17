@@ -100,38 +100,13 @@ const Page = () => {
       }
 
       toast.success('Employment status updated successfully, you are now employed!')
+      fetchemploymentOffers()
     } catch (error) {
       console.error('Error updating employment status:', error)
     } finally {
       setLoadingIds((prev) => prev.filter((loadingId) => loadingId !== id))
     }
   }
-
-  // const handleRespond = async (
-  //   id: string,
-  //   status: string,
-  //   employment?: string,
-  //   studentId?: string,
-  // ) => {
-  //   try {
-  //     const res = await respondToInterviewMtn.mutateAsync({ id, status, employment })
-
-  //     if (res && status === 'Accepted' && employment && studentId) {
-  //       const employedData = {
-  //         employedBy: {
-  //           employment,
-  //           dateEmployed: new Date().toISOString(), // Save current date as employment date
-  //         },
-  //       }
-
-  //       // Update the student document with the employment details
-  //       let updateStudent = await updateDoc('students', studentId, employedData)
-  //       console.log('updateStudent', updateStudent)
-  //     }
-  //   } catch (error) {
-  //     console.error('Error updating employment status:', error)
-  //   }
-  // }
 
   useEffect(() => {
     fetchemploymentOffers()
