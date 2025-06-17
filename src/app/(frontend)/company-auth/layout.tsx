@@ -9,10 +9,10 @@ export default function CompanyAuthLayout({ children }: { children: React.ReactN
     <div className=" w-full flex flex-col nd:items-start  md:flex-row">
       <div className="hidden md:block w-[50%] border relative">
         <div className="hidden md:block w-[50%] border fixed">
-          <div className="absolute top-40 flex items-center justify-center w-full">
+          {/* <div className="absolute top-40 flex items-center justify-center w-full">
             {' '}
             <Image src={schoolLogo} alt="image" width={44} height={44} className="object-contain" />
-          </div>
+          </div> */}
           <Image
             src={backgroundImage}
             alt="image"

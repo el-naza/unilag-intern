@@ -254,13 +254,13 @@ const Page = () => {
                         <div className="col-span-4 grid-rows">
                           <div className="flex justify-between mb-2">
                             <div className="text-xs text-[#8E8E93]">0 km</div>
-                            <div className="text-xs text-[#8E8E93]">100 km</div>
+                            <div className="text-xs text-[#8E8E93]">1000 km</div>
                           </div>
                           <Slider
                             className="col-span-5 flex"
                             value={distance}
                             onValueChange={setDistance}
-                            max={100}
+                            max={1000}
                             step={1}
                           />
                         </div>
@@ -474,6 +474,89 @@ const Page = () => {
                   </div>
 
                   <div className="grid sm:grid-cols-5 gap-4">
+                    {/* <form
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      form.handleSubmit()
+                    }}
+                  >
+                    <div className="bg-white rounded-xl mb-4 p-5 grid grid-cols-12">
+                      <Slider
+                        className="col-span-9"
+                        value={distance}
+                        onValueChange={setDistance}
+                        max={1000}
+                        step={1}
+                      />
+                      <span className="col-span-3 text-sm text-black text-right">{distance}km</span>
+                    </div>
+                    <div className="bg-white rounded-xl mb-4">
+                      <div className="relative border-b py-2">
+                        <form.Field name="name">
+                          {(field) => {
+                            return (
+                              <>
+                                <div className="relative">
+                                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                                  <input
+                                    name={field.name}
+                                    value={field.state.value || ''}
+                                    onBlur={field.handleBlur}
+                                    onChange={(e) => field.handleChange(e.target.value)}
+                                    placeholder="Search Job"
+                                    className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                                  />
+                                </div>
+                                <div className="indent-7">
+                                  <FieldError field={field} />
+                                </div>
+                              </>
+                            )
+                          }}
+                        </form.Field>
+                      </div>
+                      <div className="relative py-2">
+                        <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">
+                          <LocationIcon className="m-auto" />
+                        </div>
+                        <form.Field name="address">
+                          {(field) => {
+                            return (
+                              <>
+                                <input
+                                  name={field.name}
+                                  value={field.state.value || ''}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  placeholder="Location"
+                                  className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
+                                />
+                                <FieldError field={field} />
+                              </>
+                            )
+                          }}
+                        </form.Field>
+                      </div>
+                      <div className="pb-1 mx-1">
+                        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                          {([canSubmit, isSubmitting]) => (
+                            <>
+                              <Button
+                                type="submit"
+                                disabled={!canSubmit}
+                                size="lg"
+                                className="bg-[#195F7E] rounded-xl p-4 w-full"
+                              >
+                                Search Job {isSubmitting && <Spinner />}
+                              </Button>
+                              <FormError form={form} />
+                            </>
+                          )}
+                        </form.Subscribe>
+                      </div>
+                    </div>
+                  </form> */}
                     <div className="col-span-5 font-manrope">
                       <div className="bg-white text-black py-4 w-full">
                         <div className="container 2xl:max-w-[1736px] flex justify-between w-full">
@@ -518,7 +601,7 @@ const Page = () => {
                               className="col-span-9 min-w-[274px]"
                               value={distance}
                               onValueChange={setDistance}
-                              max={100}
+                              max={1000}
                               step={1}
                             />
                             <div className="col-span-3 flex self-center">

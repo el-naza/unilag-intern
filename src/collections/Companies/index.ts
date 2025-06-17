@@ -423,6 +423,8 @@ INTRNS Team`,
     {
       name: 'cac',
       type: 'text',
+      required: true,
+      unique: true,
     },
     {
       name: 'industry',
