@@ -38,6 +38,7 @@ import { useRouter } from 'next/navigation'
 import fetchMe from '@/services/fetchMe'
 import { useCoinPurchaseModal } from '@/context/coin-purchase-modal-context'
 import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
+import { signOut } from 'next-auth/react'
 
 const Page = () => {
   const meQuery = useQuery({
@@ -415,7 +416,7 @@ const Page = () => {
                               <div>
                                 <span>{user?.homeAddress}</span>
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex justify-between">
                                 {/* <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                                   <span>0 Duration</span>
                                 </div> */}
@@ -426,6 +427,16 @@ const Page = () => {
                                 >
                                   <span className="font-roboto text-[24px] font-light leading-none ">
                                     Buy Coins
+                                  </span>
+                                </div>
+                                <div
+                                  onClick={() =>
+                                    signOut({ redirectTo: '/auth/login', redirect: true })
+                                  }
+                                  className="text-white py-3 rounded-[20px] flex justify-center items-center cursor-pointer"
+                                >
+                                  <span className="font-roboto text-[24px] font-light leading-none ">
+                                    Sign Out
                                   </span>
                                 </div>
                               </div>
