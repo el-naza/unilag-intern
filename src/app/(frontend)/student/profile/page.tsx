@@ -39,7 +39,7 @@ const Page = () => {
             <div className="my-5">
               <div className="flex items-center">
                 <div className="mx-auto">
-                  <div className="relative">
+                  <div className="relative flex justify-center">
                     <Image
                       className="rounded-full"
                       width={52}
@@ -47,7 +47,7 @@ const Page = () => {
                       src={defaultProfileImage}
                       alt="student-profile-image"
                     />
-                    <span className="bg-[#0B7077] text-[8px] absolute bottom-[0px] right-0 rounded-lg p-[2px] leading-none">
+                    <span className="bg-[#0B7077] text-white text-[8px] absolute bottom-[0px] right-[60px] rounded-lg p-[2px] leading-none">
                       {coinsAndApplicationsCountsQuery.data?.applications}/
                       {coinsAndApplicationsCountsQuery.data?.coins}
                     </span>
