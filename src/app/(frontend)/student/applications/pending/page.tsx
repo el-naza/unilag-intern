@@ -6,6 +6,7 @@ import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHe
 import CompanyPendingApplicationCard from '@/app/(frontend)/components/Cards/CompanyPendingApplicationCard'
 import Image from 'next/image'
 import advertText from '../../../assets/images/adverts.png'
+import emptyResult from '../../../assets/images/empty-result.png'
 import Link from 'next/link'
 import CompanyLargePendingApplicationCard from '@/app/(frontend)/components/Cards/CompanyLargePendingApplicationCard'
 import { InternshipApplication, Student } from '@/payload-types'
@@ -55,15 +56,26 @@ export default function Page() {
                 <div className="mt-1 mb-3">
                   <h6 className="text-[#48484A]">Pending Applications</h6>
                 </div>
-                <div className="grid gap-4">
-                  {pendingApplications.map((pendingApplication) => (
-                    <CompanyPendingApplicationCard
-                      key={pendingApplication.id}
-                      application={pendingApplication}
-                      onDelete={fetchPendingApplications}
-                    />
-                  ))}
-                </div>
+                {pendingApplications.length === 0 ? (
+                  <div className="h-[calc(100vh-220px)] flex items-center justify-center">
+                    <div className="space-y-6">
+                      <Image className="m-auto" src={emptyResult} alt="Empty result" />
+                      <div className="text-xl text-center font-medium text-[#303030] opacity-50">
+                        No Pending Applications Found
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {pendingApplications.map((pendingApplication) => (
+                      <CompanyPendingApplicationCard
+                        key={pendingApplication.id}
+                        application={pendingApplication}
+                        onDelete={fetchPendingApplications}
+                      />
+                    ))}
+                  </div>
+                )}
               </main>
             </div>
           </div>
@@ -94,15 +106,26 @@ export default function Page() {
                   <div className="col-span-4">
                     <div className="p-5">
                       <StudentApplicationHeader />
-                      <div className="grid gap-4">
-                        {pendingApplications.map((pendingApplication) => (
-                          <CompanyLargePendingApplicationCard
-                            key={pendingApplication.id}
-                            application={pendingApplication}
-                            onDelete={fetchPendingApplications}
-                          />
-                        ))}
-                      </div>
+                      {pendingApplications.length === 0 ? (
+                        <div className="h-[calc(100vh-220px)] flex items-center justify-center">
+                          <div className="space-y-6">
+                            <Image className="m-auto" src={emptyResult} alt="Empty result" />
+                            <div className="text-xl text-center font-medium text-[#303030] opacity-50">
+                              No Pending Applications Found
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="grid gap-4">
+                          {pendingApplications.map((pendingApplication) => (
+                            <CompanyLargePendingApplicationCard
+                              key={pendingApplication.id}
+                              application={pendingApplication}
+                              onDelete={fetchPendingApplications}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-rows-2 gap-4">

@@ -32,6 +32,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Field, ValidationFieldError } from 'payload'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import companyLogo from '@/app/(frontend)/assets/images/company-logo.svg'
 
 const Page = () => {
   const meQuery = useQuery({
@@ -198,8 +199,8 @@ const Page = () => {
                         <Image
                           width={40}
                           height={40}
-                          src={company.image ? company?.image?.url : '/cmr-logo.png'}
-                          alt="cmr-logo"
+                          src={company.image ? company?.image?.url : companyLogo}
+                          alt="company-logo"
                         />
                       </div>
                       <div className="col-span-7">
