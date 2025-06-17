@@ -3,13 +3,23 @@
 import React, { useMemo } from 'react'
 import ProfilePicture from '../../assets/icons/profilepicture'
 import Bitmoji from '../../assets/icons/bitmoji'
+import defaultProfileImage from '../../assets/images/profile-image.webp'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
+import { useQuery } from '@tanstack/react-query'
 
 const Page = () => {
   const { data: session } = useSession()
 
   const user = useMemo<any>(() => session?.user, [session])
+
+  const coinsAndApplicationsCountsQuery = useQuery({
+    queryKey: ['coinsAndApplicationsCounts', user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => await fetchCoinsAndApplicationsCount(user?.id),
+  })
 
   return (
     <div className="min-h-screen relative text-sm text-black">
@@ -29,7 +39,19 @@ const Page = () => {
             <div className="my-5">
               <div className="flex items-center">
                 <div className="mx-auto">
-                  <ProfilePicture />
+                  <div className="relative flex justify-center">
+                    <Image
+                      className="rounded-full"
+                      width={52}
+                      height={54}
+                      src={defaultProfileImage}
+                      alt="student-profile-image"
+                    />
+                    <span className="bg-[#0B7077] text-white text-[8px] absolute bottom-[0px] right-[60px] rounded-lg p-[2px] leading-none">
+                      {coinsAndApplicationsCountsQuery.data?.applications}/
+                      {coinsAndApplicationsCountsQuery.data?.coins}
+                    </span>
+                  </div>
                   <span className="font-oleo text-lg">{`${user?.firstName} ${user?.lastName}`}</span>
                 </div>
               </div>

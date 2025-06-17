@@ -3,11 +3,21 @@ import ProfilePicture from '../../../assets/icons/profilepicture'
 import Link from 'next/link'
 import { signOut, useSession } from 'next-auth/react'
 import { Loader } from 'lucide-react'
+import Image from 'next/image'
+import defaultProfileImage from '../../../assets/images/profile-image.webp'
+import { useQuery } from '@tanstack/react-query'
+import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
 
 export default function StudentHeader() {
   const { data: session, status } = useSession()
 
   const user = useMemo<any>(() => session?.user, [session])
+
+  const coinsAndApplicationsCountsQuery = useQuery({
+    queryKey: ['coinsAndApplicationsCounts', user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => await fetchCoinsAndApplicationsCount(user?.id),
+  })
 
   // if (status === 'unauthenticated') signOut()
 
@@ -15,9 +25,19 @@ export default function StudentHeader() {
     <div className="grid grid-cols-5 mb-4">
       <div className="col-span-4">
         <div className="grid grid-cols-5 gap-2">
-          <div>
+          <div className="relative">
             <Link href="/student/profile">
-              <ProfilePicture />
+              <Image
+                className="rounded-full"
+                width={52}
+                height={54}
+                src={defaultProfileImage}
+                alt="student-profile-image"
+              />
+              <span className="bg-[#0B7077] text-[8px] absolute bottom-[0px] right-0 rounded-lg p-[2px] leading-none">
+                {coinsAndApplicationsCountsQuery.data?.applications}/
+                {coinsAndApplicationsCountsQuery.data?.coins}
+              </span>
             </Link>
           </div>
           {status === 'authenticated' ? (

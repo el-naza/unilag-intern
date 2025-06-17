@@ -11,6 +11,7 @@ import SearchIcon from '../assets/icons/search'
 import LocationIcon from '../assets/icons/location'
 import LocationPointerIcon from '../assets/icons/locationPointerIcon'
 import studentAbstractVector from '../assets/images/student-abstract-vector.svg'
+import defaultProfileImage from '../assets/images/profile-image.webp'
 import SearchAltIcon from '../assets/icons/searchAltIcon'
 import MenuIcon from '../assets/icons/menu'
 import NotificationBellIcon from '../assets/icons/notificationBell'
@@ -37,6 +38,7 @@ import { useRouter } from 'next/navigation'
 import fetchMe from '@/services/fetchMe'
 import { useCoinPurchaseModal } from '@/context/coin-purchase-modal-context'
 import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
+import { signOut } from 'next-auth/react'
 
 const Page = () => {
   const meQuery = useQuery({
@@ -379,10 +381,11 @@ const Page = () => {
                       <div className="flex sm:grid-cols-3 gap-[58px]">
                         <div className="relative">
                           <Image
+                            className="rounded-lg"
                             width={197}
                             height={235}
-                            src="/smiling-woman.png"
-                            alt="smiling woman"
+                            src={defaultProfileImage}
+                            alt="student-profile-picture"
                           />
                           <div className="absolute bottom-3 right-[-34px] bg-[#263238] text-[#FFD836] rounded-[15px] px-2 py-[5px] flex items-center text-[24px] font-roboto font-bold leading-none">
                             {coinsAndApplicationsCountsQuery.data?.applications}
@@ -399,7 +402,7 @@ const Page = () => {
                                   <span className="text-[#FFE75C]">{user?.lastName}</span>
                                 </span>
                                 <span className="ms-8 text-[32px] text-[#FFE75C]">
-                                  {getAge(user?.dob)}
+                                  Age: {getAge(user?.dob)}
                                 </span>
                               </div>
                               <div className="flex justify-between">
@@ -413,7 +416,7 @@ const Page = () => {
                               <div>
                                 <span>{user?.homeAddress}</span>
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex justify-between">
                                 {/* <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                                   <span>0 Duration</span>
                                 </div> */}
@@ -424,6 +427,16 @@ const Page = () => {
                                 >
                                   <span className="font-roboto text-[24px] font-light leading-none ">
                                     Buy Coins
+                                  </span>
+                                </div>
+                                <div
+                                  onClick={() =>
+                                    signOut({ redirectTo: '/auth/login', redirect: true })
+                                  }
+                                  className="text-white py-3 rounded-[20px] flex justify-center items-center cursor-pointer"
+                                >
+                                  <span className="font-roboto text-[24px] font-light leading-none ">
+                                    Sign Out
                                   </span>
                                 </div>
                               </div>
@@ -461,121 +474,12 @@ const Page = () => {
                   </div>
 
                   <div className="grid sm:grid-cols-5 gap-4">
-                    {/* <form
-                    onSubmit={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      form.handleSubmit()
-                    }}
-                  >
-                    <div className="bg-white rounded-xl mb-4 p-5 grid grid-cols-12">
-                      <Slider
-                        className="col-span-9"
-                        value={distance}
-                        onValueChange={setDistance}
-                        max={100}
-                        step={1}
-                      />
-                      <span className="col-span-3 text-sm text-black text-right">{distance}km</span>
-                    </div>
-                    <div className="bg-white rounded-xl mb-4">
-                      <div className="relative border-b py-2">
-                        <form.Field name="name">
-                          {(field) => {
-                            return (
-                              <>
-                                <div className="relative">
-                                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                                  <input
-                                    name={field.name}
-                                    value={field.state.value || ''}
-                                    onBlur={field.handleBlur}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                    placeholder="Search Job"
-                                    className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
-                                  />
-                                </div>
-                                <div className="indent-7">
-                                  <FieldError field={field} />
-                                </div>
-                              </>
-                            )
-                          }}
-                        </form.Field>
-                      </div>
-                      <div className="relative py-2">
-                        <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">
-                          <LocationIcon className="m-auto" />
-                        </div>
-                        <form.Field name="address">
-                          {(field) => {
-                            return (
-                              <>
-                                <input
-                                  name={field.name}
-                                  value={field.state.value || ''}
-                                  onBlur={field.handleBlur}
-                                  onChange={(e) => field.handleChange(e.target.value)}
-                                  placeholder="Location"
-                                  className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
-                                />
-                                <FieldError field={field} />
-                              </>
-                            )
-                          }}
-                        </form.Field>
-                      </div>
-                      <div className="pb-1 mx-1">
-                        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-                          {([canSubmit, isSubmitting]) => (
-                            <>
-                              <Button
-                                type="submit"
-                                disabled={!canSubmit}
-                                size="lg"
-                                className="bg-[#195F7E] rounded-xl p-4 w-full"
-                              >
-                                Search Job {isSubmitting && <Spinner />}
-                              </Button>
-                              <FormError form={form} />
-                            </>
-                          )}
-                        </form.Subscribe>
-                      </div>
-                    </div>
-                  </form> */}
                     <div className="col-span-5 font-manrope">
                       <div className="bg-white text-black py-4 w-full">
                         <div className="container 2xl:max-w-[1736px] flex justify-between w-full">
                           <div className="flex self-center">
                             <h3 className="font-bold text-2xl text-[#48484A]">Company Search</h3>
                           </div>
-                          {/* <div className="relative border rounded">
-                              <form.Field name="name">
-                                {(field) => {
-                                  return (
-                                    <>
-                                      <div className="relative">
-                                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                                        <input
-                                          name={field.name}
-                                          value={field.state.value || ''}
-                                          onBlur={field.handleBlur}
-                                          onChange={(e) => {
-                                            field.handleChange(e.target.value)
-                                          }}
-                                          placeholder="Search Job"
-                                          className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
-                                        />
-                                      </div>
-                                      <div className="indent-7">
-                                        <FieldError field={field} />
-                                      </div>
-                                    </>
-                                  )
-                                }}
-                              </form.Field>
-                            </div> */}
 
                           <div className="relative border rounded">
                             <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">

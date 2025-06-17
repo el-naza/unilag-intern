@@ -5,6 +5,7 @@ import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNa
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
 import CompanyApprovedApplicationCard from '@/app/(frontend)/components/Cards/CompanyApprovedApplicationCard'
 import advertText from '../../../assets/images/adverts.png'
+import emptyResult from '../../../assets/images/empty-result.png'
 import Image from 'next/image'
 import CompanyLargeApprovedApplicationCard from '@/app/(frontend)/components/Cards/CompanyLargeApprovedApplicationCard'
 import Link from 'next/link'
@@ -99,38 +100,13 @@ const Page = () => {
       }
 
       toast.success('Employment status updated successfully, you are now employed!')
+      fetchemploymentOffers()
     } catch (error) {
       console.error('Error updating employment status:', error)
     } finally {
       setLoadingIds((prev) => prev.filter((loadingId) => loadingId !== id))
     }
   }
-
-  // const handleRespond = async (
-  //   id: string,
-  //   status: string,
-  //   employment?: string,
-  //   studentId?: string,
-  // ) => {
-  //   try {
-  //     const res = await respondToInterviewMtn.mutateAsync({ id, status, employment })
-
-  //     if (res && status === 'Accepted' && employment && studentId) {
-  //       const employedData = {
-  //         employedBy: {
-  //           employment,
-  //           dateEmployed: new Date().toISOString(), // Save current date as employment date
-  //         },
-  //       }
-
-  //       // Update the student document with the employment details
-  //       let updateStudent = await updateDoc('students', studentId, employedData)
-  //       console.log('updateStudent', updateStudent)
-  //     }
-  //   } catch (error) {
-  //     console.error('Error updating employment status:', error)
-  //   }
-  // }
 
   useEffect(() => {
     fetchemploymentOffers()
@@ -183,37 +159,52 @@ const Page = () => {
                   <div className="col-span-4">
                     <div className="p-5">
                       <StudentApplicationHeader />
-                      <div className="grid gap-11">
-                        {employmentOffers &&
-                          employmentOffers.map((offer) => (
-                            <EmploymentCard
-                              key={offer.id}
-                              company={{
-                                name: offer.company.name,
-                                phone: offer.company.phone,
-                                address: offer.company.address,
-                                image: offer.company.image,
-                              }}
-                              createdAt={offer.createdAt}
-                              status={offer.status}
-                              student={{
-                                firstName: offer.student.firstName,
-                                lastName: offer.student.lastName,
-                              }}
-                              loading={loadingIds.includes(offer.id)}
-                              onAccept={() => handleRespond(offer.id, 'Accept', offer.id, user.id)}
-                              onCancel={() => handleRespond(offer.id, 'Decline', offer.id, user.id)}
-                            />
-                          ))}
-                      </div>
+                      {employmentOffers.length === 0 ? (
+                        <div className="h-[calc(100vh-220px)] flex items-center justify-center">
+                          <div className="space-y-6">
+                            <Image className="m-auto" src={emptyResult} alt="Empty result" />
+                            <div className="text-xl text-center font-medium text-[#303030] opacity-50">
+                              No Interviews Found
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="grid gap-11">
+                          {employmentOffers &&
+                            employmentOffers.map((offer) => (
+                              <EmploymentCard
+                                key={offer.id}
+                                company={{
+                                  name: offer.company.name,
+                                  phone: offer.company.phone,
+                                  address: offer.company.address,
+                                  image: offer.company.image,
+                                }}
+                                createdAt={offer.createdAt}
+                                status={offer.status}
+                                student={{
+                                  firstName: offer.student.firstName,
+                                  lastName: offer.student.lastName,
+                                }}
+                                loading={loadingIds.includes(offer.id)}
+                                onAccept={() =>
+                                  handleRespond(offer.id, 'Accept', offer.id, user.id)
+                                }
+                                onCancel={() =>
+                                  handleRespond(offer.id, 'Decline', offer.id, user.id)
+                                }
+                              />
+                            ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-rows-2 gap-4">
                     <div className="rounded-lg bg-[#EBE7E77A] flex p-5">
-                      <Image className="m-auto" src={advertText} alt="advert-text" />
+                      {/*<Image className="m-auto" src={advertText} alt="advert-text" />*/}
                     </div>
                     <div className="rounded-lg bg-[#EBE7E77A] flex p-5">
-                      <Image className="m-auto" src={advertText} alt="advert-text" />
+                      {/*<Image className="m-auto" src={advertText} alt="advert-text" />*/}
                     </div>
                   </div>
                 </div>
