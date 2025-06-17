@@ -18,13 +18,15 @@ import { AuthError } from 'next-auth'
 import { signIn } from 'next-auth/react'
 import { sendStatusCode } from 'next/dist/server/api-utils'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Field, ValidationFieldError } from 'payload'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import useSendStudentOtpMtn from '../forgot-password/useSendStudentOtpMtn'
 
 export default function Page() {
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect')
   const [hasPassword, setHasPassword] = useState(false)
   const [showPassword, setShowPassword] = useState(true)
   const requiredFields = useMemo(
@@ -174,7 +176,11 @@ export default function Page() {
         // success here so naviagate or toast to success !!
         form.reset()
         toast.success('Sign in successful')
-        router.push('/student')
+        if (redirect) {
+          router.push(redirect)
+        } else {
+          router.push('/student')
+        }
 
         return null
       },

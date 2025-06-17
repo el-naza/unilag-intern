@@ -69,6 +69,7 @@ export default function AllInterns() {
                           firstName: student.student.firstName,
                           lastName: student.student.lastName,
                           course: student.student.course,
+                          ...student.student,
                         }}
                       />
                     ))

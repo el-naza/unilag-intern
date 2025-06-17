@@ -28,8 +28,7 @@ export default function HomePage() {
     setIsLoadingCompany(true)
     const res: any = await getPopularCompanies('companies', params)
     const { docs } = res.data
-    console.log('companies', docs);
-    
+    console.log('companies', docs)
 
     setCompanies(docs)
     setIsLoadingCompany(false)
@@ -51,7 +50,7 @@ export default function HomePage() {
     <div>
       <HeroCarousel />
 
-      <div className="max-w-full px-16 mx-auto mb-32 relative">
+      <div className="xl:w-[80%] lg:w-[80%] md:w-full sm:w-full px-16 mx-auto mb-32 relative">
         <div id="companies" className="absolute -top-20" />
         <h2 className="scroll-m-20 pb-2 text-[48px] font-bold tracking-tight first:mt-0 text-[#FD661F] text-center mb-[45px]">
           Popular Companies
@@ -99,7 +98,7 @@ export default function HomePage() {
               <CarouselContent>
                 {companies?.map((company: any) => (
                   <CarouselItem
-                    className="grid gap-4 place-content-center px-4 basis-auto"
+                    className="grid gap-4 place-content-center px-4 basis-[21rem]"
                     key={company.id}
                   >
                     <CompanyCard company={company} />
@@ -128,7 +127,7 @@ export default function HomePage() {
                   <CarouselContent>
                     {companies?.map((company: any) => (
                       <CarouselItem
-                        className="px-4 grid place-content-center basis-96"
+                        className="px-4 grid place-content-center basis-[21rem]"
                         key={company.id}
                       >
                         <CompanyCard company={company} />

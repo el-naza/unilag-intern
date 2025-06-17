@@ -7,6 +7,7 @@ import formatDate from '@/utilities/formatDate'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import companyLogo from '@/app/(frontend)/assets/images/company-logo.svg'
 
 const Page = () => {
   const { id }: { id: string } = useParams()
@@ -39,7 +40,14 @@ const Page = () => {
                 </div>
                 <div className="grid grid-cols-8 mb-3 gap-2">
                   <div className="flex items-center">
-                    <Image width={40} height={40} src="/cmr-logo.png" alt="cmr-logo" />
+                    <Image
+                      src={
+                        interviewInvitation.company?.image
+                          ? interviewInvitation.company?.image?.url
+                          : companyLogo
+                      }
+                      alt="company-logo"
+                    />
                   </div>
                   <div className="col-span-7">
                     <h5 className="text-black font-bold">{interviewInvitation.company.name}</h5>
