@@ -16,7 +16,7 @@ export default function AllInterns() {
     const res: any = await fetchDocs('employments')
     const getAccpetedInterns = res?.docs?.filter((s: any) => s.status === 'Accept')
     console.log(res)
-    setStudents(getAccpetedInterns? getAccpetedInterns : [])
+    setStudents(getAccpetedInterns ? getAccpetedInterns : [])
     setLoading(false)
   }
 
@@ -52,7 +52,7 @@ export default function AllInterns() {
                 <div className="w-full py-[7px] flex items-center justify-between ">
                   <p className=" font-[500] text-[20px] text-white ">Interns List</p>
                   <div className="max-w-[350px] max-h-[40px]  border border-[#B3FAFF] shadow-xs overflow-hidden flex items-center justify-center rounded-[8px] ">
-                    <InputField placeholder="Search " Icon={SearchIcon} type="text" />
+                    {/* <InputField placeholder="Search " Icon={SearchIcon} type="text" /> */}
                   </div>
                 </div>
                 <div
@@ -61,7 +61,7 @@ export default function AllInterns() {
                     background: `linear-gradient(to bottom, white, rgba(250, 250, 250, 0.6), rgba(64, 138, 126, 0.12))`,
                   }}
                 >
-                  {students &&
+                  {students?.length > 0 ? (
                     students.map((student, index) => (
                       <StudentProfileCard
                         key={index}
@@ -69,9 +69,13 @@ export default function AllInterns() {
                           firstName: student.student.firstName,
                           lastName: student.student.lastName,
                           course: student.student.course,
+                          ...student.student,
                         }}
                       />
-                    ))}
+                    ))
+                  ) : (
+                    <p>No student found</p>
+                  )}
                 </div>
               </div>
             )}

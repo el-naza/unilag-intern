@@ -245,7 +245,7 @@ export default function Login() {
                 return (
                   <>
                     <Input
-                      type={showPassword ? 'text' : 'password'}
+                      type={'password'}
                       name={field.name}
                       value={field.state.value || ''}
                       onBlur={field.handleBlur}
