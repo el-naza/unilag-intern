@@ -31,7 +31,7 @@ export default function Faq({ question, answer }) {
         <div className={` flex justify-between`} onClick={handleClick}>
           <h6 className={`font-[700] text-[#1E2763] leading-[1.5] text-xl`}>{question}</h6>
           <Image
-            src="/icons/upArrow.png"
+            src="/icons/arrow-upward.svg"
             alt="Up Arrow"
             width={32}
             height={32}

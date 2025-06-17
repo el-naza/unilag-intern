@@ -36,18 +36,18 @@ export default function Footer() {
       </div>
       <div className="flex gap-x-3">
         <a href="https://www.facebook.com/koonageinfotec/" target="_blank">
-          <Image src="/icons/facebook.png" alt="Logo of Facebook" width={30} height={30} />
+          <Image src="/icons/facebook-icon.svg" alt="Logo of Facebook" width={30} height={30} />
         </a>
         <a href="https://www.instagram.com/koonageinfotec/" target="_blank">
-          <Image src="/icons/instagram.png" alt="Logo of Instagram" width={30} height={30} />
+          <Image src="/icons/instagram-icon.svg" alt="Logo of Instagram" width={30} height={30} />
         </a>
         <a href="https://www.x.com/koonageinfotec/" target="_blank">
           {' '}
-          <Image src="/icons/x.png" alt="Logo of X" width={30} height={30} />
+          <Image src="/icons/x-icon.svg" alt="Logo of X" width={30} height={30} />
         </a>
         <a href="https://www.linkedin.com/company/106294740/" target="_blank">
           {' '}
-          <Image src="/icons/linkedIn.png" alt="Logo of LinkedIn" width={30} height={30} />
+          <Image src="/icons/linkedin-icon.svg" alt="Logo of LinkedIn" width={30} height={30} />
         </a>
       </div>
     </div>

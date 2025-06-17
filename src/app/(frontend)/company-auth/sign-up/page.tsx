@@ -508,7 +508,7 @@ export default function SignUp() {
           window.location.href = '/company-auth/login'
         }}
         size="lg"
-        className="w-full rounded-xl border-solid border-[1px] border-[#8E8E93] text-[#8E8E93] p-3 bg-transparent hover:text-white hover:border-none hover:bg-[#195F7E]"
+        className="w-full rounded-xl border-solid border-[1px] border-[#8E8E93] text-[#8E8E93] p-3 bg-transparent hover:text-white hover:border-none"
         // variant="secondary"
         color="white"
       >
