@@ -14,7 +14,7 @@ const routePermissions: Record<string, { roles: string[]; loginPath: string }> =
     loginPath: '/company-auth/login',
   },
   '/admin': {
-    roles: ['admin'],
+    roles: ['admins'],
     loginPath: '/admin/auth',
   },
 }
