@@ -39,6 +39,9 @@ import fetchMe from '@/services/fetchMe'
 import { useCoinPurchaseModal } from '@/context/coin-purchase-modal-context'
 import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
 import { signOut } from 'next-auth/react'
+import MobileDropdown from '@/components/mobile-dropdown'
+import { Card, CardContent } from '@/components/ui/card'
+import { MapPin, Users } from 'lucide-react'
 
 const Page = () => {
   const meQuery = useQuery({
@@ -57,7 +60,9 @@ const Page = () => {
   const router = useRouter()
   const { openCoinModal } = useCoinPurchaseModal()
 
-  const [loading, setLoading] = useState<boolean>(true)
+  // const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [isMobileDropdownOpen, setMobileDropdownOpen] = useState<boolean>(false)
   const [employments, setEmployments] = useState<any[]>([])
   const [searchedCompanies, setSearchedCompanies] = useState<any[]>([])
   const [distance, setDistance] = useState<number[]>([20])
@@ -109,6 +114,7 @@ const Page = () => {
         setPage(1)
         setFilter({ careerArea: '' })
         setLoadingMap(false)
+        setMobileDropdownOpen(true)
         return res
       } catch {
         toast.error('An error occured while fetching jobs; pls try again later')
@@ -156,23 +162,24 @@ const Page = () => {
         }
 
         setSearchedCompanies(res.docs)
+        // setMobileDropdownOpen(true)
 
         return null
       },
     },
   })
 
-  useEffect(() => {
-    fetchEmployments()
-  }, [user])
+  // useEffect(() => {
+  //   fetchEmployments()
+  // }, [user])
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
         <div>
-          <div className="block lg:hidden min-h-screen relative text-sm text-white">
-            <div className="bg-[#195F7E] container 2xl:max-w-[1736px] pt-4 pb-1">
+          <div className="block lg:hidden min-h-screen relative text-sm text-white w-full">
+            <div className="bg-[#195F7E] container pt-4 pb-1">
               <StudentHeader />
               <StudentNavbar />
             </div>
@@ -290,6 +297,42 @@ const Page = () => {
                 </div>
               </main>
             </div>
+            <MobileDropdown
+              isOpen={isMobileDropdownOpen}
+              setIsOpen={setMobileDropdownOpen}
+              header={'Search Results'}
+            >
+              {searchedCompanies.length ? (
+                <div className="w-full bg-white text-black p-4 relative">
+                  <div className="mb-4">
+                    <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide pb-4">
+                      <div
+                        onClick={() => handleCourseAreaChange('')}
+                        className={`${filter.careerArea === '' ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
+                      >
+                        All Career Area
+                      </div>
+                      {courseAreas.map((courseArea) => (
+                        <div
+                          onClick={() => handleCourseAreaChange(courseArea)}
+                          key={courseArea}
+                          className={`${filter.careerArea === courseArea ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
+                        >
+                          {courseArea}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    className={`max-h-[55vh] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
+                  >
+                    {filteredCompanies.map((company, companyIndex) => (
+                      <CompanyCard key={`company-${companyIndex}`} company={company} />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </MobileDropdown>
           </div>
           <div className="lg:block hidden bg-[#195F7E] min-h-screen relative text-white">
             <Image
@@ -314,7 +357,7 @@ const Page = () => {
                         height={52}
                         src="/unilag-logo.png"
                         alt="Logo"
-                        className="mr-2"
+                        className="mr-2 w-[52px] h-[52px] aspect-square"
                       />
                     </div>
                     <div className="flex items-center ml-[195px]">
@@ -326,7 +369,7 @@ const Page = () => {
                         <Spinner />
                       )}
                     </div>
-                    <div className="flex items-center min-w-[582px] ml-auto">
+                    <div className="flex items-center max-w-[582px] ml-auto">
                       {/* <div className="relative w-3/4"> */}
                       <form.Field name="name">
                         {(field) => {
