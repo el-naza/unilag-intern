@@ -52,7 +52,7 @@ export default function StudentHeader() {
       </div>
       <div className="grid grid-cols-2">
         <div className="flex ms-auto my-auto">
-          <Link href="/student/reports/create">
+          <Link href="/student/reports">
             <svg
               width="24"
               height="25"
