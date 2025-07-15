@@ -6,10 +6,10 @@ export default function StudentNavbar() {
   const pathname = usePathname()
 
   return (
-    <nav className="relative grid grid-cols-4 gap-1 text-sm">
+    <nav className="relative grid grid-cols-2 gap-1 text-sm">
       <div className="flex items-center mb-2">
         <Link href="/student" className="relative group block text-center w-full text-[#B3FAFF]">
-          <span className="">Home</span>
+          <span className="">Map Search</span>
           <svg
             className={`absolute w-full left-0 top-full ${pathname === '/student' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}
             width="47"
@@ -31,7 +31,7 @@ export default function StudentNavbar() {
           href="/student/applications/pending"
           className="relative group block text-center w-full text-[#B3FAFF]"
         >
-          <span className="">Pending</span>
+          <span className="">Applications</span>
           <svg
             className={`absolute w-full left-0 top-full ${pathname === '/student/applications/pending' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}
             width="47"
@@ -48,7 +48,7 @@ export default function StudentNavbar() {
           </svg>
         </Link>
       </div>
-      <div className="flex items-center mb-2">
+      {/* <div className="flex items-center mb-2">
         <Link
           href="/student/applications/approved"
           className="relative group block text-center w-full text-[#B3FAFF]"
@@ -93,7 +93,7 @@ export default function StudentNavbar() {
             />
           </svg>
         </Link>
-      </div>
+      </div> */}
     </nav>
   )
 }
