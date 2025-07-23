@@ -12,6 +12,7 @@ const Navbar = () => {
       <Image src="/images/unilag-logo.png" alt="Logo" width={60} height={100} />
 
       <ul className="list-none lg:flex md:flex sm:hidden items-center lg:gap-40 md:gap-16 transition-all max-md:hidden">
+        
         <li className="hover:text-[#A71C51] hover:font-semibold">
           <Link href="#">Home</Link>
         </li>
@@ -21,6 +22,7 @@ const Navbar = () => {
         <li className="hover:text-[#A71C51] hover:font-semibold">
           <Link href="#interns">Interns</Link>
         </li>
+
       </ul>
 
       <div className="flex gap-4 items-center">

@@ -1,6 +1,5 @@
 'use client'
 
-import { StudentPreLogin } from '@/collections/Students'
 import FieldError from '@/components/FieldError'
 import FormError from '@/components/FormError'
 import Spinner from '@/components/spinner'
@@ -8,23 +7,27 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { StudentAuthOperations } from '@/payload-types'
-import sendStudentOTP from '@/services/sendStudentOTP'
-import signInStudent from '@/services/signInStudent'
 import studentPreLogin from '@/services/studentPreLogin'
-import { ValidationErrors } from '@/utilities/types'
 import { useForm } from '@tanstack/react-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { AuthError } from 'next-auth'
 import { signIn } from 'next-auth/react'
-import { sendStatusCode } from 'next/dist/server/api-utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Field, ValidationFieldError } from 'payload'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import useSendStudentOtpMtn from '../forgot-password/useSendStudentOtpMtn'
 
 export default function Page() {
+  const [redirect, setRedirect] = useState<string | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const redirectParam = params.get('redirect')
+    if (redirectParam) setRedirect(redirectParam)
+  }, [])
+
   const [hasPassword, setHasPassword] = useState(false)
   const [showPassword, setShowPassword] = useState(true)
   const requiredFields = useMemo(
@@ -174,7 +177,11 @@ export default function Page() {
         // success here so naviagate or toast to success !!
         form.reset()
         toast.success('Sign in successful')
-        router.push('/student')
+        if (redirect) {
+          router.push(redirect)
+        } else {
+          router.push('/student')
+        }
 
         return null
       },

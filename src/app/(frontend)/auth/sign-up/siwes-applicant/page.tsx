@@ -29,6 +29,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 import { password } from 'node_modules/payload/dist/fields/validations'
 import { signInUserClient } from '@/services/signinUser'
 import { authStore } from '@/store/authStore'
+import sendWelcomeEmail from '@/services/sendWelcomeEmail'
 
 function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
@@ -63,6 +64,8 @@ export default function Page() {
 
         const res = await saveDoc('students', student)
         if (!res) return toast.error('Network err; pls try again later')
+
+        await sendWelcomeEmail(student)
 
         return res
       } catch {

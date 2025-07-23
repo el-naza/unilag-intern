@@ -11,6 +11,7 @@ import SearchIcon from '../assets/icons/search'
 import LocationIcon from '../assets/icons/location'
 import LocationPointerIcon from '../assets/icons/locationPointerIcon'
 import studentAbstractVector from '../assets/images/student-abstract-vector.svg'
+import defaultProfileImage from '../assets/images/profile-image.webp'
 import SearchAltIcon from '../assets/icons/searchAltIcon'
 import MenuIcon from '../assets/icons/menu'
 import NotificationBellIcon from '../assets/icons/notificationBell'
@@ -37,6 +38,10 @@ import { useRouter } from 'next/navigation'
 import fetchMe from '@/services/fetchMe'
 import { useCoinPurchaseModal } from '@/context/coin-purchase-modal-context'
 import fetchCoinsAndApplicationsCount from '@/services/fetchCoinsAndApplicationsCount'
+import { signOut } from 'next-auth/react'
+import MobileDropdown from '@/components/mobile-dropdown'
+import { Card, CardContent } from '@/components/ui/card'
+import { MapPin, Users } from 'lucide-react'
 
 const Page = () => {
   const meQuery = useQuery({
@@ -55,7 +60,9 @@ const Page = () => {
   const router = useRouter()
   const { openCoinModal } = useCoinPurchaseModal()
 
-  const [loading, setLoading] = useState<boolean>(true)
+  // const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [isMobileDropdownOpen, setMobileDropdownOpen] = useState<boolean>(false)
   const [employments, setEmployments] = useState<any[]>([])
   const [searchedCompanies, setSearchedCompanies] = useState<any[]>([])
   const [distance, setDistance] = useState<number[]>([20])
@@ -101,11 +108,13 @@ const Page = () => {
         const res = await searchJobs({
           name: company.name,
           ...(company.address ? { address: company.address } : {}),
+          distance: distance[0],
         })
         console.log('res', res)
         setPage(1)
         setFilter({ careerArea: '' })
         setLoadingMap(false)
+        setMobileDropdownOpen(true)
         return res
       } catch {
         toast.error('An error occured while fetching jobs; pls try again later')
@@ -153,22 +162,23 @@ const Page = () => {
         }
 
         setSearchedCompanies(res.docs)
+        // setMobileDropdownOpen(true)
 
         return null
       },
     },
   })
 
-  useEffect(() => {
-    fetchEmployments()
-  }, [user])
+  // useEffect(() => {
+  //   fetchEmployments()
+  // }, [user])
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
         <div>
-          <div className="block lg:hidden min-h-screen relative text-sm text-white">
+          <div className="block lg:hidden min-h-screen relative text-sm text-white w-full">
             <div className="bg-[#195F7E] container pt-4 pb-1">
               <StudentHeader />
               <StudentNavbar />
@@ -251,13 +261,13 @@ const Page = () => {
                         <div className="col-span-4 grid-rows">
                           <div className="flex justify-between mb-2">
                             <div className="text-xs text-[#8E8E93]">0 km</div>
-                            <div className="text-xs text-[#8E8E93]">100 km</div>
+                            <div className="text-xs text-[#8E8E93]">1000 km</div>
                           </div>
                           <Slider
                             className="col-span-5 flex"
                             value={distance}
                             onValueChange={setDistance}
-                            max={100}
+                            max={1000}
                             step={1}
                           />
                         </div>
@@ -287,6 +297,42 @@ const Page = () => {
                 </div>
               </main>
             </div>
+            <MobileDropdown
+              isOpen={isMobileDropdownOpen}
+              setIsOpen={setMobileDropdownOpen}
+              header={'Search Results'}
+            >
+              {searchedCompanies.length ? (
+                <div className="w-full bg-white text-black p-4 relative">
+                  <div className="mb-4">
+                    <div className="flex flex-row w-full overflow-x-auto whitespace-nowrap gap-x-4 scrollbar-hide pb-4">
+                      <div
+                        onClick={() => handleCourseAreaChange('')}
+                        className={`${filter.careerArea === '' ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
+                      >
+                        All Career Area
+                      </div>
+                      {courseAreas.map((courseArea) => (
+                        <div
+                          onClick={() => handleCourseAreaChange(courseArea)}
+                          key={courseArea}
+                          className={`${filter.careerArea === courseArea ? 'bg-[#195F7E] text-white ' : 'text-[#195F7E] '} p-2 rounded cursor-pointer`}
+                        >
+                          {courseArea}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    className={`max-h-[55vh] overflow-y-auto grid grid-cols-2 gap-x-4 gap-y-6 py-2`}
+                  >
+                    {filteredCompanies.map((company, companyIndex) => (
+                      <CompanyCard key={`company-${companyIndex}`} company={company} />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </MobileDropdown>
           </div>
           <div className="lg:block hidden bg-[#195F7E] min-h-screen relative text-white">
             <Image
@@ -303,18 +349,18 @@ const Page = () => {
                   form.handleSubmit()
                 }}
               >
-                <div className="container">
-                  <nav className="relative flex gap-16 w-full items-center py-8 z-10">
+                <div className="container 2xl:max-w-[1736px]">
+                  <nav className="relative flex w-full justify-between items-center py-8 z-10">
                     <div className="flex items-center">
                       <Image
                         width={52}
                         height={52}
                         src="/unilag-logo.png"
                         alt="Logo"
-                        className="mr-2"
+                        className="mr-2 w-[52px] h-[52px] aspect-square"
                       />
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center ml-[195px]">
                       {meQuery.data ? (
                         <span className="font-oleo-script-swash-caps font-bold text-[#EEEFF4] text-[45px]">
                           Welcome {user?.firstName}
@@ -323,13 +369,13 @@ const Page = () => {
                         <Spinner />
                       )}
                     </div>
-                    <div className="col-span-2 flex items-center w-full flex-1 max-w-[682px]">
+                    <div className="flex items-center max-w-[582px] ml-auto">
                       {/* <div className="relative w-3/4"> */}
                       <form.Field name="name">
                         {(field) => {
                           return (
                             <>
-                              <div className="relative w-3/4">
+                              <div className="relative w-full">
                                 {/* <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
                                 <input
                                   name={field.name}
@@ -339,7 +385,7 @@ const Page = () => {
                                     field.handleChange(e.target.value)
                                   }}
                                   placeholder="Search For Companies"
-                                  className="w-full font-noto-sans outline-none text-black px-4 py-3 rounded-xl border border-black placeholder:text-[#1E1E1E] text-sm"
+                                  className="w-full font-noto-sans outline-none text-black px-4 py-3 rounded border border-black placeholder:text-[#1E1E1E] text-sm"
                                 />
                                 <button
                                   type="submit"
@@ -373,15 +419,16 @@ const Page = () => {
                   </nav>
                 </div>
                 <main>
-                  <div className="container mb-4">
+                  <div className="container 2xl:max-w-[1736px] mb-4">
                     <div>
                       <div className="flex sm:grid-cols-3 gap-[58px]">
                         <div className="relative">
                           <Image
+                            className="rounded-lg"
                             width={197}
                             height={235}
-                            src="/smiling-woman.png"
-                            alt="smiling woman"
+                            src={defaultProfileImage}
+                            alt="student-profile-picture"
                           />
                           <div className="absolute bottom-3 right-[-34px] bg-[#263238] text-[#FFD836] rounded-[15px] px-2 py-[5px] flex items-center text-[24px] font-roboto font-bold leading-none">
                             {coinsAndApplicationsCountsQuery.data?.applications}
@@ -398,7 +445,7 @@ const Page = () => {
                                   <span className="text-[#FFE75C]">{user?.lastName}</span>
                                 </span>
                                 <span className="ms-8 text-[32px] text-[#FFE75C]">
-                                  {getAge(user?.dob)}
+                                  Age: {getAge(user?.dob)}
                                 </span>
                               </div>
                               <div className="flex justify-between">
@@ -412,7 +459,7 @@ const Page = () => {
                               <div>
                                 <span>{user?.homeAddress}</span>
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex justify-between">
                                 {/* <div className="bg-[#0B7077] text-white px-4 py-2 rounded-2xl">
                                   <span>0 Duration</span>
                                 </div> */}
@@ -425,6 +472,16 @@ const Page = () => {
                                     Buy Coins
                                   </span>
                                 </div>
+                                <div
+                                  onClick={() =>
+                                    signOut({ redirectTo: '/auth/login', redirect: true })
+                                  }
+                                  className="text-white py-3 rounded-[20px] flex justify-center items-center cursor-pointer"
+                                >
+                                  <span className="font-roboto text-[24px] font-light leading-none ">
+                                    Sign Out
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           ) : (
@@ -434,8 +491,8 @@ const Page = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 p-5 mb-0 font-roboto z-10 relative">
-                    <div className="container flex w-full justify-between">
+                  <div className="flex sm:grid-cols-5 rounded-xl bg-[#0B7077] gap-2 py-5 mb-0 font-roboto z-10 relative">
+                    <div className="container 2xl:rounded max-w-[1736px] flex w-full justify-between">
                       <div>
                         <Link href="#" className="relative group block text-center">
                           <span className="text-xl">Map Search</span>
@@ -472,7 +529,7 @@ const Page = () => {
                         className="col-span-9"
                         value={distance}
                         onValueChange={setDistance}
-                        max={100}
+                        max={1000}
                         step={1}
                       />
                       <span className="col-span-3 text-sm text-black text-right">{distance}km</span>
@@ -545,36 +602,10 @@ const Page = () => {
                   </form> */}
                     <div className="col-span-5 font-manrope">
                       <div className="bg-white text-black py-4 w-full">
-                        <div className="container flex justify-between w-full">
+                        <div className="container 2xl:max-w-[1736px] flex justify-between w-full">
                           <div className="flex self-center">
                             <h3 className="font-bold text-2xl text-[#48484A]">Company Search</h3>
                           </div>
-                          {/* <div className="relative border rounded">
-                              <form.Field name="name">
-                                {(field) => {
-                                  return (
-                                    <>
-                                      <div className="relative">
-                                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                                        <input
-                                          name={field.name}
-                                          value={field.state.value || ''}
-                                          onBlur={field.handleBlur}
-                                          onChange={(e) => {
-                                            field.handleChange(e.target.value)
-                                          }}
-                                          placeholder="Search Job"
-                                          className="indent-7 outline-none text-black w-full px-4 py-3 border-0 placeholder:text-[#7F879E] text-sm"
-                                        />
-                                      </div>
-                                      <div className="indent-7">
-                                        <FieldError field={field} />
-                                      </div>
-                                    </>
-                                  )
-                                }}
-                              </form.Field>
-                            </div> */}
 
                           <div className="relative border rounded">
                             <div className="flex absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-[27px] w-[27px] rounded-full bg-[#dfe1fa]">
@@ -613,7 +644,7 @@ const Page = () => {
                               className="col-span-9 min-w-[274px]"
                               value={distance}
                               onValueChange={setDistance}
-                              max={100}
+                              max={1000}
                               step={1}
                             />
                             <div className="col-span-3 flex self-center">
@@ -675,7 +706,7 @@ const Page = () => {
             </div>
           </div>
 
-          {/* <div className="container my-10 lg:my-24">
+          {/* <div className="container 2xl:max-w-[1736px] my-10 lg:my-24">
             <div className="grid gap-4 lg:gap-10">
               <div className="text-center">
                 <h4 className="text-xl lg:text-4xl text-[#FD661F] font-medium relative">

@@ -11,14 +11,14 @@ const CompanyCard = ({ company }: any) => {
   }
 
   return (
-    <div className="shadow-lg rounded-[14px] bg-white lg:w-[25vw] md:w-[35vw] sm:w-[40vw] xs:w-[58vw]">
-      <div className="relative h-[12.5rem]">
+    <div className="shadow-lg rounded-[14px] bg-white w-[20rem] h-full">
+      <div className="relative h-[15rem] w-full overflow-hidden">
         <Image
           src={company?.image?.url ?? '/images/company-1.png'}
           alt="Company"
-          width={500}
-          height={200}
-          className="rounded-tl-[14px] rounded-tr-[14px] w-full h-full"
+          width={1000}
+          height={1000}
+          className="rounded-tl-[14px] rounded-tr-[14px] w-full h-[inherit] object-cover"
         />
         {/* <div className="w-full grid place-content-center absolute -bottom-[20px]">
               <AvatarGroup />

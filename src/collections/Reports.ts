@@ -1,16 +1,18 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, FieldAccess } from 'payload'
 
 import { students } from '@/access/students'
 import { relatedStudent } from '@/access/reports/relatedStudent'
-import { relatedStudentOrCompany } from '@/access/relatedStudentOrCompany'
+import { relatedCompany } from '@/access/reports/relatedCompany'
+import { relatedStudentOrCompany } from '@/access/reports/relatedStudentOrCompany'
 
 export const Reports: CollectionConfig = {
   slug: 'reports',
-  // access: {
-  //   create: students,
-  //   delete: relatedStudent,
-  //   update: relatedStudentOrCompany,
-  // },
+  access: {
+    create: students,
+    delete: relatedStudent,
+    update: relatedStudentOrCompany,
+    read: relatedStudentOrCompany,
+  },
   fields: [
     {
       name: 'student',
@@ -46,12 +48,20 @@ export const Reports: CollectionConfig = {
     {
       name: 'remark',
       type: 'text',
+      access: {
+        update: relatedCompany,
+        create: relatedCompany,
+      },
     },
     {
       name: 'status',
       type: 'select',
       options: ['pending', 'approved', 'reassigned'],
       defaultValue: 'pending',
+      access: {
+        update: relatedCompany,
+        create: relatedCompany,
+      },
     },
     {
       name: 'media',

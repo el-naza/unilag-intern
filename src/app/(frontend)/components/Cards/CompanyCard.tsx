@@ -7,6 +7,7 @@ import enrolledStudent3 from '../../assets/images/enrolled-student-3.svg'
 import enrolledStudent4 from '../../assets/images/enrolled-student-4.svg'
 import enrolledStudent5 from '../../assets/images/enrolled-student-5.svg'
 import Link from 'next/link'
+import formatDate, { altFormatDate } from '@/utilities/formatDate'
 
 export default function CompanyCard({ company }) {
   return (
@@ -14,8 +15,8 @@ export default function CompanyCard({ company }) {
       <div className="rounded-t-lg relative flex flex-col">
         <Image className="rounded-t-lg" src={companyBanner} alt="company-banner" />
         <div className="-bottom-5 absolute flex w-full">
-          <div className="bg-[#FAFAFA] px-2 py-3 mx-auto w-[90%] rounded-full text-sm m-auto block grid grid-cols-2">
-            <div className="relative">
+          <div className="bg-[#FAFAFA] p-2 mx-auto w-[90%] rounded-full text-sm m-auto">
+            {/* <div className="relative">
               <Image
                 className="absolute -top-1 right-[50px] z-50"
                 src={enrolledStudent1}
@@ -51,16 +52,26 @@ export default function CompanyCard({ company }) {
                 height={20}
                 width={20}
               />
-            </div>
-            <div className="flex">
-              <span className="text-xs">+40 students</span>
+            </div> */}
+            <div className="text-center">
+              <span className="text-xs">
+                {company.employmentCount !== 0 ? '+' : ''}
+                {company.employmentCount} students
+              </span>
             </div>
           </div>
         </div>
       </div>
       <div className="bg-white rounded-b-lg p-4 mt-4 grid gap-5">
         <div className="grid gap-2">
-          <span className="text-xs text-[#777795]">1 - 28 July 2022</span>
+          {company.firstInternship ? (
+            <span className="text-xs text-[#777795]">
+              {altFormatDate(company.firstInternship.startDate)} -{' '}
+              {altFormatDate(company.firstInternship.endDate)}
+            </span>
+          ) : (
+            ''
+          )}
           <Link href={`/student/companies/${company.id}`}>
             <h5 className="text-[#195F7E] text-md font-bold">{company.name}</h5>
           </Link>

@@ -4,7 +4,7 @@ export const schoolData = [
     schoolLogo: '/images/unilag',
     schoolName: 'University of Lagos (UNILAG)',
     motto: 'In Deed and in Truth',
-    portal: 'https://cilpu.unilag.edu.ng/',
+    portal: '/unilag',
     availability: true,
   },
   {

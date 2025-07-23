@@ -12,12 +12,18 @@ import { admins } from '@/access/admins'
 import { studentSelfOrAdmin } from '@/access/studentSelfOrAdmin'
 import { Student } from '@/payload-types'
 import { v4 as uuidv4 } from 'uuid' // Import uuid package
+import { welcomeEmailHTML } from '@/utilities/welcomeEmail'
 
 const PreLogin = z.object({
   matricNo: z.string(),
 })
 
+const NewStudentCollection = z.object({
+  email: z.string(),
+})
+
 export type StudentPreLogin = z.infer<typeof PreLogin>
+export type NewStudent = z.infer<typeof NewStudentCollection>
 
 export const Students: CollectionConfig = {
   slug: 'students',
@@ -343,6 +349,37 @@ export const Students: CollectionConfig = {
             { status: 500 },
           )
         }
+      },
+    },
+    {
+      method: 'post',
+      path: '/welcome-email',
+      handler: async (req) => {
+        const { data } = NewStudentCollection.safeParse(await req.json?.())
+
+        if (!data) {
+          return Response.json({ message: 'email not specified' }, { status: 400 })
+        }
+
+        const studentFindRes = await req.payload.find({
+          collection: 'students',
+          where: {
+            email: { equals: (data as any).email },
+          },
+          showHiddenFields: true,
+        })
+
+        const student = studentFindRes.docs[0]
+
+        await req.payload.sendEmail({
+          to: (data as any).email,
+          subject: 'Welcome email',
+          text: welcomeEmailHTML(student),
+        })
+
+        return Response.json({
+          message: `Success`,
+        })
       },
     },
   ],

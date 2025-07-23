@@ -2,7 +2,8 @@ import React from 'react'
 import Image from 'next/image'
 import authLine from '@/app/(frontend)/assets/images/auth-line.svg'
 import StarCircle from '../assets/icons/starCircle'
-import ToggleButtons from "./toggle"
+import ToggleButtons from './toggle'
+import Link from 'next/link'
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,15 +26,17 @@ export default async function Layout({ children }: { children: React.ReactNode }
             <div className="bg-[#195F7E] flex grid grid-rows-4 gap-3">
               <div className="m-auto row-span-3 grid gap-14 min-w-[300px]">
                 <div className="m-auto">
-                  <Image
-                    src={'/images/unilag-logo.png'}
-                    alt="unilag-logo"
-                    width={100}
-                    height={100}
-                  />
+                  <Link href={'/'}>
+                    <Image
+                      src={'/images/unilag-logo.png'}
+                      alt="unilag-logo"
+                      width={100}
+                      height={100}
+                    />
+                  </Link>
                 </div>
-                
-                <ToggleButtons/>
+
+                <ToggleButtons />
               </div>
               <div className="bg-[#0B7077] py-8 px-5">
                 <div className="grid grid-cols-4 gap-5">

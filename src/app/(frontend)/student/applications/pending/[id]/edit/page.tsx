@@ -27,6 +27,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Field, ValidationFieldError } from 'payload'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import companyLogo from '@/app/(frontend)/assets/images/company-logo.svg'
 
 const Page = () => {
   const meQuery = useQuery({
@@ -135,7 +136,14 @@ const Page = () => {
                 <h5 className="text-black my-3 font-bold">Apply Now</h5>
                 <div className="grid grid-cols-8 mb-3 gap-2">
                   <div className="flex items-center">
-                    <Image width={40} height={40} src="/cmr-logo.png" alt="cmr-logo" />
+                    <Image
+                      src={
+                        pendingApplication.company?.image
+                          ? pendingApplication.company?.image?.url
+                          : companyLogo
+                      }
+                      alt="company-logo"
+                    />
                   </div>
                   <div className="col-span-7">
                     <h5 className="text-black font-bold uppercase">

@@ -88,7 +88,7 @@ export default function RejectedRequest() {
               <p className="px-4 font-[400] text-[16px]"> Internship Request</p>
               {loading ? (
                 <Loader height="auto" background="transparent" />
-              ) : (
+              ) : internReq.length > 0 ? (
                 <div className="mt-[12px]">
                   <Table
                     headers={headers}
@@ -99,6 +99,8 @@ export default function RejectedRequest() {
                     // onPageChange={handlePageChange}
                   />
                 </div>
+              ) : (
+                <p>No internship data</p>
               )}
             </BlurBackground>
           </div>

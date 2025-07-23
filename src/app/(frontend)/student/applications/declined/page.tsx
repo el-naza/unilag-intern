@@ -5,6 +5,7 @@ import StudentNavbar from '@/app/(frontend)/components/Layouts/Student/StudentNa
 import StudentHeader from '@/app/(frontend)/components/Layouts/Student/StudentHeader'
 import CompanyApprovedApplicationCard from '@/app/(frontend)/components/Cards/CompanyApprovedApplicationCard'
 import advertText from '../../../assets/images/adverts.png'
+import emptyResult from '../../../assets/images/empty-result.png'
 import Image from 'next/image'
 import CompanyLargeApprovedApplicationCard from '@/app/(frontend)/components/Cards/CompanyLargeApprovedApplicationCard'
 import Link from 'next/link'
@@ -87,15 +88,26 @@ const Page = () => {
                 <div className="mt-1 mb-3">
                   <h6 className="text-[#48484A]">Declined Interviews</h6>
                 </div>
-                <div className="grid gap-4">
-                  {interviewInvitations.map((interviewInvitation) => (
-                    <CompanyApprovedApplicationCard
-                      interviewInvitation={interviewInvitation}
-                      key={interviewInvitation.id}
-                      onRespond={handleRespond}
-                    />
-                  ))}
-                </div>
+                {interviewInvitations.length === 0 ? (
+                  <div className="h-[calc(100vh-220px)] flex items-center justify-center">
+                    <div className="space-y-6">
+                      <Image className="m-auto" src={emptyResult} alt="Empty result" />
+                      <div className="text-xl text-center font-medium text-[#303030] opacity-50">
+                        No Declined Interviews Found
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {interviewInvitations.map((interviewInvitation) => (
+                      <CompanyApprovedApplicationCard
+                        interviewInvitation={interviewInvitation}
+                        key={interviewInvitation.id}
+                        onRespond={handleRespond}
+                      />
+                    ))}
+                  </div>
+                )}
               </main>
             </div>
           </div>
@@ -126,23 +138,34 @@ const Page = () => {
                   <div className="col-span-4">
                     <div className="p-5">
                       <StudentApplicationHeader />
-                      <div className="grid gap-4">
-                        {interviewInvitations.map((interviewInvitation) => (
-                          <CompanyLargeApprovedApplicationCard
-                            interviewInvitation={interviewInvitation}
-                            key={interviewInvitation.id}
-                            onRespond={handleRespond}
-                          />
-                        ))}
-                      </div>
+                      {interviewInvitations.length === 0 ? (
+                        <div className="h-[calc(100vh-220px)] flex items-center justify-center">
+                          <div className="space-y-6">
+                            <Image className="m-auto" src={emptyResult} alt="Empty result" />
+                            <div className="text-xl text-center font-medium text-[#303030] opacity-50">
+                              No Declined Interviews Found
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="grid gap-4">
+                          {interviewInvitations.map((interviewInvitation) => (
+                            <CompanyLargeApprovedApplicationCard
+                              interviewInvitation={interviewInvitation}
+                              key={interviewInvitation.id}
+                              onRespond={handleRespond}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-rows-2 gap-4">
                     <div className="rounded-lg bg-[#EBE7E77A] flex p-5">
-                      <Image className="m-auto" src={advertText} alt="advert-text" />
+                      {/*<Image className="m-auto" src={advertText} alt="advert-text" />*/}
                     </div>
                     <div className="rounded-lg bg-[#EBE7E77A] flex p-5">
-                      <Image className="m-auto" src={advertText} alt="advert-text" />
+                      {/*<Image className="m-auto" src={advertText} alt="advert-text" />*/}
                     </div>
                   </div>
                 </div>
