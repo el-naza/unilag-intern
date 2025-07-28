@@ -44,6 +44,13 @@ export default function Hero() {
           >
             Companies - Reserve a Spot
           </a>
+          <a
+            href="/pricing"
+            className={`py-3 px-5 rounded-[100px] text-xl font-normal leading-[1.5] ${jost.className} text-center flex gap-2 items-center text-white bg-[#4172F0]`}
+          >
+            <Image src="/icons/graduation-cap.svg" alt="Graduation Cap" width={24} height={24} />
+            <p>Onboard as a School</p>
+          </a>
         </div>
       </div>
       <Carousel />

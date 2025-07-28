@@ -13,7 +13,7 @@ export default function Footer() {
     <div className="md:flex md:justify-between items-center py-[51px] px-16 md:flex-row flex flex-col gap-y-6 text-center md:text-left">
       <a href="/">
         {' '}
-        <Image src="/images/logo.png" alt="Logo of Koonage" width={71} height={20} />
+        <Image src="/images/intrns.svg" alt="Logo of Koonage" width={71} height={20} />
       </a>
       <div
         className={`md:flex gap-x-6 ${jost.className} text-xl font-normal leading-[1.5] pt-[21px] md:pt-0 md:flex-row flex flex-col gap-y-6 md:gap-y-0`}

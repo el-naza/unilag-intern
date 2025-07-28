@@ -1,0 +1,83 @@
+export const pricingData = {
+  plans: [
+    {
+      id: 1,
+      year: '1st',
+      name: 'Starter',
+      price: {
+        annual: '100,000',
+        original: '150,000',
+        discount: '33%',
+      },
+      cta: 'Choose Starter Plan',
+      description: 'Perfect for institutions getting started',
+      points: [
+        'Up to 200 students',
+        '3 coordinators',
+        'Certificate generator',
+        'Basic analytics',
+        'Email support',
+      ],
+    },
+    {
+      id: 2,
+      year: '2nd',
+      name: 'Growing',
+      price: {
+        annual: '150,000',
+        original: '225,000',
+        discount: '33%',
+      },
+      cta: 'Choose Growing Plan',
+      description: 'For expanding institutions',
+      points: [
+        'Up to 500 students',
+        'Department-level management',
+        'Supervisor evaluator module',
+        'Advanced analytics',
+        'Dedicated support',
+      ],
+    },
+    {
+      id: 'advanced',
+      year: '3rd',
+      name: 'Advanced',
+      tag: 'Most Popular',
+      price: {
+        annual: '200,000',
+        original: '300,000',
+        discount: '33%',
+      },
+      cta: 'Choose Advanced Plan',
+      description: 'Complete solution for large institutions',
+      points: [
+        'Unlimited students',
+        'SCAR & Placement integrations',
+        'Admin analytics dashboard',
+        'Multi-school access',
+        'Priority support',
+      ],
+    },
+    // {
+    //   id: 'enterprise',
+    //   name: 'Enterprise',
+    //   tag: 'First Five Schools Get It Free!',
+    //   customPlan: true,
+    //   price: {
+    //     label: 'Let’s Build Your Solution',
+    //     currency: 'N',
+    //     base: '150,000',
+    //     cta: 'Talk to Sales',
+    //     discount: 'Save 33%',
+    //   },
+    //   description: 'Tailored specifically for your needs',
+    //   points: [
+    //     'Institution branded interface',
+    //     'API Integrations',
+    //     'On-premise or cloud',
+    //     'Advanced reporting',
+    //     'White-label solution',
+    //   ],
+    // },
+  ],
+}

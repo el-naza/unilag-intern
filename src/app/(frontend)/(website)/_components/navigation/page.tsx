@@ -24,7 +24,7 @@ export default function Navigation() {
       <div className="flex gap-x-20 md:justify-start justify-between">
         <a href="/">
           <Image
-            src="/images/logo.png"
+            src="/images/intrns.svg"
             alt="Logo of Intrn"
             width={72}
             height={20}

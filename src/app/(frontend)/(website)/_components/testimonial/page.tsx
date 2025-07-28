@@ -83,7 +83,7 @@ export default function Testimonial() {
           />
           <div className="bg-[#0B0B0026] w-[1px] h-[61px]"></div>
           <Image
-            src="/images/logo.png"
+            src="/images/intrns.svg"
             alt="The logo of Intrn"
             width={113}
             height={32}
