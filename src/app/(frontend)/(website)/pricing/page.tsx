@@ -57,7 +57,7 @@ export default function Pricing() {
             alt="Man"
             width={470}
             height={521}
-            className="absolute w-[470px] h-[521px] bottom-0 -right-7"
+            className="absolute w-[470px] h-[521px] bottom-0 -right-7 "
           />
           <div className="flex flex-col w-[100%]  md:w-[50%]">
             <h2
@@ -78,58 +78,85 @@ export default function Pricing() {
         </div>
       </div>
       {/* Price Cards */}
-      <div className="grid grid-cols-4 pt-[100px] pb-[60px] px-[68.5px] gap-10 items-end">
+      <div className="md:grid md:grid-cols-4 pt-[100px] pb-[60px] md:px-[68.5px] px-5 gap-10 items-end">
         {prices.map((plan) => (
           <PriceCard key={plan.id} plan={plan} />
         ))}
         {/* Fourth Card */}
-        <div className="pt-[14.35px] px-[21.5px] pb-[129px] bg-[#1E2763] text-white rounded-[18px]">
-          <div className="flex gap-[7.17px] justify-center bg-[#53F5EC] py-[8.24px] text-[#064B48] rounded-[35.87px]">
-            <Image src="/images/confetti.png" alt="Confetti" width={22} height={22} />
-            <p className={`${jost.className} font-bold text-[18px]`}>
-              First Five Schools Get It Free!
-            </p>
-          </div>
-          <div className={` ${jost.className}`}>
-            <p className={`font-medium text-[1.2rem] text-[#A0B9F8] pb-[7.17px] pt-[21.52px]`}>
-              Enterprise
-            </p>
-            <p className={`font-bold text-[1.5rem] pb-[14px] ${schibstedGrotesk.className}`}>
-              Custom Plan
-            </p>
-            <p className={`font-bold text-[2.5rem] pb-[7.17px] ${schibstedGrotesk.className}`}>
-              Let's Build
-              <span className="font-medium text-[1.2rem]"> Your Solution</span>
-            </p>
-            <a
-              href=""
-              className={`text-[#292929] text-[1.2rem] bg-[#DCE7FD] font-semibold rounded-[7.17px] text-center py-[11px] block $`}
-            >
-              Talk to Sales
-            </a>
-            <p className={`pt-[22px] pb-[15px] font-semibold text-[1.2rem]`}>
-              Tailored Specifically for your needs
-            </p>
-            <div className="flex flex-col gap-[7.17px] text-[1.2rem]">
-              <div className="flex gap-[11px]">
-                <Image src="/icons/check-icon-white.svg" alt="Check Icon" width={18} height={18} />
-                <p>Institution branded interface</p>
-              </div>
-              <div className="flex gap-[11px]">
-                <Image src="/icons/check-icon-white.svg" alt="Check Icon" width={18} height={18} />
-                <p>API Integrations</p>
-              </div>
-              <div className="flex gap-[11px]">
-                <Image src="/icons/check-icon-white.svg" alt="Check Icon" width={18} height={18} />
-                <p>On-premise or cloud</p>
-              </div>
-              <div className="flex gap-[11px]">
-                <Image src="/icons/check-icon-white.svg" alt="Check Icon" width={18} height={18} />
-                <p>Advanced reporting</p>
-              </div>
-              <div className="flex gap-[11px]">
-                <Image src="/icons/check-icon-white.svg" alt="Check Icon" width={18} height={18} />
-                <p>White-label solution</p>
+        <div className="pt-5 md:pt-0">
+          <div className="pt-[14.35px] px-[21.5px] pb-[140px] bg-[#1E2763] text-white rounded-[18px]">
+            <div className="flex gap-[7.17px] justify-center bg-[#53F5EC] py-[8.24px] text-[#064B48] rounded-[35.87px]">
+              <Image src="/images/confetti.png" alt="Confetti" width={22} height={22} />
+              <p className={`${jost.className} font-bold text-[18px]`}>
+                First Five Schools Get It Free!
+              </p>
+            </div>
+            <div className={` ${jost.className}`}>
+              <p className={`font-medium text-[1.2rem] text-[#A0B9F8] pb-[7.17px] pt-[21.52px]`}>
+                Enterprise
+              </p>
+              <p className={`font-bold text-[1.5rem] pb-[14px] ${schibstedGrotesk.className}`}>
+                Custom Plan
+              </p>
+              <p className={`font-bold text-[2.5rem] pb-[7.17px] ${schibstedGrotesk.className}`}>
+                Let's Build
+                <span className="font-medium text-[1.2rem]"> Your Solution</span>
+              </p>
+              <a
+                href="https://api.whatsapp.com/send/?phone=2348080864583&text&type=phone_number&app_absent=0"
+                className={`text-[#292929] text-[1.2rem] bg-[#DCE7FD] font-semibold rounded-[7.17px] text-center py-[11px] block $`}
+              >
+                Talk to Sales
+              </a>
+              <p className={`pt-[22px] pb-[15px] font-semibold text-[1.2rem]`}>
+                Tailored Specifically for your needs
+              </p>
+              <div className="flex flex-col gap-[7.17px] text-[1.2rem]">
+                <div className="flex gap-[11px]">
+                  <Image
+                    src="/icons/check-icon-white.svg"
+                    alt="Check Icon"
+                    width={18}
+                    height={18}
+                  />
+                  <p>Institution branded interface</p>
+                </div>
+                <div className="flex gap-[11px]">
+                  <Image
+                    src="/icons/check-icon-white.svg"
+                    alt="Check Icon"
+                    width={18}
+                    height={18}
+                  />
+                  <p>API Integrations</p>
+                </div>
+                <div className="flex gap-[11px]">
+                  <Image
+                    src="/icons/check-icon-white.svg"
+                    alt="Check Icon"
+                    width={18}
+                    height={18}
+                  />
+                  <p>On-premise or cloud</p>
+                </div>
+                <div className="flex gap-[11px]">
+                  <Image
+                    src="/icons/check-icon-white.svg"
+                    alt="Check Icon"
+                    width={18}
+                    height={18}
+                  />
+                  <p>Advanced reporting</p>
+                </div>
+                <div className="flex gap-[11px]">
+                  <Image
+                    src="/icons/check-icon-white.svg"
+                    alt="Check Icon"
+                    width={18}
+                    height={18}
+                  />
+                  <p>White-label solution</p>
+                </div>
               </div>
             </div>
           </div>
@@ -143,7 +170,9 @@ export default function Pricing() {
         >
           Need Help Choosing?
         </h2>
-        <p>Our team is here to help you find the perfect plan for your institutions needs.</p>
+        <p className="md:text-left text-center">
+          Our team is here to help you find the perfect plan for your institutions needs.
+        </p>
         <a
           href="https://api.whatsapp.com/send/?phone=2348080864583&text&type=phone_number&app_absent=0"
           className="bg-[#FAFAFA] py-[15px] px-[41px] rounded-[100px] border-[1px] border-[#E9E9E9] flex gap-3"
