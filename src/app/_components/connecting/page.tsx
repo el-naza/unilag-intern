@@ -49,13 +49,13 @@ export default function Connecting() {
         id="signup"
       >
         <a
-          href="https://app.intrns.com/signup/company"
+          href="https://app.intrn.com/signup/company"
           className={`bg-[#1E2763] py-3 px-5 rounded-[100px] text-white  text-xl font-normal leading-[1.5] ${jost.className} text-center`}
         >
           Signup As a Company
         </a>
         <a
-          href="https://app.intrns.com/signup/student"
+          href="https://app.intrn.com/signup/student"
           className={`bg-[#53F5EC] py-3 px-5 rounded-[100px] text-[#1E2763] text-xl font-normal leading-[1.5] ${jost.className} text-center`}
         >
           Talent Sign Up

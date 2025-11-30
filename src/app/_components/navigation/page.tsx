@@ -47,13 +47,13 @@ export default function Navigation() {
           <a href="/school-portals">School Portals</a>
         </li>
         <li>
-          <a href="https://app.intrns.com/login">Companies</a>
+          <a href="https://app.intrn.com/login">Companies</a>
         </li>
         <li>
           <a href="/about-us">About Us</a>
         </li>
         <a
-          href="https://app.intrns.com/signup"
+          href="https://app.intrn.com/signup"
           className="bg-[#1E2763] py-2 px-5 rounded-[100px] text-white md:hidden block w-[40%]"
         >
           Sign Up
@@ -61,7 +61,7 @@ export default function Navigation() {
       </ul>
       <div>
         <a
-          href="https://app.intrns.com/signup"
+          href="https://app.intrn.com/signup"
           className="bg-[#1E2763] py-2 px-5 rounded-[100px] text-white md:block hidden"
         >
           Sign Up

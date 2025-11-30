@@ -17,7 +17,7 @@ export default function Home() {
       <Join
         headingText="Join the Internship Revolution"
         normalText="Sign up now to secure your spot and start your journey towards an exciting internship!"
-        signingLink="https://app.intrns.com/signup/student"
+        signingLink="https://app.intrn.com/signup/student"
       />
     </>
   )
