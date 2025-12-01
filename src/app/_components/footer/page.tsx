@@ -18,7 +18,7 @@ export default function Footer() {
       <div
         className={`md:flex gap-x-6 ${jost.className} text-xl font-normal leading-[1.5] pt-[21px] md:pt-0 md:flex-row flex flex-col gap-y-6 md:gap-y-0`}
       >
-        <p className="#0B0B00">&copy; 2025 intrn.com All rights reserved.</p>
+        <p className="#0B0B00">&copy; 2025 intrns.com All rights reserved.</p>
         {/* <ul
           className={`md:flex md:gap-x-6 md:flex-row flex flex-col gap-y-6 text-[#1E2763] underline hidden`}
         > */}
