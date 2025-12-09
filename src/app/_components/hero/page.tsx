@@ -1,20 +1,20 @@
-import React from 'react'
-import { Jost } from 'next/font/google'
-import { Schibsted_Grotesk } from 'next/font/google'
-import Image from 'next/image'
-import Carousel from '../carousel/carousel'
+import React from "react";
+import { Jost } from "next/font/google";
+import { Schibsted_Grotesk } from "next/font/google";
+import Image from "next/image";
+import Carousel from "../carousel/carousel";
 
 const jost = Jost({
-  subsets: ['latin'],
-  weight: ['500'],
-  variable: '--font-jost',
-})
+  subsets: ["latin"],
+  weight: ["500"],
+  variable: "--font-jost",
+});
 
 const schibstedGrotesk = Schibsted_Grotesk({
-  subsets: ['latin'],
-  weight: ['700', '900'],
-  variable: '--font-schibstedGrotesk',
-})
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  variable: "--font-schibstedGrotesk",
+});
 
 export default function Hero() {
   return (
@@ -28,8 +28,8 @@ export default function Hero() {
         <p
           className={`${jost.className} text-xl text-center max-w-[650px] mx-auto leading-[1.5] text-[#525252]`}
         >
-          Discover exciting internship opportunities tailored for you. Join intrn and take the first
-          step towards your dream career!
+          Discover exciting internship opportunities tailored for you. Join
+          intrn and take the first step towards your dream career!
         </p>
         <div className="gap-y-4 md:flex md:flex-row md:gap-x-4 md:justify-center flex flex-col pt-8">
           <a
@@ -47,7 +47,7 @@ export default function Hero() {
         </div>
       </div>
       <Carousel />
-      <div className="md:flex md:justify-between md:items-center md:gap-x-32 md:px-16 px-5 py-10 bg-[#EFFEFC] items-center">
+      {/* <div className="md:flex md:justify-between md:items-center md:gap-x-32 md:px-16 px-5 py-10 bg-[#EFFEFC] items-center">
         <p
           className={`${jost.className} text-xl leading-[1.5] w-[250px] py-auto text-[#1E2763] pb-8 md:pb-0`}
         >
@@ -97,7 +97,8 @@ export default function Hero() {
             className="w-[137.7px] h-[32px] "
           />
         </div>
-      </div>
+      </div> */}
+      <div className="h-10"></div>
     </div>
-  )
+  );
 }
