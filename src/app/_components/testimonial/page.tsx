@@ -82,13 +82,7 @@ export default function Testimonial() {
             className="w-[133px] h-[32px]"
           />
           <div className="bg-[#0B0B0026] w-[1px] h-[61px]"></div>
-          <Image
-            src="/images/logo.png"
-            alt="The logo of Intrn"
-            width={113}
-            height={32}
-            className="w-[113px] h-[32px]"
-          />
+          <Image src="/images/logo.png" alt="The logo of Intrn" width={100} height={32} />
         </div>
       </div>
     </div>

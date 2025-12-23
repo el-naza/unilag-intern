@@ -21,15 +21,9 @@ export default function Navigation() {
     <div
       className={`md:mx-[149px] mx-5 mt-[12px] md:flex md:justify-between bg-[#DCE7FD] ${jost.className} rounded-[12px] py-6 md:px-16 px-5 items-center`}
     >
-      <div className="flex gap-x-20 md:justify-start justify-between">
+      <div className="flex gap-x-20 md:justify-start justify-between items-center">
         <a href="/">
-          <Image
-            src="/images/logo.png"
-            alt="Logo of Intrn"
-            width={72}
-            height={20}
-            className="w-18 h-5"
-          />
+          <Image src="/images/logo.png" alt="Logo of Intrn" width={96} height={20} />
         </a>
         <Image
           src="/icons/hamburger.svg"
